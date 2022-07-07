@@ -1,0 +1,48 @@
+\name{explore.conc}
+\alias{explore.conc}
+\title{
+Interactively Navigate Through Concordance List
+}
+\description{
+The S3 method \code{explore()}, which only works in an interactive R
+  session, can be applied to concordance lists. In that case, the method takes
+  as its first argument an R object \code{x} of the
+  class \code{"conc"}, and it
+  opens `exploration mode', in which the user can navigate
+  through \code{x} by means of brief commands. Inside `exploration mode',
+  the user can ask for the
+  list of available commands by keying in \code{?}, followed by ENTER.
+  The user can quit `exploration mode' by keying in \code{q}, followed
+  by ENTER.
+}
+\usage{
+\method{explore}{conc}(x,
+   n = 20,
+   from = 1,
+   use_clear = TRUE,
+   \dots)
+
+}
+\arguments{
+  \item{x}{
+   an object of the classes \code{"conc"}.
+  }
+  \item{n}{
+    maximum number of items in the concordance list to be shown at once.   
+  }
+  \item{from}{
+    first item in the concordance list that is shown at the beginning of
+    the ineractive session.
+  }
+  \item{use_clear}{
+    boolean value. If \code{use_clear} is \code{TRUE}, and if moreover the
+    feature is supported by the R environment, the console will be cleared
+    in between all interactive steps in the exploration session.
+  }
+  \item{\dots}{
+   additional arguments.
+  }
+}
+\value{
+The method \code{explore} invisibly returns \code{x}.
+}

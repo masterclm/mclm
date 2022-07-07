@@ -1,0 +1,54 @@
+\name{explore.fnames}
+\alias{explore.fnames}
+\title{
+Interactively Navigate Through Filenames Object
+}
+\description{
+The S3 method \code{explore()}, which only works in an interactive R
+  session, can be applied to 'fnames' objects. In that case, the method takes
+  as its first argument an R object \code{x} of the
+  class \code{'fnames'}, and it
+  opens `exploration mode', in which the user can navigate
+  through \code{x} by means of brief commands. Inside this
+  `exploration mode',
+  the user can ask for the
+  list of available commands by keying in \code{?}, followed by ENTER.
+  The user can quit `exploration mode' by keying in \code{q}, followed
+  by ENTER.
+}
+\usage{
+\method{explore}{fnames}(x,
+   n = 20,
+   from = 1,
+   perl = TRUE,
+   use_clear = TRUE,
+   \dots)
+
+}
+\arguments{
+  \item{x}{
+   an object of the classes \code{'fnames'}.
+  }
+  \item{n}{
+    maximum number of items in the 'fnames' object to be shown at once.   
+  }
+  \item{from}{
+    first item in the 'fnames' object that is shown at the beginning of
+    the exploration session.
+  }
+  \item{perl}{
+    boolean value that indicates whether or not regular expressions used
+    in the exploration session use the PERL flavor of regular expression.
+  }
+  \item{use_clear}{
+    boolean value. If \code{use_clear} is \code{TRUE}, and if moreover the
+    feature is supported by the R environment, the console will be cleared
+    in between all interactive steps in the exploration session.
+  }
+  \item{\dots}{
+   additional arguments.
+  }
+}
+\value{
+The method \code{explore} invisibly returns \code{x}.
+}

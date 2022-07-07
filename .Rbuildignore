@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^\src-i386\.*$
+^\src-x64\.*$
+\.fsrc$
+\.o$
+\.so$
