@@ -1,42 +1,132 @@
-# =============================================================================
-# the class "types" and related classes
-# =============================================================================
-
-# to be exported:
-#     types()
-#     types_merge()
-#     types_merge_all()
-#     as_types()
-#     as.data.frame.types() [S3method]
-#     as_tibble.types() [S3method]
-#     plot.types() [S3method]
-#     print.types() [S3method]
-#     keep_pos.types() [S3method]
-#     keep_types.types() [S3method]
-#     keep_re.types() [S3method]
-#     keep_bool.types() [S3method]
-#     drop_pos.types() [S3method]
-#     drop_types.types() [S3method]
-#     drop_re.types() [S3method]
-#     drop_bool.types() [S3method]
-#     read_types()
-#     write_types()
-#     n_types.types() [S3method]
-#     sort.types() [S3method]
-#     summary.types() [S3method]
-#     print.summary.types() [S3method]
-#     plot.summary.types() [S3method]
-
-# dependencies:
-#     readr::locale()
-#     readr::read_lines()
-#     readr::write_lines()
-#     stringr::str_sort()
-#     stringr::str_trim()
-#     stringr::str_split()
-#     dplyr::union()
-
-# public constructor types()
+#' Build a `types` object
+#' 
+#' Build an object of the class \code{types}.
+#'
+#' @param x the object \code{x} either contains the list of filenames of the
+#'   corpus files (if \code{as_text} is \code{TRUE}) or the actual text
+#'   of the corpus (if \code{as_text} is \code{FALSE}).
+#'   If (if \code{as_text} is \code{TRUE}) and the length of the vector \code{x}
+#'   is higher than one, then each item in \code{x} is treated as a separate
+#'   line (or a separate series of lines) in the corpus text. Withing each
+#'   item of \code{x}, the character \code{"\\\\n"} is also treated as
+#'   a line separator.
+#' @param re_drop_line if \code{re_drop_line} is \code{NULL}, then this argument is ignored.
+#'   Otherwise, \code{re_drop_line} is a character vector (assumed to 
+#'   be of length 1) containing a regular expression. Lines in \code{x}
+#'   that contain a match for \code{re_drop_line} are
+#'   treated as not belonging to the corpus and are excluded from the results.
+#' @param line_glue if \code{line_glue} is \code{NULL}, then this argument is ignored.
+#'   Otherwise, all lines in a corpus file (or in \code{x}, if
+#'   \code{as_text} is \code{TRUE}, are glued together in one
+#'   character vector of length 1, with the string \code{line_glue}
+#'   pasted in between consecutive lines.  The value of \code{line_glue}
+#'   can also be equal to the empty string \code{""}.
+#'   The 'line glue' operation is conducted immediately after the 'drop line' operation.
+#' @param re_cut_area if \code{re_cut_area} is \code{NULL}, then this argument is ignored.
+#'   Otherwise, all matches in a corpus file (or in \code{x},
+#'   if \code{as_text} is \code{TRUE}, are 'cut out' of the text prior
+#'   to the identification of the tokens in the text (and are therefore
+#'   not taken into account when identifying the tokens).
+#'   The 'cut area' operation is conducted immediately after the 'line glue' operation.
+#' @param re_token_splitter the actual token identification is either based on
+#'   \code{re_token_splitter}, a regular expression that identifies the
+#'   areas between the tokens, or on \code{re_token_extractor}, a regular
+#'   expressions that identifies the area that are the tokens. The first
+#'   mechanism is the default mechanism: the argument \code{re_token_extractor}
+#'   is only used if \code{re_token_splitter} is \code{NULL}.
+#'   More specifically, \code{re_token_splitter} is a regular expression
+#'   that identifies the locations where lines in the corpus files are split into
+#'   tokens. The 'token identification' operation is conducted immediately after the
+#'   'cut area' operation.
+#' @param re_token_extractor a regular expression that identifies the locations of the
+#'   actual tokens. This argument is only used if \code{re_token_splitter} is \code{NULL}.
+#'   Whereas matches for \code{re_token_splitter} are identified as the areas
+#'   between the tokens, matches for \code{re_token_extractor} are
+#'   identified as the areas of the actual tokens. Currently the implementation of
+#'   \code{re_token_extractor} is a lot less time-efficient than that of \code{re_token_splitter}.
+#'   The 'token identification' operation is conducted immediately after the
+#'   'cut area' operation.
+#' @param re_drop_token a regular expression that identifies tokens that are to
+#'   be excluded from the results. Any token that contains a match for
+#'   \code{re_drop_token} is removed from the results. If \code{re_drop_token}
+#'   is \code{NULL}, this argument is ignored. The 'drop token' operation
+#'   is conducted immediately after the 'token identification' operation.
+#' @param re_token_transf_in a regular expression that identifies areas in the
+#'   tokens that are to be transformed. This argument works together with the argument
+#'   \code{token_transf_out}.
+#'   If both \code{re_token_transf_in} and \code{token_transf_out} differ
+#'   from \code{NA}, then all matches, in the tokens, for the
+#'   regular expression  \code{re_token_transf_in} are replaced with
+#'   the replacement string \code{token_transf_out}.
+#'   The 'token transformation' operation is conducted immediately after the
+#'   'drop token' operation.
+#' @param token_transf_out a 'replacement string'. This argument works together with
+#'   \code{re_token_transf_in} and is ignored if \code{re_token_transf_in} is \code{NULL}.
+#' @param token_to_lower a boolean value that determines whether or not tokens must be converted
+#'   to lowercase before returning the result.
+#'   The 'token to lower' operation is conducted immediately after the
+#'   'token transformation' operation.
+#' @param perl a boolean value that determines whether or not the PCRE regular expression
+#'   flavor is being used in the arguments that contain regular expressions.
+#' @param blocksize number that indicates how many corpus files are read to memory
+#'   `at each individual step' during the steps in the procedure;
+#'   normally the default value of \code{300} should not
+#'   be changed, but when one works with exceptionally small corpus files,
+#'   it may be worthwhile to use a higher number, and when one works with
+#'   exceptionally large corpus files, ot may be worthwhile to use a lower number.
+#' @param verbose if \code{verbose} is \code{TRUE}, messages are printed to the console to
+#'   indicate progress.
+#' @param show_dots if \code{verbose} is \code{TRUE}, dots are printed to the console to
+#'   indicate progress.
+#' @param dot_blocksize if \code{verbose} is \code{TRUE}, dots are printed to the console to
+#'   indicate progress.
+#' @param file_encoding file encoding that is assumed in the corpus files.
+#' @param ngram_size for a regular frequency list, i.e. a frequency list based on
+#'   individual tokens, the value of \code{ngram_size} should be
+#'   \code{NULL}; for a frequency list of ngrams of tokens,
+#'   \code{ngram_size} should be a single number indicating the size of
+#'   the ngrams. E.g. \code{2} for bigrams, or \code{3} for trigrams, etc.
+#' @param ngram_sep Length one character vector containing the string that is used to
+#'   separate tokens in the representation of ngrams.
+#' @param ngram_n_open If \code{ngram_size} is some number higher than \code{1},
+#'   and moreover \code{ngram_n_open} is a number higher than \code{0}, then 
+#'   \code{freqlist()} works with n-grams with `open slots' in them. These
+#'   n-grams with 'open slots' are generalisations of fully lexically specific
+#'   n-grams (with the generalisation being that one or more of the items
+#'   in the n-gram are replaced by a notation that stands for any arbitrary token').
+#'   For instance, if \code{ngram_size} is \code{4} and \code{ngram_n_open} is
+#'   \code{1}, and if moreover the corpora contains a
+#'   4-gram \code{"it is widely accepted"}, then \code{freqlist()} will work with
+#'   all modifications of \code{"it is widely accepted"} in which one (since
+#'   \code{ngram_n_open} is \code{1}) of the items in the n-gram is
+#'   replaced by an open slot. The first and the last item in
+#'   an n-gram are never turned into an open slot; only the items in between
+#'   are candidates for being turned into open slots. Therefore, in the
+#'   example, the output will work with the n-grams \code{"it [] widely accepted"} and
+#'   \code{"it is [] accepted"}. 
+#'   As a second example, if if \code{ngram_size} is \code{5} and \code{ngram_n_open}
+#'   is \code{2}, and if moreover the corpora contain a
+#'   5-gram \code{"it is widely accepted that"}, then \code{freqlist()} will work
+#'   with \code{"it [] [] accepted that"}, \code{"it [] widely [] that"}, and
+#'   \code{"it is [] [] that"}.
+#' @param ngram_open String that is used to represent open slots in n-grams.
+#' @param as_text boolean vector, assumed to be of length 1, which determines whether
+#'   \code{x} is to be interpreted as a character vector containing the
+#'   actual contents of the corpus
+#'   (if \code{as_text} is \code{TRUE}) or as a character vector containing the
+#'   names of the corpus files (if \code{as_text} is \code{FALSE}).
+#'   If if \code{as_text} is \code{TRUE}, then the arguments \code{blocksize},
+#'   \code{verbose}, \code{show_dots}, \code{dot_blocksize},
+#'   and \code{file_encoding} are ignored. 
+#'
+#' @return An object of the class \code{types}.
+#'   The items in the output are sorted by their frequency in the input.
+#' @export
+#'
+#' @examples
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#' It consisted of three sentence. And it lived happily ever after."
+#' types(toy_corpus, as_text = TRUE)
 types <- function(x,
                   re_drop_line = NULL,
                   line_glue = NULL, 
@@ -83,7 +173,24 @@ types <- function(x,
            sort = FALSE)              # sorting already done 
 }
 
-# S3 method as.data.frame() for objects of the class 'types'
+#' Coerce `types` object to Data Frame
+#'
+#' The S3 method \code{as.data.frame}, when applied to an object \code{x} of the
+#'   class \code{types}, coerces an object of the class \code{'types'} to a data frame.
+#'   
+#' @param x An object of class \code{types}.
+#' @param ... Other arguments.
+#'
+#' @exportS3Method as.data.frame types
+#' @return A dataframe. In this dataframe, the types sit in a column named \code{type}.
+#' @export
+#' @examples 
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#' It consisted of three sentence. And it lived happily ever after."
+#' 
+#' (typs <- types(toy_corpus, as_text = TRUE))
+#' 
+#' as.data.frame(typs)
 as.data.frame.types <- function(x, ...) {
   class(x) <- "character"
   data.frame(type = x, ...)
