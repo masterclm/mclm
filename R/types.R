@@ -281,8 +281,27 @@ n_types.types <- function(x, ...) {
   with_duplicates
 }  
 
-# public function types_merge()
-# merge two types objects
+#' Merge 'types' objects
+#'   
+#' @param x,y An object of class \code{types}. 
+#' @param ... Either objects of the class \code{types} or lists containing such objects.
+#' @param sort Boolean value that indicates whether the result should be sorted.
+#'
+#' @return An object of the class \code{types}.
+#' @name types_merge
+#'
+#' @examples
+#' (tps1 <- as_types(c("a", "simple", "simple", "example")))
+#' (tps2 <- as_types(c("with", "a", "few", "words")))
+#' (tps3 <- as_types(c("just", "for", "testing")))
+#' types_merge(tps1, tps2)       # always removes duplicates, but doesn't sort
+#' sort(types_merge(tps1, tps2)) # same, but with sorting
+#' types_merge_all(tps1, tps2, tps3)
+#' types_merge_all(list(tps1, tps2, tps3))
+NULL
+
+#' @describeIn types_merge Merge two types
+#' @export
 types_merge <- function(x, y, sort = FALSE) {
   if ((!"types" %in% class(x)) || (!"types" %in% class(y))) {
     stop("both x and y must be of the class 'types'")
@@ -290,9 +309,8 @@ types_merge <- function(x, y, sort = FALSE) {
   types_merge_two(x, y, sort = sort)
 }  
 
-# public function types_merge_all()
-# merge two or more types objects
-# ---------------------------------------------------------------------------
+#' @describeIn types_merge Merge multiple types
+#' @export
 types_merge_all <- function(..., sort = FALSE) {
   arg_list <- list(...)
   result_car <- NULL  # result for car of arg_list
@@ -328,9 +346,13 @@ types_merge_all <- function(..., sort = FALSE) {
   result
 }
 
-# private function types_merge_two()
-# both x and y are assumed to be of class "types"
-# ---------------------------------------------------------------------------
+#' Merge two 'types' objects
+#'
+#' @param x,y An object of class \code{types}
+#' @param sort Whether or not to sort the result.
+#'
+#' @return An object of class \code{types}
+#' @noRd
 types_merge_two <- function(x, y, sort = FALSE) {
   as_types(dplyr::union(x, y),
            remove_duplicates = FALSE, # done by union
