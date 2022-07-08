@@ -509,7 +509,7 @@ read_conc <- function(file,
                       quote = "",
                       comment_char = "",
                       file_encoding = "UTF-8",
-                      stringsAsFactors = default.stringsAsFactors(),
+                      stringsAsFactors = FALSE,
                       ...) {
   lines <- read_txt(file, file_encoding = file_encoding) 
   cols <- unlist(strsplit(lines[[1]], sep))

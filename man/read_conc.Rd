@@ -14,7 +14,7 @@ read_conc(file,
           quote = "",
           comment_char = "",
           file_encoding = "UTF-8",
-          stringsAsFactors = default.stringsAsFactors(),
+          stringsAsFactors = FALSE,
           ...) 
 }
 \arguments{
