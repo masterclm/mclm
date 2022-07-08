@@ -176,7 +176,7 @@ types <- function(x,
 #' Coerce `types` object to Data Frame
 #'
 #' The S3 method \code{as.data.frame}, when applied to an object \code{x} of the
-#'   class \code{types}, coerces an object of the class \code{'types'} to a data frame.
+#'   class \code{types}, coerces an object of the class \code{types} to a data frame.
 #'   
 #' @param x An object of class \code{types}.
 #' @param ... Other arguments.
@@ -196,7 +196,25 @@ as.data.frame.types <- function(x, ...) {
   data.frame(type = x, ...)
 }
 
-# S3 method as.tibble() for objects of the class 'types'
+#' Coerce 'types' object to tibble
+#' 
+#' The S3 method \code{as_tibble}, when applied to an object \code{x} of the
+#'   class \code{types}, coerces an object of the class \code{types} to a tibble.
+#'
+#' @param x An object of the class \code{types}.
+#' @param ... Other arguments
+#'
+#' @return A tibble. In this tibble, the types sit in a colum named \code{type}.
+#' @exportS3Method tibble::as_tibble types
+#' @export
+#' 
+#' @examples
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#' It consisted of three sentence. And it lived happily ever after."
+#' 
+#' (typs <- types(toy_corpus, as_text = TRUE))
+#' 
+#' as_tibble(typs)
 as_tibble.types <- function(x, ...) {
   tibble(type = x, ...)
 }

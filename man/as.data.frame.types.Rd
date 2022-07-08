@@ -16,7 +16,7 @@ A dataframe. In this dataframe, the types sit in a column named \code{type}.
 }
 \description{
 The S3 method \code{as.data.frame}, when applied to an object \code{x} of the
-  class \code{types}, coerces an object of the class \code{'types'} to a data frame.
+  class \code{types}, coerces an object of the class \code{types} to a data frame.
 }
 \examples{
 toy_corpus <- "Once upon a time there was a tiny toy corpus.
