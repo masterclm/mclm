@@ -20,11 +20,7 @@ types_merge_all(..., sort = FALSE)
 An object of the class \code{types}.
 }
 \description{
-Merge \code{types} objects:
-  \code{types_merge} merges two objects, whereas \code{types_merge} merges all
-  the objects provided to it. Duplicates are removed, but apart from that,
-  the order of the items in the input is preserved in the output
-  (unless the argument \code{sort} is set to \code{TRUE}).
+Merge 'types' objects
 }
 \section{Functions}{
 \itemize{
