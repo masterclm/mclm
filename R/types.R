@@ -359,6 +359,34 @@ types_merge_two <- function(x, y, sort = FALSE) {
            sort = sort)              
 }
 
+#' Coerce object to a vector of types
+#'
+#' @param x Object to coerce
+#' @param remove_duplicates Length one boolean vector that determines whether or not
+#'   duplicates are removed from \code{x} prior to coercing to a vector of types.
+#' @param sort Length one boolean vector that determines whether or not
+#'   \code{x} is alphabetically sorted prior to coercing to a vector of types;
+#'   this argument is ignored if \code{remove_duplicates} is \code{TRUE},
+#'   because the result of removing duplicates is always sorted.
+#' @param ... Additional arguments (not implemented)
+#'
+#' @return An object of class \code{types}.
+#' @export
+#'
+#' @examples
+#' 
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#' It consisted of three sentence. And it lived happily ever after."
+#' 
+#' flist <- freqlist(toy_corpus, re_token_splitter = "\\\\W+", as_text = TRUE)
+#' print(flist, n = 1000)
+#' (sel_types <- as_types(c("happily", "lived", "once")))
+#' keep_types(flist, sel_types)
+#' tks <- tokenize(toy_corpus, re_token_splitter = "\\\\W+")
+#' print(tks, n = 1000)
+#' tks[3:12] # idx is relative to selection
+#' head(tks) # idx is relative to selection
+#' tail(tks) # idx is relative to selection
 as_types <- function(x,
                      remove_duplicates = TRUE,
                      sort = TRUE,
@@ -384,13 +412,40 @@ as_types <- function(x,
   result
 }
 
-# public S3 function plot()
+#' @describeIn stubs Plot types
+#' @exportS3Method plot types
+#' @export
 plot.types <- function(x, ...) {
   warning("'types' objects have no plotting function; doing nothing")
   invisible(NULL)
 }
 
-# public S3 function summary()
+
+#' Succinct Description of a 'types' Object
+#'
+#' Build and/or print an object of the class \code{summary.types}.
+#' 
+#' @param object An object of class \code{types}.
+#' @param x An object of class \code{summary.types}.
+#' @param ... Additional arguments.
+#'
+#' @return An object of class \code{summary.types}.
+#' @name summary_types
+#'
+#' @examples
+#' 
+#' tps <- as_types(c("the", "a", "it", "is", "was", "are", "be", "being"))
+#' summary(tps) 
+#' print(summary(tps))
+#' (tps_sum <- summary(tps))
+#' names(tps_sum)
+#' tps_sum[["n_types"]]
+#' tps_sum$n_types
+NULL
+
+#' @describeIn summary_types Create a \code{summary.types} object
+#' @exportS3Method summary types
+#' @export
 summary.types <- function(object, ...) {
   if (! "types" %in% class(object)) {
     stop("argument 'object' must be of the class 'types'")
@@ -402,7 +457,9 @@ summary.types <- function(object, ...) {
   result
 }
 
-# public S3 function summary()
+#' @describeIn summary_types Print a \code{summary.types} object
+#' @exportS3Method print summary.types
+#' @export
 print.summary.types <- function(x, ...) {
   if (!"summary.types" %in% class(x)) {
     stop("argument 'x' must be of the class 'summary.types'")
@@ -417,7 +474,9 @@ print.summary.types <- function(x, ...) {
   invisible(x)
 }
 
-# public S3 function plot()
+#' @describeIn stubs Plot summary of types
+#' @exportS3Method plot summary.types
+#' @export
 plot.summary.types <- function(x, ...) {
   warning("'summary.types' objects have no plotting function; doing nothing")
   invisible(NULL)
