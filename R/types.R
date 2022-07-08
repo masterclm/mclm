@@ -220,7 +220,29 @@ as_tibble.types <- function(x, ...) {
 }
 
 
-# S3 method sort() for objects of the class 'types'
+#' Sort a collection of types
+#' 
+#' Sort an object of the class \code{types}.
+#' 
+#' At the moment, types collections are not allowed to contain \code{NA} values.
+#'   Therefore, no function argument is available
+#'   that specifies how \code{NA} values should be sorted.
+#'
+#' @param x An object of the class \code{types}.
+#' @param decreasing Logical value that indicates whether the items should be
+#'   sorted from small to large (when \code{decreasing} in \code{FALSE})
+#'   or from large to small (when \code{decreasing} is \code{TRUE}).
+#'   The default value is \code{FALSE}.
+#' @param ... Other arguments
+#'
+#' @return An object of class \code{types}.
+#' @exportS3Method sort types
+#' @export
+#' 
+#' @examples
+#' (tps <- as_types(c("the", "a", "some", "no")))
+#' sort(tps)
+#' sort(tps, decreasing = TRUE)
 sort.types <- function(x, decreasing = FALSE, ...) {
   as_types(sort(as_character(x),
                decreasing = decreasing,
@@ -230,6 +252,23 @@ sort.types <- function(x, decreasing = FALSE, ...) {
            sort = FALSE)               # already done
 }
 
+#' Give number of types in a 'types' object
+#' 
+#' When applied to an object of class \code{types}, it returns the number of types.
+#'
+#' @param x An object of the class \code{types}.
+#' @param ... Additional arguments
+#'
+#' @return The number of types in \code{x}.
+#' 
+#' @exportS3Method n_types types
+#' @export
+#'
+#' @examples
+#' (tks <- tokenize("The old man and the sea."))
+#' n_tokens(tks)
+#' (tps <- types(tks))
+#' n_types(tps)
 n_types.types <- function(x, ...) {
   if (! "types" %in% class(x)) {
     stop("argument 'x' must be of the class 'types'")
