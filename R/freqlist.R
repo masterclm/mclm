@@ -124,6 +124,24 @@ explore.freqlist <- function(x,
   invisible(x)
 }
 
+#' Give Number of Tokens in a 'freqlist' Object
+#' 
+#' Return the number of tokens in \code{x}.
+#'
+#' @param x Object of class \code{freqlist}.
+#' @param ... Additional arguments.
+#'
+#' @return A number.
+#' @exportS3Method n_tokens freqlist
+#' @export
+#'
+#' @examples
+#' (tks <- tokenize("The old man and the sea."))
+#' n_tokens(tks)
+#' 
+#' (flist <- freqlist(tks))
+#' n_tokens(flist)
+#' n_types(flist)
 n_tokens.freqlist <- function(x, ...) {
   if (! "freqlist" %in% class(x)) {
     stop("argument 'x' must be of the class 'freqlist'")
