@@ -1,4 +1,5 @@
-#' Build a `types` object
+# Create and coerce to class ===================================================
+#' Build a 'types' object
 #' 
 #' Build an object of the class \code{types}.
 #'
@@ -173,192 +174,6 @@ types <- function(x,
            sort = FALSE)              # sorting already done 
 }
 
-#' Coerce `types` object to Data Frame
-#'
-#' The S3 method \code{as.data.frame}, when applied to an object \code{x} of the
-#'   class \code{types}, coerces an object of the class \code{types} to a data frame.
-#'   
-#' @param x An object of class \code{types}.
-#' @param ... Other arguments.
-#'
-#' @exportS3Method as.data.frame types
-#' @return A dataframe. In this dataframe, the types sit in a column named \code{type}.
-#' @export
-#' @examples 
-#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
-#' It consisted of three sentence. And it lived happily ever after."
-#' 
-#' (typs <- types(toy_corpus, as_text = TRUE))
-#' 
-#' as.data.frame(typs)
-as.data.frame.types <- function(x, ...) {
-  class(x) <- "character"
-  data.frame(type = x, ...)
-}
-
-#' Coerce 'types' object to tibble
-#' 
-#' The S3 method \code{as_tibble}, when applied to an object \code{x} of the
-#'   class \code{types}, coerces an object of the class \code{types} to a tibble.
-#'
-#' @param x An object of the class \code{types}.
-#' @param ... Other arguments
-#'
-#' @return A tibble. In this tibble, the types sit in a colum named \code{type}.
-#' @exportS3Method tibble::as_tibble types
-#' @export
-#' 
-#' @examples
-#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
-#' It consisted of three sentence. And it lived happily ever after."
-#' 
-#' (typs <- types(toy_corpus, as_text = TRUE))
-#' 
-#' as_tibble(typs)
-as_tibble.types <- function(x, ...) {
-  tibble(type = x, ...)
-}
-
-
-#' Sort a collection of types
-#' 
-#' Sort an object of the class \code{types}.
-#' 
-#' At the moment, types collections are not allowed to contain \code{NA} values.
-#'   Therefore, no function argument is available
-#'   that specifies how \code{NA} values should be sorted.
-#'
-#' @param x An object of the class \code{types}.
-#' @param decreasing Logical value that indicates whether the items should be
-#'   sorted from small to large (when \code{decreasing} in \code{FALSE})
-#'   or from large to small (when \code{decreasing} is \code{TRUE}).
-#'   The default value is \code{FALSE}.
-#' @param ... Other arguments
-#'
-#' @return An object of class \code{types}.
-#' @exportS3Method sort types
-#' @export
-#' 
-#' @examples
-#' (tps <- as_types(c("the", "a", "some", "no")))
-#' sort(tps)
-#' sort(tps, decreasing = TRUE)
-sort.types <- function(x, decreasing = FALSE, ...) {
-  as_types(sort(as_character(x),
-               decreasing = decreasing,
-               na.last = NA,
-               ...),
-           remove_duplicates = FALSE,  # not requested
-           sort = FALSE)               # already done
-}
-
-#' Give number of types in a 'types' object
-#' 
-#' When applied to an object of class \code{types}, it returns the number of types.
-#'
-#' @param x An object of the class \code{types}.
-#' @param ... Additional arguments
-#'
-#' @return The number of types in \code{x}.
-#' 
-#' @exportS3Method n_types types
-#' @export
-#'
-#' @examples
-#' (tks <- tokenize("The old man and the sea."))
-#' n_tokens(tks)
-#' (tps <- types(tks))
-#' n_types(tps)
-n_types.types <- function(x, ...) {
-  if (! "types" %in% class(x)) {
-    stop("argument 'x' must be of the class 'types'")
-  }
-  without_duplicates <- length(table(x))
-  with_duplicates <- length(x)
-  if (without_duplicates < with_duplicates) {
-    warning("duplicates detected and counted double in 'types' object")
-  }
-  with_duplicates
-}  
-
-#' Merge 'types' objects
-#'   
-#' @param x,y An object of class \code{types}. 
-#' @param ... Either objects of the class \code{types} or lists containing such objects.
-#' @param sort Boolean value that indicates whether the result should be sorted.
-#'
-#' @return An object of the class \code{types}.
-#' @name types_merge
-#'
-#' @examples
-#' (tps1 <- as_types(c("a", "simple", "simple", "example")))
-#' (tps2 <- as_types(c("with", "a", "few", "words")))
-#' (tps3 <- as_types(c("just", "for", "testing")))
-#' types_merge(tps1, tps2)       # always removes duplicates, but doesn't sort
-#' sort(types_merge(tps1, tps2)) # same, but with sorting
-#' types_merge_all(tps1, tps2, tps3)
-#' types_merge_all(list(tps1, tps2, tps3))
-NULL
-
-#' @describeIn types_merge Merge two types
-#' @export
-types_merge <- function(x, y, sort = FALSE) {
-  if ((!"types" %in% class(x)) || (!"types" %in% class(y))) {
-    stop("both x and y must be of the class 'types'")
-  }
-  types_merge_two(x, y, sort = sort)
-}  
-
-#' @describeIn types_merge Merge multiple types
-#' @export
-types_merge_all <- function(..., sort = FALSE) {
-  arg_list <- list(...)
-  result_car <- NULL  # result for car of arg_list
-  result_cdr <- NULL  # result for cdr of arg_list
-  # -- processing car ----------------------------
-  if (length(arg_list) > 0) {
-    car <- arg_list[[1]]
-    if ("types" %in% class(car)) {
-      result_car <- car
-    } else if (is.list(car) && length(car) > 0) {
-      result_car <- do.call("types_merge_all", car)
-    }
-  }   
-  # -- processing cdr ----------------------------
-  if (length(arg_list) > 1) {
-    cdr <- arg_list[-1]
-    result_cdr <- do.call("types_merge_all", cdr)
-  }
-  # -- merge results if needed -------------------
-  result <- result_car
-  if (is.null(result_car)) {
-    result <- result_cdr
-  } else if (!is.null(result_cdr)) {
-    result <- types_merge_two(result_car, result_cdr)
-  }
-  # -- sort if needed ------------------------------------
-  if (sort) {
-    result <- as_types(result,
-                      remove_duplicates = FALSE,
-                      sort = TRUE)
-  }
-  # -- result ------------------------------------
-  result
-}
-
-#' Merge two 'types' objects
-#'
-#' @param x,y An object of class \code{types}
-#' @param sort Whether or not to sort the result.
-#'
-#' @return An object of class \code{types}
-#' @noRd
-types_merge_two <- function(x, y, sort = FALSE) {
-  as_types(dplyr::union(x, y),
-           remove_duplicates = FALSE, # done by union
-           sort = sort)              
-}
-
 #' Coerce object to a vector of types
 #'
 #' @param x Object to coerce
@@ -412,75 +227,36 @@ as_types <- function(x,
   result
 }
 
-#' @describeIn stubs Plot types
-#' @exportS3Method plot types
-#' @export
-plot.types <- function(x, ...) {
-  warning("'types' objects have no plotting function; doing nothing")
-  invisible(NULL)
-}
+# S3 methods from mclm =========================================================
 
-
-#' Succinct Description of a 'types' Object
-#'
-#' Build and/or print an object of the class \code{summary.types}.
+#' Give number of types in a 'types' object
 #' 
-#' @param object An object of class \code{types}.
-#' @param x An object of class \code{summary.types}.
-#' @param ... Additional arguments.
+#' When applied to an object of class \code{types}, it returns the number of types.
 #'
-#' @return An object of class \code{summary.types}.
-#' @name summary_types
+#' @param x An object of the class \code{types}.
+#' @param ... Additional arguments
+#'
+#' @return The number of types in \code{x}.
+#' 
+#' @exportS3Method n_types types
+#' @export
 #'
 #' @examples
-#' 
-#' tps <- as_types(c("the", "a", "it", "is", "was", "are", "be", "being"))
-#' summary(tps) 
-#' print(summary(tps))
-#' (tps_sum <- summary(tps))
-#' names(tps_sum)
-#' tps_sum[["n_types"]]
-#' tps_sum$n_types
-NULL
-
-#' @describeIn summary_types Create a \code{summary.types} object
-#' @exportS3Method summary types
-#' @export
-summary.types <- function(object, ...) {
-  if (! "types" %in% class(object)) {
-    stop("argument 'object' must be of the class 'types'")
+#' (tks <- tokenize("The old man and the sea."))
+#' n_tokens(tks)
+#' (tps <- types(tks))
+#' n_types(tps)
+n_types.types <- function(x, ...) {
+  if (! "types" %in% class(x)) {
+    stop("argument 'x' must be of the class 'types'")
   }
-  result <- list()
-  result$n_items <- length(object)
-  result$n_unique_items <- length(table(object))
-  class(result) <- "summary.types"
-  result
-}
-
-#' @describeIn summary_types Print a \code{summary.types} object
-#' @exportS3Method print summary.types
-#' @export
-print.summary.types <- function(x, ...) {
-  if (!"summary.types" %in% class(x)) {
-    stop("argument 'x' must be of the class 'summary.types'")
+  without_duplicates <- length(table(x))
+  with_duplicates <- length(x)
+  if (without_duplicates < with_duplicates) {
+    warning("duplicates detected and counted double in 'types' object")
   }
-  cat("Type collection of length ",
-      x$n_items,
-      "\n",
-      sep = "")
-  if (x$n_unique_items < x$n_items) {
-    cat("[duplicates present and counted double]\n")
-  }
-  invisible(x)
-}
-
-#' @describeIn stubs Plot summary of types
-#' @exportS3Method plot summary.types
-#' @export
-plot.summary.types <- function(x, ...) {
-  warning("'summary.types' objects have no plotting function; doing nothing")
-  invisible(NULL)
-}
+  with_duplicates
+}  
 
 #' Interactively navigate through 'types' object
 #' 
@@ -509,7 +285,7 @@ explore.types <- function(x,
                           from = 1,
                           perl = TRUE,
                           use_clear = TRUE,
-                           ...) {
+                          ...) {
   if (interactive()) {
     length_x <- n_types(x)                     # n items in x
     cur_command <- "i"                         # "idle" (no change of state)
@@ -556,19 +332,19 @@ explore.types <- function(x,
           old_regex <- cur_regex
           old_hits <- cur_hits
           tryCatch({
-               f_arg <- cleanup_spaces(
-                  substr(cur_command, 2, nchar(cur_command)))
-               if (nchar(f_arg) == 0) {
-                 cur_regex <- old_regex
-               } else {
-                 cur_regex <- f_arg
-               }
-               cur_hits <- grep(cur_regex, x, perl = perl)
-             },
-             error = function(e) {
-               cur_regex <- old_regex
-               cur_hits <- old_hits
-             })
+            f_arg <- cleanup_spaces(
+              substr(cur_command, 2, nchar(cur_command)))
+            if (nchar(f_arg) == 0) {
+              cur_regex <- old_regex
+            } else {
+              cur_regex <- f_arg
+            }
+            cur_hits <- grep(cur_regex, x, perl = perl)
+          },
+          error = function(e) {
+            cur_regex <- old_regex
+            cur_hits <- old_hits
+          })
           tot_n_hits <- length(cur_hits)
           if (nchar(f_arg) == 0) {
             cur_hits <- cur_hits[cur_hits > from]
@@ -577,8 +353,8 @@ explore.types <- function(x,
           }
           pos_cur_hit <- tot_n_hits - length(cur_hits) + 1 
           if (length(cur_hits) > 0) {
-             from <- cur_hits[1]
-             assign("type_regex", cur_regex, envir = print_extra)
+            from <- cur_hits[1]
+            assign("type_regex", cur_regex, envir = print_extra)
           } 
         } else if (cur_com_verb == "g") { ## g stands for '[g]o to item'
           old_from <- from
@@ -592,7 +368,7 @@ explore.types <- function(x,
       if (!is.null(print_extra$type_regex)) {
         cat(mclm_style_dim(paste0("search pattern: ", print_extra$type_regex, "\n")))
         cat(mclm_style_dim(paste0("<looking at matching item ", pos_cur_hit,
-                            " out of ", tot_n_hits, " matching items>\n"))) 
+                                  " out of ", tot_n_hits, " matching items>\n"))) 
       }
       cat(mclm_style_dim(char_line())); cat("\n")
       cat(mclm_style_dim("Enter command (? for help; q to quit explore mode) "))
@@ -607,122 +383,8 @@ explore.types <- function(x,
   invisible(x)
 }
 
-
-
-#' Print a vector of 'types'
-#' 
-#' Print objects of the class \code{types}.
-#'
-#' @param x An object of class \code{types}.
-#' @param n Maximum number of types to print.
-#' @param from Position of the first item to print.
-#' @param sort_order Order in which the items are to be printed. Possible value
-#'   are \code{"alpha"} (meaning that the items are to be sorted alphabetically),
-#'   and \code{"none"} (meaning that the items are not to be sorted).
-#' @param extra Extra settings.
-#' @param ... Additional printing arguments.
-#'
-#' @return Invisibly, \code{x}.
-#' @exportS3Method print types
-#' @export
-#'
-#' @examples
-#' x <- as_types(c("first", "second", "third"))
-#' print(x, n = 1000)
-print.types <- function(x,
-                        n = 20, from = 1,
-                        sort_order = c("none", "alpha"),
-                        extra = NULL,
-                        ...) {
-  # testing and processing argument 'x'
-  if (!"types" %in% class(x)) {
-    stop("x must be of the class 'types'")
-  }
-  n_types <- length(x)
-  # testing and processing argument 'n'
-  if (length(n) == 0) {
-    stop("n must be a numeric vector of length one")
-  } else if (length(n) > 1) {
-    n <- n[1]
-    warning("only using n[1] instead of the whole of n")
-  } 
-  if (is.na(n) || !is.numeric(n)) {
-    stop("inappropriate value for n")
-  }
-  n <- max(0, round(n))
-  # testing and processing argument 'from'
-  if (length(from) == 0) {
-    stop("from must be a numeric vector of length one")
-  } else if (length(from) > 1) {
-    from <- from[1]
-    warning("only using from[1] instead of the whole of from")
-  } 
-  if (is.na(from) || !is.numeric(from)) {
-    stop("inappropriate value for from")
-  }
-  from <- max(1, round(from))
-  # adjusting 'n' to 'from'
-  n <- max(0, min(n, n_types - from + 1))
-  # testing and processing argument 'sort_order'
-  if (is.null(sort_order)  ||
-      is.na(sort_order[1]) ||
-      (!sort_order[1] %in% c("alpha", "none"))) {
-    sort_order <- "none"
-    warning("unknown sort_order value found; 'none' assumed")
-  }  
-  if (n > 0) {
-    idx <- from:(from + n - 1)
-    ord <- idx # applies when sort_order is 'none'
-    if (sort_order[1] == "alpha") {
-      ord <- order(x)[idx]
-    }  
-  }
-  # testing argument 'extra'
-  if (!is.null(extra) && !is.environment(extra)) {
-    stop("incorrect use of the argument 'extra'")
-  }  
-  # printing 'x'
-  cat(mclm_style_dim(paste0(
-    "Type collection of length ",
-    n_types,
-    "\n")))
-  if (n > 0) {
-    types <- x[ord]
-    format_idx <- format(c("", 
-                           format(idx, scientify = FALSE, 
-                                  justify = "right")), 
-                         justify = "right")    
-    # we don't use format() [problems with unicode !]
-    # nor do we use stringi::stri_pad_left [hickups with greek and Set.locale]
-    nchar_types <- nchar(types)
-    if (!is.null(extra$type_regex)) {
-      types <- show_matches(types, extra$type_regex)
-    }    
-    format_types <- mclm_pad_left(
-                      c("type", types),
-                      max(nchar("type"), nchar_types),
-                      nchar_x = c(nchar("type"), nchar_types))
-    # -- print titles
-    cat(format_idx[1], " ", sep = "")
-    cat(format_types[1], "\n", sep = "")
-    # -- print horizontal lines
-    cat(paste0(rep_len(" ", nchar(format_idx[1])), collapse = ""),
-        " ",
-        paste0(rep_len("-", nchar(format_types[1])), collapse = ""),
-        sep = "")
-    cat("\n")
-    # -- optionally print dots
-    if (from > 1) cat(mclm_style_very_dim("...\n"))
-    # -- print items  
-    for (j in seq_along(idx)) {
-      cat(mclm_style_very_dim(format_idx[j + 1]), " ", 
-          format_types[j + 1], "\n", sep = "")
-    }
-    # -- optionally print dots
-    if ((from + n - 1) < n_types) cat(mclm_style_very_dim("...\n"))
-  }
-  invisible(x)
-}
+## Subsetting ------------------------------------------------------------------
+# (Including `[` even though it's not from mclm)
 
 #' Subset a 'types' object
 #' 
@@ -913,21 +575,10 @@ keep_types.types <- function(x, types, invert = FALSE, ...) {
   if (length(x) == 0) {
     result <- x
   } else {
-    # -- old code, which followed different logic -------------------------
-    # # prepare creation of result
-    # if (invert) {
-    #   mtch <- match(x, types)
-    #   mtch <- is.na(mtch)
-    # } else {
-    #   mtch <- match(types, x) # we avoid x_ranks[types] and x[types]
-    #   mtch <- mtch[!is.na(mtch)]
-    # }
-    # ---------------------------------------------------------------------
     mtch <- !is.na(match(x, types)) # we avoid x_ranks[types] and x[types]
     if (invert) {
       mtch <- !mtch
     }
-    # --------------------------------------------------------------------
     result <- subset_types(x, mtch)
   }
   # return result
@@ -1051,22 +702,393 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
   result
 }
 
-#' Subset types
-#'
-#' @param x Object of class \code{types}.
-#' @param sel Numeric vector with positions or boolean vector.
-#'
-#' @return Filtered object of class \code{types}
-#' @noRd
-subset_types <- function(x, sel) {
-  result <- as.character(x)[sel]
-  class(result) <- c("types",
-                     setdiff(class(x),
-                             c("tokens", "types")))
+#' @describeIn subset_types Keep items based on different criteria
+#' @exportS3Method `[` types
+#' @export
+`[.types` <- function(x, i, invert = FALSE, ...) {
+  if (!"types" %in% class(x)) {
+    stop("subsetted object must be of class 'types'")
+  }
+  result <- x
+  if (!missing(i) && !is.null(i)) {
+    if (any(is.na(i))) {
+      stop("subset criterion must not contain any NAs")
+    }    
+    if (is.numeric(i) || is.integer(i)) {
+      i <- i[!is.na(i)]
+      if (length(i) > 0) {
+        i <- trunc(i)
+        any_pos <- any(i >= 1)
+        any_neg <- any(i <= -1)
+        if (any_pos && any_neg) {
+          stop("subsetting indices must be either all positive or all negative")          
+        }
+        if (any_neg) {
+          invert <- !invert
+          i <- abs(i)
+        }
+        result <- keep_pos(x, i, invert = invert, ...)
+      } 
+    } else if ("types" %in% class(i)) {
+      result <- keep_types(x, i, invert = invert, ...)
+    } else if ("character" %in% class(i)) {
+      result <- keep_types(x, i, invert = invert, ...)
+    } else if ("re" %in% class(i)) {
+      result <- keep_re(x, i, invert = invert, ...)
+    } else if (is.logical(i)) {
+      i <- i[!is.na(i)]
+      result <- keep_bool(x, i, invert = invert, ...) 
+    } else {
+      stop("unsupported type of subset criterion")
+    }
+  }
   result
 }
 
 
+#' @describeIn stubs Subset assignment
+#' @exportS3Method `[<-` types
+#' @export
+`[<-.types` <- function(x, i, invert = FALSE, value) {
+  stop("subset assignment is not supported for 'types' objects")
+}
+
+
+# S3 methods from other packages ===============================================
+# (Including not supported functions)
+
+#' Coerce `types` object to Data Frame
+#'
+#' The S3 method \code{as.data.frame}, when applied to an object \code{x} of the
+#'   class \code{types}, coerces an object of the class \code{types} to a data frame.
+#'   
+#' @param x An object of class \code{types}.
+#' @param ... Other arguments.
+#'
+#' @exportS3Method as.data.frame types
+#' @return A dataframe. In this dataframe, the types sit in a column named \code{type}.
+#' @export
+#' @examples 
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#' It consisted of three sentence. And it lived happily ever after."
+#' 
+#' (typs <- types(toy_corpus, as_text = TRUE))
+#' 
+#' as.data.frame(typs)
+as.data.frame.types <- function(x, ...) {
+  class(x) <- "character"
+  data.frame(type = x, ...)
+}
+
+#' Coerce 'types' object to tibble
+#' 
+#' The S3 method \code{as_tibble}, when applied to an object \code{x} of the
+#'   class \code{types}, coerces an object of the class \code{types} to a tibble.
+#'
+#' @param x An object of the class \code{types}.
+#' @param ... Other arguments
+#'
+#' @return A tibble. In this tibble, the types sit in a colum named \code{type}.
+#' @exportS3Method tibble::as_tibble types
+#' @export
+#' 
+#' @examples
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#' It consisted of three sentence. And it lived happily ever after."
+#' 
+#' (typs <- types(toy_corpus, as_text = TRUE))
+#' 
+#' as_tibble(typs)
+as_tibble.types <- function(x, ...) {
+  tibble(type = x, ...)
+}
+
+
+#' Sort a collection of types
+#' 
+#' Sort an object of the class \code{types}.
+#' 
+#' At the moment, types collections are not allowed to contain \code{NA} values.
+#'   Therefore, no function argument is available
+#'   that specifies how \code{NA} values should be sorted.
+#'
+#' @param x An object of the class \code{types}.
+#' @param decreasing Logical value that indicates whether the items should be
+#'   sorted from small to large (when \code{decreasing} in \code{FALSE})
+#'   or from large to small (when \code{decreasing} is \code{TRUE}).
+#'   The default value is \code{FALSE}.
+#' @param ... Other arguments
+#'
+#' @return An object of class \code{types}.
+#' @exportS3Method sort types
+#' @export
+#' 
+#' @examples
+#' (tps <- as_types(c("the", "a", "some", "no")))
+#' sort(tps)
+#' sort(tps, decreasing = TRUE)
+sort.types <- function(x, decreasing = FALSE, ...) {
+  as_types(sort(as_character(x),
+               decreasing = decreasing,
+               na.last = NA,
+               ...),
+           remove_duplicates = FALSE,  # not requested
+           sort = FALSE)               # already done
+}
+
+#' @describeIn stubs Plot types
+#' @exportS3Method plot types
+#' @export
+plot.types <- function(x, ...) {
+  warning("'types' objects have no plotting function; doing nothing")
+  invisible(NULL)
+}
+
+#' Print a vector of 'types'
+#' 
+#' Print objects of the class \code{types}.
+#'
+#' @param x An object of class \code{types}.
+#' @param n Maximum number of types to print.
+#' @param from Position of the first item to print.
+#' @param sort_order Order in which the items are to be printed. Possible value
+#'   are \code{"alpha"} (meaning that the items are to be sorted alphabetically),
+#'   and \code{"none"} (meaning that the items are not to be sorted).
+#' @param extra Extra settings.
+#' @param ... Additional printing arguments.
+#'
+#' @return Invisibly, \code{x}.
+#' @exportS3Method print types
+#' @export
+#'
+#' @examples
+#' x <- as_types(c("first", "second", "third"))
+#' print(x, n = 1000)
+print.types <- function(x,
+                        n = 20, from = 1,
+                        sort_order = c("none", "alpha"),
+                        extra = NULL,
+                        ...) {
+  # testing and processing argument 'x'
+  if (!"types" %in% class(x)) {
+    stop("x must be of the class 'types'")
+  }
+  n_types <- length(x)
+  # testing and processing argument 'n'
+  if (length(n) == 0) {
+    stop("n must be a numeric vector of length one")
+  } else if (length(n) > 1) {
+    n <- n[1]
+    warning("only using n[1] instead of the whole of n")
+  } 
+  if (is.na(n) || !is.numeric(n)) {
+    stop("inappropriate value for n")
+  }
+  n <- max(0, round(n))
+  # testing and processing argument 'from'
+  if (length(from) == 0) {
+    stop("from must be a numeric vector of length one")
+  } else if (length(from) > 1) {
+    from <- from[1]
+    warning("only using from[1] instead of the whole of from")
+  } 
+  if (is.na(from) || !is.numeric(from)) {
+    stop("inappropriate value for from")
+  }
+  from <- max(1, round(from))
+  # adjusting 'n' to 'from'
+  n <- max(0, min(n, n_types - from + 1))
+  # testing and processing argument 'sort_order'
+  if (is.null(sort_order)  ||
+      is.na(sort_order[1]) ||
+      (!sort_order[1] %in% c("alpha", "none"))) {
+    sort_order <- "none"
+    warning("unknown sort_order value found; 'none' assumed")
+  }  
+  if (n > 0) {
+    idx <- from:(from + n - 1)
+    ord <- idx # applies when sort_order is 'none'
+    if (sort_order[1] == "alpha") {
+      ord <- order(x)[idx]
+    }  
+  }
+  # testing argument 'extra'
+  if (!is.null(extra) && !is.environment(extra)) {
+    stop("incorrect use of the argument 'extra'")
+  }  
+  # printing 'x'
+  cat(mclm_style_dim(paste0(
+    "Type collection of length ",
+    n_types,
+    "\n")))
+  if (n > 0) {
+    types <- x[ord]
+    format_idx <- format(c("", 
+                           format(idx, scientify = FALSE, 
+                                  justify = "right")), 
+                         justify = "right")    
+    # we don't use format() [problems with unicode !]
+    # nor do we use stringi::stri_pad_left [hickups with greek and Set.locale]
+    nchar_types <- nchar(types)
+    if (!is.null(extra$type_regex)) {
+      types <- show_matches(types, extra$type_regex)
+    }    
+    format_types <- mclm_pad_left(
+      c("type", types),
+      max(nchar("type"), nchar_types),
+      nchar_x = c(nchar("type"), nchar_types))
+    # -- print titles
+    cat(format_idx[1], " ", sep = "")
+    cat(format_types[1], "\n", sep = "")
+    # -- print horizontal lines
+    cat(paste0(rep_len(" ", nchar(format_idx[1])), collapse = ""),
+        " ",
+        paste0(rep_len("-", nchar(format_types[1])), collapse = ""),
+        sep = "")
+    cat("\n")
+    # -- optionally print dots
+    if (from > 1) cat(mclm_style_very_dim("...\n"))
+    # -- print items  
+    for (j in seq_along(idx)) {
+      cat(mclm_style_very_dim(format_idx[j + 1]), " ", 
+          format_types[j + 1], "\n", sep = "")
+    }
+    # -- optionally print dots
+    if ((from + n - 1) < n_types) cat(mclm_style_very_dim("...\n"))
+  }
+  invisible(x)
+}
+
+
+## Summary ---------------------------------------------------------------------
+
+#' Succinct Description of a 'types' Object
+#'
+#' Build and/or print an object of the class \code{summary.types}.
+#' 
+#' @param object An object of class \code{types}.
+#' @param x An object of class \code{summary.types}.
+#' @param ... Additional arguments.
+#'
+#' @return An object of class \code{summary.types}.
+#' @name summary_types
+#'
+#' @examples
+#' 
+#' tps <- as_types(c("the", "a", "it", "is", "was", "are", "be", "being"))
+#' summary(tps) 
+#' print(summary(tps))
+#' (tps_sum <- summary(tps))
+#' names(tps_sum)
+#' tps_sum[["n_types"]]
+#' tps_sum$n_types
+NULL
+
+#' @describeIn summary_types Create a \code{summary.types} object
+#' @exportS3Method summary types
+#' @export
+summary.types <- function(object, ...) {
+  if (! "types" %in% class(object)) {
+    stop("argument 'object' must be of the class 'types'")
+  }
+  result <- list()
+  result$n_items <- length(object)
+  result$n_unique_items <- length(table(object))
+  class(result) <- "summary.types"
+  result
+}
+
+#' @describeIn summary_types Print a \code{summary.types} object
+#' @exportS3Method print summary.types
+#' @export
+print.summary.types <- function(x, ...) {
+  if (!"summary.types" %in% class(x)) {
+    stop("argument 'x' must be of the class 'summary.types'")
+  }
+  cat("Type collection of length ",
+      x$n_items,
+      "\n",
+      sep = "")
+  if (x$n_unique_items < x$n_items) {
+    cat("[duplicates present and counted double]\n")
+  }
+  invisible(x)
+}
+
+#' @describeIn stubs Plot summary of types
+#' @exportS3Method plot summary.types
+#' @export
+plot.summary.types <- function(x, ...) {
+  warning("'summary.types' objects have no plotting function; doing nothing")
+  invisible(NULL)
+}
+
+# Public functions applied to the class ========================================
+
+#' Merge 'types' objects
+#'   
+#' @param x,y An object of class \code{types}. 
+#' @param ... Either objects of the class \code{types} or lists containing such objects.
+#' @param sort Boolean value that indicates whether the result should be sorted.
+#'
+#' @return An object of the class \code{types}.
+#' @name types_merge
+#'
+#' @examples
+#' (tps1 <- as_types(c("a", "simple", "simple", "example")))
+#' (tps2 <- as_types(c("with", "a", "few", "words")))
+#' (tps3 <- as_types(c("just", "for", "testing")))
+#' types_merge(tps1, tps2)       # always removes duplicates, but doesn't sort
+#' sort(types_merge(tps1, tps2)) # same, but with sorting
+#' types_merge_all(tps1, tps2, tps3)
+#' types_merge_all(list(tps1, tps2, tps3))
+NULL
+
+#' @describeIn types_merge Merge two types
+#' @export
+types_merge <- function(x, y, sort = FALSE) {
+  if ((!"types" %in% class(x)) || (!"types" %in% class(y))) {
+    stop("both x and y must be of the class 'types'")
+  }
+  types_merge_two(x, y, sort = sort)
+}  
+
+#' @describeIn types_merge Merge multiple types
+#' @export
+types_merge_all <- function(..., sort = FALSE) {
+  arg_list <- list(...)
+  result_car <- NULL  # result for car of arg_list
+  result_cdr <- NULL  # result for cdr of arg_list
+  # -- processing car --
+  if (length(arg_list) > 0) {
+    car <- arg_list[[1]]
+    if ("types" %in% class(car)) {
+      result_car <- car
+    } else if (is.list(car) && length(car) > 0) {
+      result_car <- do.call("types_merge_all", car)
+    }
+  }   
+  # -- processing cdr --
+  if (length(arg_list) > 1) {
+    cdr <- arg_list[-1]
+    result_cdr <- do.call("types_merge_all", cdr)
+  }
+  # -- merge results if needed --
+  result <- result_car
+  if (is.null(result_car)) {
+    result <- result_cdr
+  } else if (!is.null(result_cdr)) {
+    result <- types_merge_two(result_car, result_cdr)
+  }
+  # -- sort if needed --
+  if (sort) {
+    result <- as_types(result,
+                      remove_duplicates = FALSE,
+                      sort = TRUE)
+  }
+  # -- result --
+  result
+}
 
 #' Read a vector of types from a text file
 #' 
@@ -1083,12 +1105,7 @@ subset_types <- function(x, sel) {
 #' @param file_encoding The file encoding used in the input file.
 #' @param trim_types Boolean value that indicates whether or not leading and trailing
 #'   whitespace should be stripped from the types.
-#' @param remove_duplicates Length one boolean vector that determines whether or not
-#'   duplicates are removed from \code{x} prior to coercing to a vector of class \code{types}.
-#' @param sort Length one boolean vector that determines whether or not
-#'   \code{x} is alphabetically sorted prior to coercing to a vector of types;
-#'   this argument is ignored if \code{remove_duplicates} is \code{TRUE}, because the
-#'   result of removing duplicates is always sorted.
+#' @inheritParams as_types
 #' @param ... Additional arguments (not implemented).
 #'
 #' @return Object of class \code{types}.
@@ -1173,50 +1190,33 @@ write_types <- function(x,
   invisible(x)
 }
 
-#' @describeIn subset_types Keep items based on different criteria
-#' @exportS3Method `[` types
-#' @export
-`[.types` <- function(x, i, invert = FALSE, ...) {
-  if (!"types" %in% class(x)) {
-    stop("subsetted object must be of class 'types'")
-  }
-  result <- x
-  if (!missing(i) && !is.null(i)) {
-    if (any(is.na(i))) {
-      stop("subset criterion must not contain any NAs")
-    }    
-    if (is.numeric(i) || is.integer(i)) {
-      i <- i[!is.na(i)]
-      if (length(i) > 0) {
-        i <- trunc(i)
-        any_pos <- any(i >= 1)
-        any_neg <- any(i <= -1)
-        if (any_pos && any_neg) {
-          stop("subsetting indices must be either all positive or all negative")          
-        }
-        if (any_neg) {
-          invert <- !invert
-          i <- abs(i)
-        }
-        result <- keep_pos(x, i, invert = invert, ...)
-      } 
-    } else if ("types" %in% class(i)) {
-      result <- keep_types(x, i, invert = invert, ...)
-    } else if ("character" %in% class(i)) {
-      result <- keep_types(x, i, invert = invert, ...)
-    } else if ("re" %in% class(i)) {
-      result <- keep_re(x, i, invert = invert, ...)
-    } else if (is.logical(i)) {
-      i <- i[!is.na(i)]
-      result <- keep_bool(x, i, invert = invert, ...) 
-    } else {
-      stop("unsupported type of subset criterion")
-    }
-  }
+# Private functions applied to the class =======================================
+
+#' Merge two 'types' objects
+#'
+#' @param x,y An object of class \code{types}
+#' @param sort Whether or not to sort the result.
+#'
+#' @return An object of class \code{types}
+#' @noRd
+types_merge_two <- function(x, y, sort = FALSE) {
+  as_types(dplyr::union(x, y),
+           remove_duplicates = FALSE, # done by union
+           sort = sort)              
+}
+
+#' Subset types
+#'
+#' @param x Object of class \code{types}.
+#' @param sel Numeric vector with positions or boolean vector.
+#'
+#' @return Filtered object of class \code{types}
+#' @noRd
+subset_types <- function(x, sel) {
+  result <- as.character(x)[sel]
+  class(result) <- c("types",
+                     setdiff(class(x),
+                             c("tokens", "types")))
   result
 }
 
-
-`[<-.types` <- function(x, i, invert = FALSE, value) {
-  stop("subset assignment is not supported for 'types' objects")
-}

@@ -2,10 +2,13 @@
 % Please edit documentation in R/stubs.R, R/types.R
 \name{stubs}
 \alias{stubs}
+\alias{[<-.types}
 \alias{plot.types}
 \alias{plot.summary.types}
 \title{Stubs (Functions/Methods Not Implemented)}
 \usage{
+\method{[}{types}(x, i, invert = FALSE) <- value
+
 \method{plot}{types}(x, ...)
 
 \method{plot}{summary.types}(x, ...)
@@ -40,6 +43,8 @@ Typical examples are (i) defaults of generic methods that are only
 }
 \section{Functions}{
 \itemize{
+\item \code{[<-.types}: Subset assignment
+
 \item \code{plot.types}: Plot types
 
 \item \code{plot.summary.types}: Plot summary of types
