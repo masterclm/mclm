@@ -2,7 +2,7 @@
 % Please edit documentation in R/types.R
 \name{types}
 \alias{types}
-\title{Build a `types` object}
+\title{Build a 'types' object}
 \usage{
 types(
   x,

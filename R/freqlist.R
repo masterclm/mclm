@@ -1,64 +1,26 @@
-# =============================================================================
-# the class "freqlist" and related classes
-# =============================================================================
-
-# QUESTION: is 'freqcounts' a better name than 'freqlist' ?
-
-# to be exported:
-#    freqlist()
-#    freqlist_merge()
-#    freqlist_merge_all()
-#    freqlist_diff()
-#    tot_n_tokens()
-#    tot_n_tokens<-()
-#    orig_ranks()
-#    orig_ranks<-()
-#    ranks()
-#    as_freqlist()
-#    as.data.frame.freqlist()
-#    as_tibble.freqlist()
-#    rev.freqlist()
-#    plot.freqlist()
-#    sort.freqlist()
-#    summary.freqlist()
-#    print.summary.freqlist()
-#    plot.summary.freqlist()
-#    print.freqlist()
-#    `[.freqlist`()
-#    keep_pos.freqlist()
-#    keep_types.freqlist()
-#    keep_re.freqlist()
-#    keep_bool.freqlist()
-#    drop_pos.freqlist()
-#    drop_types.freqlist()
-#    drop_re.freqlist()
-#    drop_bool.freqlist()
-#    read_freqlist()
-#    write_freqlist()
-#    n_types.freqlist()
-#    n_tokens.freqlist()
-#    type_names.freqlist()
-#    type_freqs()
-#    type_freq()
-
-
-# dependencies:
-#     readr::locale()
-#     readr::read_lines()
-#     readr::write_lines()
-#     stringr::str_sort()
-#     stringr::str_trim()
-#     stringr::str_split()
-#     dplyr::union()  (even if its only marginally faster than union)
-
-
-# modification: 2018-02-22:
-#  Henceforth, the types in freqlist objects are sorted by rank upon creation
-#  of the freqlist object. When printing the freqlist object, the items are
-#  printed in their present actual order. Not following that
-#  symmetry can lead to confusing behavior of select_bool() and select_pos();
-#  therefore, we install this symmetry.
-
+#' Interactively navigate through frequency list
+#' 
+#' This method only works in an interactive R session to open
+#' 'exploration mode', in which the user can navigate through the \code{freqlist}
+#' object \code{x} by means of brief commands. In 'exploration mode' the user can
+#' ask of a list of available commands by keying in \code{?}, followed by ENTER.
+#' The user can quiet 'exploration mode' by keying in \code{q}, followed by ENTER.
+#'
+#' @param x Object of class \code{freqlist}.
+#' @param n Maximum number of items in the frequency list to be shown at once.
+#' @param from First item in the frequency list that is shown at the beginning
+#'   of the interactive session.
+#' @param perl Boolean value. Whether regular expressions used in the
+#'   exploration session use the PERL flavor of regular expression.
+#' @param use_clear Boolean value. If \code{use_clear} is \code{TRUE},
+#'   and if moreover the feature is supported by the R environment,
+#'   the console will be cleared in between all interactive steps
+#'   in the exploration session.
+#' @param ... Additional arguments.
+#'
+#' @return Invisibly, \code{x}.
+#' @exportS3Method explore freqlist
+#' @export
 explore.freqlist <- function(x,
                              n = 20,
                              from = 1,
