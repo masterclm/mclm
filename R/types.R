@@ -724,7 +724,105 @@ print.types <- function(x,
   invisible(x)
 }
 
-# public S3 function drop_pos()
+#' Subset a 'types' object
+#' 
+#' Methods to subset objects of class \code{types} by position, list of types,
+#'   regex match or via boolean statements.
+#'   
+#' The S3 methods starting with \code{keep_} (\code{keep_re()}, \code{keep_pos()},
+#'   \code{keep_bool()}, and \code{keep_types()}), when applied to an object of the
+#'   class \code{'types'}, take as their first argument \code{x}
+#'   an object of the class \code{'types'}, and extract from it those
+#'   items that \emph{match} the selection criterion which is their second argument,
+#'   viz. \code{pattern} in \code{keep_re()}, \code{pos} in \code{keep_pos()},
+#'   \code{bool} in \code{keep_bool()}, and \code{types} in \code{keep_types()}.
+#'   In this documentation, these methods are collectively called the \code{keep}-methods.
+#'   
+#'   The S3 methods starting with \code{drop_} (\code{drop_re()}, \code{drop_pos()},
+#'   \code{drop_bool()}, and \code{drop_types()}), collectively called the \code{drop}-methods,
+#'   behave identical to how the \code{keep}-methods work when the argument \code{invert}
+#'   (which by default is \code{FALSE}) is set to \code{TRUE}.
+#'   In that case,  the items that \emph{do not match} the selection criterion are selected.
+#'   
+#'   Subset selection for \code{'types'} object with the notation \code{[]},
+#'   in which case argument \code{i} is the selection criterion, behaves
+#'   similarly to the \code{keep}-methods. For more details on the relation
+#'   between the \code{[]} notation and the \code{keep}-methods, 
+#'   see the description of the argument \code{i}.
+#'   When the notation \code{x[i, \dots]} is used, it is also possible to
+#'   use the \code{invert} argument (which then is one of the additional
+#'   arguments in \code{\dots}). This \code{invert} argument
+#'   then serves the same purpose as the \code{invert} argument in the \code{keep}-methods.
+#'   When the notation \code{x[i, \dots]} is used, and no \code{invert} argument
+#'   is given, then \code{invert} is taken to be \code{FALSE}.
+#'
+#' @param x Object of class \code{types}.
+#' @param pattern Either an object of the class \code{'re'} (see \code{\link{re}})
+#'   or a character vector of length one, which contains a regular expression.
+#' @param pos A numeric vector, the numbers in which identify positions (= indices)
+#'   of items in \code{x}. If the numbers are positive, then their values point
+#'   to the items that are to be selected. If the numbers are negative,
+#'   then their absolute values point to the items that are not to be selected.
+#'   Positive and negative numbers must not be mixed.
+#' @param bool A logical vector of the same length as \code{x}. If \code{bool} is not
+#'   of the correct length, it is \emph{recycled}. Assuming \code{invert} is
+#'   \code{FALSE}, those items are selected for which \code{bool} is \code{TRUE}.
+#' @param types Either an object of the class \code{'types'}
+#'   (see \code{\link{types}} and \code{\link{as_types}}) or a character vector.
+#'   Assuming \code{invert} is \code{FALSE},
+#'   those items are selected the name of which is included in \code{types}.
+#' @param i Selection criterion when subsetting with \code{[]}; depending on its
+#'  class, it behaves differently:
+#'   \describe{
+#'     \item{\code{re}}{It works like \code{keep_re}.}
+#'     \item{numeric}{It works like \code{keep_pos}.}
+#'     \item{logical}{It works like \code{keep_bool}.}
+#'     \item{\code{types} or character}{It works like \code{keep_types}.}
+#'   }
+#' @param perl Boolean vector of length one, which indicates whether or not
+#'   \code{pattern} is treated as a PCRE flavor regular expression.
+#'   The \code{perl} argument is only used if \code{pattern} is a regular character vector.
+#'   If \code{pattern} is an object of the class \code{'re'}, then the
+#'   \code{perl} argument is ignored, and the relevant information in the
+#'   \code{'re'} object \code{pattern}, viz. the value of \code{pattern$perl}, is
+#'   used instead.
+#' @param invert Boolean vector of length one, which indicates whether the matches
+#'   or the non-matches should be selected.
+#' @param ... Additional arguments.
+#'
+#' @return Object of class \code{types} with the selected elements only.
+#' @name subset_types
+#'
+#' @examples
+#' 
+#' (tps <- as_types(letters[1:10]))
+#' 
+#' keep_re(tps, "[acegi]")
+#' drop_re(tps, "[acegi]")
+#' 
+#' keep_pos(tps, c(1, 3, 5, 7, 9))
+#' drop_pos(tps, c(1, 3, 5, 7, 9))
+#' 
+#' keep_bool(tps, c(TRUE, FALSE))
+#' drop_bool(tps, c(TRUE, FALSE))
+#' 
+#' keep_types(tps, c("a", "c", "e", "g", "i"))
+#' drop_types(tps,  c("a", "c", "e", "g", "i"))
+#' 
+#' tps[re("[acegi]")]
+#' tps[c(1, 3, 5, 7, 9)]
+#' tps[c(TRUE, FALSE)]
+#' tps[c("a", "c", "e", "g", "i")]
+#' 
+#' tps[re("[acegi]"), invert = TRUE]
+#' tps[c(1, 3, 5, 7, 9), invert = TRUE]
+#' tps[c(TRUE, FALSE), invert = TRUE]
+#' tps[c("a", "c", "e", "g", "i"), invert = TRUE]
+NULL
+
+#' @describeIn subset_types Drop items by position
+#' @exportS3Method drop_pos types
+#' @export
 drop_pos.types <- function(x, pos, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -733,7 +831,9 @@ drop_pos.types <- function(x, pos, ...) {
   keep_pos.types(x, pos, invert = TRUE, ...)
 }
 
-# public S3 function keep_pos()
+#' @describeIn subset_types Select items by position
+#' @exportS3Method keep_pos types
+#' @export
 keep_pos.types <- function(x, pos, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"types" %in% class(x)) {
@@ -779,7 +879,9 @@ keep_pos.types <- function(x, pos, invert = FALSE, ...) {
   result
 }
 
-# public S3 function drop_types()
+#' @describeIn subset_types Drop items by list of types
+#' @exportS3Method drop_types types
+#' @export
 drop_types.types <- function(x, types, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -788,7 +890,9 @@ drop_types.types <- function(x, types, ...) {
   keep_types.types(x, types, invert = TRUE, ...)
 }
 
-# public S3 function select_types()
+#' @describeIn subset_types Keep items by list of types
+#' @exportS3Method keep_types types
+#' @export
 keep_types.types <- function(x, types, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"types" %in% class(x)) {
@@ -829,7 +933,9 @@ keep_types.types <- function(x, types, invert = FALSE, ...) {
   result
 }
 
-# public S3 function drop_re()
+#' @describeIn subset_types Drop items by regular expression
+#' @exportS3Method drop_re types
+#' @export
 drop_re.types <- function(x, pattern, perl = TRUE, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -838,7 +944,9 @@ drop_re.types <- function(x, pattern, perl = TRUE, ...) {
   keep_re.types(x, pattern, perl = perl, invert = TRUE, ...)
 }
 
-# public S3 function keep_re()
+#' @describeIn subset_types Keep items by regular expression
+#' @exportS3Method keep_re types
+#' @export
 keep_re.types <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"types" %in% class(x)) {
@@ -897,7 +1005,9 @@ keep_re.types <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   result
 }
 
-# public S3 function drop_bool()
+#' @describeIn subset_types Drop items based on boolean statement
+#' @exportS3Method drop_bool types
+#' @export
 drop_bool.types <- function(x, bool, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -906,7 +1016,9 @@ drop_bool.types <- function(x, bool, ...) {
   keep_bool.types(x, !bool, ...)
 }
 
-# public S3 function keep_bool()
+#' @describeIn subset_types Keep items based on boolean statement
+#' @exportS3Method keep_bool types
+#' @export
 keep_bool.types <- function(x, bool, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"types" %in% class(x)) {
@@ -1004,6 +1116,9 @@ write_types <- function(x,
   invisible(x)
 }
 
+#' @describeIn subset_types Keep items based on different criteria
+#' @exportS3Method `[` types
+#' @export
 `[.types` <- function(x, i, invert = FALSE, ...) {
   if (!"types" %in% class(x)) {
     stop("subsetted object must be of class 'types'")
