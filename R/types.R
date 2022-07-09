@@ -727,34 +727,35 @@ print.types <- function(x,
 #' Subset a 'types' object
 #' 
 #' Methods to subset objects of class \code{types} by position, list of types,
-#'   regex match or via boolean statements.
-#'   
+#' regex match or via boolean statements.
+#' 
+#'
 #' The S3 methods starting with \code{keep_} (\code{keep_re()}, \code{keep_pos()},
-#'   \code{keep_bool()}, and \code{keep_types()}), when applied to an object of the
-#'   class \code{'types'}, take as their first argument \code{x}
-#'   an object of the class \code{'types'}, and extract from it those
-#'   items that \emph{match} the selection criterion which is their second argument,
-#'   viz. \code{pattern} in \code{keep_re()}, \code{pos} in \code{keep_pos()},
-#'   \code{bool} in \code{keep_bool()}, and \code{types} in \code{keep_types()}.
-#'   In this documentation, these methods are collectively called the \code{keep}-methods.
-#'   
-#'   The S3 methods starting with \code{drop_} (\code{drop_re()}, \code{drop_pos()},
-#'   \code{drop_bool()}, and \code{drop_types()}), collectively called the \code{drop}-methods,
-#'   behave identical to how the \code{keep}-methods work when the argument \code{invert}
-#'   (which by default is \code{FALSE}) is set to \code{TRUE}.
-#'   In that case,  the items that \emph{do not match} the selection criterion are selected.
-#'   
-#'   Subset selection for \code{'types'} object with the notation \code{[]},
-#'   in which case argument \code{i} is the selection criterion, behaves
-#'   similarly to the \code{keep}-methods. For more details on the relation
-#'   between the \code{[]} notation and the \code{keep}-methods, 
-#'   see the description of the argument \code{i}.
-#'   When the notation \code{x[i, \dots]} is used, it is also possible to
-#'   use the \code{invert} argument (which then is one of the additional
-#'   arguments in \code{\dots}). This \code{invert} argument
-#'   then serves the same purpose as the \code{invert} argument in the \code{keep}-methods.
-#'   When the notation \code{x[i, \dots]} is used, and no \code{invert} argument
-#'   is given, then \code{invert} is taken to be \code{FALSE}.
+#' \code{keep_bool()}, and \code{keep_types()}), when applied to an object of the
+#' class \code{'types'}, take as their first argument \code{x}
+#' an object of the class \code{'types'}, and extract from it those
+#' items that \emph{match} the selection criterion which is their second argument,
+#' viz. \code{pattern} in \code{keep_re()}, \code{pos} in \code{keep_pos()},
+#' \code{bool} in \code{keep_bool()}, and \code{types} in \code{keep_types()}.
+#' In this documentation, these methods are collectively called the \code{keep}-methods.
+#' 
+#' The S3 methods starting with \code{drop_} (\code{drop_re()}, \code{drop_pos()},
+#' \code{drop_bool()}, and \code{drop_types()}), collectively called the \code{drop}-methods,
+#' behave identical to how the \code{keep}-methods work when the argument \code{invert}
+#' (which by default is \code{FALSE}) is set to \code{TRUE}.
+#' In that case,  the items that \emph{do not match} the selection criterion are selected.
+#' 
+#' Subset selection for \code{'types'} object with the notation \code{[]},
+#' in which case argument \code{i} is the selection criterion, behaves
+#' similarly to the \code{keep}-methods. For more details on the relation
+#' between the \code{[]} notation and the \code{keep}-methods, 
+#' see the description of the argument \code{i}.
+#' When the notation \code{x[i, \dots]} is used, it is also possible to
+#' use the \code{invert} argument (which then is one of the additional
+#' arguments in \code{\dots}). This \code{invert} argument
+#' then serves the same purpose as the \code{invert} argument in the \code{keep}-methods.
+#' When the notation \code{x[i, \dots]} is used, and no \code{invert} argument
+#' is given, then \code{invert} is taken to be \code{FALSE}.
 #'
 #' @param x Object of class \code{types}.
 #' @param pattern Either an object of the class \code{'re'} (see \code{\link{re}})
@@ -1067,6 +1068,39 @@ subset_types <- function(x, sel) {
 
 
 
+#' Read a vector of types from a text file
+#' 
+#' Reads an object of the class \code{'types'} from a text file. By default,
+#' the text file is assumed to contain one type on each line.
+#'
+#' @param file Name of the input file.
+#' @param sep If not \code{is.ba(sep)}, then \code{sep} must be a character vector
+#'   of length one. In that case, \code{sep} is interpreted as a
+#'   type separator in the input file. This separator the serves as an
+#'   additional type separator, next to the end of each line.
+#'   The end of a line always indicated a separator between types (in other
+#'   words, types cannot cross lines).
+#' @param file_encoding The file encoding used in the input file.
+#' @param trim_types Boolean value that indicates whether or not leading and trailing
+#'   whitespace should be stripped from the types.
+#' @param remove_duplicates Length one boolean vector that determines whether or not
+#'   duplicates are removed from \code{x} prior to coercing to a vector of class \code{types}.
+#' @param sort Length one boolean vector that determines whether or not
+#'   \code{x} is alphabetically sorted prior to coercing to a vector of types;
+#'   this argument is ignored if \code{remove_duplicates} is \code{TRUE}, because the
+#'   result of removing duplicates is always sorted.
+#' @param ... Additional arguments (not implemented).
+#'
+#' @return Object of class \code{types}.
+#' @seealso \code{\link{write_types}}
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'   types <- as_types(c("first", "second", "third"))
+#'   write_types(types, "file_with_types.txt")
+#'   types_2 <- read_types("file_with_types.txt")
+#'   }
 read_types <- function(file,
                        sep = NA,
                        file_encoding = "UTF-8",

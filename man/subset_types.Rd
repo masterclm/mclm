@@ -79,34 +79,35 @@ Object of class \code{types} with the selected elements only.
 }
 \description{
 Methods to subset objects of class \code{types} by position, list of types,
-  regex match or via boolean statements.
-  
+regex match or via boolean statements.
+}
+\details{
 The S3 methods starting with \code{keep_} (\code{keep_re()}, \code{keep_pos()},
-  \code{keep_bool()}, and \code{keep_types()}), when applied to an object of the
-  class \code{'types'}, take as their first argument \code{x}
-  an object of the class \code{'types'}, and extract from it those
-  items that \emph{match} the selection criterion which is their second argument,
-  viz. \code{pattern} in \code{keep_re()}, \code{pos} in \code{keep_pos()},
-  \code{bool} in \code{keep_bool()}, and \code{types} in \code{keep_types()}.
-  In this documentation, these methods are collectively called the \code{keep}-methods.
-  
-  The S3 methods starting with \code{drop_} (\code{drop_re()}, \code{drop_pos()},
-  \code{drop_bool()}, and \code{drop_types()}), collectively called the \code{drop}-methods,
-  behave identical to how the \code{keep}-methods work when the argument \code{invert}
-  (which by default is \code{FALSE}) is set to \code{TRUE}.
-  In that case,  the items that \emph{do not match} the selection criterion are selected.
-  
-  Subset selection for \code{'types'} object with the notation \code{[]},
-  in which case argument \code{i} is the selection criterion, behaves
-  similarly to the \code{keep}-methods. For more details on the relation
-  between the \code{[]} notation and the \code{keep}-methods, 
-  see the description of the argument \code{i}.
-  When the notation \code{x[i, \dots]} is used, it is also possible to
-  use the \code{invert} argument (which then is one of the additional
-  arguments in \code{\dots}). This \code{invert} argument
-  then serves the same purpose as the \code{invert} argument in the \code{keep}-methods.
-  When the notation \code{x[i, \dots]} is used, and no \code{invert} argument
-  is given, then \code{invert} is taken to be \code{FALSE}.
+\code{keep_bool()}, and \code{keep_types()}), when applied to an object of the
+class \code{'types'}, take as their first argument \code{x}
+an object of the class \code{'types'}, and extract from it those
+items that \emph{match} the selection criterion which is their second argument,
+viz. \code{pattern} in \code{keep_re()}, \code{pos} in \code{keep_pos()},
+\code{bool} in \code{keep_bool()}, and \code{types} in \code{keep_types()}.
+In this documentation, these methods are collectively called the \code{keep}-methods.
+
+The S3 methods starting with \code{drop_} (\code{drop_re()}, \code{drop_pos()},
+\code{drop_bool()}, and \code{drop_types()}), collectively called the \code{drop}-methods,
+behave identical to how the \code{keep}-methods work when the argument \code{invert}
+(which by default is \code{FALSE}) is set to \code{TRUE}.
+In that case,  the items that \emph{do not match} the selection criterion are selected.
+
+Subset selection for \code{'types'} object with the notation \code{[]},
+in which case argument \code{i} is the selection criterion, behaves
+similarly to the \code{keep}-methods. For more details on the relation
+between the \code{[]} notation and the \code{keep}-methods, 
+see the description of the argument \code{i}.
+When the notation \code{x[i, \dots]} is used, it is also possible to
+use the \code{invert} argument (which then is one of the additional
+arguments in \code{\dots}). This \code{invert} argument
+then serves the same purpose as the \code{invert} argument in the \code{keep}-methods.
+When the notation \code{x[i, \dots]} is used, and no \code{invert} argument
+is given, then \code{invert} is taken to be \code{FALSE}.
 }
 \section{Methods (by generic)}{
 \itemize{
