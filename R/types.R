@@ -1050,11 +1050,13 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
   result
 }
 
-# private subset selection function
-# x is assumed to be a types object (not tested)
-# sel can be:
-#  - numeric vector with positions
-#  - boolean vector
+#' Subset types
+#'
+#' @param x Object of class \code{types}.
+#' @param sel Numeric vector with positions or boolean vector.
+#'
+#' @return Filtered object of class \code{types}
+#' @noRd
 subset_types <- function(x, sel) {
   result <- as.character(x)[sel]
   class(result) <- c("types",
