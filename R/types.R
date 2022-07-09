@@ -1128,10 +1128,31 @@ read_types <- function(file,
 }
 
 
-# public function write_types()
-#  - writes a 'types' object to a txt file
-#  - by default also creates an associated config file
-# ------------------------------------------------------
+#' Write a vector of types to a text file
+#' 
+#' Writes an object of the class \code{'types'} to a text file. Each type
+#' is written to a separate line. The file encoding that is used is
+#' \code{"UTF-8"}.
+#'
+#' @param x Object of class \code{types}.
+#' @param file Name of the output file
+#' @param make_config_file Boolean value. Whether or not, next to the actual
+#'   types file, a second output file should be created containing a brief
+#'   description of the format of the types file.
+#' @param ... Additional arguments (not implemented).
+#'
+#' @return Invisibly, \code{x}.
+#' @seealso \code{\link{read_types}}
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#'   types <- as_types(c("first", "second", "third"))
+#'   print(types, n = 1000)
+#'   write_types(types, "file_with_types.txt")
+#'   types_2 <- read_types("file_with_types.txt")
+#'   print(types_2, n = 1000)
+#'   }
 write_types <- function(x,
                         file,
                         make_config_file = TRUE,
