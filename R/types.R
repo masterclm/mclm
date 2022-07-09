@@ -609,7 +609,26 @@ explore.types <- function(x,
 
 
 
-# public S3 function print()
+#' Print a vector of 'types'
+#' 
+#' Print objects of the class \code{types}.
+#'
+#' @param x An object of class \code{types}.
+#' @param n Maximum number of types to print.
+#' @param from Position of the first item to print.
+#' @param sort_order Order in which the items are to be printed. Possible value
+#'   are \code{"alpha"} (meaning that the items are to be sorted alphabetically),
+#'   and \code{"none"} (meaning that the items are not to be sorted).
+#' @param extra Extra settings.
+#' @param ... Additional printing arguments.
+#'
+#' @return Invisibly, \code{x}.
+#' @exportS3Method print types
+#' @export
+#'
+#' @examples
+#' x <- as_types(c("first", "second", "third"))
+#' print(x, n = 1000)
 print.types <- function(x,
                         n = 20, from = 1,
                         sort_order = c("none", "alpha"),
