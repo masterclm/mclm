@@ -149,6 +149,24 @@ n_tokens.freqlist <- function(x, ...) {
   sum(x)
 }  
 
+#' Give Number of Types in a 'freqlist' Object
+#' 
+#' Return the number of types in \code{x}.
+#'
+#' @param x An object of class \code{freqlist}.
+#' @param ... Additional arguments.
+#'
+#' @return A number.
+#' @exportMethod n_types freqlist
+#' @export
+#'
+#' @examples
+#' (tks <- tokenize("The old man and the sea."))
+#' n_tokens(tks)
+#' 
+#' (flist <- freqlist(tks))
+#' n_tokens(flist)
+#' n_types(flist)
 n_types.freqlist <- function(x, ...) {
   if (! "freqlist" %in% class(x)) {
     stop("argument 'x' must be of the class 'freqlist'")
