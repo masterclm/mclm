@@ -423,8 +423,12 @@ explore.types <- function(x,
 #' @param pattern Either an object of the class \code{'re'} (see \code{\link{re}})
 #'   or a character vector of length one, which contains a regular expression.
 #' @param pos A numeric vector, the numbers in which identify positions (= indices)
-#'   of items in \code{x}. If the numbers are positive, then their values point
-#'   to the items that are to be selected. If the numbers are negative,
+#'   of items in \code{x}.
+#'   
+#'   If the numbers are positive, then their values point
+#'   to the items that are to be selected.
+#'   
+#'   If the numbers are negative,
 #'   then their absolute values point to the items that are not to be selected.
 #'   Positive and negative numbers must not be mixed.
 #' @param bool A logical vector of the same length as \code{x}. If \code{bool} is not

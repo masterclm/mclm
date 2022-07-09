@@ -35,8 +35,12 @@
 \item{x}{Object of class \code{types}.}
 
 \item{pos}{A numeric vector, the numbers in which identify positions (= indices)
-of items in \code{x}. If the numbers are positive, then their values point
-to the items that are to be selected. If the numbers are negative,
+of items in \code{x}.
+
+If the numbers are positive, then their values point
+to the items that are to be selected.
+
+If the numbers are negative,
 then their absolute values point to the items that are not to be selected.
 Positive and negative numbers must not be mixed.}
 
