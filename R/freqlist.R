@@ -983,7 +983,65 @@ ranks.freqlist <- function(x, with_names = FALSE, ...) {
   result
 }
 
-# public S3 method sort.freqlist()
+#' Sort a frequency list
+#' 
+#' Sort an object of class \code{freqlist}.
+#' 
+#' Because of the way ranks are calculated for ties (with lower ranks being
+#' assigned to ties earlier in the list), sorting the list may affect the
+#' ranks of ties.
+#' More specifically, ranks among ties may differ depending on the criterion
+#' that is used to sort the frequency list.
+#'
+#' @param x Object of class \code{freqlist}.
+#' @param decreasing Boolean value. If \code{TRUE} items are sorted from large
+#'   to small; if \code{FALSE}, from small to large.
+#'   
+#'   Note, however, that ranking in frequency lists is such that lower ranks
+#'   correspond to higher frequencies. Therefore, sorting by rank (either
+#'   \code{"ranks"} or \code{"orig_ranks"}) with \code{decreasing} set
+#'   to its default value \code{FALSE} results in the highest frequencies
+#'   ending up at the beginning of the sorted list.
+#' @param sort_crit Character string determining the sorting criterion.
+#'   
+#'   If \code{sort_crit} is \code{"ranks"}, then the items in the frequency list
+#'   are sorted by their current frequency rank.
+#'   
+#'   If \code{sort_crit} is \code{"names"}, then the items in the frequency
+#'   list are sorted alphabetically their name.
+#'   
+#'   If \code{sort_crit} is \code{"orig_ranks"}, then the items in the frequency
+#'   list are sorted by their original ranks (if those are present),
+#'   or by their current frequency ranks (if no original ranks are present).
+#'   
+#'   Finally, sorting with \code{sort_crit} set to \code{"freqs"} is identical
+#'   to sorting by frequency ranks, but with the meaning of the argument
+#'   \code{decreasing} being reversed.
+#'   In other words, sorting by frequencies (\code{"freqs"}) with \code{decreasing} set
+#'   to its default value \code{FALSE} results in the lowest frequencies
+#'   ending up at the beginning of the sorted list.
+#' @param na_last Boolean value defining the behaviour of \code{NA} elements.
+#'   
+#'   This argument is only relevant when \code{sort_crit} is \code{"orig_ranks"}
+#'    because currently names and frequencies are not allowed to be \code{NA}
+#'    in frequency lists.
+#'    
+#'    If \code{na_last} is \code{TRUE}, then items with a sorting criterion of
+#'    \code{NA} end up at the end of the sorted frequency list.
+#'    If \code{na_last} is \code{FALSE}, then items with a sorting criterion
+#'    of \code{NA} end up at the start of the sorted frequency list.
+#'    If \code{na_last} is \code{NA}, then items with a sorting criterion of
+#'    \code{NA} are removed from the sorted frequency list.
+#' @param ... Additional arguments.
+#'
+#' @return Object of class \code{freqlist}.
+#' @export
+#' @exportS3Method sort freqlist
+#'
+#' @examples
+#' (flist <- freqlist(tokenize("the old story of the old man and the sea.")))
+#' sort(flist)
+#' sort(flist, decreasing = TRUE)
 sort.freqlist <- function(x,
                           decreasing = FALSE,
                           sort_crit = c("ranks", "names",
@@ -1052,10 +1110,9 @@ as_freqlist <- function(x, tot_n_tokens = NULL, sort_by_ranks = TRUE) {
   if (!"freqlist" %in% class(result)) {
     class(result) <- c("freqlist", "table")
   }
-  # --- sorting by ranks -----------------------------------------------------
+  # --- sorting by ranks --
   # this must be done before we assign classes and attributes, because
   # result <- result[ord] loses such information
-  # -------------------------------------------------------------------------- 
   if ((length(result) > 0) && sort_by_ranks) {
     result_orig_ranks <- attr(result, "orig_ranks")
     result_tot_n_tokens <- attr(result, "tot_n_tokens")
@@ -1070,9 +1127,7 @@ as_freqlist <- function(x, tot_n_tokens = NULL, sort_by_ranks = TRUE) {
       attr(result, "tot_n_tokens") <- result_tot_n_tokens
     }
   }  
-  # --------------------------------------------------------------------------
-  # assign classes and attributes etc.
-  # --------------------------------------------------------------------------
+  # assign classes and attributes etc. --
   if (!"freqlist" %in% class(result)) {
     class(result) <- c("freqlist", "table")
   }
@@ -1081,43 +1136,6 @@ as_freqlist <- function(x, tot_n_tokens = NULL, sort_by_ranks = TRUE) {
   }
   if (!is.null(tot_n_tokens) && !is.na(tot_n_tokens[1])) {
     tot_n_tokens(result) <- tot_n_tokens[1]
-  }
-  # -------------------------------------------------------------------------
-  result
-}
-
-sort2.freqlist <- function(x,
-                          decreasing = FALSE,
-                          na.last = NA,
-                          sort_crit = c("rank", "alpha", "orig_rank"),
-                          ...) {
-  if (!"freqlist" %in% class(x)) {
-    stop("x must be of class 'freqlist'")
-  }  
-  result <- x
-  if (length(result) > 0) {
-    if (sort_crit[1] == "rank") {
-      ord <- order(ranks(result), decreasing = decreasing,
-                   na.last = na.last, ...)
-    } else if (sort_crit[1] == "alpha") {
-      ord <- order(names(result), decreasing = decreasing,
-                   na.last = na.last, ...)
-    } else if (sort_crit[1] == "orig_ranks" &&
-               !is.null(attr(result, "orig_ranks"))) {
-      ord <- order(attr(result, "orig_ranks"), decreasing = decreasing,
-                   na.last = na.last, ...)
-    } else {
-      ord <- 1:length(result)
-    }
-    class(result) <- "table"
-    result <- result[ord]
-    if (!is.null(attr(x, "orig_ranks"))) {
-      attr(result, "orig_ranks") <- attr(x, "orig_ranks")[ord]
-    }
-    if (!is.null(attr(x, "tot_n_tokens"))) {
-      attr(result, "tot_n_tokens") <- attr(x, "tot_n_tokens")
-    }
-    class(result) <- c("freqlist", "table")
   }
   result
 }
