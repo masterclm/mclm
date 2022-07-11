@@ -790,6 +790,39 @@ freqlist_corp <- function(x,
 }
 
 # public S3 setter function "tot_n_tokens<-" for freqlist
+#' Retrieve or set the total number of tokens
+#' 
+#' Retrieves or sets, for a \code{freqlist}, the total number of tokens in
+#' the corpus on which the frequency counts are based.
+#' This total number of tokens may be higher than the sum of all frequency
+#' counts in \code{x}, for instance, if \code{x} contains frequency counts
+#' for a selection of items only, and not for all tokens in the corpus.
+#'
+#' @param x Object of class \code{freqlist}.
+#' @param value Numerical value.
+#'
+#' @return Numerical value.
+#' @name tot_n_tokens.freqlist
+#'
+#' @examples
+#' x <- freqlist("The man and the mouse.",
+#'               re_token_splitter = "(?xi) [:\\s.;,?!\"]+",
+#'               as_text = TRUE)
+#' x
+#' tot_n_tokens(x)
+#' 
+#' y <- keep_types(x, c("man", "and"))
+#' tot_n_tokens(y)
+#' y
+#' 
+#' tot_n_tokens(y) <- sum(y)
+#' y
+#' tot_n_tokens(y)
+NULL
+
+#' @describeIn tot_n_tokens.freqlist Set total number of tokens
+#' @exportS3Method `tot_n_tokens<-` freqlist
+#' @export
 `tot_n_tokens<-.freqlist` <- function(x, value) {
   if (!"freqlist" %in% class(x)) stop("x must be of class 'freqlist'")
   if (is.null(value)) stop("value must not be NULL")
@@ -803,7 +836,9 @@ freqlist_corp <- function(x,
   x
 }
 
-# public S3 getter function tot_n_tokens for freqlist
+#' @describeIn tot_n_tokens.freqlist Retrieve the total number of tokens
+#' @exportS3Method tot_n_tokens freqlist
+#' @export
 tot_n_tokens.freqlist <- function(x) {
   if (!"freqlist" %in% class(x)) stop("x must be of class 'freqlist'")
   attr(x, 'tot_n_tokens')
