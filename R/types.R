@@ -659,6 +659,7 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
 #' @exportS3Method as.data.frame types
 #' @return A dataframe. In this dataframe, the types sit in a column named \code{type}.
 #' @export
+#' @seealso as_tibble.types
 #' @examples 
 #' toy_corpus <- "Once upon a time there was a tiny toy corpus.
 #' It consisted of three sentence. And it lived happily ever after."
@@ -681,7 +682,8 @@ as.data.frame.types <- function(x, ...) {
 #'
 #' @return A tibble. In this tibble, the types sit in a colum named \code{type}.
 #' @exportS3Method tibble::as_tibble types
-#' @export
+#' @export 
+#' @seealso as.data.frame.types
 #' 
 #' @examples
 #' toy_corpus <- "Once upon a time there was a tiny toy corpus.
