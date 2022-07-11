@@ -519,11 +519,15 @@ freqlist <- function(x,
   }
 }
 
-# TODO roxygenize importing params from tokenize()
-# public function freqlist_char()
-# build a 'freqlist' object on the basis of the texts in x
-#  x is a character vector that 
-#   - contains the actual textual data   
+#' Build a 'freqlist' on the basis of texts
+#' 
+#' Called by \code{\link{freqlist}} when \code{x} contains the actual textual data.
+#'
+#' @param x Corpus text.
+#' @inheritParams tokenize
+#'
+#' @return Object of class \code{freqlist}.
+#' @noRd
 freqlist_char <- function(x,
                           re_drop_line = NULL,
                           line_glue = NULL, 
@@ -691,9 +695,15 @@ freqlist_merge_two <- function(x, y) {
 
 
 
-# build a 'freqlist' object on the basis of the texts in x
-#  x is a character vector that 
-#   (i)  contains the filenames of the corpus files
+#' Build a 'freqlist' on the basis of texts in x
+#' 
+#' Called by \code{\link{freqlist}} when \code{x} contains filenames.
+#'
+#' @param x Filenames of the corpus files
+#' @inheritParams tokenize
+#'
+#' @return Object of class \code{freqlist}.
+#' @noRd
 freqlist_corp <- function(x,
                           re_drop_line = NULL,
                           line_glue = NULL, # e.g. "\n" or ""
