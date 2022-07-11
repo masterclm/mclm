@@ -566,17 +566,6 @@ freqlist_char <- function(x,
                         # and sorts types by rank  
 }
 
-x_freqlist <- function(x) {
-  command <- "b"
-  while (command != "q") {
-    cat("blabla\n")
-    cat("----")
-    cat("[b = begin] | [e = end] | [q = quit] > ")
-    command <- scan(what = "char", nmax = 1, quiet = TRUE)
-    command <- cleanup_spaces(tolower(command))
-  }
-}
-
 # public function freqlist_merge()
 # merge two frequency lists, adding up the frequencies
 # ---------------------------------------------------------------------------
