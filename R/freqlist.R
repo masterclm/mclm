@@ -803,7 +803,8 @@ freqlist_corp <- function(x,
 #'
 #' @return Numerical value.
 #' @name tot_n_tokens.freqlist
-#'
+#' @family freqlist setters and getters
+#' 
 #' @examples
 #' x <- freqlist("The man and the mouse.",
 #'               re_token_splitter = "(?xi) [:\\s.;,?!\"]+",
@@ -844,7 +845,49 @@ tot_n_tokens.freqlist <- function(x) {
   attr(x, 'tot_n_tokens')
 }
 
-# public S3 setter function "orig_ranks<-" for freqlist
+
+#' Retrieve or set original ranks
+#' 
+#' Retrieve or set, for a \code{freqlist}, the original ranks for its frequency
+#' counts.
+#' These original ranks are only defined if \code{x} is the result of a selection
+#' procedure (i.e. if \code{x} contains frequency counts for a selection of items
+#' only, and not for all tokens in the corpus).
+#'
+#' @param x Object of class \code{freqlist}.
+#' @param value Currently it can only be \code{NULL}.
+#' @param with_names Boolean. Whether or not the items in the output should
+#'   be given names. If \code{with_names} is \code{TRUE}, then the names
+#'   of the types in the frequency list are used as names.
+#' @param ... Additional arguments.
+#'
+#' @return Either \code{NULL} or a numeric vector, representing the
+#'   original ranks, with as its names the types to which these ranks apply.
+#' @name orig_ranks.freqlist
+#' @family freqlist setters and getters
+#'
+#' @examples
+#' x <- freqlist("The man and the mouse.",
+#'               as_text = TRUE)
+#' x
+#' orig_ranks(x)
+#' orig_ranks(x, with_names = TRUE)
+#' 
+#' y <- keep_types(x, c("man", "and"))
+#' orig_ranks(y)
+#' y
+#' 
+#' orig_ranks(y) <- NULL
+#' y
+#' orig_ranks(y)
+#' 
+#' tot_n_tokens(y) <- sum(y)
+#' y
+NULL
+
+#' @describeIn orig_ranks.freqlist Set original ranks
+#' @exportS3Method `orig_ranks<-` freqlist
+#' @export
 `orig_ranks<-.freqlist` <- function(x, value) {
   if (!"freqlist" %in% class(x)) stop("x must be of class 'freqlist'")  
   if (!is.null(value)) stop("value must be NULL")
@@ -852,7 +895,9 @@ tot_n_tokens.freqlist <- function(x) {
   x
 }
 
-# public S3 getter function orig_ranks for freqlist
+#' @describeIn orig_ranks.freqlist Get original ranks
+#' @exportS3Method orig_ranks freqlist
+#' @export
 orig_ranks.freqlist <- function(x, with_names = FALSE, ...) {
   if (!"freqlist" %in% class(x)) stop("x must be of class 'freqlist'")
   result <- attr(x, 'orig_ranks')
