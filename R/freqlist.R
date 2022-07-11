@@ -520,6 +520,7 @@ freqlist <- function(x,
   }
 }
 
+# TODOR roxygenize importing params from tokenize()
 # public function freqlist_char()
 # build a 'freqlist' object on the basis of the texts in x
 #  x is a character vector that 
@@ -543,30 +544,26 @@ freqlist_char <- function(x,
   if ("tokens" %in% class(x)) {
     freqlist <- table(x) # in this case ngram_size is ignored
   } else {
-    freqlist <-    table(tokenize(x,
-                                  re_drop_line = re_drop_line,
-                                  line_glue = line_glue,
-                                  re_cut_area = re_cut_area,
-                                  re_token_splitter = re_token_splitter,
-                                  re_token_extractor = re_token_extractor,
-                                  re_drop_token = re_drop_token,
-                                  re_token_transf_in = re_token_transf_in,
-                                  token_transf_out = token_transf_out,
-                                  token_to_lower = token_to_lower,
-                                  perl = perl,
-                                  ngram_size = ngram_size,
-                                  max_skip = max_skip,
-                                  ngram_sep = ngram_sep,
-                                  ngram_n_open = ngram_n_open,
-                                  ngram_open = ngram_open))
+    freqlist <- table(
+      tokenize(x,
+               re_drop_line = re_drop_line,
+               line_glue = line_glue,
+               re_cut_area = re_cut_area,
+               re_token_splitter = re_token_splitter,
+               re_token_extractor = re_token_extractor,
+               re_drop_token = re_drop_token,
+               re_token_transf_in = re_token_transf_in,
+               token_transf_out = token_transf_out,
+               token_to_lower = token_to_lower,
+               perl = perl,
+               ngram_size = ngram_size,
+               max_skip = max_skip,
+               ngram_sep = ngram_sep,
+               ngram_n_open = ngram_n_open,
+               ngram_open = ngram_open))
   }
   as_freqlist(freqlist) # sets class and attributes
                         # and sorts types by rank  
-}
-
-
-cleanup_spaces <- function(x) {
-  gsub("^\\s+|\\s+$", "", x, perl = TRUE)
 }
 
 x_freqlist <- function(x) {
