@@ -520,7 +520,7 @@ freqlist <- function(x,
   }
 }
 
-# TODOR roxygenize importing params from tokenize()
+# TODO roxygenize importing params from tokenize()
 # public function freqlist_char()
 # build a 'freqlist' object on the basis of the texts in x
 #  x is a character vector that 
@@ -628,8 +628,22 @@ freqlist_merge_all <- function(...) {
   as_freqlist(result) # as_freqlist sorts types by rank
 }
 
-# public function freqlist_diff(x, y) 
-# the result is a freqlist with the y frequencies subtracted from the x frequencies
+#' Subtract frequency lists
+#' 
+#' Merge information from two frequency lists, subtracting the frequencies found
+#' in the second frequency lists from the frequencies found in the first list.
+#'
+#'
+#' @param x,y Objects of class \code{freqlist}.
+#'
+#' @return An object of class \code{freqlist}.
+#' @export
+#'
+#' @examples
+#' (flist1 <- freqlist("A first toy corpus.", as_text = TRUE))
+#' (flist2 <- freqlist("A second toy corpus.", as_text = TRUE))
+#' 
+#' freqlist_diff(flist1, flist2)
 freqlist_diff <- function(x, y) {
   names <- dplyr::union(names(x), names(y))
   tot_n_tokens_x <- attr(x, "tot_n_tokens")
