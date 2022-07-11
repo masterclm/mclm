@@ -46,3 +46,9 @@ tot_n_tokens(y) <- sum(y)
 y
 tot_n_tokens(y)
 }
+\seealso{
+Other freqlist setters and getters: 
+\code{\link{orig_ranks.freqlist}()},
+\code{\link{ranks.freqlist}()}
+}
+\concept{freqlist setters and getters}
