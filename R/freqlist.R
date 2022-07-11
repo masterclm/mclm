@@ -566,11 +566,31 @@ freqlist_char <- function(x,
                         # and sorts types by rank  
 }
 
-# public function freqlist_merge()
-# merge two frequency lists, adding up the frequencies
-# ---------------------------------------------------------------------------
-# in the current implementation, orig_ranks are lost when merging
-# ---------------------------------------------------------------------------
+#' Merge frequency lists
+#' 
+#' Merge two or more frequency lists, adding up the frequencies.
+#' In the current implementation, original ranks are lost when merging.
+#'
+#' @param x,y An object of class \code{freqlist}.
+#' @param ... Various objects of class \code{freqlist} or a list of
+#'   objects of class \code{freqlist} 
+#'
+#' @return An object of class \code{freqlist}.
+#' @name freqlist_merge
+#'
+#' @examples
+#' (flist1 <- freqlist("A first toy corpus.", as_text = TRUE))
+#' (flist2 <- freqlist("A second toy corpus.", as_text = TRUE))
+#' (flist3 <- freqlist("A third toy corpus.", as_text = TRUE))
+#' 
+#' freqlist_merge(flist1, flist2)
+#' 
+#' freqlist_merge_all(flist1, flist2, flist3)
+#' freqlist_merge_all(list(flist1, flist2, flist3)) # same result
+NULL
+
+#' @describeIn freqlist_merge Merge two frequency lists
+#' @export
 freqlist_merge <- function(x, y) {
   if ((!"freqlist" %in% class(x)) || (!"freqlist" %in% class(y))) {
     stop("both x and y must be of the class 'freqlist'")
@@ -578,16 +598,12 @@ freqlist_merge <- function(x, y) {
   as_freqlist(freqlist_merge_two(x, y)) # as_freqlist sorts types by rank
 }  
 
-# public function freqlist_merge_all()
-# merge two or more frequency lists, adding up the frequencies 
-# ---------------------------------------------------------------------------
-# in the current implementation, orig_ranks are lost when merging
-# ---------------------------------------------------------------------------
+#' @describeIn freqlist_merge Merge multiple frequency lists
 freqlist_merge_all <- function(...) {
   arg_list <- list(...)
   result_car <- NULL  # result for car of arg_list
   result_cdr <- NULL  # result for cdr of arg_list
-  # -- processing car ----------------------------
+  # -- processing car --
   if (length(arg_list) > 0) {
     car <- arg_list[[1]]
     if ("freqlist" %in% class(car)) {
@@ -596,19 +612,19 @@ freqlist_merge_all <- function(...) {
       result_car <- do.call("freqlist_merge_all", car)
     }
   }   
-  # -- processing cdr ----------------------------
+  # -- processing cdr --
   if (length(arg_list) > 1) {
     cdr <- arg_list[-1]
     result_cdr <- do.call("freqlist_merge_all", cdr)
   }
-  # -- merge results if needed -------------------
+  # -- merge results if needed --
   result <- result_car
   if (is.null(result_car)) {
     result <- result_cdr
   } else if (!is.null(result_cdr)) {
     result <- freqlist_merge_two(result_car, result_cdr)
   }
-  # -- result ------------------------------------
+  # -- result --
   as_freqlist(result) # as_freqlist sorts types by rank
 }
 
