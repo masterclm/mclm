@@ -202,23 +202,22 @@ Currently the implementation of
 }
 \examples{
 toy_corpus <- "Once upon a time there was a tiny toy corpus.
-It consisted of three sentence. And it lived happily ever after."
+It consisted of three sentences. And it lived happily ever after."
 
 (flist <- freqlist(toy_corpus, as_text = TRUE))
 print(flist, n = 20)
 
-t_splitter <- "(?xi) [:\\\\\\\\s.;,?!\\\\"]+"
+t_splitter <- "(?xi) [:\\\\s.;,?!\"]+"
 freqlist(toy_corpus,
          re_token_splitter = t_splitter,
          as_text = TRUE)
          
-t_splitter <- "(?xi) [:\\\\s.;,?!\\"]+"
 freqlist(toy_corpus,
          re_token_splitter = t_splitter,
          token_to_lower = FALSE,
          as_text = TRUE)
 
-t_extractor <- "(?xi) ( [:;?!] | [.]+ | [\\\\\\\\w'-]+ )"
+t_extractor <- "(?xi) ( [:;?!] | [.]+ | [\\\\w'-]+ )"
 freqlist(toy_corpus,
         re_token_splitter = NA,
         re_token_extractor = t_extractor,

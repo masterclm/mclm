@@ -417,23 +417,22 @@ type_freq <- function(x, types = NULL, with_names = FALSE, ...) {
 #'
 #' @examples
 #' toy_corpus <- "Once upon a time there was a tiny toy corpus.
-#' It consisted of three sentence. And it lived happily ever after."
+#' It consisted of three sentences. And it lived happily ever after."
 #' 
 #' (flist <- freqlist(toy_corpus, as_text = TRUE))
 #' print(flist, n = 20)
 #' 
-#' t_splitter <- "(?xi) [:\\\\s.;,?!\\"]+"
+#' t_splitter <- "(?xi) [:\\s.;,?!\"]+"
 #' freqlist(toy_corpus,
 #'          re_token_splitter = t_splitter,
 #'          as_text = TRUE)
 #'          
-#' t_splitter <- "(?xi) [:\\\\s.;,?!\\"]+"
 #' freqlist(toy_corpus,
 #'          re_token_splitter = t_splitter,
 #'          token_to_lower = FALSE,
 #'          as_text = TRUE)
 #' 
-#' t_extractor <- "(?xi) ( [:;?!] | [.]+ | [\\\\w'-]+ )"
+#' t_extractor <- "(?xi) ( [:;?!] | [.]+ | [\\w'-]+ )"
 #' freqlist(toy_corpus,
 #'         re_token_splitter = NA,
 #'         re_token_extractor = t_extractor,
@@ -661,16 +660,19 @@ freqlist_diff <- function(x, y) {
 }
 
 
-# private function freqlist_merge_two()
-# both x and y are assumed to be of class "freqlist"
-# --------------------------------------------------------------------------
-# WARNING! This private function does not sort the types in the result by rank,
-#          so this is something the public functions freqlist_merge() and
-#          freqlist_merge_all() need to take care of !!!
-# ---------------------------------------------------------------------------
-# in the current implementation, orig_ranks are lost when merging, because
-# they are no longer necessarily unique.
-# ---------------------------------------------------------------------------
+#' Merge two frequency lists
+#' 
+#' This private function does not sort the types in the result by rank,
+#' so this is something the public functions freqlist_merge() and 
+#' freqlist_merge_all() need to take care of !!!
+#' 
+#' In the current implementation, orig_ranks are lost when merging, because
+#' they are no longer necessarily unique.
+#'
+#' @param x,y Object of class freqlist 
+#'
+#' @return Object of class freqlist
+#' @noRd
 freqlist_merge_two <- function(x, y) {
   names <- dplyr::union(names(x), names(y))
   tot_n_tokens_x <- attr(x, "tot_n_tokens")
