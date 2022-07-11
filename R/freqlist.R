@@ -1094,7 +1094,45 @@ sort.freqlist <- function(x,
 }
 
 
-# public function as_freqlist()
+#' Coerce table to a frequency list
+#' 
+#' Coerce object of class \code{table} to an object of class \code{freqlist}.
+#'
+#' @param x Object of class \code{table} or named numeric vector that will be
+#'   interpreted as such.
+#' @param tot_n_tokens Number representing the total number of tokens in the
+#'   corpus from which the frequency list is derived. When \code{tot_n_tokens}
+#'   is \code{NULL}, this total number of tokens will be taken to be the sum
+#'   of the frequencies in \code{x}.
+#' @param sort_by_ranks Boolean value.
+#'   If \code{TRUE}, the items in the frequency list are sorted by frequency
+#'   rank. If \code{FALSE}, the items in the frequency list, depending on the
+#'   input type, either are sorted alphabetically or are not sorted at all.
+#'
+#' @return Object of class \code{freqlist}.
+#' @seealso freqlist
+#' @export
+#' 
+#' @examples
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#' It consisted of three sentence. And it lived happily ever after."
+#' 
+#' ## make frequency list in a roundabout way
+#' tokens <- tokenize(toy_corpus)
+#' flist <- as_freqlist(table(tokens))
+#' flist
+#' 
+#' ## more direct procedure
+#' freqlist(toy_corpus, as_text = TRUE)
+#' 
+#' ## build frequency list from scratch: example 1
+#' flist <- as_freqlist(c("a" = 12, "toy" = 53, "example" = 20))
+#' flist
+#' 
+#' ## build frequency list from scratch: example 2
+#' flist <- as_freqlist(c("a" = 12, "toy" = 53, "example" = 20),
+#'                      tot_n_tokens = 1300)
+#' flist
 as_freqlist <- function(x, tot_n_tokens = NULL, sort_by_ranks = TRUE) {
   result <- x
   if (is.null(result)) {
