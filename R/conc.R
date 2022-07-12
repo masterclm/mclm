@@ -170,6 +170,32 @@ conc <-    function(x,
   df
 }
 
+#' Coerce data frame to a concordance object
+#' 
+#' Coerce a data frame to an object of the class \code{conc}.
+#'
+#' @param x A data frame.
+#' @param left The name of the column in \code{x} that contains the left co-text
+#'   of the concordance. Is \code{is.na(left)}, then this column is assumed
+#'   to have the name \code{"left"}.
+#' @param match The name of the column in \code{x} that contains the match
+#'   of the concordance. Is \code{is.na(match)}, then this column is assumed
+#'   to have the name \code{"match"}.
+#' @param right The name of the column in \code{x} that contains the right co-text
+#'   of the concordance. Is \code{is.na(right)}, then this column is assumed
+#'   to have the name \code{"right"}.
+#' @param keep_original Boolean value. If the values of
+#'   \code{left}, \code{match} or \code{right} are not \code{NA}, should
+#'   the original names of those columns be kept in the \code{conc} object.
+#' @param ... Additional arguments.
+#'
+#' @return An object of class \code{conc}.
+#' @export
+#'
+#' @examples
+#' (conc_data <- conc('A very small corpus.', '\\w+', as_text = TRUE))
+#' df <- as.data.frame(conc_data)
+#' as_conc(df)
 as_conc <- function(x,
                     left = NA,
                     match = NA,
@@ -190,9 +216,7 @@ as_conc <- function(x,
     if (! keep_original) {
       d[[left]] <- NULL 
     }    
-  }
-  # --
-  if (is.na(left) || left == "left") {
+  } else {
     if (is.null(d[["left"]])) {
       stop("the object 'x' does not have a column 'left'")
     }
@@ -209,9 +233,7 @@ as_conc <- function(x,
     if (! keep_original) {
       d[[match]] <- NULL 
     }    
-  }
-  # --
-  if (is.na(match) || match == "match") {
+  } else {
     if (is.null(d[["match"]])) {
       stop("the object 'x' does not have a column 'match'")
     }
@@ -228,9 +250,7 @@ as_conc <- function(x,
     if (! keep_original) {
       d[[right]] <- NULL 
     }    
-  }
-  # --
-  if (is.na(right) || right == "right") {
+  } else {
     if (is.null(d[["right"]])) {
       stop("the object 'x' does not have a column 'right'")
     }
@@ -241,7 +261,6 @@ as_conc <- function(x,
   # ==
   d
 }
-
 
 # S3 methods from mclm =========================================================
 explore.conc <- function(x,
