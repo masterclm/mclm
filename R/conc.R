@@ -396,6 +396,21 @@ print.conc <- function(x, n = 30, ...) {
   invisible(x)
 }
 
+#' Coerce concordance to data frame
+#' 
+#' Coerce object of class \code{conc} to \code{data.frame}.
+#'
+#' @param x An object of class \code{conc}.
+#' @param ... Additional arguments.
+#'
+#' @return An object of class \code{data.frame}.
+#' @export
+#' @exportS3Method as.data.frame conc
+#' @seealso \code{\link{as_tibble.conc}}
+#'
+#' @examples
+#' (conc_data <- conc('A very small corpus.', '\\w+', as_text = TRUE))
+#' as.data.frame(conc_data)
 as.data.frame.conc <- function(x, ...) {
   if (!"conc" %in% class(x)) {
     stop("x must be of class \"conc\"")
@@ -405,6 +420,20 @@ as.data.frame.conc <- function(x, ...) {
   d
 }
 
+#' Coerce concordance to tibble
+#' 
+#' Coerce an object of class \code{conc} to \code{\link[tibble]{tibble}}.
+#'
+#' @param x Object of class \code{conc}.
+#' @param ... Additional arguments.
+#'
+#' @return Object of class \code{\link[tibble]{tibble}}.
+#' @export
+#' @exportS3Method tibble::as_tibble conc
+#'
+#' @examples
+#' (conc_data <- conc('A very small corpus.', '\\w+', as_text = TRUE))
+#' as_tibble(conc_data)
 as_tibble.conc <- function(x, ...) {
   if (!"conc" %in% class(x)) {
     stop("x must be of class \"conc\"")
