@@ -172,13 +172,11 @@ cat_if_verbose <- function(x, verbose = TRUE) {
 
 # ngram related functions ======================================================
 
-# TODO:
-#  - Some of the functions below either (i) will have to be 'translated' from
-#    a 'for-loop' approach to an 'lapply' approach or (ii) will have to be
+# TODO: Some of the functions below either (i) will have to be 'translated'...
+#    from a 'for-loop' approach to an 'lapply' approach or (ii) will have to be
 #    adapted so that they use mutable objects (e.g. environments).
 
-# TODO:
-#  - Build (real) skip-gram routine
+# TODO: Build (real) skip-gram routine
 
 
 list_paste <- function(x, sep = "_") {
