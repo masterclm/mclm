@@ -11,7 +11,7 @@
 
 \item{n}{Number of items to print in the KWIC display.}
 
-\item{...}{Additional arguments.}
+\item{...}{Additional arguments for \code{\link{print_kwic}}.}
 }
 \value{
 Invisibly, \code{x}.

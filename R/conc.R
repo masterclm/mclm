@@ -365,11 +365,12 @@ explore.conc <- function(x,
 #'
 #' @param x An object of class \code{conc}.
 #' @param n Number of items to print in the KWIC display.
-#' @param ... Additional arguments.
+#' @param ... Additional arguments for \code{\link{print_kwic}}.
 #'
 #' @return Invisibly, \code{x}.
 #' @export
 #' @exportS3Method print conc
+#' @seealso \code{\link{print_kwic}}
 #'
 #' @examples
 #' (conc_data <- conc('A very small corpus.', '\\w+', as_text = TRUE))
@@ -443,6 +444,26 @@ as_tibble.conc <- function(x, ...) {
 
 # Public functions applied to class ============================================
 
+#' Print a concordance in KWIC format
+#' 
+#' Print a concordance in KWIC format.
+#' 
+#' @param x An object of class \code{conc}.
+#' @param min_c_left,max_c_left Minimum and maximum size, expressed in number of
+#'   characters, of the left co-text in the KWIC display.
+#' @param min_c_match,max_c_match Minimum and maximum size, expressed in number of
+#'   characters, of the match in the KWIC display.
+#' @param min_c_right,max_c_right Minimum and maximum size, expressed in number of
+#'   characters, of the right co-text in the KWIC display.
+#' @param from Index of the first item of \code{x} to be displayed.
+#' @param n Number of consecutive items in \code{x} to be displayed.
+#' @param drop_tags Boolean. Should tags be hidden?
+#'
+#' @return Invisibly, \code{x}.
+#' @export
+#' @seealso \code{\link{print.conc}}
+#'
+#' @inherit print.conc examples
 print_kwic <- function(x, 
                        min_c_left = NA,
                        max_c_left = NA,
