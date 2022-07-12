@@ -1,22 +1,16 @@
-# =============================================================================
-# utility functions
-# =============================================================================
+# Distance measures ============================================================
 
-# depends: utils::flush()
-
-
-# -----------------------------------------------------------------------------
-# distance measures
-# -----------------------------------------------------------------------------
-
+#' Compute cosine distances
+#'
+#' @param x A matrix?
+#'
+#' @return Distances between row items of \code{x}.
+#' @noRd
 cosine_dist <- function(x) {
   (1 - x %*% t(x) / (sqrt(rowSums(x^2) %*% t(rowSums(x^2)))))
 }
 
-
-# -----------------------------------------------------------------------------
-# ad hoc functions used in section on slma()
-# -----------------------------------------------------------------------------
+# For slmg() ===================================================================
 
 adhoc_min <- function(x) {
   if (sum(!is.na(x)) == 0) {
@@ -42,11 +36,16 @@ adhoc_sum <- function(x) {
   }
 }
 
+# string manipulation functions ================================================
 
-# -----------------------------------------------------------------------------
-# string manipulation functions
-# -----------------------------------------------------------------------------
-
+#' Remove spaces from character string
+#'
+#' @param x Character string.
+#' @param remove_leading Whether to remove leading spaces.
+#' @param remove_trailing Wheather to remove trailing spaces.
+#'
+#' @return Character string
+#' @noRd
 cleanup_spaces <- function(x,
                            remove_leading = TRUE,
                            remove_trailing = TRUE) {
@@ -60,6 +59,7 @@ cleanup_spaces <- function(x,
   x
 }
 
+# Drop XML tags from character string
 drop_tags <- function(x, half_tags_too = TRUE) {
    if (half_tags_too) {
       x <- gsub("^[^<]*>|<[^>]*>|<[^>]*$", "", x, perl = TRUE)
@@ -69,17 +69,25 @@ drop_tags <- function(x, half_tags_too = TRUE) {
    x
 }
 
+# Repeat a string and paste
 rep_str <- function(x, n) {
   paste(rep(x, n), collapse = "")
 }
 
-# the following function is introduced, because both
-#         stringr::str_pad
-# and     stringi::stri_pad_left
-# appear to mess up in certain contexts:
-# e.g.
-#         Sys.setlocale(category = "LC_ALL", locale = "Greek")
-#         stringr::str_pad(c("Λορεμ", "ιπσθμ", "δολορ", "σιτ", "αμετ"), 20)
+#' Add left padding
+#' 
+#' Motivation: stringr::str_pad and string::stri_pad_left appear to mess up in
+#' certain contexts, e.g.
+#'   \code{Sys.setlocale(category = "LC_ALL", locale = "Greek")}
+#'   \code{stringr::str_pad(c("Λορεμ", "ιπσθμ", "δολορ", "σιτ", "αμετ"), 20)}
+#'
+#' @param x Character string
+#' @param width Desired width of complete text
+#' @param pad Character to use for padding
+#' @param nchar_x Number of characters of text. If \code{NULL}, \code{nchar(x)}.
+#'
+#' @return Character string with left padding.
+#' @noRd
 mclm_pad_left <- function(x, width, pad = " ", nchar_x = NULL) {
   if (is.null(nchar_x)) {
     nchar_x <- nchar(x)
@@ -88,9 +96,7 @@ mclm_pad_left <- function(x, width, pad = " ", nchar_x = NULL) {
   paste0(unlist(Map(rep_str, rep(pad, length(x)), len_needed)), x)
 }
 
-# ----------------------------------------------------------------------------
-# unicode related issues
-# ----------------------------------------------------------------------------
+# unicode related issues =======================================================
 
 restore_unicode <- function(x) {
   x <- gsub("<U\\+([0-9A-F]{4})>", "\\\\u\\1", x, perl = TRUE)
@@ -101,23 +107,61 @@ to_utf8 <- function(x) {
   stringi::stri_encode(x, "UTF-8")
 }
 
+# matrix manipulation functions ================================================
 
-# -----------------------------------------------------------------------------
-# matrix manipulation functions
-# -----------------------------------------------------------------------------
-
-# with x a matrix containing frequency counts, make a copy of x from which
-# the all-zero rows and all-zero columns are removed;
-# This function does no checking whatsoever:
-#  drop_empty_rc(x) is simply identical to (and is simply implemented as) 
-#   x[rowSums(x) > 0, colSums(x) > 0, drop = FALSE]
+#' Drop empty rows and columns from a matrix
+#' 
+#' With \code{x} a matrix containing frequency counts, make a copy of \code{x}
+#' from which the all-zero rows and all-zero columns are removed.
+#' No checks are performed by this function.
+#' 
+#' This is just a convenience function. It is identical to, and implemented as,
+#' \code{x[rowSums(x) > 0, colSums(x) > 0, drop = FALSE]}
+#'
+#' @param x A matrix, assumed to contain frequency counts.
+#'
+#' @return Matrix, with all-zero rows and columns removed.
+#' @export
+#' 
+#' @examples
+#' # first example
+#' m <- matrix(nrow = 3, byrow = TRUE,
+#'             dimnames = list(c('r1','r2','r3'),
+#'                            c('c1','c2','c3')),
+#'            c(10, 0, 4,
+#'              0, 0, 0,
+#'              5, 0, 7))
+#' 
+#' m
+#' m2 <- drop_empty_rc(m)
+#' m2
+#' 
+#' ## second example
+#' m <- matrix(nrow = 3, byrow = TRUE,
+#'            dimnames = list(c('r1','r2','r3'),
+#'                           c('c1','c2','c3')),
+#'            c(0, 0, 4,
+#'              0, 0, 0,
+#'              0, 0, 7))
+#' m
+#' m2 <- drop_empty_rc(m)
+#' m2
+#' 
+#' ## third example
+#' m <- matrix(nrow = 3, byrow = TRUE,
+#'             dimnames = list(c('r1','r2','r3'),
+#'                             c('c1','c2','c3')),
+#'            c(0, 0, 0,
+#'              0, 0, 0,
+#'              0, 0, 0))
+#' m
+#' m2 <- drop_empty_rc(m)
+#' m2 
 drop_empty_rc <- function(x) {
   x[rowSums(x) > 0, colSums(x) > 0, drop = FALSE]
 }
 
-# ----------------------------------------------------------------------------
-# console related functions
-# ----------------------------------------------------------------------------
+# console related functions ====================================================
 
 cat_if_verbose <- function(x, verbose = TRUE) {
   if (verbose) {
@@ -126,18 +170,16 @@ cat_if_verbose <- function(x, verbose = TRUE) {
   }
 }
 
-# ---------------------------------------------------------------------------
-# ngram related functions
-# ---------------------------------------------------------------------------
+# ngram related functions ======================================================
+
 # TODO:
 #  - Some of the functions below either (i) will have to be 'translated' from
 #    a 'for-loop' approach to an 'lapply' approach or (ii) will have to be
 #    adapted so that they use mutable objects (e.g. environments).
-# ---------------------------------------------------------------------------
+
 # TODO:
 #  - Build (real) skip-gram routine
-#
-# --------------------------------------------------------------------------
+
 
 list_paste <- function(x, sep = "_") {
   if (length(x) == 0) {
