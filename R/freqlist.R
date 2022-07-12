@@ -1354,7 +1354,26 @@ plot.summary.freqlist <- function(x, ...) {
   invisible(NULL)
 }
 
-# public S3 function print()
+#' Print a frequency list
+#' 
+#' Print an object of class \code{freqlist}.
+#'
+#' @param x Object of class \code{freqlist}.
+#' @param n Number of items to print.
+#' @param from Position of the first item to print.
+#' @param extra Extra settings.
+#' @param ... Additional arguments.
+#'
+#' @return Invisibly, \code{x}.
+#' @export
+#' @exportS3Method print freqlist
+#'
+#' @examples
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#' It consisted of three sentences. And it lived happily ever after."
+#' (flist <- freqlist(toy_corpus, as_text = TRUE))
+#' print(flist)
+#' print(flist, from = 7, n = 10)
 print.freqlist <- function(x,
                            n = 20, from = 1,
                            extra = NULL,
