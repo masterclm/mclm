@@ -186,7 +186,7 @@ Currently the implementation of
 }
 \examples{
 toy_corpus <- "Once upon a time there was a tiny toy corpus.
-It consisted of three sentence. And it lived happily ever after."
+It consisted of three sentences. And it lived happily ever after."
 types(toy_corpus, as_text = TRUE)
 }
 \seealso{

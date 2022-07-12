@@ -28,7 +28,7 @@ Coerce object to a vector of types
 \examples{
 
 toy_corpus <- "Once upon a time there was a tiny toy corpus.
-It consisted of three sentence. And it lived happily ever after."
+It consisted of three sentences. And it lived happily ever after."
 
 flist <- freqlist(toy_corpus, re_token_splitter = "\\\\\\\\W+", as_text = TRUE)
 print(flist, n = 1000)

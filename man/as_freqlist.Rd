@@ -28,7 +28,7 @@ Coerce object of class \code{table} to an object of class \code{freqlist}.
 }
 \examples{
 toy_corpus <- "Once upon a time there was a tiny toy corpus.
-It consisted of three sentence. And it lived happily ever after."
+It consisted of three sentences. And it lived happily ever after."
 
 ## make frequency list in a roundabout way
 tokens <- tokenize(toy_corpus)

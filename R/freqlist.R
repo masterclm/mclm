@@ -1115,7 +1115,7 @@ sort.freqlist <- function(x,
 #' 
 #' @examples
 #' toy_corpus <- "Once upon a time there was a tiny toy corpus.
-#' It consisted of three sentence. And it lived happily ever after."
+#' It consisted of three sentences. And it lived happily ever after."
 #' 
 #' ## make frequency list in a roundabout way
 #' tokens <- tokenize(toy_corpus)
@@ -1179,7 +1179,31 @@ as_freqlist <- function(x, tot_n_tokens = NULL, sort_by_ranks = TRUE) {
 }
 
 
-# public S3 function as.data.frame()
+#' Coerce frequency list to data frame 
+#' 
+#' Coerce a \code{freqlist} to a \code{data.frame}.
+#'
+#' @param x Object of class \code{freqlist}.
+#' @param row.names \code{NULL} or a character vector giving the row names for 
+#'   the data frame. Missing values are not allowed.
+#' @param optional Boolean. Whether setting row names and converting column names
+#'   to syntactic names is optional. See \code{\link{as.data.frame}}.
+#' @param ... Additional arguments.
+#'
+#' @return A \code{data.frame}.
+#' @exportS3Method as.data.frame freqlist
+#' @export
+#' @seealso as_tibble.freqlist
+#'
+#' @examples
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#' It consisted of three sentences. And it lived happily ever after."
+#' 
+#' (flist <- freqlist(toy_corpus, as_text = TRUE))
+#' as.data.frame(flist)
+#' 
+#' (flist2 <- keep_re(flist, "^..?$"))
+#' as.data.frame(flist2)
 as.data.frame.freqlist <- function(x,
                                    row.names = NULL,
                                    optional = FALSE,
@@ -1204,7 +1228,27 @@ as.data.frame.freqlist <- function(x,
   result
 }
 
-# public S3 function as_tibble()
+#' Coerce frequency list into a tibble
+#' 
+#' Coerce \code{freqlist} into \code{\link[tibble]{tibble}}.
+#' 
+#' @param x Object of class \code{freqlist}.
+#' @param ... Additional arguments.
+#'
+#' @return Object of class \code{\link[tibble]{tibble}}.
+#' @export
+#' @exportS3Method tibble::as_tibble freqlist
+#' @seealso as.data.frame..freqlist
+#'
+#' @examples
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#' It consisted of three sentences. And it lived happily ever after."
+#' 
+#' (flist <- freqlist(toy_corpus, as_text = TRUE))
+#' as_tibble(flist)
+#' 
+#' (flist2 <- keep_re(flist, "^..?$"))
+#' as_tibble(flist2)
 as_tibble.freqlist <- function(x, ...) {
   if (!"freqlist" %in% class(x)) {
     stop("x must be of class 'freqlist'")
@@ -1685,10 +1729,8 @@ read_freqlist <- function(file,
 # public function write_freqlist()
 #  - writes a 'freqlist' object to a csv file
 #  - by default also creates an associated config file
-# ------------------------------------------------------
 # in the current implementation, orig_ranks are not
 # written to file
-# ------------------------------------------------------
 write_freqlist <- function(x,
                            file,
                            sep = "\t",

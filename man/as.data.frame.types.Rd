@@ -20,7 +20,7 @@ The S3 method \code{as.data.frame}, when applied to an object \code{x} of the
 }
 \examples{
 toy_corpus <- "Once upon a time there was a tiny toy corpus.
-It consisted of three sentence. And it lived happily ever after."
+It consisted of three sentences. And it lived happily ever after."
 
 (typs <- types(toy_corpus, as_text = TRUE))
 
