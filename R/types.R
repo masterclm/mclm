@@ -294,7 +294,7 @@ explore.types <- function(x,
 #' (which by default is \code{FALSE}) is set to \code{TRUE}.
 #' In that case,  the items that \emph{do not match} the selection criterion are selected.
 #' 
-#' Subset selection for \code{'types'} object with the notation \code{[]},
+#' Subset selection with the notation \code{[]},
 #' in which case argument \code{i} is the selection criterion, behaves
 #' similarly to the \code{keep}-methods. For more details on the relation
 #' between the \code{[]} notation and the \code{keep}-methods, 
@@ -323,8 +323,8 @@ explore.types <- function(x,
 #'   \code{FALSE}, those items are selected for which \code{bool} is \code{TRUE}.
 #' @param types Either an object of the class \code{'types'}
 #'   (see \code{\link{types}} and \code{\link{as_types}}) or a character vector.
-#'   Assuming \code{invert} is \code{FALSE},
-#'   those items are selected the name of which is included in \code{types}.
+#'   Assuming \code{invert} is \code{FALSE}, the items whose names are included
+#'   in these argument are selected.
 #' @param i Selection criterion when subsetting with \code{[]}; depending on its
 #'  class, it behaves differently:
 #'   \describe{

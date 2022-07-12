@@ -3,6 +3,7 @@
 \name{plot.freqlist}
 \alias{plot.freqlist}
 \alias{plot.summary.freqlist}
+\alias{[<-.freqlist}
 \alias{stubs}
 \alias{[<-.types}
 \alias{plot.types}
@@ -12,6 +13,8 @@
 \method{plot}{freqlist}(x, ...)
 
 \method{plot}{summary.freqlist}(x, ...)
+
+\method{[}{freqlist}(x, i, ...) <- value
 
 \method{[}{types}(x, i, invert = FALSE) <- value
 

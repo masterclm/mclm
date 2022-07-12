@@ -1517,7 +1517,58 @@ print.freqlist <- function(x,
   invisible(x)
 }
 
-# public S3 function drop_types()
+
+#' Subset a 'freqlist' object
+#' 
+#' Methods to subset objects of class \code{freqlist} by position, list of types,
+#' regex match or via boolean statements.
+#' 
+#' @inherit subset_types description
+#'
+#' @param x Object of class \code{freqlist}.
+#' @inheritParams subset_types
+#'
+#' @return Object of class \code{freqlist} with the selected elements only.
+#' @name subset_freqlist
+#'
+#' @examples
+#' 
+#' (flist <- freqlist("The man and the mouse.", as_text = TRUE))
+#' 
+#' keep_re(flist, "[ao]")
+#' drop_re(flist, "[ao]")
+#' keep_re(flist, "[ao]", invert = TRUE) # same as drop_re()
+#' 
+#' flist[re("[ao]")]
+#' flist[re("[ao]"), invert = TRUE]
+#' 
+#' keep_bool(flist, type_freqs(flist) < 2)
+#' drop_bool(flist, type_freqs(flist) >= 2)
+#' keep_bool(flist, ranks(flist) <= 3)
+#' 
+#' flist[type_freqs(flist) < 2]
+#' flist[ranks(flist) <= 3]
+#' flist[ranks(flist) <= 3, invert = TRUE]
+#' 
+#' keep_bool(flist, c(FALSE, TRUE, TRUE, FALSE)) 
+#' 
+#' (flist2 <- keep_bool(flist, type_freqs(flist) < 2))
+#' keep_bool(flist2, orig_ranks(flist2) > 2)
+#' flist2[orig_ranks(flist2) > 2]
+#' 
+#' keep_pos(flist, c(2, 3))
+#' flist[2:3]
+#' 
+#' keep_types(flist, c("man", "and"))
+#' drop_types(flist, c("man", "and"))
+#' keep_types(flist, c("man", "and"), invert = TRUE) # same as drop_types()
+#' flist[c("man", "and")]
+#' flist[as_types(c("man", "and"))]
+NULL
+
+#' @describeIn subset_freqlist Drop items by names of types
+#' @exportS3Method drop_pos freqlist
+#' @export
 drop_types.freqlist <- function(x, types, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -1526,7 +1577,9 @@ drop_types.freqlist <- function(x, types, ...) {
   keep_types.freqlist(x, types, invert = TRUE, ...)
 }
 
-# public S3 function keep_types()
+#' @describeIn subset_freqlist Keep items by names of types
+#' @exportS3Method keep_pos freqlist
+#' @export
 keep_types.freqlist <- function(x, types, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"freqlist" %in% class(x)) {
@@ -1574,7 +1627,9 @@ keep_types.freqlist <- function(x, types, invert = FALSE, ...) {
   result
 }
 
-# public S3 function drop_re()
+#' @describeIn subset_freqlist Drop items by regular expression
+#' @exportS3Method drop_re freqlist
+#' @export
 drop_re.freqlist <- function(x, pattern, perl = TRUE, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -1584,7 +1639,9 @@ drop_re.freqlist <- function(x, pattern, perl = TRUE, ...) {
 }
 
 
-# public S3 function keep_re()
+#' @describeIn subset_freqlist Keep items by regular expression
+#' @exportS3Method keep_re freqlist
+#' @export
 keep_re.freqlist <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   # -- test x for errors
   if (!"freqlist" %in% class(x)) {
@@ -1644,7 +1701,9 @@ keep_re.freqlist <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   result
 }
 
-# public S3 function drop_bool()
+#' @describeIn subset_freqlist Keep items based on boolean expression
+#' @exportS3Method drop_bool freqlist
+#' @export
 drop_bool.freqlist <- function(x, bool, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -1653,7 +1712,9 @@ drop_bool.freqlist <- function(x, bool, ...) {
   keep_bool.freqlist(x, !bool, ...)
 }
 
-# public S3 function keep_bool()
+#' @describeIn subset_freqlist Keep items based on boolean expression
+#' @exportS3Method keep_bool freqlist
+#' @export
 keep_bool.freqlist <- function(x, bool, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"freqlist" %in% class(x)) {
@@ -1688,7 +1749,9 @@ keep_bool.freqlist <- function(x, bool, invert = FALSE, ...) {
   result
 }
 
-# public S3 function drop_pos()
+#' @describeIn subset_freqlist Keep items by position
+#' @exportS3Method drop_pos freqlist
+#' @export
 drop_pos.freqlist <- function(x, pos, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -1697,7 +1760,9 @@ drop_pos.freqlist <- function(x, pos, ...) {
   keep_pos.freqlist(x, pos, invert = TRUE, ...)
 }
 
-# public S3 function keep_pos()
+#' @describeIn subset_freqlist Keep items by position
+#' @exportS3Method keep_pos freqlist
+#' @export
 keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"freqlist" %in% class(x)) {
@@ -1742,11 +1807,13 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
   result
 }
 
-# private subset selection function
-# x is assumed to be a freqlist object (not tested)
-# sel can be:
-#  - numeric vector with positions
-#  - boolean vector
+#' Subset freqlist
+#'
+#' @param x Object of class \code{freqlist}.
+#' @param sel Numeric vector with positions or boolean vector.
+#'
+#' @return Filtered object of class \code{freqlist}
+#' @noRd
 subset_freqlist <- function(x, sel) {
   result <- as.numeric(x)[sel]
   names(result) <- names(x)[sel]
@@ -1824,6 +1891,9 @@ rev.freqlist <- function(x) {
   result
 }
 
+#' @describeIn subset_freqlist Keep items based on different criteria
+#' @exportS3Method `[` freqlist
+#' @export
 `[.freqlist` <- function(x, i, invert = FALSE, ...) {
   if (!"freqlist" %in% class(x)) {
     stop("subsetted object must be of class 'freqlist'")
@@ -1864,6 +1934,9 @@ rev.freqlist <- function(x) {
   result
 }
 
+#' @rdname stubs
+#' @exportS3Method `[<-` freqlist
+#' @export
 `[<-.freqlist` <- function(x, i, ..., value) {
   stop("subset assignment is not supported for 'freqlist' objects")
 }

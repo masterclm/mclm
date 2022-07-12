@@ -51,8 +51,8 @@ or the non-matches should be selected.}
 
 \item{types}{Either an object of the class \code{'types'}
 (see \code{\link{types}} and \code{\link{as_types}}) or a character vector.
-Assuming \code{invert} is \code{FALSE},
-those items are selected the name of which is included in \code{types}.}
+Assuming \code{invert} is \code{FALSE}, the items whose names are included
+in these argument are selected.}
 
 \item{pattern}{Either an object of the class \code{'re'} (see \code{\link{re}})
 or a character vector of length one, which contains a regular expression.}
@@ -101,7 +101,7 @@ behave identical to how the \code{keep}-methods work when the argument \code{inv
 (which by default is \code{FALSE}) is set to \code{TRUE}.
 In that case,  the items that \emph{do not match} the selection criterion are selected.
 
-Subset selection for \code{'types'} object with the notation \code{[]},
+Subset selection with the notation \code{[]},
 in which case argument \code{i} is the selection criterion, behaves
 similarly to the \code{keep}-methods. For more details on the relation
 between the \code{[]} notation and the \code{keep}-methods, 
