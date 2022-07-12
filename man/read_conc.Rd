@@ -40,5 +40,5 @@ write_conc(d, "example_data.tab")
 }
 }
 \seealso{
-\code{\link{write_conc}}
+\code{\link{import_conc}} for files not generated with \code{\link{write_conc}}.
 }
