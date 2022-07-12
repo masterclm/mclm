@@ -1,4 +1,87 @@
 # Create or coerce to class ====================================================
+
+#' Build a concordance for the matches of a regex
+#' 
+#' Build a concordance for the matches of a regular expresion. The result is a
+#' dataset that can be written to a file with the function \code{\link{write_conc}}.
+#' It mimics the behavior of the concordance tool in the program AntConc.
+#' 
+#' In order to make sure that the columns \code{left}, \code{match},
+#' and \code{right} in the output of \code{conc} do not contain any TAB or NEWLINE
+#' characters, whitespace in these items is being 'normalized'.
+#' More particularly, each stretch of whitespace, i.e. each  uninterrupted
+#' sequences of whitespace characters, is replaced by  a single SPACE character.
+#' 
+#' The values in the items the \code{glob_id} and \code{id} in the output
+#' of \code{conc} are always identical in a dataset that is the output of the
+#' function \code{conc}. The item  \code{glob_id} only becomes useful when later,
+#' for instance, one wants to merge two datasets.#' 
+#'
+#' @param x A character vector determining which text is to be used as corpus.
+#'   
+#'   If \code{as_text = TRUE}, \code{x} is treated as the actual text to be used
+#'   as corpus.
+#'   
+#'   If \code{as_text = FALSE} (the default), \code{x} is trated as a vector of
+#'   filenames, interpreted as the names of the corpus files that contain the
+#'   actual corpus data.
+#' @param pattern Character string containing the regular expression that serves
+#'   as search term for the concordancer.
+#' @param c_left Number. How many characters to the left of each match must be
+#'   included in the result as left co-text of the match.
+#' @param c_right Number. How many characters to the right of each match must be
+#'   included in the result as right co-text of the match.
+#' @param perl If \code{TRUE}, \code{pattern} is treated as a PCRE flavor regular
+#'   expression. Otherwise, \code{pattern} is treated as a regular expression in R's
+#'   default flavor of regular expression.
+#' @param re_drop_line Character vector or \code{NULL}. If \code{NULL}, the argument
+#'   is ignored.
+#'   Otherwise, lines in \code{x} containing a match for \code{re_drop_line} are
+#'   treated as not belonging to the corpus and are excluded from the results.
+#' @param line_glue Character vector or \code{NULL}. If \code{NULL}, the argument
+#'   is ignored.
+#'   Otherwise, all lines in the corpus are glued together in one character
+#'   vector of length 1, with the string \code{line_glue} pasted in between
+#'   consecutive lines.
+#'   The value of \code{line_glue} can also be equal to the empty string (\code{""}).
+#'   The 'line_glue' operation is conducted immediately after the 'drop line' operation.
+#' @param re_cut_area Character vector or \code{NULL}. If \code{NULL}, the argument
+#'   is ignored.
+#'   Otherwise, all matches in the corpus are 'cut out' of the text prior to the
+#'   identification of the tokens in the text (and are therefore not taken into
+#'   account when identifying tokens).
+#'   The 'cut area' operation is conducted immediately after the 'line glue' operation.
+#' @param file_encoding File encoding for reading each corpus file. Ignored if
+#'   \code{as_text = TRUE}. Otherwise, it must be a character vector of length one
+#'   (in which case the same encoding is used for all files) or with the same
+#'   length as \code{x} (in which case each file can have a different encoding).
+#' @param as_text Boolean value.
+#'   If \code{TRUE}, the content of \code{x} is treated
+#'   as the actual text of the corpus (with each item within \code{x} treated as
+#'   a separate 'document in RAM').
+#'   
+#'   If \code{FALSE}, \code{x} is treated as a vector of filenames, interpreted
+#'   as the namse of the corpus files with the actual corpus data.
+#'
+#' @return Object of class \code{conc}, a kind of data frame with as its rows
+#'   the matches and with the following columns:
+#'   \describe{
+#'   \item{glob_id}{Number indicating the position of the match in the
+#'     overall list of matches.}
+#'   \item{id}{Number indicating the position of the match in the list of matches
+#'     for one specific query.}
+#'   \item{source}{Either the filename of the file in which the match was found
+#'     (in case of the setting \code{as_text = FALSE}), or the string '-'
+#'     (in case of the setting \code{as_text = TRUE}).}
+#'   \item{left}{The lefthandside co-text of each match.}
+#'   \item{match}{The actual match.}
+#'   \item{right}{The righthandside co-text of each match.}
+#'   }  
+#' @export
+#'
+#' @examples
+#' (conc_data <- conc('A very small corpus.', '\\w+', as_text = TRUE))
+#' print_kwic(conc_data)
 conc <-    function(x,
                     pattern,
                     c_left = 200,
