@@ -20,6 +20,9 @@
 #'   
 #' @param x Some object
 #' @param ... Additional arguments
+#' @param i Index
+#' @param value Value to change
+#' @param invert Boolean value.
 #' 
 #' @return Invisibly, \code{NULL}. The default \code{n_tokens}, \code{n_types} and
 #'   \code{type_names} methods returns \code{NA}.

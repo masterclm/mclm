@@ -25,7 +25,13 @@
 \arguments{
 \item{x}{Some object}
 
+\item{i}{Index}
+
 \item{...}{Additional arguments}
+
+\item{value}{Value to change}
+
+\item{invert}{Boolean value.}
 }
 \value{
 Invisibly, \code{NULL}. The default \code{n_tokens}, \code{n_types} and

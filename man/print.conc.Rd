@@ -24,3 +24,6 @@ Print an object of class \code{conc}.
 print_kwic(conc_data)
 print(conc_data, n = 3)
 }
+\seealso{
+\code{\link{print_kwic}}
+}

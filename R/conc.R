@@ -478,23 +478,27 @@ print_kwic <- function(x,
   if (! "conc" %in% class(x)) {
     stop("argument 'x' must be of the class 'conc'")
   }
+  
   n_items <- nrow(x)
   if (length(x$left) == 0 ||
       length(x$match) == 0 ||
       length(x$right) == 0) {
     stop("x must have appropriate values for 'left', 'match', and 'right'")
   }
+  
   # testing and processing argument 'n'
   if (length(n) == 0) {
     stop("n must be a numeric vector of length one")
   } else if (length(n) > 1) {
     n <- n[1]
     warning("only using n[1] instead of the whole of n")
-  } 
+  }
+  
   if (is.na(n) || !is.numeric(n)) {
     stop("inappropriate value for n")
   }
   n <- max(0, round(n))
+  
   # testing and processing argument 'from'
   if (length(from) == 0) {
     stop("from must be a numeric vector of length one")
@@ -506,118 +510,160 @@ print_kwic <- function(x,
     stop("inappropriate value for from")
   }
   from <- max(0, round(from))
+  
   # adjusting 'n' to 'from'
   n <- max(0, min(n, n_items - from + 1))
+  
   # making color styles
   mclm_light_gray <- crayon::make_style(rgb(0.8, 0.8, 0.8))
+  
+  if (n == 0) {
+    return(invisible(x))
+  } # the rest will only run if (n > 0)
+  
   # print x
-  if (n > 0) {
-    idx <- from:(from + n - 1)
-    idx_col   <- as.character(idx)
-    left_col  <- as.character(x$left[idx])
-    match_col <- as.character(x$match[idx])
-    right_col <- as.character(x$right[idx])
-    if (drop_tags) {
-      left_col <- cleanup_spaces(drop_tags(left_col))
-      match_col <- cleanup_spaces(drop_tags(match_col))
-      right_col <- cleanup_spaces(drop_tags(right_col))
-    }
-    largest_idx <- max(nchar("idx"), nchar(idx_col), 0)
-    largest_left <- max(nchar("left"), nchar(left_col), 0, na.rm = TRUE)
-    largest_match <- max(nchar("match"), nchar(match_col), 0, na.rm = TRUE)
-    largest_right <- max(nchar("right"), nchar(right_col), 0, na.rm = TRUE)  
-    # calculate width for id_col, left_col, match_col, and right_col
-    c_avail <- max(0, getOption("width") - 7) # 7 for spaces between columns
-    # with some margin for scroll bar
-    # -- id col
-    c_idx_col <- largest_idx
-    idx_col <- stringi::stri_pad_left(idx_col, c_idx_col) 
-    c_avail <- max(0, c_avail - c_idx_col)
-    # -- match col
-    c_match_col <- trunc(c_avail * 0.3)
-    if (! is.na(min_c_match)) {
-      c_match_col <- max(0, min_c_match, c_match_col)
-    }
-    if (! is.na(max_c_match)) {
-      c_match_col <- max(0, min(c_match_col, max_c_match))
-    }
-    c_match_col <- min(c_match_col, largest_match)
-    match_col <- stringr::str_trunc(
-      match_col, c_match_col, side = "center")
-    match_col <- stringi::stri_pad_both(match_col, c_match_col)
-    # -- right col
-    c_avail <- max(0, c_avail - c_match_col)
-    c_right_col <- trunc(c_avail * 0.5)
-    if (! is.na(min_c_right)) {
-      c_right_col <- max(0, min_c_right, c_right_col)
-    }
-    if (! is.na(max_c_right)) {
-      c_right_col <- max(0, min(c_right_col, max_c_right))
-    }
-    c_right_col <- min(c_right_col, largest_right)
-    right_col <- stringr::str_trunc(
-      right_col, c_right_col, side = "right")
-    right_col <- stringi::stri_pad_right(right_col, c_right_col)
-    # -- left col
-    c_left_col <- max(0, c_avail - c_right_col)
-    if (! is.na(min_c_left)) {
-      c_left_col <- max(0, min_c_left, c_left_col)
-    }
-    if (! is.na(max_c_left)) {
-      c_left_col <- max(0, min(c_left_col, max_c_left))
-    }
-    left_col <- stringr::str_trunc(
-      left_col, c_left_col, side = "left")
-    left_col <- stringi::stri_pad_left(left_col, c_left_col)
-    # -- print title
-    cat(stringi::stri_pad_left(stringr::str_trunc("idx",
-                                                  c_idx_col,
-                                                  side = "center"),
-                               c_idx_col))
-    cat(" ")
-    cat(stringi::stri_pad_left(stringr::str_trunc("left",
-                                                  c_left_col,
-                                                  side = "center"),
-                               c_left_col))
-    cat(mclm_light_gray("|"))
-    cat(stringi::stri_pad_both(stringr::str_trunc("match",
-                                                  c_match_col,
-                                                  side = "center"),
-                               c_match_col))    
-    cat(mclm_light_gray("|"))
-    cat(stringi::stri_pad_right(stringr::str_trunc("right",
-                                                   c_right_col,
-                                                   side = "center"),
-                                c_right_col))    
-    
-    cat("\n")
-    # --
-    if (from > 1) cat("...\n")
-    # --  
-    for (i in seq_along(idx)) {
-      cat(mclm_light_gray(idx_col[i]))
-      cat(" ")
-      cat(left_col[i])
-      cat(mclm_light_gray("|"))
-      cat(crayon::blue(match_col[i]))
-      cat(mclm_light_gray("|"))
-      cat(right_col[i])
-      cat("\n")
-    }
-    # --
-    if ((from + n - 1) < n_items) cat("...\n")
+  idx <- from:(from + n - 1)
+  idx_col   <- as.character(idx)
+  left_col  <- as.character(x$left[idx])
+  match_col <- as.character(x$match[idx])
+  right_col <- as.character(x$right[idx])
+  
+  if (drop_tags) {
+    left_col <- cleanup_spaces(drop_tags(left_col))
+    match_col <- cleanup_spaces(drop_tags(match_col))
+    right_col <- cleanup_spaces(drop_tags(right_col))
   }
+  
+  largest_idx <- max(nchar("idx"), nchar(idx_col), 0)
+  largest_left <- max(nchar("left"), nchar(left_col), 0, na.rm = TRUE)
+  largest_match <- max(nchar("match"), nchar(match_col), 0, na.rm = TRUE)
+  largest_right <- max(nchar("right"), nchar(right_col), 0, na.rm = TRUE)  
+  
+  # calculate width for id_col, left_col, match_col, and right_col
+  c_avail <- max(0, getOption("width") - 7) # 7 for spaces between columns
+  # with some margin for scroll bar
+  
+  # -- id col
+  c_idx_col <- largest_idx
+  idx_col <- stringi::stri_pad_left(idx_col, c_idx_col) 
+  c_avail <- max(0, c_avail - c_idx_col)
+  
+  # -- match col
+  c_match_col <- trunc(c_avail * 0.3)
+  if (! is.na(min_c_match)) {
+    c_match_col <- max(0, min_c_match, c_match_col)
+  }
+  if (! is.na(max_c_match)) {
+    c_match_col <- max(0, min(c_match_col, max_c_match))
+  }
+  c_match_col <- min(c_match_col, largest_match)
+  match_col <- stringr::str_trunc(
+    match_col, c_match_col, side = "center")
+  match_col <- stringi::stri_pad_both(match_col, c_match_col)
+  
+  # -- right col
+  c_avail <- max(0, c_avail - c_match_col)
+  c_right_col <- trunc(c_avail * 0.5)
+  if (! is.na(min_c_right)) {
+    c_right_col <- max(0, min_c_right, c_right_col)
+  }
+  if (! is.na(max_c_right)) {
+    c_right_col <- max(0, min(c_right_col, max_c_right))
+  }
+  c_right_col <- min(c_right_col, largest_right)
+  right_col <- stringr::str_trunc(
+    right_col, c_right_col, side = "right")
+  right_col <- stringi::stri_pad_right(right_col, c_right_col)
+  
+  # -- left col
+  c_left_col <- max(0, c_avail - c_right_col)
+  if (! is.na(min_c_left)) {
+    c_left_col <- max(0, min_c_left, c_left_col)
+  }
+  if (! is.na(max_c_left)) {
+    c_left_col <- max(0, min(c_left_col, max_c_left))
+  }
+  left_col <- stringr::str_trunc(
+    left_col, c_left_col, side = "left")
+  left_col <- stringi::stri_pad_left(left_col, c_left_col)
+  
+  # -- print title
+  cat(stringi::stri_pad_left(stringr::str_trunc("idx",
+                                                c_idx_col,
+                                                side = "center"),
+                             c_idx_col))
+  cat(" ")
+  cat(stringi::stri_pad_left(stringr::str_trunc("left",
+                                                c_left_col,
+                                                side = "center"),
+                             c_left_col))
+  cat(mclm_light_gray("|"))
+  cat(stringi::stri_pad_both(stringr::str_trunc("match",
+                                                c_match_col,
+                                                side = "center"),
+                             c_match_col))    
+  cat(mclm_light_gray("|"))
+  cat(stringi::stri_pad_right(stringr::str_trunc("right",
+                                                 c_right_col,
+                                                 side = "center"),
+                              c_right_col))    
+  
+  cat("\n")
+  # --
+  if (from > 1) cat("...\n")
+  # --  
+  for (i in seq_along(idx)) {
+    cat(mclm_light_gray(idx_col[i]))
+    cat(" ")
+    cat(left_col[i])
+    cat(mclm_light_gray("|"))
+    cat(crayon::blue(match_col[i]))
+    cat(mclm_light_gray("|"))
+    cat(right_col[i])
+    cat("\n")
+  }
+  
+  # --
+  if ((from + n - 1) < n_items) cat("...\n")
+  
   invisible(x)
 }
 
+#' Read a concordance from a file
+#' 
+#' Reads concordance-based data frames that are written to file with the function
+#' \code{\link{write_conc}}.
+#'
+#' @param file Name of the input file.
+#' @param sep Field separator used in the input file.
+#' @param file_encoding Encoding of the input file.
+#' @param stringsAsFactors Boolean. Whether character data should automatically
+#'   be converted to factors. It applies to all columns except for \code{"source"},
+#'   \code{"left"}, \code{"match"} and \code{"right"}, which are never converted.
+#' @param ... Additional arguments, not implemented.
+#'
+#' @return Object of class \code{conc}.
+#' @seealso \code{\link{write_conc}}
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' (d <- conc('A very small corpus.', '\\w+', as_text = TRUE))
+#' write_conc(d, "example_data.tab")
+#' (d2 <- read_conc("example_data.tab"))
+#' }
 read_conc <- function(file,
-                      header = TRUE,
                       sep = "\t",
-                      quote = "",
-                      comment_char = "",
                       file_encoding = "UTF-8",
                       stringsAsFactors = FALSE,
                       ...) {
+  # NOTE the previous implementation included some arguments that were not used
+  # and for which documentation was included (which said "not implemented".)
+  # - header: whether the first line in the input file contains column names.
+  #           Always assumed to be TRUE.
+  # - quote: whether data fields are enclosed in quotation marks (or what other
+  #          character). Assumed to be "" - not enclosed.
+  # - comment_char: whether there are commented lines? Simply not implemented.
   lines <- read_txt(file, file_encoding = file_encoding) 
   cols <- unlist(strsplit(lines[[1]], sep))
   lines <- lines[2:length(lines)]
@@ -637,8 +683,20 @@ read_conc <- function(file,
   d
 }
 
-
-# write a concordance
+#' Write a concordance to file.
+#' 
+#' Write an object of class \code{conc} to a file.
+#'
+#' @param x Object of class \code{conc}.
+#' @param file Path to output file.
+#' @param sep Field separator for the columns in the output file.
+#' @param file_encoding Encoding to be used in the output file.
+#'
+#' @return Invisibly, \code{x}.
+#' @export
+#' @seealso \code{\link{read_conc}}
+#'
+#' @inherit read_conc examples
 write_conc <- function(x,
                        file = "",
                        sep = "\t",

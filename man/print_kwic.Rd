@@ -46,3 +46,6 @@ Print a concordance in KWIC format.
 print_kwic(conc_data)
 print(conc_data, n = 3)
 }
+\seealso{
+\code{\link{print.conc}}
+}

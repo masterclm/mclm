@@ -1,9 +1,7 @@
 \name{stubs_original}
 \alias{stubs_original}
-\alias{plot.freqlist}
 \alias{plot.re}
 \alias{plot.tokens}
-\alias{plot.summary.freqlist}
 \alias{plot.summary.re}
 \alias{plot.summary.tokens}
 \alias{n_tokens.default}
