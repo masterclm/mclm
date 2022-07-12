@@ -13,7 +13,7 @@
 #'
 #' @examples
 #' toy_corpus <- "Once upon a time there was a tiny toy corpus.
-#' It consisted of three sentence. And it lived happily ever after."
+#' It consisted of three sentences. And it lived happily ever after."
 #' types(toy_corpus, as_text = TRUE)
 types <- function(x,
                   re_drop_line = NULL,
@@ -78,7 +78,7 @@ types <- function(x,
 #' @examples
 #' 
 #' toy_corpus <- "Once upon a time there was a tiny toy corpus.
-#' It consisted of three sentence. And it lived happily ever after."
+#' It consisted of three sentences. And it lived happily ever after."
 #' 
 #' flist <- freqlist(toy_corpus, re_token_splitter = "\\\\W+", as_text = TRUE)
 #' print(flist, n = 1000)
@@ -662,7 +662,7 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
 #' @seealso as_tibble.types
 #' @examples 
 #' toy_corpus <- "Once upon a time there was a tiny toy corpus.
-#' It consisted of three sentence. And it lived happily ever after."
+#' It consisted of three sentences. And it lived happily ever after."
 #' 
 #' (typs <- types(toy_corpus, as_text = TRUE))
 #' 
@@ -687,7 +687,7 @@ as.data.frame.types <- function(x, ...) {
 #' 
 #' @examples
 #' toy_corpus <- "Once upon a time there was a tiny toy corpus.
-#' It consisted of three sentence. And it lived happily ever after."
+#' It consisted of three sentences. And it lived happily ever after."
 #' 
 #' (typs <- types(toy_corpus, as_text = TRUE))
 #' 

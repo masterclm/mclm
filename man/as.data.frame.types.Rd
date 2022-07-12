@@ -26,3 +26,6 @@ It consisted of three sentence. And it lived happily ever after."
 
 as.data.frame(typs)
 }
+\seealso{
+as_tibble.types
+}
