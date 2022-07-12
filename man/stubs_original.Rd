@@ -1,5 +1,5 @@
-\name{stubs}
-\alias{stubs}
+\name{stubs_original}
+\alias{stubs_original}
 \alias{plot.freqlist}
 \alias{plot.re}
 \alias{plot.tokens}

@@ -637,7 +637,7 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
 }
 
 
-#' @describeIn stubs Subset assignment
+#' @rdname stubs
 #' @exportS3Method `[<-` types
 #' @export
 `[<-.types` <- function(x, i, invert = FALSE, value) {
@@ -729,7 +729,7 @@ sort.types <- function(x, decreasing = FALSE, ...) {
            sort = FALSE)               # already done
 }
 
-#' @describeIn stubs Plot types
+#' @rdname stubs
 #' @exportS3Method plot types
 #' @export
 plot.types <- function(x, ...) {
@@ -864,7 +864,8 @@ print.types <- function(x,
 #' @param ... Additional arguments.
 #'
 #' @return An object of class \code{summary.types}.
-#' @name summary_types
+#' @exportS3Method summary types
+#' @export
 #'
 #' @examples
 #' 
@@ -875,11 +876,6 @@ print.types <- function(x,
 #' names(tps_sum)
 #' tps_sum[["n_types"]]
 #' tps_sum$n_types
-NULL
-
-#' @describeIn summary_types Create a \code{summary.types} object
-#' @exportS3Method summary types
-#' @export
 summary.types <- function(object, ...) {
   if (! "types" %in% class(object)) {
     stop("argument 'object' must be of the class 'types'")
@@ -891,7 +887,7 @@ summary.types <- function(object, ...) {
   result
 }
 
-#' @describeIn summary_types Print a \code{summary.types} object
+#' @rdname summary.types
 #' @exportS3Method print summary.types
 #' @export
 print.summary.types <- function(x, ...) {
@@ -908,7 +904,7 @@ print.summary.types <- function(x, ...) {
   invisible(x)
 }
 
-#' @describeIn stubs Plot summary of types
+#' @rdname stubs
 #' @exportS3Method plot summary.types
 #' @export
 plot.summary.types <- function(x, ...) {
