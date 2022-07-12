@@ -1,36 +1,8 @@
-# =============================================================================
-# association scores related classes and functions (collocations and keywords)
-# =============================================================================
-
-# ----------------------------------------------------------------------------
-# TODO:
-#
-#  - implement sort function
-#  - check as.data.frame
-#  - do a sort as the last step in assoc_scores
-# ----------------------------------------------------------------------------
-
-#    as.data.frame.assoc_scores()
-#    as_tibble.assoc_scores()
-
-# depends:
-#       stringi::stri_pad_left
+# TODO implement sort function
+# TODO check as.data.frame
+# TODO do a sort as the last step in assoc_scores
 
 
-as.data.frame.assoc_scores <- function(x, ...) {
-  class(x) <- "data.frame"
-  df <- cbind(type = rownames(x), x)
-  rownames(df) <- NULL
-  df
-}
-
-as_tibble.assoc_scores <- function(x, ...) {
-  as_tibble(as.data.frame(x), ...)
-}
-
-# ------------------------------------------------------------------------------
-# keywords and collocation related functions
-# ------------------------------------------------------------------------------
 # All functions in this section assume the data stem from frequency tables of 
 # the form:
 #                           target item  other item
@@ -40,457 +12,8 @@ as_tibble.assoc_scores <- function(x, ...) {
 # Moreover all functions accept a,b,c,d to be equal sized vectors of length
 # 1 or higher. They take a[1],b[1],c[1] and d[1] to stem from frequency table 1, 
 # a[2],b[2],c[2] and d[2], to stem from frequency table 2, etc.
-# ------------------------------------------------------------------------------
 
-# function that returns association scores on the basis of
-# a target frequency list and a reference frequency list;
-# it internally calls assoc_scores_abcd()
-
-# is x is of class cooc_info, then y is ignored
-# otherwise x and y are assumed to be target.freqlist and
-# ref.freqlist respectively.
-
-assoc_scores <- function(x, 
-                         y = NULL, 
-                         min_freq = 3,
-                         measures = NULL,
-                         with_variants = FALSE,
-                         show_dots = FALSE,
-                         p_fisher_2 = FALSE,
-                         haldane = TRUE, # Haldane-Anscombe correction
-                         small_pos = 0.00001) {
-  # ---------------------------------------------------------------
-  # -- min_freq is minimum frequency in target_freqlist
-  #    for inclusion in the output
-  # ---------------------------------------------------------------
-  # TODO:
-  #  - sort items as last step: that will be a crucial difference
-  #    between assoc_scores() and assoc_abcd(); the former sorts,
-  #    the latter respects the order of the items in the input.
-  # ---------------------------------------------------------------
-  if (!"cooc_info" %in% class(x)) {
-    x <- cooc_info(target_freqlist = x, ref_freqlist = y)
-  }
-  if (min_freq == 0) {
-    union_names <- union(names(x$target_freqlist),
-                         names(x$ref_freqlist))
-    x$target_freqlist <- keep_types(x$target_freqlist, union_names)
-  } else {
-    x$target_freqlist <- keep_bool(x$target_freqlist,
-                                     x$target_freqlist >= min_freq)
-  }
-  x$ref_freqlist <- keep_types(x$ref_freqlist, names(x$target_freqlist))
-  a <- as.numeric(x$target_freqlist)
-  c <- as.numeric(x$ref_freqlist)
-  assoc_abcd(a = a,
-             b = tot_n_tokens(x$target_freqlist) - a,
-             c = c,
-             d = tot_n_tokens(x$ref_freqlist) - c,
-             types = names(x$target_freqlist),
-             measures = measures,
-             with_variants = with_variants,
-             show_dots = show_dots,
-             p_fisher_2 = p_fisher_2,
-             haldane = haldane,
-             small_pos = small_pos)
-}
-
-
-zero_plus <- function(x, small_pos = 0.00001) {
-# auxiliary function that makes all values in numeric vector x strictly positive
-# small.pos stands for 'small positive constant'
-  x[x <= 0] <- small_pos
-  x
-}
-
-p_to_chisq1 <- function(p) {
-# returns the 'p right quantile' in the chi-square distribution with one df
-  return(qchisq(1 - p, 1))
-}
-
-chisq1_to_p <- function(x) {
-# returns the proportion of the chi-square distribution with one df
-# that sits to the right of x
-  1 - pchisq(x, 1)
-}
-
-# function that returns association scores on the basis of
-# the frequencies a, b, c and d
-
-assoc_abcd <- function(a, b, c, d,
-                       types = NULL,
-                       measures = NULL,
-                       with_variants = FALSE,
-                       show_dots = FALSE,
-                       p_fisher_2 = FALSE,
-                       haldane = TRUE,
-                       small_pos = 0.00001) {
-  if (is.null(types) && length(a) > 0) {
-    types <- as.character(seq_along(a))
-    types <- paste0("t", stringi::stri_pad_left(types,
-                                                width = max(nchar(types)),
-                                                pad = "0"))
-  }
-  if (is.null(measures)) {
-    measures <- c("exp_a", "DP_rows", "RR_rows",
-                  "OR", "MS", "PMI", "Dice",
-                  "G_signed", "chi2_signed", "t", "fisher")
-  }
-  if (haldane) {
-    a[a < 0] <- 0
-    b[b < 0] <- 0
-    c[c < 0] <- 0
-    d[d < 0] <- 0
-    has_zero <- (a == 0) | (b == 0) | (c == 0) | (d == 0)
-    a[has_zero] <- a[has_zero] + 0.5
-    b[has_zero] <- b[has_zero] + 0.5
-    c[has_zero] <- c[has_zero] + 0.5
-    d[has_zero] <- d[has_zero] + 0.5
-  } else {
-    a <- zero_plus(a, small_pos = small_pos)
-    b <- zero_plus(b, small_pos = small_pos)
-    c <- zero_plus(c, small_pos = small_pos)
-    d <- zero_plus(d, small_pos = small_pos)
-  }
-  m <- a + b; n <- c + d; k <- a + c; l <- b + d; N <- m + n
-  ea <- (m * k)/N; eb <- (m * l)/N 
-  ec <- (n * k)/N; ed <- (n * l)/N
-  # =========================================================================
-  retval <- list(a = a, b = b, c = c, d = d) # removes zeroes from
-                                             # output also
-  retval$dir <- ifelse(a/m < c/n, -1, 1)     # direction
-  # =========================================================================
-  # -- exp_a --
-  if (is.element("exp_a", measures) ||
-      is.element("expected", measures) ||
-      is.element("ALL", measures)) {
-    retval$exp_a <- ea
-    show_dot(show_dots)
-  }
-  # -- exp_b --
-  if (is.element("exp_b", measures) ||
-      is.element("expected", measures) ||
-      is.element("ALL", measures)) {
-    retval$exp_b <- eb
-    show_dot(show_dots)
-  }
-  # -- exp_c --
-  if (is.element("exp_c", measures) ||
-      is.element("expected", measures) ||
-      is.element("ALL", measures)) {
-    retval$exp_c <- ec
-    show_dot(show_dots)
-  }
-  # -- exp_d --
-  if (is.element("exp_d", measures) ||
-      is.element("expected", measures) ||
-      is.element("ALL", measures)) {
-    retval$exp_d <- ed
-    show_dot(show_dots)
-  }
-  # =========================================================================  
-  # -- DP_rows, difference of proportions (aka delta p) --
-  if (is.element("DP_rows", measures) ||
-      is.element("DP", measures) ||
-      is.element("ALL", measures)) {
-    retval$DP_rows <- (a / m) - (c / n)
-    show_dot(show_dots)
-  }
-  # -- DP_cols, difference of proportions (aka delta p) --
-  if (is.element("DP_cols", measures) ||
-      is.element("DP", measures) ||
-      is.element("ALL", measures)) {
-    retval$DP_cols <- (a / k) - (b / l)
-    show_dot(show_dots)
-  }
-  # -- perc_DIFF_rows, %DIFF --
-  if (is.element("perc_DIFF_rows", measures) ||
-      is.element("perc_DIFF", measures) ||
-      is.element("ALL", measures)) {
-    retval$perc_DIFF_rows <- 100 * (a / m - c / n) / (c / n) 
-    show_dot(show_dots)
-  }  
-  # -- perc_DIFF_cols, %DIFF --
-  if (is.element("perc_DIFF_cols", measures) ||
-      is.element("perc_DIFF", measures) ||
-      is.element("ALL", measures)) {
-    retval$perc_DIFF_cols <- 100 * (a / k - b / l) / (b / l) 
-    show_dot(show_dots)
-  }
-  # -- DC_rows, difference coefficient --
-  if (is.element("DC_rows", measures) ||
-      is.element("DC", measures) ||
-      is.element("ALL", measures)) {
-    retval$DC_rows <- (a/m - c/n) / (a / m + c / n) 
-    show_dot(show_dots)
-  }
-  # -- DC_cols, difference coefficient --
-  if (is.element("DC_cols", measures) ||
-      is.element("DC", measures) ||
-      is.element("ALL", measures)) {
-    retval$DC_cols <- (a/k - b/l) / (a / k + b / l)
-    show_dot(show_dots)
-  }    
-  # =========================================================================   
-  # -- RR_rows, relative risk --
-  if (is.element("RR_rows", measures) ||
-      is.element("RR", measures) ||
-      is.element("ALL", measures)) {
-    retval$RR_rows <- (a/m) / (c/n)
-    show_dot(show_dots)
-  }
-  # -- RR_cols, relative risk --
-  if (is.element("RR_cols", measures) ||
-      is.element("RR", measures) ||
-      is.element("ALL", measures)) {
-    retval$RR_cols <- (a/k) / (b/l)
-    show_dot(show_dots)
-  }
-  # -- LR_rows, Hardie's Log Ratio (rows) --
-  if (is.element("LR_rows", measures) ||
-      is.element("LR", measures) ||
-      is.element("ALL", measures)) {
-    retval$LR_rows <- log2((a / m) / (c / n))
-    show_dot(show_dots)
-  }
-  # -- LR_cols, Hardie's Log Ratio (cols) --
-  if (is.element("LR_cols", measures) ||
-      is.element("LR", measures) ||
-      is.element("ALL", measures)) {
-    retval$LR_cols <- log2((a / k) / (b / l))
-    show_dot(show_dots)
-  }
-  # =========================================================================     
-  # -- OR, odds ratio --
-  if (is.element("OR", measures) ||
-      is.element("ALL", measures)) {
-    retval$OR <- (a / b) / (c / d) # also equals (a / c) / (b / d)
-    show_dot(show_dots)
-  }
-  # -- log_OR --
-  if (is.element("log_OR", measures) ||
-      is.element("ALL", measures)) {
-    retval$log_OR <- log((a / b) / (c / d))
-    show_dot(show_dots)
-  }
-  # =========================================================================     
-  # -- MS, minimum sensitivity --
-  if (is.element("MS", measures) ||
-      is.element("ALL", measures)) {
-    retval$MS <- pmin(a / m, a / k)
-    show_dot(show_dots)
-  }
-  # -- Jaccard --
-  if (is.element("Jaccard", measures) ||
-      is.element("ALL", measures)) {
-    retval$Jaccard <- a/(m + k -a)
-    show_dot(show_dots)
-  }  
-  # -- Dice --
-  if (is.element("Dice", measures) ||
-      is.element("ALL", measures)) {
-    retval$Dice <- (2 * a) / (m + k)
-    show_dot(show_dots)
-  }
-  # -- logDice --
-  if (is.element("logDice", measures) ||
-      is.element("ALL", measures)) {
-    retval$logDice <- 14 + log2((2 * a)/(m + k))
-    show_dot(show_dots)
-  }  
-  # =========================================================================       
-  # -- phi (Cramer's V) --
-  if (is.element("phi", measures) ||
-      is.element("ALL", measures)) {
-    retval$phi <- (a * d - b * c) / sqrt((a + b) * (c + d) * (a + c) * (b + d))
-    show_dot(show_dots)
-  }
-  # -- Q (Yule's Q) --
-  if (is.element("Q", measures) ||
-      is.element("ALL", measures)) {
-    retval$Q <- (a * d - b * c) / (a * d + b * c)
-    show_dot(show_dots)
-  }
-  # =========================================================================       
-  # -- mu --
-  if (is.element("mu", measures) ||
-      is.element("ALL", measures)) {
-    retval$mu <- a / ea
-    show_dot(show_dots)
-  }    
-  # -- PMI --
-  if (is.element("PMI", measures) ||
-      is.element("ALL", measures)) {
-    retval$PMI <- log2((a / N) / ((k / N) * (m / N))) # is log van mu
-    show_dot(show_dots)
-  }
-  # -- pos.PMI --
-  if (is.element("pos_PMI", measures) ||
-      is.element("ALL", measures)) {
-    retval$pos_PMI <- log2((a / N) / ((k / N) * (m / N)))
-    retval$pos_PMI[retval$pos_PMI < 0] <- 0 # remove negs
-    show_dot(show_dots)
-  }
-  # -- PMI2 --
-  if (is.element("PMI2", measures) ||
-      is.element("ALL", measures)) {
-    retval$PMI2 <- log2(((a^2) / N) / ((k / N) * (m / N))) 
-    show_dot(show_dots)
-  }
-  # -- PMI3 --
-  if (is.element("PMI3", measures) ||
-      is.element("ALL", measures)) {
-    retval$PMI3 <- log2(((a^3) / N) / ((k / N) * (m / N))) 
-    show_dot(show_dots)
-  }  
-  # =========================================================================
-  # -- chi2 (4-term) --
-  if (is.element("chi2", measures) ||
-      is.element("chi2_signed", measures) ||
-      is.element("ALL", measures)) {
-    retval$chi2 <- (a - ea)^2 / ea + (b - eb)^2 / eb +
-                   (c - ec)^2 / ec + (d - ed)^2 / ed
-    retval$chi2_signed <- retval$chi2 * retval$dir
-    if (with_variants) {
-      retval$p_chi2 <- 1 - pchisq(retval$chi2, 1)
-    } else {
-      if (!is.element("chi2", measures) && !is.element("ALL", measures)) {
-        retval$chi2 <- NULL
-      }
-    }
-    show_dot(show_dots)
-  }
-  # -- chi2 (4-term) with Yates correction --
-  if (is.element("chi2_Y", measures) ||
-      is.element("chi2_Y_signed", measures) ||
-      is.element("ALL", measures)) {
-    retval$chi2_Y <- (abs(a - ea) - .5)^2 / ea + (abs(b - eb) - .5)^2 / eb +
-                     (abs(c - ec) - .5)^2 / ec + (abs(d - ed) - .5)^2 / ed
-    retval$chi2_Y_signed <- retval$chi2_Y * retval$dir
-    if (with_variants) {
-      retval$p_chi2_Y <- 1 - pchisq(retval$chi2_Y, 1)
-    } else {
-      if (!is.element("chi2_Y", measures) && !is.element("ALL", measures)) {
-        retval$chi2_Y <- NULL
-      }
-    }
-    show_dot(show_dots)
-  }
-  # -- chi2 (2-term) --
-  if (is.element("chi2_2T", measures) ||
-      is.element("chi2_2T_signed", measures) ||
-      is.element("ALL", measures)) {
-    retval$chi2_2T <- (a - ea)^2 / ea + (c - ec)^2 / ec
-    retval$chi2_2T_signed <- retval$chi2_2T * retval$dir
-    if (with_variants) {
-      retval$p_chi2_2T <- 1 - pchisq(retval$chi2_2T, 1)
-    } else {
-      if (!is.element("chi2_2T", measures) && !is.element("ALL", measures)) {
-        retval$chi2_2T <- NULL
-      }
-    }
-    show_dot(show_dots)
-  }
-  # -- chi2 (2-term) with Yates correction --
-  if (is.element("chi2_2T_Y", measures) ||
-      is.element("chi2_2T_Y_signed", measures) ||
-      is.element("ALL", measures)) {
-    retval$chi2_2T_Y <- (abs(a - ea) - .5)^2 / ea + (abs(c - ec) - .5)^2 / ec
-    retval$chi2_2T_Y_signed <- retval$chi2_2T_Y * retval$dir
-    if (with_variants) {
-      retval$p_chi2_2T_Y <- 1 - pchisq(retval$chi2_2T_Y, 1)
-    } else {
-      if (!is.element("chi2_2T_Y", measures) && !is.element("ALL", measures)) {
-        retval$chi2_2T_Y <- NULL
-      }
-    }
-    show_dot(show_dots)
-  }
-  # =========================================================================
-  # note: I call this G, but often in linguistics the name G2 is used
-  # =========================================================================
-  # -- G (4-term) --
-  if (is.element("G", measures) ||
-      is.element("G_signed", measures) ||
-      is.element("ALL", measures)) {
-    retval$G <- 2 * (a * log(a / ea) + b * log(b / eb) +
-                     c * log(c / ec) + d * log(d / ed))
-    retval$G_signed <- retval$G * retval$dir
-    if (with_variants) {
-      retval$p_G <- 1 - pchisq(retval$G, 1)
-    } else {
-      if (!is.element("G", measures) && !is.element("ALL", measures)) {
-        retval$G <- NULL
-      }
-    }
-    show_dot(show_dots)
-  }
-  # -- G (2-term) --
-  if (is.element("G_2T", measures) ||
-      is.element("G_2T_signed", measures) ||
-      is.element("ALL", measures)) {
-    retval$G_2T <- 2 * (a * log(a / ea) + c * log(c / ec))
-    retval$G_2T_signed <- retval$G_2T * retval$dir
-    if (with_variants) {
-      retval$p_G_2T <- 1 - pchisq(retval$G_2T, 1)     
-    } else {
-      if (!is.element("G_2T", measures) && !is.element("ALL", measures)) {
-        retval$G_2T <- NULL
-      }
-    }
-    show_dot(show_dots)
-  }
-  # =========================================================================  
-  # -- t --
-  if (is.element("t", measures) ||
-      is.element("ALL", measures)) {
-    retval$t <- ((a / N - k / N * m / N) /
-                 sqrt(((a / N) * (1 - a / N)) / N))
-    if (with_variants) {
-      retval$p_t_1 <- 1 - pt(retval$t, N - 1) # one-sided!
-      retval$t_1_as_chisq1 <- p_to_chisq1(retval$p_t_1)
-      retval$p_t_2 <- 2 * retval$p_t_1
-      sel <- retval$t < 0
-      if (sum(sel) > 0) {
-        retval$p_t_2[sel] <- (2 * pt(retval$t, N - 1))[sel]
-      }
-      retval$t_2_as_chisq1 <- p_to_chisq1(retval$p_t_2)
-    }
-    show_dot(show_dots)
-  }
-  # =========================================================================  
-  # -- fisher (one-sided!) --
-  if (is.element("fisher", measures) ||
-      is.element("p_fisher_1", measures) ||
-      is.element("ALL", measures)) {
-    retval$p_fisher_1 <- 1 - phyper(a - 1, m, n, k) # attraction
-    if (with_variants) {
-      retval$fisher_1_as_chisq1 <- p_to_chisq1(retval$p_fisher_1)
-      retval$p_fisher_1r <- phyper(a, m, n, k)      # repulsion
-      retval$fisher_1r_as_chisq1 <- p_to_chisq1(retval$p_fisher_1r)
-    }
-    if (p_fisher_2) {
-      pf2 <- numeric(length(a))
-      for (i in seq_along(a)) {
-        m <- matrix(nrow = 2, byrow = TRUE,
-                    c(round(a[i]), round(b[i]),
-                      round(c[i]), round(d[i])))
-        pf2[i] <- fisher.test(m)$p
-      }
-      retval$p_fisher_2 <- pf2
-      if (with_variants) {
-        retval$fisher_2_as_chisq1 <- p_to_chisq1(retval$p_fisher_2)
-      }
-    }
-    show_dot(show_dots)
-  }
-  # quick conversion from list to data.frame
-  class(retval) <- c("assoc_scores", "data.frame")
-  attr(retval, "row.names") <- .set_row_names(length(a))
-  rownames(retval) <- types
-  # return result
-  retval
-}
+# Create cooc_info ===============================================
 
 # constructor for an object of the class "cooc_info"
 cooc_info <- function(target_freqlist,
@@ -573,7 +96,7 @@ surf_cooc <- function(x,
       if (token_to_lower) {
         newtokens <- tolower(newtokens)
       }
-      # ====================================================
+      
       blocktokens <- append(blocktokens, newtokens)
       if (verbose && (((i + j) %% dot_blocksize) == 0)) { 
         cat(".")
@@ -618,11 +141,11 @@ surf_cooc <- function(x,
     t2 <- table(blocktokens[ref_pos])
     blockfreqlist2 <- as_freqlist(t2)
     globfreqlist2 <- freqlist_merge(globfreqlist2, blockfreqlist2)
-
+    
     prev_pt <- new_pt; new_pt <- proc.time()
     if (verbose) {
       cat((i + j) - 1,"(", new_pt[3] - first_pt[3], "|", 
-           new_pt[3] - prev_pt[3], ")\n")
+          new_pt[3] - prev_pt[3], ")\n")
       utils::flush.console()
     }
     i <- i + j
@@ -705,7 +228,7 @@ text_cooc <- function(x,
       if (token_to_lower) {
         newtokens <- tolower(newtokens)
       }
-      # ====================================================
+      
       if (! is.null(re_boundary) && ! is.na(re_boundary[[1]])) {
         boundaries <- grep(re_boundary[[1]], newtokens, perl = perl)
       } else {
@@ -715,7 +238,7 @@ text_cooc <- function(x,
         v <- newtokens[-boundaries]
         f <- rep(1:(length(boundaries) + 1),
                  c(boundaries, length(newtokens) + 1) -
-                 c(1, boundaries + 1))
+                   c(1, boundaries + 1))
         txts <- split(v, f)
       } else {
         txts <- list('1' = newtokens)
@@ -730,7 +253,7 @@ text_cooc <- function(x,
           corpsize2 <-  corpsize2 + 1
         }
       }
-      # ====================================================
+      
       if (verbose && (((i + j) %% dot_blocksize) == 0)) { 
         cat(".")
         utils::flush.console() 
@@ -742,17 +265,17 @@ text_cooc <- function(x,
     blockfreqlist1 <- as.vector(t1)
     names(blockfreqlist1) <- names(t1)
     globfreqlist1 <- addfreqlists(globfreqlist1, blockfreqlist1)
-
+    
     t2 <- table(blocktokens2)
     blockfreqlist2 <- as.vector(t2)
     names(blockfreqlist2) <- names(t2)
     globfreqlist2 <- addfreqlists(globfreqlist2, blockfreqlist2)
-
+    
     # --
     prev_pt <- new_pt; new_pt <- proc.time()
     if (verbose) {
       cat((i + j) - 1,"(", new_pt[3] - first_pt[3], "|", 
-           new_pt[3] - prev_pt[3], ")\n")
+          new_pt[3] - prev_pt[3], ")\n")
       utils::flush.console()
     }
     i <- i + j
@@ -763,6 +286,441 @@ text_cooc <- function(x,
             ref_freqlist = globfreqlist2)
 }
 
+# Create assoc_scores ============================================
+
+# function that returns association scores on the basis of
+# a target frequency list and a reference frequency list;
+# it internally calls assoc_scores_abcd()
+# is x is of class cooc_info, then y is ignored
+# otherwise x and y are assumed to be target.freqlist and
+# ref.freqlist respectively.
+assoc_scores <- function(x, 
+                         y = NULL, 
+                         min_freq = 3,
+                         measures = NULL,
+                         with_variants = FALSE,
+                         show_dots = FALSE,
+                         p_fisher_2 = FALSE,
+                         haldane = TRUE, # Haldane-Anscombe correction
+                         small_pos = 0.00001) {
+  # -- min_freq is minimum frequency in target_freqlist
+  #    for inclusion in the output
+  
+  # TODO: sort items as last step:
+  #    that will be a crucial difference
+  #    between assoc_scores() and assoc_abcd(); the former sorts,
+  #    the latter respects the order of the items in the input.
+  
+  if (!"cooc_info" %in% class(x)) {
+    x <- cooc_info(target_freqlist = x, ref_freqlist = y)
+  }
+  if (min_freq == 0) {
+    union_names <- union(names(x$target_freqlist),
+                         names(x$ref_freqlist))
+    x$target_freqlist <- keep_types(x$target_freqlist, union_names)
+  } else {
+    x$target_freqlist <- keep_bool(x$target_freqlist,
+                                   x$target_freqlist >= min_freq)
+  }
+  x$ref_freqlist <- keep_types(x$ref_freqlist, names(x$target_freqlist))
+  a <- as.numeric(x$target_freqlist)
+  c <- as.numeric(x$ref_freqlist)
+  assoc_abcd(a = a,
+             b = tot_n_tokens(x$target_freqlist) - a,
+             c = c,
+             d = tot_n_tokens(x$ref_freqlist) - c,
+             types = names(x$target_freqlist),
+             measures = measures,
+             with_variants = with_variants,
+             show_dots = show_dots,
+             p_fisher_2 = p_fisher_2,
+             haldane = haldane,
+             small_pos = small_pos)
+}
+
+# function that returns association scores on the basis of
+# the frequencies a, b, c and d
+assoc_abcd <- function(a, b, c, d,
+                       types = NULL,
+                       measures = NULL,
+                       with_variants = FALSE,
+                       show_dots = FALSE,
+                       p_fisher_2 = FALSE,
+                       haldane = TRUE,
+                       small_pos = 0.00001) {
+  if (is.null(types) && length(a) > 0) {
+    types <- as.character(seq_along(a))
+    types <- paste0("t", stringi::stri_pad_left(types,
+                                                width = max(nchar(types)),
+                                                pad = "0"))
+  }
+  if (is.null(measures)) {
+    measures <- c("exp_a", "DP_rows", "RR_rows",
+                  "OR", "MS", "PMI", "Dice",
+                  "G_signed", "chi2_signed", "t", "fisher")
+  }
+  if (haldane) {
+    a[a < 0] <- 0
+    b[b < 0] <- 0
+    c[c < 0] <- 0
+    d[d < 0] <- 0
+    has_zero <- (a == 0) | (b == 0) | (c == 0) | (d == 0)
+    a[has_zero] <- a[has_zero] + 0.5
+    b[has_zero] <- b[has_zero] + 0.5
+    c[has_zero] <- c[has_zero] + 0.5
+    d[has_zero] <- d[has_zero] + 0.5
+  } else {
+    a <- zero_plus(a, small_pos = small_pos)
+    b <- zero_plus(b, small_pos = small_pos)
+    c <- zero_plus(c, small_pos = small_pos)
+    d <- zero_plus(d, small_pos = small_pos)
+  }
+  m <- a + b; n <- c + d; k <- a + c; l <- b + d; N <- m + n
+  ea <- (m * k)/N; eb <- (m * l)/N 
+  ec <- (n * k)/N; ed <- (n * l)/N
+  
+  
+  retval <- list(a = a, b = b, c = c, d = d) # removes zeroes from
+  # output also
+  retval$dir <- ifelse(a/m < c/n, -1, 1)     # direction
+  
+  
+  # -- exp_a --
+  if (is.element("exp_a", measures) ||
+      is.element("expected", measures) ||
+      is.element("ALL", measures)) {
+    retval$exp_a <- ea
+    show_dot(show_dots)
+  }
+  # -- exp_b --
+  if (is.element("exp_b", measures) ||
+      is.element("expected", measures) ||
+      is.element("ALL", measures)) {
+    retval$exp_b <- eb
+    show_dot(show_dots)
+  }
+  # -- exp_c --
+  if (is.element("exp_c", measures) ||
+      is.element("expected", measures) ||
+      is.element("ALL", measures)) {
+    retval$exp_c <- ec
+    show_dot(show_dots)
+  }
+  # -- exp_d --
+  if (is.element("exp_d", measures) ||
+      is.element("expected", measures) ||
+      is.element("ALL", measures)) {
+    retval$exp_d <- ed
+    show_dot(show_dots)
+  }
+  
+  # Measures ==
+  # -- DP_rows, difference of proportions (aka delta p) --
+  if (is.element("DP_rows", measures) ||
+      is.element("DP", measures) ||
+      is.element("ALL", measures)) {
+    retval$DP_rows <- (a / m) - (c / n)
+    show_dot(show_dots)
+  }
+  # -- DP_cols, difference of proportions (aka delta p) --
+  if (is.element("DP_cols", measures) ||
+      is.element("DP", measures) ||
+      is.element("ALL", measures)) {
+    retval$DP_cols <- (a / k) - (b / l)
+    show_dot(show_dots)
+  }
+  # -- perc_DIFF_rows, %DIFF --
+  if (is.element("perc_DIFF_rows", measures) ||
+      is.element("perc_DIFF", measures) ||
+      is.element("ALL", measures)) {
+    retval$perc_DIFF_rows <- 100 * (a / m - c / n) / (c / n) 
+    show_dot(show_dots)
+  }  
+  # -- perc_DIFF_cols, %DIFF --
+  if (is.element("perc_DIFF_cols", measures) ||
+      is.element("perc_DIFF", measures) ||
+      is.element("ALL", measures)) {
+    retval$perc_DIFF_cols <- 100 * (a / k - b / l) / (b / l) 
+    show_dot(show_dots)
+  }
+  # -- DC_rows, difference coefficient --
+  if (is.element("DC_rows", measures) ||
+      is.element("DC", measures) ||
+      is.element("ALL", measures)) {
+    retval$DC_rows <- (a/m - c/n) / (a / m + c / n) 
+    show_dot(show_dots)
+  }
+  # -- DC_cols, difference coefficient --
+  if (is.element("DC_cols", measures) ||
+      is.element("DC", measures) ||
+      is.element("ALL", measures)) {
+    retval$DC_cols <- (a/k - b/l) / (a / k + b / l)
+    show_dot(show_dots)
+  }    
+  
+  
+  # -- RR_rows, relative risk --
+  if (is.element("RR_rows", measures) ||
+      is.element("RR", measures) ||
+      is.element("ALL", measures)) {
+    retval$RR_rows <- (a/m) / (c/n)
+    show_dot(show_dots)
+  }
+  # -- RR_cols, relative risk --
+  if (is.element("RR_cols", measures) ||
+      is.element("RR", measures) ||
+      is.element("ALL", measures)) {
+    retval$RR_cols <- (a/k) / (b/l)
+    show_dot(show_dots)
+  }
+  # -- LR_rows, Hardie's Log Ratio (rows) --
+  if (is.element("LR_rows", measures) ||
+      is.element("LR", measures) ||
+      is.element("ALL", measures)) {
+    retval$LR_rows <- log2((a / m) / (c / n))
+    show_dot(show_dots)
+  }
+  # -- LR_cols, Hardie's Log Ratio (cols) --
+  if (is.element("LR_cols", measures) ||
+      is.element("LR", measures) ||
+      is.element("ALL", measures)) {
+    retval$LR_cols <- log2((a / k) / (b / l))
+    show_dot(show_dots)
+  }
+  
+  # -- OR, odds ratio --
+  if (is.element("OR", measures) ||
+      is.element("ALL", measures)) {
+    retval$OR <- (a / b) / (c / d) # also equals (a / c) / (b / d)
+    show_dot(show_dots)
+  }
+  # -- log_OR --
+  if (is.element("log_OR", measures) ||
+      is.element("ALL", measures)) {
+    retval$log_OR <- log((a / b) / (c / d))
+    show_dot(show_dots)
+  }
+  
+  # ==
+  # -- MS, minimum sensitivity --
+  if (is.element("MS", measures) ||
+      is.element("ALL", measures)) {
+    retval$MS <- pmin(a / m, a / k)
+    show_dot(show_dots)
+  }
+  # -- Jaccard --
+  if (is.element("Jaccard", measures) ||
+      is.element("ALL", measures)) {
+    retval$Jaccard <- a/(m + k -a)
+    show_dot(show_dots)
+  }  
+  # -- Dice --
+  if (is.element("Dice", measures) ||
+      is.element("ALL", measures)) {
+    retval$Dice <- (2 * a) / (m + k)
+    show_dot(show_dots)
+  }
+  # -- logDice --
+  if (is.element("logDice", measures) ||
+      is.element("ALL", measures)) {
+    retval$logDice <- 14 + log2((2 * a)/(m + k))
+    show_dot(show_dots)
+  }  
+  
+  # -- phi (Cramer's V) --
+  if (is.element("phi", measures) ||
+      is.element("ALL", measures)) {
+    retval$phi <- (a * d - b * c) / sqrt((a + b) * (c + d) * (a + c) * (b + d))
+    show_dot(show_dots)
+  }
+  # -- Q (Yule's Q) --
+  if (is.element("Q", measures) ||
+      is.element("ALL", measures)) {
+    retval$Q <- (a * d - b * c) / (a * d + b * c)
+    show_dot(show_dots)
+  }
+  
+  # -- mu --
+  if (is.element("mu", measures) ||
+      is.element("ALL", measures)) {
+    retval$mu <- a / ea
+    show_dot(show_dots)
+  }    
+  # -- PMI --
+  if (is.element("PMI", measures) ||
+      is.element("ALL", measures)) {
+    retval$PMI <- log2((a / N) / ((k / N) * (m / N))) # is log van mu
+    show_dot(show_dots)
+  }
+  # -- pos.PMI --
+  if (is.element("pos_PMI", measures) ||
+      is.element("ALL", measures)) {
+    retval$pos_PMI <- log2((a / N) / ((k / N) * (m / N)))
+    retval$pos_PMI[retval$pos_PMI < 0] <- 0 # remove negs
+    show_dot(show_dots)
+  }
+  # -- PMI2 --
+  if (is.element("PMI2", measures) ||
+      is.element("ALL", measures)) {
+    retval$PMI2 <- log2(((a^2) / N) / ((k / N) * (m / N))) 
+    show_dot(show_dots)
+  }
+  # -- PMI3 --
+  if (is.element("PMI3", measures) ||
+      is.element("ALL", measures)) {
+    retval$PMI3 <- log2(((a^3) / N) / ((k / N) * (m / N))) 
+    show_dot(show_dots)
+  }  
+  
+  # -- chi2 (4-term) --
+  if (is.element("chi2", measures) ||
+      is.element("chi2_signed", measures) ||
+      is.element("ALL", measures)) {
+    retval$chi2 <- (a - ea)^2 / ea + (b - eb)^2 / eb +
+      (c - ec)^2 / ec + (d - ed)^2 / ed
+    retval$chi2_signed <- retval$chi2 * retval$dir
+    if (with_variants) {
+      retval$p_chi2 <- 1 - pchisq(retval$chi2, 1)
+    } else {
+      if (!is.element("chi2", measures) && !is.element("ALL", measures)) {
+        retval$chi2 <- NULL
+      }
+    }
+    show_dot(show_dots)
+  }
+  # -- chi2 (4-term) with Yates correction --
+  if (is.element("chi2_Y", measures) ||
+      is.element("chi2_Y_signed", measures) ||
+      is.element("ALL", measures)) {
+    retval$chi2_Y <- (abs(a - ea) - .5)^2 / ea + (abs(b - eb) - .5)^2 / eb +
+      (abs(c - ec) - .5)^2 / ec + (abs(d - ed) - .5)^2 / ed
+    retval$chi2_Y_signed <- retval$chi2_Y * retval$dir
+    if (with_variants) {
+      retval$p_chi2_Y <- 1 - pchisq(retval$chi2_Y, 1)
+    } else {
+      if (!is.element("chi2_Y", measures) && !is.element("ALL", measures)) {
+        retval$chi2_Y <- NULL
+      }
+    }
+    show_dot(show_dots)
+  }
+  # -- chi2 (2-term) --
+  if (is.element("chi2_2T", measures) ||
+      is.element("chi2_2T_signed", measures) ||
+      is.element("ALL", measures)) {
+    retval$chi2_2T <- (a - ea)^2 / ea + (c - ec)^2 / ec
+    retval$chi2_2T_signed <- retval$chi2_2T * retval$dir
+    if (with_variants) {
+      retval$p_chi2_2T <- 1 - pchisq(retval$chi2_2T, 1)
+    } else {
+      if (!is.element("chi2_2T", measures) && !is.element("ALL", measures)) {
+        retval$chi2_2T <- NULL
+      }
+    }
+    show_dot(show_dots)
+  }
+  # -- chi2 (2-term) with Yates correction --
+  if (is.element("chi2_2T_Y", measures) ||
+      is.element("chi2_2T_Y_signed", measures) ||
+      is.element("ALL", measures)) {
+    retval$chi2_2T_Y <- (abs(a - ea) - .5)^2 / ea + (abs(c - ec) - .5)^2 / ec
+    retval$chi2_2T_Y_signed <- retval$chi2_2T_Y * retval$dir
+    if (with_variants) {
+      retval$p_chi2_2T_Y <- 1 - pchisq(retval$chi2_2T_Y, 1)
+    } else {
+      if (!is.element("chi2_2T_Y", measures) && !is.element("ALL", measures)) {
+        retval$chi2_2T_Y <- NULL
+      }
+    }
+    show_dot(show_dots)
+  }
+  
+  # -- G (4-term) --
+  # NOTE I call this G, but often in linguistics the name G2 is used
+  if (is.element("G", measures) ||
+      is.element("G_signed", measures) ||
+      is.element("ALL", measures)) {
+    retval$G <- 2 * (a * log(a / ea) + b * log(b / eb) +
+                       c * log(c / ec) + d * log(d / ed))
+    retval$G_signed <- retval$G * retval$dir
+    if (with_variants) {
+      retval$p_G <- 1 - pchisq(retval$G, 1)
+    } else {
+      if (!is.element("G", measures) && !is.element("ALL", measures)) {
+        retval$G <- NULL
+      }
+    }
+    show_dot(show_dots)
+  }
+  # -- G (2-term) --
+  if (is.element("G_2T", measures) ||
+      is.element("G_2T_signed", measures) ||
+      is.element("ALL", measures)) {
+    retval$G_2T <- 2 * (a * log(a / ea) + c * log(c / ec))
+    retval$G_2T_signed <- retval$G_2T * retval$dir
+    if (with_variants) {
+      retval$p_G_2T <- 1 - pchisq(retval$G_2T, 1)     
+    } else {
+      if (!is.element("G_2T", measures) && !is.element("ALL", measures)) {
+        retval$G_2T <- NULL
+      }
+    }
+    show_dot(show_dots)
+  }
+  
+  # -- t --
+  if (is.element("t", measures) ||
+      is.element("ALL", measures)) {
+    retval$t <- ((a / N - k / N * m / N) /
+                   sqrt(((a / N) * (1 - a / N)) / N))
+    if (with_variants) {
+      retval$p_t_1 <- 1 - pt(retval$t, N - 1) # one-sided!
+      retval$t_1_as_chisq1 <- p_to_chisq1(retval$p_t_1)
+      retval$p_t_2 <- 2 * retval$p_t_1
+      sel <- retval$t < 0
+      if (sum(sel) > 0) {
+        retval$p_t_2[sel] <- (2 * pt(retval$t, N - 1))[sel]
+      }
+      retval$t_2_as_chisq1 <- p_to_chisq1(retval$p_t_2)
+    }
+    show_dot(show_dots)
+  }
+  
+  # -- fisher (one-sided!) --
+  if (is.element("fisher", measures) ||
+      is.element("p_fisher_1", measures) ||
+      is.element("ALL", measures)) {
+    retval$p_fisher_1 <- 1 - phyper(a - 1, m, n, k) # attraction
+    if (with_variants) {
+      retval$fisher_1_as_chisq1 <- p_to_chisq1(retval$p_fisher_1)
+      retval$p_fisher_1r <- phyper(a, m, n, k)      # repulsion
+      retval$fisher_1r_as_chisq1 <- p_to_chisq1(retval$p_fisher_1r)
+    }
+    if (p_fisher_2) {
+      pf2 <- numeric(length(a))
+      for (i in seq_along(a)) {
+        m <- matrix(nrow = 2, byrow = TRUE,
+                    c(round(a[i]), round(b[i]),
+                      round(c[i]), round(d[i])))
+        pf2[i] <- fisher.test(m)$p
+      }
+      retval$p_fisher_2 <- pf2
+      if (with_variants) {
+        retval$fisher_2_as_chisq1 <- p_to_chisq1(retval$p_fisher_2)
+      }
+    }
+    show_dot(show_dots)
+  }
+  
+  # quick conversion from list to data.frame
+  class(retval) <- c("assoc_scores", "data.frame")
+  attr(retval, "row.names") <- .set_row_names(length(a))
+  rownames(retval) <- types
+  # return result
+  retval
+}
+
+# S3 methods from mclm ========================================
 n_types.assoc_scores <- function(x, ...) {
   if (! "assoc_scores" %in% class(x)) {
     stop("argument 'x' must be of the class 'assoc_scores'")
@@ -777,17 +735,15 @@ type_names.assoc_scores <- function(x, ...) {
   rownames(x)
 }
 
-
 explore.assoc_scores <- function(
-      x,
-      n = 20,
-      from = 1,
-      from_col = 1,
-      perl = TRUE,
-      sort_order   = c("none", "G_signed", "PMI", "alpha"),
-      use_clear = TRUE,
-      ...) {
-  # ------------------------------------------------------------------------
+    x,
+    n = 20,
+    from = 1,
+    from_col = 1,
+    perl = TRUE,
+    sort_order   = c("none", "G_signed", "PMI", "alpha"),
+    use_clear = TRUE,
+    ...) {
   # about the argument "from_col":
   #  - initially, the argument "from_col" can contain either a name of a
   #    column or an index; as soon as print() has been called, however,
@@ -795,15 +751,15 @@ explore.assoc_scores <- function(
   #    all command processing (except for the processing of the command
   #    "i") can safely assume that print_extra$from_col contains an
   #    index.
-  # ------------------------------------------------------------------------
+  
   if (interactive()) {
-    ## ---- testing argument from_col ----
+    ## ---- testing argument from_col --
     if (is.null(from_col) || is.na(from_col[1]) || !is.numeric(from_col)) {
       from_col <- 1
     }
-    ## ----
+    
     length_x <- n_types(x)                     # n items in x
-    ## ---- processing sort_order --------
+    ## ---- processing sort_order --
     # testing and processing argument 'sort_order'
     if (is.null(sort_order)  ||
         is.na(sort_order[1])) {
@@ -830,15 +786,16 @@ explore.assoc_scores <- function(
         ord <- order(x[[sort_order]], decreasing = TRUE)
       }  
     }
-    ## ----
+    
     cur_command <- "i"                         # "idle" (no change of state)
     cur_com_verb <- substr(cur_command, 1, 1)  # actual command 
     cur_regex <- ".*"                          # last regex that was used
     cur_hits <- numeric(0)                     # ids of hits for last regex
-    # ---- create and initialize printing settings -------------------------
+    
+    # ---- create and initialize printing settings --
     print_extra <- settings()                  
     assign("from_col", from_col, envir = print_extra)
-    # ----------------------------------------------------------------------
+    
     while (cur_com_verb != "q") {
       ## -- initialize printing settings --
       assign("type_regex", NULL, envir = print_extra)
@@ -889,19 +846,19 @@ explore.assoc_scores <- function(
           old_regex <- cur_regex
           old_hits <- cur_hits
           tryCatch({
-               f_arg <- cleanup_spaces(
-                  substr(cur_command, 2, nchar(cur_command)))
-               if (nchar(f_arg) == 0) {
-                 cur_regex <- old_regex
-               } else {
-                 cur_regex <- f_arg
-               }
-               cur_hits <- grep(cur_regex, type_names(x)[ord], perl = perl)
-             },
-             error = function(e) {
-               cur_regex <- old_regex
-               cur_hits <- old_hits
-             })
+            f_arg <- cleanup_spaces(
+              substr(cur_command, 2, nchar(cur_command)))
+            if (nchar(f_arg) == 0) {
+              cur_regex <- old_regex
+            } else {
+              cur_regex <- f_arg
+            }
+            cur_hits <- grep(cur_regex, type_names(x)[ord], perl = perl)
+          },
+          error = function(e) {
+            cur_regex <- old_regex
+            cur_hits <- old_hits
+          })
           tot_n_hits <- length(cur_hits)
           if (nchar(f_arg) == 0) {
             cur_hits <- cur_hits[cur_hits > from]
@@ -910,8 +867,8 @@ explore.assoc_scores <- function(
           }
           pos_cur_hit <- tot_n_hits - length(cur_hits) + 1 
           if (length(cur_hits) > 0) {
-             from <- cur_hits[1]
-             assign("type_regex", cur_regex, envir = print_extra)
+            from <- cur_hits[1]
+            assign("type_regex", cur_regex, envir = print_extra)
           } 
         } else if (cur_com_verb == "g") { ## g stands for '[g]o to item'
           old_from <- from
@@ -929,7 +886,7 @@ explore.assoc_scores <- function(
       if (!is.null(print_extra$type_regex)) {
         cat(mclm_style_dim(paste0("search pattern: ", print_extra$type_regex, "\n")))
         cat(mclm_style_dim(paste0("<looking at matching item ", pos_cur_hit,
-                            " out of ", tot_n_hits, " matching items>\n"))) 
+                                  " out of ", tot_n_hits, " matching items>\n"))) 
       }
       cat(mclm_style_dim(char_line())); cat("\n")
       cat(mclm_style_dim("Enter command (? for help; q to quit explore mode) "))
@@ -944,20 +901,29 @@ explore.assoc_scores <- function(
   invisible(x)
 }
 
+# S3 methods from other packages ==============================
+as.data.frame.assoc_scores <- function(x, ...) {
+  class(x) <- "data.frame"
+  df <- cbind(type = rownames(x), x)
+  rownames(df) <- NULL
+  df
+}
 
+as_tibble.assoc_scores <- function(x, ...) {
+  as_tibble(as.data.frame(x), ...)
+}
 # public S3 function print()
 print.assoc_scores <- function(
-      x,
-      n            = 20,
-      from         = 1,
-      freeze_cols  = NULL, 
-      keep_cols    = NULL,
-      drop_cols    = NULL,
-      from_col     = 1,
-      sort_order   = c("none", "G_signed", "PMI", "alpha"),
-      extra        = NULL,
-      ...) {
-  # -------------------------------------------------------------------------
+    x,
+    n            = 20,
+    from         = 1,
+    freeze_cols  = NULL, 
+    keep_cols    = NULL,
+    drop_cols    = NULL,
+    from_col     = 1,
+    sort_order   = c("none", "G_signed", "PMI", "alpha"),
+    extra        = NULL,
+    ...) {
   # About the different column selection arguments:
   #   - Argument values in the 'extra' argument take precedence over
   #     the other arguments; for instance, if 'extra$from_col' is not NULL,
@@ -996,7 +962,7 @@ print.assoc_scores <- function(
   #     are selected for display in the 'regular area'. If from_col points
   #     to  another column than the first one, then anything before that
   #     column is not displayed. 
-  # -------------------------------------------------------------------------
+  
   # testing and processing argument 'x'
   if (!"assoc_scores" %in% class(x)) {
     stop("x must be of the class 'assoc_scores'")
@@ -1074,7 +1040,7 @@ print.assoc_scores <- function(
   if (!is.null(drop_cols) && !is.na(drop_cols[1])) {
     sel_cols <- setdiff(sel_cols, drop_cols)  
   }
-  # ---- testing and processing from_col ----------------------------------
+  # ---- testing and processing from_col --
   if (!is.null(extra$from_col)) {
     from_col <- extra$from_col  # info in 'extra', if present, takes precedence 
   }    
@@ -1088,7 +1054,7 @@ print.assoc_scores <- function(
   nofreeze_cols <- nofreeze_cols[from_col:length(nofreeze_cols)]
   sel_cols <- c(freeze_cols, nofreeze_cols)
   n_frozen <- length(freeze_cols)
-  # ---- printing 'x' -----------------------------------------------------
+  # ---- printing 'x' --
   cat(mclm_style_dim(paste0(
     "Association scores (types in list: ",
     n_items)))
@@ -1116,9 +1082,9 @@ print.assoc_scores <- function(
       types <- show_matches(types, extra$type_regex)
     }    
     format_types <- mclm_pad_left(
-                      c("type", types),
-                      max(nchar("type"), nchar_types),
-                      nchar_x = c(nchar("type"), nchar_types))
+      c("type", types),
+      max(nchar("type"), nchar_types),
+      nchar_x = c(nchar("type"), nchar_types))
     #
     #format_types <- stringi::stri_pad_left( # don't use format() (unicode !)
     #                  c("type", types),
@@ -1131,8 +1097,8 @@ print.assoc_scores <- function(
     # -- determine number of cols that can be printed
     n_printed_col <- 0
     c_avail <- (getOption("width") - 7 -   # 7 to account for scroll bar
-                nchar(format_idx[1]) - 1 -  # to account for space between cols
-                nchar(format_types[1]) - 1) # result can be negative
+                  nchar(format_idx[1]) - 1 -  # to account for space between cols
+                  nchar(format_types[1]) - 1) # result can be negative
     width_next <- nchar(form_cols[[n_printed_col + 1]][1]) + 1 
     while (!is.null(width_next) && width_next < c_avail) {
       n_printed_col <- n_printed_col + 1
@@ -1187,16 +1153,38 @@ print.assoc_scores <- function(
         ">\n")))
     }
   }
-  # --- update information in 'extra' ---------------------------------------
+  # --- update information in 'extra' --
   # This is important for the case where the calling function, e.g. explore(),
   # needs this updated information.
-  # -------------------------------------------------------------------------
+  
   if (is.environment(extra)) {
     assign("from_col", from_col, envir = extra)
   }
-  # -------------------------------------------------------------------------
+  
   invisible(x)
 }
+
+# Utility functions ============================================================
+
+zero_plus <- function(x, small_pos = 0.00001) {
+  # auxiliary function that makes all values in numeric vector x strictly positive
+  # small.pos stands for 'small positive constant'
+  x[x <= 0] <- small_pos
+  x
+}
+
+p_to_chisq1 <- function(p) {
+  # returns the 'p right quantile' in the chi-square distribution with one df
+  return(qchisq(1 - p, 1))
+}
+
+chisq1_to_p <- function(x) {
+  # returns the proportion of the chi-square distribution with one df
+  # that sits to the right of x
+  1 - pchisq(x, 1)
+}
+
+# Public functions applied to assoc_scores =====================================
 
 # write an assoc_scores object
 write_assoc <- function(x,
@@ -1216,7 +1204,6 @@ write_assoc <- function(x,
   }
   invisible(x)
 }
-
 
 # read association scores from file
 read_assoc <- function(file,
