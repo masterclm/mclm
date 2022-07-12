@@ -2,6 +2,7 @@
 % Please edit documentation in R/freqlist.R, R/stubs.R, R/types.R
 \name{plot.freqlist}
 \alias{plot.freqlist}
+\alias{plot.summary.freqlist}
 \alias{stubs}
 \alias{[<-.types}
 \alias{plot.types}
@@ -9,6 +10,8 @@
 \title{Stubs (Functions/Methods Not Implemented)}
 \usage{
 \method{plot}{freqlist}(x, ...)
+
+\method{plot}{summary.freqlist}(x, ...)
 
 \method{[}{types}(x, i, invert = FALSE) <- value
 

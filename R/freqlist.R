@@ -1270,13 +1270,47 @@ as_tibble.freqlist <- function(x, ...) {
   result
 }
 
-# public S3 function plot()
+#' @rdname stubs
+#' @exportS3Method plot freqlist
+#' @export
 plot.freqlist <- function(x, ...) {
   warning("'freqlist' objects have no plotting function; doing nothing")
   invisible(NULL)
 }
 
-# public S3 function summary()
+#' Succint description of a 'freqlist' object
+#' 
+#' Build and/or print an object of the class \code{summary.freqlist}.
+#'
+#' @param object Object of class \code{freqlist}.
+#' @param x Object of class \code{summary.freqlist}.
+#' @param ... Additional arguments
+#'
+#' @return Object of class \code{summary.freqlist}
+#' @export
+#' @exportS3Method summary freqlist
+#'
+#' @examples
+#' flist <- freqlist(tokenize("the old man and the sea."))
+#' summary(flist) 
+#' print(summary(flist))
+#' 
+#' (flist_sum <- summary(flist))
+#' names(flist_sum)
+#' flist_sum[["n_tokens"]]
+#' flist_sum$n_tokens
+#' flist_sum[["n_types"]]
+#' flist_sum$n_types
+#' 
+#' flist2 <- flist["man", invert = TRUE]
+#' (flist2_sum <- summary(flist2))
+#' names(flist2_sum)
+#' flist2_sum[["n_tokens"]]
+#' flist2_sum$n_tokens
+#' flist2_sum[["n_types"]]
+#' flist2_sum$n_types
+#' flist2_sum[["tot_n_tokens"]]
+#' flist2_sum$tot_n_tokens
 summary.freqlist <- function(object, ...) {
   if (! "freqlist" %in% class(object)) {
     stop("argument 'object' must be of the class 'freqlist'")
@@ -1289,7 +1323,9 @@ summary.freqlist <- function(object, ...) {
   result
 }
 
-# public S3 function summary()
+#' @rdname summary.freqlist
+#' @exportS3Method print summary.freqlist
+#' @export
 print.summary.freqlist <- function(x, ...) {
   if (!"summary.freqlist" %in% class(x)) {
     stop("argument 'x' must be of the class 'summary.freqlist'")
@@ -1310,7 +1346,9 @@ print.summary.freqlist <- function(x, ...) {
 }
 
 
-# public S3 function plot()
+#' @rdname stubs
+#' @exportS3Method plot summary.freqlist
+#' @export
 plot.summary.freqlist <- function(x, ...) {
   warning("'summary.freqlist' objects have no plotting function; doing nothing")
   invisible(NULL)

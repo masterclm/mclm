@@ -21,7 +21,7 @@
 #' @param x Some object
 #' @param ... Additional arguments
 #' 
-#' @return Invisibly, \code{NULL}. The default \code{n_tokens}, \code{n_types}
+#' @return Invisibly, \code{NULL}. The default \code{n_tokens}, \code{n_types} and
 #'   \code{type_names} methods returns \code{NA}.
 #' @name stubs
 #' @examples
