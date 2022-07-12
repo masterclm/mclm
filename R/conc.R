@@ -263,6 +263,26 @@ as_conc <- function(x,
 }
 
 # S3 methods from mclm =========================================================
+
+#' Interactively navigate through concordance list
+#' 
+#' This method only works in an interactive R session to open
+#' 'exploration mode', in which the user can navigate through the \code{conc}
+#' object \code{x} by means of brief commands. In 'exploration mode' the user can
+#' ask of a list of available commands by keying in \code{?}, followed by ENTER.
+#' The user can quiet 'exploration mode' by keying in \code{q}, followed by ENTER.
+#'
+#' @param x Object of class \code{conc}.
+#' @param n Maximum number of items to show at once.
+#' @param from Index of the first item to be shown in the console at the beginning.
+#' @param use_clear Boolean value. If \code{TRUE} and the feature is supported by
+#'   the R environment, the console will be cleared in between all the interactive
+#'   steps in the exploration session.
+#' @param ... Additional arguments.
+#'
+#' @return Invisibly, \code{x}.
+#' @export
+#' @exportS3Method explore conc
 explore.conc <- function(x,
                          n = 20,
                          from = 1,
@@ -339,6 +359,22 @@ explore.conc <- function(x,
 
 # S3 methods from other packages ===============================================
 
+#' Print a concordance-based data frame.
+#' 
+#' Print an object of class \code{conc}.
+#'
+#' @param x An object of class \code{conc}.
+#' @param n Number of items to print in the KWIC display.
+#' @param ... Additional arguments.
+#'
+#' @return Invisibly, \code{x}.
+#' @export
+#' @exportS3Method print conc
+#'
+#' @examples
+#' (conc_data <- conc('A very small corpus.', '\\w+', as_text = TRUE))
+#' print_kwic(conc_data)
+#' print(conc_data, n = 3)
 print.conc <- function(x, n = 30, ...) {
   if (! "conc" %in% class(x)) {
     stop("the argument 'x' must be an object of the class 'conc'")
