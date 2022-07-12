@@ -1110,7 +1110,7 @@ sort.freqlist <- function(x,
 #'   input type, either are sorted alphabetically or are not sorted at all.
 #'
 #' @return Object of class \code{freqlist}.
-#' @seealso freqlist
+#' @seealso \code{\link{freqlist}}
 #' @export
 #' 
 #' @examples
@@ -1193,7 +1193,7 @@ as_freqlist <- function(x, tot_n_tokens = NULL, sort_by_ranks = TRUE) {
 #' @return A \code{data.frame}.
 #' @exportS3Method as.data.frame freqlist
 #' @export
-#' @seealso as_tibble.freqlist
+#' @seealso \code{\link{as_tibble.freqlist}}
 #'
 #' @examples
 #' toy_corpus <- "Once upon a time there was a tiny toy corpus.
@@ -1238,7 +1238,7 @@ as.data.frame.freqlist <- function(x,
 #' @return Object of class \code{\link[tibble]{tibble}}.
 #' @export
 #' @exportS3Method tibble::as_tibble freqlist
-#' @seealso as.data.frame..freqlist
+#' @seealso \code{\link{as.data.frame.freqlist}}
 #'
 #' @examples
 #' toy_corpus <- "Once upon a time there was a tiny toy corpus.
@@ -1826,9 +1826,46 @@ subset_freqlist <- function(x, sel) {
 }
 
 
-# public function read_freqlist()
-#  - reads a 'freqlist' object from a csv file
-#  - by default also tries to read the associated config file
+#' Read a frequency list from a csv file
+#' 
+#' Reads an object of the class \code{'freqlist'} from a csv file. The csv
+#' file is assumed to contain two columns, the first being the type and the
+#' second being the frequency of that type. The file is also assumed to
+#' have a header line with the names of both columns.
+#' 
+#' The function \code{read_freqlist} not only reads the file \code{file},
+#' but also checks whether a configuration file exists with a name that
+#' is identical to \code{file}, except that it has the filename extension
+#' \code{".yaml"}.
+#' 
+#' If such a file exists, then that configuration file
+#' is taken to 'belong' to \code{file} and is also read and the frequency list attributes
+#' \code{"tot_n_tokens"} and \code{"tot_n_types"} are retrieved from it.
+#' 
+#' If no such configuration file exists,
+#' then the values for \code{"tot_n_tokens"} and \code{"tot_n_types"} are
+#' calculated on the basis of the frequencies in the frequency list. 
+#'
+#' @param file Character vector of length 1. Path to the input file.
+#' @param sep Character vector of length 1. Column separator.
+#' @param file_encoding File encoding used in the input file.
+#' @param ... Additional arguments (not implemented).
+#'
+#' @return Object of class \code{freqlist}.
+#' @export
+#' @seealso \code{\link{write_freqlist}}
+#'
+#' @examples
+#' \dontrun{
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#' It consisted of three sentences. And it lived happily ever after."
+#' freqs <- freqlist(toy_corpus, as_text = TRUE)
+#' 
+#' print(freqs, n = 1000)
+#' write_freqlist(freqs, "example_freqlist.csv")
+#' freqs2 <- read_freqlist("example_freqlist.csv")
+#' print(freqs2, n = 1000)
+#' }
 read_freqlist <- function(file,
                           sep = "\t",
                           file_encoding = "UTF-8",
@@ -1850,11 +1887,31 @@ read_freqlist <- function(file,
   result
 }
 
-# public function write_freqlist()
-#  - writes a 'freqlist' object to a csv file
-#  - by default also creates an associated config file
-# in the current implementation, orig_ranks are not
-# written to file
+#' Write a frequency list to a csv file
+#' 
+#' Writes an object of the class \code{freqlist} to a csv file. The
+#' resulting csv file contains two columns, the first being the type and the
+#' second being the frequency of that type. The file also contains
+#' a header line with the names of both columns. 
+#' 
+#' The function \code{write_freqlist} not only writes to the file \code{file},
+#' but also creates a configuration file with a name that
+#' is identical to \code{file}, except that it has the filename extension
+#' \code{".yaml"}. The frequency list attributes \code{"tot_n_tokens"}
+#' and \code{"tot_n_types"} are stored to that configuration file. 
+#'
+#' @param x Object of class \code{freqlist}.
+#' @param file Character vector of length 1. Path to the output file.
+#' @param sep Character vector of length 1. Column separator.
+#' @param make_config_file Boolean value. Whether or not a configuration file
+#'   needs to be created. In most circumstances, this should be set to \code{TRUE}.
+#' @param ... Additional arguments (not implemented).
+#'
+#' @return Invisibly, \code{x}.
+#' @export
+#' @seealso \code{\link{read_freqlist}}
+#'
+#' @inherit read_freqlist examples
 write_freqlist <- function(x,
                            file,
                            sep = "\t",

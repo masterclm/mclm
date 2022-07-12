@@ -28,10 +28,8 @@ is written to a separate line. The file encoding that is used is
 \examples{
 \dontrun{
   types <- as_types(c("first", "second", "third"))
-  print(types, n = 1000)
   write_types(types, "file_with_types.txt")
   types_2 <- read_types("file_with_types.txt")
-  print(types_2, n = 1000)
   }
 }
 \seealso{

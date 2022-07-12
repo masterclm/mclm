@@ -48,5 +48,5 @@ flist <- as_freqlist(c("a" = 12, "toy" = 53, "example" = 20),
 flist
 }
 \seealso{
-freqlist
+\code{\link{freqlist}}
 }

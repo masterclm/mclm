@@ -1051,14 +1051,7 @@ read_types <- function(file,
 #' @seealso \code{\link{read_types}}
 #' @export
 #'
-#' @examples
-#' \dontrun{
-#'   types <- as_types(c("first", "second", "third"))
-#'   print(types, n = 1000)
-#'   write_types(types, "file_with_types.txt")
-#'   types_2 <- read_types("file_with_types.txt")
-#'   print(types_2, n = 1000)
-#'   }
+#' @inherit read_types examples
 write_types <- function(x,
                         file,
                         make_config_file = TRUE,

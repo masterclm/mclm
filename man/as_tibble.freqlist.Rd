@@ -28,5 +28,5 @@ as_tibble(flist)
 as_tibble(flist2)
 }
 \seealso{
-as.data.frame..freqlist
+\code{\link{as.data.frame.freqlist}}
 }
