@@ -384,19 +384,37 @@ assoc_abcd <- function(a, b, c, d,
   # output also
   retval$dir <- ifelse(a/m < c/n, -1, 1)     # direction
   
-  compute_measure <- function(measure_names, expr, just_assign = TRUE) {
-    if (any(is.element(
-      c(measure_names, "ALL"),
-      measures
-    ))) {
-      if (just_assign) {
-        main_name <- measure_names[[1]]
-        retval[[main_name]] <<- expr
-      } else {
-        expr
-      }
-      show_dot(show_dots)
+  compute_measure <- function(measure_names, expr, just_assign = TRUE, triple = FALSE) {
+    if (triple) { # for significance statistics with signed version and p-value
+      measure_names <- c(measure_names, paste0(measure_names, "_signed"))
+      just_assign <- TRUE
     }
+    
+    if (!any(is.element(c(measure_names, "ALL"), measures))) { # measure is not called
+      return()
+    }
+    
+    if (!just_assign) { # just run code in expr
+      expr
+      show_dot(show_dots)
+      return()
+    }
+    
+    main_name <- measure_names[[1]]
+    retval[[main_name]] <<- expr
+    
+    if (triple) {
+      retval[[paste0(main_name, "_signed")]] <<- retval[[main_name]] * retval$dir
+      
+      if (with_variants) {
+        retval[[paste0("p_", main_name)]] <<- 1 - pchisq(retval[[main_name]], 1)
+      } else {
+        if (!any(is.element(c(main_name, "ALL"), measures))) {
+          retval[[main_name]] <<- NULL
+        }
+      }
+    }
+    show_dot(show_dots)
   }
   # Expected values ==
   # -- exp_a --
@@ -469,7 +487,7 @@ assoc_abcd <- function(a, b, c, d,
     {
       retval$pos_PMI <- log2((a / N) / ((k / N) * (m / N)))
       retval$pos_PMI[retval$pos_PMI < 0] <- 0 # remove negs  
-    }
+    },
     just_assign = FALSE)
   # -- PMI2 --
   compute_measure("PMI2", log2(((a^2) / N) / ((k / N) * (m / N))) )
@@ -477,110 +495,39 @@ assoc_abcd <- function(a, b, c, d,
   compute_measure("PMI3", log2(((a^3) / N) / ((k / N) * (m / N))) )
   
   # -- chi2 (4-term) --
-  compute_measure(
-    c("chi2", "chi2_signed"),
-    {
-      retval$chi2 <- (a - ea)^2 / ea + (b - eb)^2 / eb +
-        (c - ec)^2 / ec + (d - ed)^2 / ed
-      
-      retval$chi2_signed <- retval$chi2 * retval$dir
-      
-      if (with_variants) {
-        retval$p_chi2 <- 1 - pchisq(retval$chi2, 1)
-      } else {
-        if (!any(is.element(c("chi2", "ALL"), measures))) {
-          retval$chi2 <- NULL
-        }
-      }
-    },
-    just_assign = FALSE
-  )
+  compute_measure("chi2",
+                  expr = (a - ea)^2 / ea + (b - eb)^2 / eb +
+        (c - ec)^2 / ec + (d - ed)^2 / ed,
+        triple = TRUE
+        )
   # -- chi2 (4-term) with Yates correction --
-  compute_measure(
-    c("chi2_Y", "chi2_Y_signed"),
-    {
-      retval$chi2_Y <- (abs(a - ea) - .5)^2 / ea + (abs(b - eb) - .5)^2 / eb +
-        (abs(c - ec) - .5)^2 / ec + (abs(d - ed) - .5)^2 / ed
-      retval$chi2_Y_signed <- retval$chi2_Y * retval$dir
-      
-      if (with_variants) {
-        retval$p_chi2_Y <- 1 - pchisq(retval$chi2_Y, 1)
-      } else {
-        if (!any(is.element(c("chi2_Y", "ALL"), measures))) {
-          retval$chi2_Y <- NULL
-        }
-      }
-    },
-    just_assign = FALSE
-  )
+  compute_measure("chi2_Y",
+                  expr = (abs(a - ea) - .5)^2 / ea + (abs(b - eb) - .5)^2 / eb +
+                    (abs(c - ec) - .5)^2 / ec + (abs(d - ed) - .5)^2 / ed,
+                  triple = TRUE
+                  )
   # -- chi2 (2-term) --
-  compute_measure(
-    c("chi2_2T", "chi2_2T_signed"),
-    {
-      retval$chi2_2T <- (a - ea)^2 / ea + (c - ec)^2 / ec
-      retval$chi2_2T_signed <- retval$chi2_2T * retval$dir
-      if (with_variants) {
-        retval$p_chi2_2T <- 1 - pchisq(retval$chi2_2T, 1)
-      } else {
-        if (!any(is.element(c("chi2_2T", "ALL"), measures))) {
-          retval$chi2_2T <- NULL
-        }
-      }  
-    },
-    just_assign = FALSE
-  )
+  compute_measure("chi2_2T",
+                  expr = (a - ea)^2 / ea + (c - ec)^2 / ec,
+                  triple = TRUE
+                  )
   # -- chi2 (2-term) with Yates correction --
-  compute_measure(
-    c("chi2_2T_Y", "chi2_2T_Y_signed"),
-    {
-      retval$chi2_2T_Y <- (abs(a - ea) - .5)^2 / ea + (abs(c - ec) - .5)^2 / ec
-      retval$chi2_2T_Y_signed <- retval$chi2_2T_Y * retval$dir
-      if (with_variants) {
-        retval$p_chi2_2T_Y <- 1 - pchisq(retval$chi2_2T_Y, 1)
-      } else {
-        if (!any(is.element(c("chi2_2T_Y", "ALL"), measures))) {
-          retval$chi2_2T_Y <- NULL
-        }
-      }
-    },
-    just_assign = FALSE
-  )
-  
+  compute_measure("chi2_2T_Y",
+                  expr = (abs(a - ea) - .5)^2 / ea + (abs(c - ec) - .5)^2 / ec,
+                  triple = TRUE
+                  )
   # -- G (4-term) --
   # NOTE I call this G, but often in linguistics the name G2 is used
-  compute_measure(
-    c("G", "G_signed"),
-    {
-      retval$G <- 2 * (a * log(a / ea) + b * log(b / eb) +
-                         c * log(c / ec) + d * log(d / ed))
-      retval$G_signed <- retval$G * retval$dir
-      if (with_variants) {
-        retval$p_G <- 1 - pchisq(retval$G, 1)
-      } else {
-        if (!any(is.element(c("G", "ALL"), measures))) {
-          retval$G <- NULL
-        }
-      }
-    },
-    just_assign = FALSE
-  )
+  compute_measure("G",
+                  expr = 2 * (a * log(a / ea) + b * log(b / eb) +
+                                c * log(c / ec) + d * log(d / ed)),
+                  triple = TRUE
+                  )
   # -- G (2-term) --
-  compute_measure(
-    c("G_2T", "G_2T_signed"),
-    {
-      retval$G_2T <- 2 * (a * log(a / ea) + c * log(c / ec))
-      retval$G_2T_signed <- retval$G_2T * retval$dir
-      if (with_variants) {
-        retval$p_G_2T <- 1 - pchisq(retval$G_2T, 1)  
-      } else {
-        if (!any(is.element(c("G_2T", "ALL"), measures))) {
-          retval$G_2T <- NULL
-        }
-      }
-    },
-    just_assign = FALSE
-  )
-  
+  compute_measure("G_2T",
+                  expr = 2 * (a * log(a / ea) + c * log(c / ec)),
+                  triple = TRUE
+                  )
   # -- t --
   compute_measure("t", just_assign = FALSE, expr = {
     retval$t <- ((a / N - k / N * m / N) /

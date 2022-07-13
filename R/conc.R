@@ -755,11 +755,11 @@ import_conc <- function(x,
 #' @export
 #'
 #' @examples
-#' (cd_1 <- conc('A first very small corpus.', '\\\\w+', as_text = TRUE))
+#' (cd_1 <- conc('A first very small corpus.', '\\w+', as_text = TRUE))
 #' as.data.frame(cd_1)
 #' 
-#' (cd_2 <- conc('A second very small corpus.', '\\\\w+', as_text = TRUE))
-#' (cd_3 <- conc('A third very small corpus.', '\\\\w+', as_text = TRUE))
+#' (cd_2 <- conc('A second very small corpus.', '\\w+', as_text = TRUE))
+#' (cd_3 <- conc('A third very small corpus.', '\\w+', as_text = TRUE))
 #' (cd <- merge_conc(cd_1, cd_2, cd_3))
 #' as.data.frame(cd)
 merge_conc <- function(..., show_warnings = TRUE) {
