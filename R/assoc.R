@@ -34,10 +34,11 @@ cooc_info <- function(target_freqlist,
 ## in fact the details of "text_cooc" described "surf_cooc"
 # NOTE Old documentation assumed that there was an as_text argument, which is not correct.
 # TODO add examples to the following documentation
+# REVIEW document class itself here?
 
 #' Build collocation frequencies.
 #' 
-#' Build a surface or textual collocation frequency for a specific node.
+#' These functions builds a surface or textual collocation frequency for a specific node.
 #' 
 #' Two major steps can be distinguished in the procedure conducted by these functions.
 #' The first major step is the \emph{identification of the (sequence of) tokens} that,
@@ -422,12 +423,420 @@ text_cooc <- function(x,
 
 # Create assoc_scores ============================================
 
-# function that returns association scores on the basis of
-# a target frequency list and a reference frequency list;
-# it internally calls assoc_scores_abcd()
-# is x is of class cooc_info, then y is ignored
-# otherwise x and y are assumed to be target.freqlist and
-# ref.freqlist respectively.
+# REVIEW describe class here?
+#' Association scores used in collocation analysis and keyword analysis
+#' 
+#' `assoc_scores` and `assoc_abcd` take as their arguments co-occurrence
+#' frequencies of a number of items and return a range of association scores used
+#' in collocation analysis, collostruction analysis and keyword analysis.
+#' 
+#' @details 
+#' ## Input and output
+#' [assoc_scores()] takes as its arguments a target frequency list and a reference
+#' frequency lists (either as two [`freqlist`][freqlist()] objects or as a
+#' [`cooc_info`][create_cooc] object) and returns a number of popular measures
+#' expressing, for (almost) every item in either one of these lists, the extent
+#' to which the item is attracted to the target context, when compared to the
+#' reference context. The "almost" is added between parentheses because, with
+#' the default settings, some items are automatically excluded from the output
+#' (see `min_freq`).
+#' 
+#' [assoc_abcd()] takes as its arguments four vectors `a`, `b`, `c`, and `d`, of
+#' equal length. Each tuple of values `(a[i], b[i], c[i], d[i])`, with `i` some
+#' integer number between 1 and the length of the vectors, is assumed to represent
+#' the four numbers *a*, *b*, *c*, *d* in a contingency table of the type:
+#' 
+#' |                 | **tested item** | **any other item** | **total** |
+#' |----------------:|----------------:|-------------------:|----------:|
+#' |  target context | *a*             | *b*                | *m*       |
+#' |reference context| *c*             | *d*                | *n*       |
+#' |total            | *k*             | *l*                | *N*       |
+#' 
+#' In the above table *m*, *n*, *k*, *l* and *N* are marginal frequencies.
+#' More specifically, *m = a + b*, *n = c + d*, *k = a + c*, *l = b + d* and *N = m + n*.
+#' 
+#' ## Dealing with zeros
+#' 
+#' Several of the association measures break down when one or more of the values
+#' `a`, `b`, `c`, and `d` are zero (for instance, because this would lead to
+#' division by zero or taking the log of zero). This can be dealt with in different
+#' ways, such as the Haldane-Anscombe correction.
+#' 
+#' Strictly speaking, Haldane-Anscombe correction specifically applies to the
+#' context of (log) odds ratios for two-by-two tables and boils down to adding
+#' `0.5` to each of the four values `a`, `b`, `c`, and `d`
+#' in every two-by-two contingency table for which the original values
+#' `a`, `b`, `c`, and `d` would not allow us to calculate
+#' the (log) odds ratio, which happens when one (or more than one) of the four
+#' cells is zero.
+#' Using the Haldane-Anscombe correction, the (log) odds ratio is then calculated
+#' on the bases of these 'corrected' values for `a`, `b`, `c`, and `d`.
+#' 
+#' However, because other measures that do not compute (log) odds ratios might
+#' also break down when some value is zero, all measures will be computed on the
+#' 'corrected' contingency matrix.
+#'  
+#' If the `haldane` argument is set to `FALSE`, division by zero or taking the
+#' log of zero is avoided by systematically adding a small positive value to all
+#' zero values for `a`, `b`, `c`, and `d`. The argument `small_pos`
+#' determines which small positive value is added in such cases. Its default value is `0.00001`.
+#'
+#' @param x Either an object of class `freqlist` (see [freqlist()] or [as_freqlist()])
+#'   or an object of class `cooc_info` (see [create_cooc]).
+#'   
+#'   If `x` is a `freqlist`, it is interpreted as the target frequency
+#'   list (i.e. the list with the frequency of items in the target context) and
+#'   `y` must be a `freqlist` with the frequency of items in the
+#'   reference context.
+#'   
+#'   If `x` is an object of class `cooc_info` instead, it is interpreted
+#'   as containting target frequency information, reference frequency information
+#'   and corpus size information.
+#' @param y An object of class `freqlist` with the frequencies of the
+#'   reference context if `x` is also a `freqlist`. If `x` is an
+#'   object of class `cooc_info`, this argument is ignored.
+#' @param a Numeric vector expressing how many times some tested item
+#'   occurs in the target context.
+#'   More specifically, `a[[i]]`, with `i` an integer, expresses
+#'   how many times the `i`-th tested item occurs in the target context.
+#' @param b Numeric vector expressing how many times other items than the tested
+#'   item occur in the target context.
+#'   More specifically, `b[[i]]`, with `i` an integer, expresses
+#'   how many times *other* items than the `i`-th tested item
+#'   occur in the target context.
+#' @param c Numeric vector expressing how many times some tested
+#'   item occurs in the reference context.
+#'   More specifically, `c[[i]]`, with `i` an integer, expresses
+#'   how many times the `i`-th tested item occurs in the reference context.
+#' @param d Numeric vector expressing how many times items other than the tested
+#'   item occur in the reference context.
+#'   More specifically, `d[[i]]`, with `i` an integer, expresses
+#'   how many times *other* items than the `i`-th tested item occur
+#'   in the reference context.
+#' @param types A character vector containing the names of the linguistic items
+#'   of which the association scores are to be calculated, or `NULL`. If
+#'   `NULL`, [assoc_abcd()] creates dummy types such as `"t001"`,
+#'   `"t002"`, etc.
+#' @param min_freq Minimum value for `a[[i]]` (or for the frequency of an
+#'   item in the target frequency list) needed for its corresponding item to be
+#'   included in the output.
+#' @param measures Character vector containing the association measures (or related
+#'   quantities) for which scores are requested. Supported measure names (and
+#'   related quantities) are described in `Value` below.
+#'   
+#'   If `measures` is `NULL`, it is interpreted as short for the default selection,
+#'   i.e. `c("exp_a", "DP_rows", "RR_rows", "OR", "MS", "Dice", "PMI",
+#'   "chi2_signed", "G_signed", "t", "fisher")`.
+#'   
+#'   If `measures` is `"ALL"`, all supported measures are calculated (but not
+#'   necessarily all the variants; see `with_variants`).
+#' @param with_variants Boolean. Whether, for the requested `measures`, all
+#'   variants should be included in the output (`TRUE`) or only the main
+#'   version (`FALSE`). See also `p_fisher_2`.
+#' @param show_dots Boolean. Whether a dot should be shown in console each time
+#'   calculations for a measure are finished.
+#' @param p_fisher_2 Boolean, only relevant if `"fisher"` is included in
+#'   `measures`. If `TRUE`, the p-value for a two-sided test (testing
+#'   for either attraction or repulsion) is also calculated. By default, only
+#'   the (computationally less demanding) p-value for a one-sided test is
+#'   calculated. See `Value` for more details.
+#' @param haldane Boolean value. Should the Haldane-Anscombe correction be used?
+#'   (See the Details section.)
+#'   
+#'   If `haldane` is `TRUE`, and there is at least one zero frequency
+#'   in a contingency table, the correction is used for all measures calculated
+#'   for that table, not just for measures that need this to be done.
+#' @param small_pos Alternative (but sometimes inferior) approach to dealing with
+#'   zero frequencies, compared to `haldane`. The argument `small_pos`
+#'   only applies when `haldane` is set to `FALSE`.
+#'   (See the Details section.)
+#'      
+#'   If `haldane` is `FALSE`, and there is at least one zero frequency
+#'   in a contingency table, adding small positive values to the zero frequency
+#'   cells is done systematically for all measures calculated for that table,
+#'   not just for measures that need this to be done.
+#'
+#' @return An object of class `assoc_scores`. This is a kind of data frame with
+#'   as its rows all items from either the target frequency list or the reference
+#'   frequency list with a frequency larger than `min_freq` in the target list,
+#'   and as its columns a range of measures that express the extent to which
+#'   the items are attracted to the target context (when compared to the reference
+#'   context).
+#'   Some columns don't contain actual measures but rather additional information
+#'   that is useful for interpreting other measures.
+#'   
+#'   The following sections describe the (possible) columns in the output. All
+#'   of these measures are reported if `measures` is set to `"ALL"`. Alternatively,
+#'   each measure can be requested by specifying its name in a character vector
+#'   given to the `measures` argument. Exceptions are described in the sections
+#'   below.
+#'   
+#'   ## Observed and expected frequencies
+#'   
+#'   - `a`, `b`, `c`, `d`: The frequencies in cells *a*, *b*, *c* and *d*,
+#'   respectively. If one of them is `0`, they will be augmented by 0.5 or `small_pos`
+#'   (see `Details`). These output columns are always present.
+#'   - `dir`: The direction of the association: `1` in case of relative attraction
+#'   between the tested item and the target context (if \eqn{\frac{a}{m} \ge \frac{c}{n}}) and
+#'   `-1` in case of relative repulsion between the target item and the target
+#'   context (if \eqn{\frac{a}{m} < {c}{n}}).
+#'   - `exp_a`, `exp_b`, `exp_c`, `exp_d`: The expected values for cells *a*, *b*,
+#'   *c* and *d*, respectively. All these columns will be included if `"expected"`
+#'   is in `measures`. `exp_a` is also one of the default measures and is therefore included
+#'   if `measures` is `NULL`. The values of these columns are computed as follows:
+#'       + `exp_a` = \eqn{\frac{m \times k}{N}}
+#'       + `exp_b` = \eqn{\frac{m \times l}{N}}
+#'       + `exp_c` = \eqn{\frac{n \times k}{N}}
+#'       + `exp_d` = \eqn{\frac{n \times l}{N}}
+#'       
+#'   ## Effect size measures
+#'   
+#'   Some of these measures are based on proportions and can therefore be
+#'   computed either on the rows or on the columns of the contingency table. Each
+#'   measure can be requested on its own, but pairs of measures can also be
+#'   requested with the first part of their name, as indicated in their corresponding
+#'   descriptions.
+#'   
+#'   - `DP_rows` and `DP_cols`: The difference of proportions, sometimes also
+#'   called Delta-p (\eqn{\Delta p}), between rows and columns respectively.
+#'   Both columns are present if `"DP"` is included in `measures`. `DP_rows`
+#'   is also included if `measures` is `NULL`.
+#'   They are calculated as follows:
+#'       + `DP_rows` = \eqn{\frac{a}{m} - \frac{c}{n}}
+#'       + `DP_cols` = \eqn{\frac{a}{k} - \frac{b}{l}}
+#'   - `perc_DIFF_rows` and `perc_DIFF_cols`: These measures can be seen as
+#'   normalized versions of Delta-p, i.e. essentially the same measures divided
+#'   by the denominator and multiplied by `100`. They therefore express how large
+#'   the difference of proportions is, relative to the reference proportion.
+#'   The multiplication by `100` turns the resulting 'relative difference of
+#'   proportion' into a percentage.
+#'   Both columns are present if `"perc_DIFF"` is included in `measures`.
+#'   They are calculated as follows:
+#'       + `perc_DIFF_rows` = \eqn{100 * \frac{(a / m) - (c / n)}{c / n}}
+#'       + `perc_DIFF_cols` = \eqn{100 * \frac{(a / k) - (b / l)}{c / n}}
+#'   - `DC_rows` and `DC_cols`: The difference coefficient can be seen as a
+#'   normalized version of Delta-p, i.e. essentially dividing the difference of
+#'   proportions by the sum of proportions.
+#'   Both columns are present if `"DC"` is included in `measures`.
+#'   They are calculated as follows:
+#'       + `DC_rows` = \eqn{\frac{(a / m) - (c / n)}{(a / m) + (c / n)}}
+#'       + `DC_cols` = \eqn{\frac{(a / k) - (b / l)}{(a / k) + (b / l)}}
+#'   - `RR_rows` and `RR_cols`: Relative risk for the rows and columns
+#'   respectively. `RR_rows` represents then how large the proportion in the
+#'   target context is, relative to the proportion in the reference context.
+#'   Both columns are present if `"RR"` is included in `measures`.
+#'   `RR_rows` is also included if `measures` is `NULL`.
+#'   They are calculated as follows:
+#'       + `RR_rows` = \eqn{\frac{a / m}{c / n}}
+#'       + `RR_cols` = \eqn{\frac{a / k}{b / l}}
+#'   - `LR_rows` and `LR_cols`: The so-called 'log ratio' of the rows and
+#'   columns, respectively. It can be seen as a transformed version of the relative
+#'   risk, viz. its binary log.
+#'   Both columns are present if `"LR"` is included in `measures`.
+#'   They are calculated as follows:
+#'      + `LR_rows` = \eqn{\log_2\left(\frac{a / m}{c / n}\right)}
+#'       + `LR_cols` = \eqn{\log_2\left(\frac{a / k}{b / l}\right)}
+#'   
+#'   Other measures use the contingency table in a different way and therefore
+#'   don't have a complementary row/column pair. In order to retrieve these columns,
+#'   if `measures` is not `"ALL"`, their name must be in the `measures` vector.
+#'   Some of them are included by default, i.e. if `measures` is `NULL`.
+#'       
+#'   - `OR`: The odds ratio, which can be calculated either as
+#'   \eqn{\frac{a/b}{c/d}} or as \eqn{\frac{a/c}{b/d}}.
+#'   This column is present `measures` is `NULL`.
+#'   - `log_OR`: The log odds ratio, which can be calculated either as
+#'   \eqn{\log\left(\frac{a/b}{c/d}\right)} or as \eqn{\log\left(\frac{a/c}{b/d}\right)}.
+#'   In other words, it is the natural log of the odds ratio.
+#'   - `MS`: The minimum sensitivity, which is calculated as
+#'   \eqn{\min(\frac{a}{m}, \frac{a}{k})}.
+#'   In other words, it is either \eqn{\frac{a}{m}} or \eqn{\frac{a}{k}}, whichever is lowest.
+#'   This column is present `measures` is `NULL`.
+#'   - `Jaccard`: The Jaccard index, which iscalculated as
+#'   \eqn{\frac{a}{a + b + c}}. It expresses *a*, which is the frequency of the
+#'   test item in the target context, relative to *b + c + d*, i.e. the frequency
+#'   of all other contexts.
+#'   - `Dice`: The Dice coefficient, which is calculated as
+#'   \eqn{\frac{2a}{m + k}}. It expresses the harmonic mean of \eqn{\frac{a}{m}} and \eqn{\frac{a}{k}}
+#'   This column is present `measures` is `NULL`.
+#'   - `logDice`: An adapted version of the Dice coefficient. It is calculated as
+#'   \eqn{14 + \log_2\left(\frac{2a}{m + k}\right)}. In other words, it is `14`
+#'   plus the binary log of the Dice coefficient.
+#'   - `phi`: The phi coefficient (\eqn{\phi}), which is calculated as
+#'   \eqn{\frac{(a \times d) - (b \times c)}{ \sqrt{m \times n \times k \times l}}}.
+#'   - `Q`: Yule's Q, which is calculated as
+#'   \eqn{\frac{(a \times d) - (b \times c)}{(a \times d)(b \times c)}}.
+#'   - `mu`: The measure mu (\eqn{\mu}), which is calculated as
+#'   \eqn{\frac{a}{\mathrm{exp\_a}}} (see `exp_a`).
+#'   - `PMI` and `pos_PMI`: (Positive) pointwise mutual information,
+#'   which can be seen as a modification of the mu measure and is calculated as
+#'   \eqn{\log_2\left(\frac{a}{\mathrm{exp\_a}}\right)}. In `pos_PMI`, negative
+#'   values are set to `0`.
+#'   The `PMI` column is present `measures` is `NULL`.
+#'   - `PMI2` and `PMI3`: Modified versions of `PMI` that aim to give relatively
+#'   more weight to cases with relatively higher *a*. However, because of this
+#'   modification, they are not pure effect size measures any more.
+#'       + `PMI2` = \eqn{\log_2\left(\frac{a^2}{\mathrm{exp\_a}}\right)}
+#'       + `PMI3` = \eqn{\log_2\left(\frac{a^3}{\mathrm{exp\_a}}\right)}
+#'       
+#'   ## Measures of statistical significance
+#'   
+#'   The first measures in this section tend to come in triples: a test statistic,
+#'   its p-value (preceded by `p_`) and its signed version (followed by `_signed`).
+#'   The test statistics indicate evidence of either attraction or repulsion.
+#'   Thus, in order to indicate the direction of the relationship, a negative
+#'   sign is added in the "signed" version when \eqn{\frac{a}{k} < \frac{c}{l}}.
+#'   
+#'   In each of these cases, the name of the main measure (e.g. `"chi2"`)
+#'   and/or its signed counterpart (e.g. `"chi2_signed"`) must be in the `measures`
+#'   argument, or `measures` must be `"ALL"`, for the columns to be included in
+#'   the output. If the main function is requested, the signed counterpart will
+#'   also be included, but if only the signed counterpart is requested, the non-signed
+#'   version will be excluded.
+#'   For the p-value to be retrieved, either the main measure or its signed version
+#'   must be requested and, *additionally*, the `with_variants` argument must be
+#'   set to `TRUE`.
+#'   
+#'   - `chi2`, `p_chi2` and `chi2_signed`: The chi-squared test statistic
+#'   (\eqn{\chi^2}) as used in a chi-squared test of independence or in a
+#'   chi-squared test of homogeneity for a two-by-two contingency table.
+#'   Scores of this measure are high when there is strong evidence for attraction,
+#'   but also when there is strong evidence for repulsion.
+#'   The `chi2_signed` column is present if `measures` is `NULL`.
+#'   `chi2` is calculated as follows: \deqn{
+#'                         \frac{(a-\mathrm{exp\_a})^2}{\mathrm{exp\_a}} +
+#'                         \frac{(b-\mathrm{exp\_b})^2}{\mathrm{exp\_b}} +
+#'                         \frac{(c-\mathrm{exp\_c})^2}{\mathrm{exp\_c}} +
+#'                         \frac{(d-\mathrm{exp\_d})^2}{\mathrm{exp\_d}}
+#'                        }.
+#'   - `chi2_Y`, `p_chi2_Y` and `chi2_Y_signed`: The chi-squared test statistic
+#'   (\eqn{\chi^2}) as used in a chi-squared test with Yates correction
+#'   for a two-by-two contingency table.
+#'  `chi2_Y` is calculated as follows: \deqn{
+#'                         \frac{(|a-\mathrm{exp\_a}| - 0.5)^2}{\mathrm{exp\_a}} +
+#'                         \frac{(|b-\mathrm{exp\_b}| - 0.5)^2}{\mathrm{exp\_b}} +
+#'                         \frac{(|c-\mathrm{exp\_c}| - 0.5)^2}{\mathrm{exp\_c}} +
+#'                         \frac{(|d-\mathrm{exp\_d}| - 0.5)^2}{\mathrm{exp\_d}}
+#'                        }.
+#'   - `chi2_2T`, `p_chi2_2T` and `chi2_2T_signed`: The chi-squared test statistic
+#'   (\eqn{\chi^2}) as used in a chi-squared goodness-of-fit test applied to the
+#'   first column of the contingency table. The `"2T"` in the name stands for
+#'   'two terms' (as opposed to `chi2`, which is soemtimes the 'four terms' version).
+#'   `chi2_2T` is calculated as follows: \deqn{
+#'                         \frac{(a-\mathrm{exp\_a})^2}{\mathrm{exp\_a}} +
+#'                         \frac{(c-\mathrm{exp\_c})^2}{\mathrm{exp\_c}}
+#'                        }.
+#'   - `chi2_2T_Y`, `p_chi2_2T_Y` and `chi2_2T_Y_signed`: The chi-squared test statistic
+#'   (\eqn{\chi^2}) as used in a chi-squared goodness-of-fit test with Yates correction, applied to the
+#'   first column of the contingency table.
+#'   `chi2_2T_Y` is calculated as follows: \deqn{
+#'                           \frac{(|a-\mathrm{exp\_a}| - 0.5)^2}{\mathrm{exp\_a}} +
+#'                           \frac{(|c-\mathrm{exp\_c}| - 0.5)^2}{\mathrm{exp\_c}}
+#'                          }.
+#'   - `G`, `p_G` and `G_signed`: G test statistic, which is also sometimes
+#'   called log-likelihood ratio (LLR) and, somewhat confusingly, G-squared.
+#'   This is the test statistic as used in a log-likelihood ratio test for independence
+#'   or homogeneity in a two-by-two contingency table.
+#'   Scores are high in case of strong evidence for attraction, but also in case
+#'   of strong evidence of repulsion.
+#'   The `G_signed` column is present if `measures` is `NULL`.
+#'   `G` is calcualted as follows: \deqn{
+#'                   2 \left(
+#'                   a \times \log(\frac{a}{\mathrm{exp\_a}}) +
+#'                   b \times \log(\frac{b}{\mathrm{exp\_b}}) +
+#'                   c \times \log(\frac{c}{\mathrm{exp\_c}}) +
+#'                   d \times \log(\frac{d}{\mathrm{exp\_d}})
+#'                   \right)
+#'                  }
+#'   - `G_2T`, `p_G_2T` and `G_2T_signed`: The test statistic
+#'   used in a log-likelihood ratio test for goodness-of-fit applied to the first
+#'   column of the contingency table.
+#'   The `"2T"` stands for 'two terms'.
+#'   `G_2T` is calculated as follows: \deqn{
+#'                   2 \left(
+#'                   a \times \log(\frac{a}{\mathrm{exp\_a}}) +
+#'                   c \times \log(\frac{c}{\mathrm{exp\_c}})
+#'                   \right)
+#'                  }
+#'                  
+#'   The final two groups of measures take a different shape.
+#'   
+#'   - `t`, `p_t_1`, `t_1_as_chisq1`, `p_t_2` and `t_2_as_chisq1`:
+#'   The t-test statistic, used for a t-test for the proportion \eqn{\frac{a}{N}}
+#'   in which the null hypothesis is based on \eqn{\frac{k}{N}\times\frac{m}{N}}.
+#'   Column `t` is present if `"t"` is included in `measures` or if `measures` is
+#'   `"ALL"` or `NULL`. The other four columns are present if `t` is requested and if,
+#'   additionally, `with_variants` is `TRUE`.
+#'       + `t` = \eqn{
+#'                    \frac{
+#'                    a/N + k/N + m/N
+#'                    }{
+#'                    \sqrt{((a/N)\times (1-a/N))/N}
+#'                    }
+#'                     }
+#'       + `p_t_1` is the p-value that corresponds to `t` when assuming a one-tailed
+#'       test that only looks at attraction.
+#'       + `t_1_as_chisq1` is a transformation of `p_t_1` such that, if we refer
+#'       to it as *p*, it returns the '*p* right quantile' in the chi-square
+#'       distribution with one degree of freedom.
+#'       + `p_t_2` is the p-value that corresponds to `t` when assuming a two-tailed
+#'       test, viz. that looks at both attraction and repulsion.
+#'       + `t_2_as_chisq1` is a transformation of `p_t_2` such that, if we refer
+#'       to it as *p*, it returns the '*p right quantile' in the chi-square
+#'       distribution with one degree of freedom.
+#'  - `p_fisher_1`, `fisher_1_as_chisq1`, `p_fisher_1r`, `fisher_1r_as_chisq1`:
+#'  The p-value of a one-sided Fisher exact test.
+#'  The column `p_fisher_1` is present if either `"fisher"` or `"p_fisher"` are in `measures`
+#'  or if `measures` is `"ALL"` or `NULL`. The other columns are present if `p_fisher_1` as
+#'  been requested and if, additionally, `with_variants` is `TRUE`.
+#'    
+#'      + `p_fisher_1` and `p_fisher_1r` are the p-values of the Fisher exact test
+#'    that look at attraction and repulsion respectively.
+#'    
+#'      + `fisher_1_as_chisq1` and `fisher_1r_as_chisq1` return the '*p* right quantile'
+#'    in the chi-square distribution with one degree of freedom, with *p* being,
+#'    respectively, `p_fisher_1` and `p_fisher_1r`.
+#'  - `p_fisher_2` and `fisher_2_as_chisq1`: p-value for a two-sided Fisher
+#'  exact test, viz. looking at both attraction and repulsion. `p_fisher_2`
+#'  returns the p-value and `fisher_2_as_chisq1`, its transformation, i.e. the
+#'  '*p* right quantile' in the chi-square distribution with one degree of freedom,
+#'  with *p* being `p_fisher_2`.
+#'  The `p_fisher_2` column is present if either `"fisher"` or `"p_fisher_1"` are
+#'  in `measures` or if `measures` is `"ALL"` or `NULL` and if, additionally, `p_fisher_2` is
+#'  `TRUE`. `fisher_2_as_chisq1` is present if `p_fisher_2` was requested and,
+#'  additionally, `with_variants` is `TRUE`.
+#'   
+#' @name assoc_scores
+#' @export
+#' @md
+#' @examples 
+#' assoc_abcd(10 , 200, 100,  300, types = "four")
+#' assoc_abcd(30, 1000,  14, 5000, types = "fictitious")
+#' assoc_abcd(15, 5000,  16, 1000, types = "toy")
+#' assoc_abcd( 1,  300,   4, 6000, types = "examples")
+#' 
+#' a <- c(10,    30,    15,    1)
+#' b <- c(200, 1000,  5000,  300)
+#' c <- c(100,   14,    16,    4)
+#' d <- c(300, 5000, 10000, 6000)
+#' types <- c("four", "fictitious", "toy", "examples")
+#' (scores <- assoc_abcd(a, b, c, d, types = types))
+#' print(scores, sort_order = "PMI")
+#' print(scores, sort_order = "alpha")
+#' print(scores, sort_order = "none")
+#' print(scores, sort_order = "nonsense")
+#' 
+#' print(scores, sort_order = "PMI",
+#'       keep_cols = c("a", "exp_a", "PMI", "G_signed"))
+#' print(scores, sort_order = "PMI",
+#'       keep_cols = c("a", "b", "c", "d", "exp_a", "G_signed"))
+#' print(scores, sort_order = "PMI",
+#'      drop_cols = c("a", "b", "c", "d", "exp_a", "G_signed",
+#'                     "RR_rows", "chi2_signed", "t"))
+NULL
+
+#' @rdname assoc_scores
+#' @export
 assoc_scores <- function(x, 
                          y = NULL, 
                          min_freq = 3,
@@ -472,8 +881,8 @@ assoc_scores <- function(x,
              small_pos = small_pos)
 }
 
-# function that returns association scores on the basis of
-# the frequencies a, b, c and d
+#' @rdname assoc_scores
+#' @export
 assoc_abcd <- function(a, b, c, d,
                        types = NULL,
                        measures = NULL,
