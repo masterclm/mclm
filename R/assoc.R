@@ -13,9 +13,15 @@
 # 1 or higher. They take a[1],b[1],c[1] and d[1] to stem from frequency table 1, 
 # a[2],b[2],c[2] and d[2], to stem from frequency table 2, etc.
 
-# Create cooc_info ===============================================
+# Create cooc_info =============================================================
 
-# constructor for an object of the class "cooc_info"
+#' Constructor of class 'cooc_info'
+#'
+#' @param target_freqlist,ref_freqlist An object of class \code{freqlist}.
+#'
+#' @return A named list of two \code{freqlist} objects, "target_freqlist"
+#'   and "ref_freqlist", of class \code{cooc_info}.
+#' @noRd
 cooc_info <- function(target_freqlist,
                       ref_freqlist) {
   retval <- list(target_freqlist = target_freqlist,
@@ -24,6 +30,132 @@ cooc_info <- function(target_freqlist,
   retval
 }
 
+# CHANGED merged documentation of surf_cooc and text_cooc together (not ontly option).
+## in fact the details of "text_cooc" described "surf_cooc"
+# NOTE Old documentation assumed that there was an as_text argument, which is not correct.
+# TODO add examples to the following documentation
+
+#' Build collocation frequencies.
+#' 
+#' Build a surface or textual collocation frequency for a specific node.
+#' 
+#' Two major steps can be distinguished in the procedure conducted by these functions.
+#' The first major step is the \emph{identification of the (sequence of) tokens} that,
+#' for the purpose of this analysis, will be considered to be the content of the corpus.
+#' 
+#' The function arguments that jointly determine the details of this step are
+#' \code{re_drop_line}, \code{line_glue}, \code{re_cut_area}, \code{re_token_splitter},
+#' \code{re_token_extractor}, \code{re_drop_token}, \code{re_token_transf_in},
+#' \code{token_transf_out}, and \code{token_to_lower}.
+#' The sequence of tokens that is the ultimate outcome of this step is then
+#' handed over to the second major step of the procedure.
+#' 
+#' The second major step is the \emph{establishment of the co-occurrence frequencies}.
+#' The function arguments that jointly determine the details of this step are
+#' \code{re_node} and \code{re_boundary} for both functions,
+#' and \code{w_left} and \code{w_right} for \code{surf_cooc()} only.
+#' It is important to know that this second step is conducted after the tokens
+#' of the corpus have been identified, and that it is applied to a sequence of
+#' tokens, not to the original text. More specifically the regular expressions
+#' \code{re_node} and \code{re_boundary} are tested against individual tokens,
+#' as they are identified by the token identification procedure.
+#' Moreover, in \code{surf_cooc()}, the numbers \code{w_left} and \code{w_right}
+#' also apply to tokens a they are identified by the token identification procedure.
+#'
+#' @param x List of filenames of the corpus files.
+#' @param re_node Regular expression used for identifying instances of the 'node',
+#'   i.e. the target item for which collocation information is collected.
+#' @param w_left Number of tokens to the left of the 'node' that are treated as
+#'   belonging to the co-text of the 'node'. (But also see \code{re_boundary}.)
+#' @param w_right Number of tokens to the right of the 'node' that are treated as
+#'   belonging to the co-text of the 'node'. (But also see \code{re_boundary}.)
+#' @param re_boundary Regular expression.
+#'   
+#'   For \code{text_cooc()}, it identifies boundaries between 'textual units'.
+#'   
+#'   For \code{surf_cooc()}, it identifies 'cut-off' points for the co-text of
+#'   the 'node'. If it is not \code{NULL}, the maximum length of the left and right
+#'   co-texts are still given by \code{w_left} and \code{w_right}, but if a match
+#'   for \code{re_boundary} is found within the co-text, both the 'boundary token'
+#'   and all tokens beyond it are excluded.
+#' @param re_drop_line Regular expression or \code{NULL}. if \code{NULL}, the
+#'   argument  is ignored. Otherwise, lines in the corpus that match it are
+#'   treated as not belonging to the corpus and excluded from the results.
+#' @param line_glue Character vector or \code{NULL}. if \code{NULL}, the argument
+#'   is ignored.
+#'   Otherwise, all the lines in the corpus are glued together in one character
+#'   vector of length 1, with the string \code{line_glue} pasted in between
+#'   consecutive lines.
+#'   
+#'   This value can also be equal to an empty string \code{""}.
+#'   
+#'   The 'line glue' operation is conducted immediately after the 'drop line' operation.
+#' @param re_cut_area Regular expression or \code{NULL}. if \code{NULL}, the
+#'   argument  is ignored.
+#'   Otherwise, all matches in the corpus are 'cut out' from the text
+#'   prior to the identification of the tokens and are therefore not taken into
+#'   account when identifying the tokens.
+#'   
+#'   The 'cut area' operation is conducted immediately after the 'line glue' operation.
+#' @param re_token_splitter Regular expression or \code{NULL}. if \code{NULL},
+#'   the argument is ignored and \code{re_token_extractor} is used instead.
+#'   Otherwise, it identifies the areas between the tokens within a line of the corpus.
+#'   
+#'   The 'token identification' operation is conducted immediately after the
+#'   'cut area' operation.
+#' @param re_token_extractor Regular expression that identifies the locations of
+#'   the actual tokens. It is only used if \code{re_token_splitter} is \code{NULL}.
+#'   Currently the implementation of this argument is a lot less time-efficient
+#'   than that of \code{re_token_splitter}.
+#'   
+#'   The 'token identification' operation is conducted immediately after the
+#'   'cut area' operation.
+#' @param re_drop_token Regular expression or \code{NULL}. if \code{NULL}, the
+#'   argument is ignored. Otherwise, it identifies tokens to be excluded from the results.
+#'   
+#'   The 'drop token' operation is conducted immediately after the 'token
+#'   identification' operation.
+#' @param re_token_transf_in A regular expression that identifies areas in the
+#'   tokens that are to be transformed. This argument works together with
+#'   \code{token_transf_out}. If either of them is \code{NULL}, they are both ignored.
+#'   
+#'   Otherwise, all matches in the tokens for \code{re_token_transf_in} are
+#'   replaced with the replacement string \code{token_transf_out}.
+#'   
+#'   The 'token transformation' operation is conducted immediately after the
+#'   'drop token' transformation.
+#' @param token_transf_out A 'replacement string'. This argument works together
+#'   with \code{re_token_transf_in} and is ignored if either argument is \code{NULL}.
+#' @param token_to_lower Boolean value. Whether tokens should be converted to
+#'   lowercase before returning the results.
+#'   
+#'   The 'token to lower' operation is conducted immediately after the 'token
+#'   transformation' operation.
+#' @param perl Boolean value. Whether the PCRE flavor of regular expressions
+#'   should be used in the arguments that contain regular expressions.
+#' @param blocksize Number indicating how many corpus files are read to memory
+#'   'at each individual step' during the steps in the procedure. Normally the
+#'   default value of \code{300} should not be changed, but when one works with
+#'   exceptionally small corpus files, it may be worthwhile to use a higher
+#'   number, and when one works with exceptionally large corpus files, it may be
+#'   worthwhile to use a lower number.
+#' @param verbose Boolean value. If \code{TRUE}, messages are pritned to the
+#'   console to indicate progress.
+#' @param dot_blocksize Boolean value. If \code{TRUE}, dots are printed to the
+#'   console to indicate progress.
+#' @param file_encoding Encoding of the input files.
+#'   
+#'   Either a character vector of length 1, in which case all files are assumed
+#'   to be in the same encoding, or a character vector with the same length as
+#'   \code{x}, which allows for different encodings for different files.
+#'
+#' @return An object of class \code{cooc_info}, containing information on
+#'   co-occurrence frequencies.
+#' @name create_cooc
+NULL
+
+#' @describeIn create_cooc Build surface collocation frequencies
+#' @export
 surf_cooc <- function(x, 
                       re_node,
                       w_left = 3, 
@@ -154,6 +286,8 @@ surf_cooc <- function(x,
             ref_freqlist = globfreqlist2)
 }
 
+#' @describeIn create_cooc Build textual collocation frequencies
+#' @export
 text_cooc <- function(x, 
                       re_node,
                       re_boundary = NULL,
