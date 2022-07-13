@@ -159,7 +159,7 @@ An object of class \code{cooc_info}, containing information on
   co-occurrence frequencies.
 }
 \description{
-Build a surface or textual collocation frequency for a specific node.
+These functions builds a surface or textual collocation frequency for a specific node.
 }
 \details{
 Two major steps can be distinguished in the procedure conducted by these functions.

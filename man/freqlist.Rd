@@ -188,7 +188,7 @@ and \code{file_encoding} are ignored.}
 Object of class \code{freqlist}.
 }
 \description{
-Build the word frequency list from a corpus.
+This function builds the word frequency list from a corpus.
 }
 \details{
 The actual token identification is either based on the \code{re_token_splitter}

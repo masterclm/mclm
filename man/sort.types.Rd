@@ -20,7 +20,7 @@ The default value is \code{FALSE}.}
 An object of class \code{types}.
 }
 \description{
-Sort an object of the class \code{types}.
+This method sorts an object of the class \code{types}.
 }
 \details{
 At the moment, types collections are not allowed to contain \code{NA} values.

@@ -90,7 +90,7 @@ Object of class \code{conc}, a kind of data frame with as its rows
   }
 }
 \description{
-Build a concordance for the matches of a regular expresion. The result is a
+This function builds a concordance for the matches of a regular expresion. The result is a
 dataset that can be written to a file with the function \code{\link{write_conc}}.
 It mimics the behavior of the concordance tool in the program AntConc.
 }
@@ -103,7 +103,7 @@ sequences of whitespace characters, is replaced by  a single SPACE character.
 
 The values in the items the \code{glob_id} and \code{id} in the output
 of \code{conc} are always identical in a dataset that is the output of the
-function \code{conc}. The item  \code{glob_id} only becomes useful when later,
+function \code{conc}. The item \code{glob_id} only becomes useful when later,
 for instance, one wants to merge two datasets.#'
 }
 \examples{

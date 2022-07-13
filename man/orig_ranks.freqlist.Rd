@@ -25,7 +25,7 @@ Either \code{NULL} or a numeric vector, representing the
   original ranks, with as its names the types to which these ranks apply.
 }
 \description{
-Retrieve or set, for a \code{freqlist}, the original ranks for its frequency
+These methods retrieve or set, for a \code{freqlist}, the original ranks for its frequency
 counts.
 These original ranks are only defined if \code{x} is the result of a selection
 procedure (i.e. if \code{x} contains frequency counts for a selection of items

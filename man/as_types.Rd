@@ -23,7 +23,8 @@ because the result of removing duplicates is always sorted.}
 An object of class \code{types}.
 }
 \description{
-Coerce object to a vector of types
+This function coerces an object, such as a character vector, to an object of
+class \code{types}.
 }
 \examples{
 

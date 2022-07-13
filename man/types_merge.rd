@@ -20,7 +20,7 @@ types_merge_all(..., sort = FALSE)
 An object of the class \code{types}.
 }
 \description{
-Merge 'types' objects
+These methods merge two or more objects of class \code{types}.
 }
 \section{Functions}{
 \itemize{

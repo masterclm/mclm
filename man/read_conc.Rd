@@ -29,7 +29,7 @@ be converted to factors. It applies to all columns except for \code{"source"},
 Object of class \code{conc}.
 }
 \description{
-Reads concordance-based data frames that are written to file with the function
+This function reads concordance-based data frames that are written to file with the function
 \code{\link{write_conc}}.
 }
 \examples{

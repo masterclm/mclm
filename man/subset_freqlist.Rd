@@ -82,8 +82,8 @@ class, it behaves differently:
 Object of class \code{freqlist} with the selected elements only.
 }
 \description{
-Methods to subset objects of class \code{freqlist} by position, list of types,
-regex match or via boolean statements.
+These methods can be used to subset objects of class \code{freqlist} by position, list of types,
+regular expression match or via boolean statements.
 }
 \section{Methods (by generic)}{
 \itemize{

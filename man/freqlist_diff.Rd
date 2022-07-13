@@ -13,7 +13,7 @@ freqlist_diff(x, y)
 An object of class \code{freqlist}.
 }
 \description{
-Merge information from two frequency lists, subtracting the frequencies found
+This function merges information from two frequency lists, subtracting the frequencies found
 in the second frequency lists from the frequencies found in the first list.
 }
 \examples{

@@ -21,7 +21,7 @@ to syntactic names is optional. See \code{\link{as.data.frame}}.}
 A \code{data.frame}.
 }
 \description{
-Coerce a \code{freqlist} to a \code{data.frame}.
+This method coerces a \code{freqlist} to a \code{data.frame}.
 }
 \examples{
 toy_corpus <- "Once upon a time there was a tiny toy corpus.

@@ -25,7 +25,7 @@ and \code{"none"} (meaning that the items are not to be sorted).}
 Invisibly, \code{x}.
 }
 \description{
-Print objects of the class \code{types}.
+This method prints objects of the class \code{types}.
 }
 \examples{
 x <- as_types(c("first", "second", "third"))

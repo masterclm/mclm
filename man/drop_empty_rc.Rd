@@ -13,8 +13,8 @@ drop_empty_rc(x)
 Matrix, with all-zero rows and columns removed.
 }
 \description{
-With \code{x} a matrix containing frequency counts, make a copy of \code{x}
-from which the all-zero rows and all-zero columns are removed.
+With \code{x} a matrix containing frequency counts, \code{drop_empty_rc} makes
+a copy of \code{x} from which the all-zero rows and all-zero columns are removed.
 No checks are performed by this function.
 }
 \details{

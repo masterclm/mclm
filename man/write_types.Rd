@@ -21,7 +21,7 @@ description of the format of the types file.}
 Invisibly, \code{x}.
 }
 \description{
-Writes an object of the class \code{'types'} to a text file. Each type
+This function writes an object of the class \code{'types'} to a text file. Each type
 is written to a separate line. The file encoding that is used is
 \code{"UTF-8"}.
 }

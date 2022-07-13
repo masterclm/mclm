@@ -15,7 +15,7 @@
 The number of types in \code{x}.
 }
 \description{
-When applied to an object of class \code{types}, it returns the number of types.
+When applied to an object of class \code{types}, \code{n_types} returns the number of types.
 }
 \examples{
 (tks <- tokenize("The old man and the sea."))

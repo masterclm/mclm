@@ -19,7 +19,7 @@ write_conc(x, file = "", sep = "\\t", file_encoding = "UTF-8")
 Invisibly, \code{x}.
 }
 \description{
-Write an object of class \code{conc} to a file.
+This function writes an object of class \code{conc} to a file.
 }
 \examples{
 \dontrun{

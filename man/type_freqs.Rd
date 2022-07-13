@@ -36,7 +36,8 @@ of the types in the frequency list are used as names.}
 Numeric vector, representing the frequencies of the items.
 }
 \description{
-Retrieve the frequency of all or some of the items of a \code{freqlist} object.
+\code{type_freq} and \code{type_freqs} retrieve the frequency of all or
+some of the items of a \code{freqlist} object.
 }
 \examples{
 (flist <- freqlist("The man and the mouse.", as_text = TRUE))

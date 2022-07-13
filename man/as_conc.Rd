@@ -31,7 +31,7 @@ the original names of those columns be kept in the \code{conc} object.}
 An object of class \code{conc}.
 }
 \description{
-Coerce a data frame to an object of the class \code{conc}.
+This function coerces a data frame to an object of the class \code{conc}.
 }
 \examples{
 (conc_data <- conc('A very small corpus.', '\\\\w+', as_text = TRUE))

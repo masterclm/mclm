@@ -22,13 +22,13 @@ needs to be created. In most circumstances, this should be set to \code{TRUE}.}
 Invisibly, \code{x}.
 }
 \description{
-Writes an object of the class \code{freqlist} to a csv file. The
+This function writes an object of the class \code{freqlist} to a csv file. The
 resulting csv file contains two columns, the first being the type and the
 second being the frequency of that type. The file also contains
 a header line with the names of both columns.
 }
 \details{
-The function \code{write_freqlist} not only writes to the file \code{file},
+\code{write_freqlist} not only writes to the file \code{file},
 but also creates a configuration file with a name that
 is identical to \code{file}, except that it has the filename extension
 \code{".yaml"}. The frequency list attributes \code{"tot_n_tokens"}

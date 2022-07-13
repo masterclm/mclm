@@ -20,7 +20,8 @@
 An object of class \code{summary.types}.
 }
 \description{
-Build and/or print an object of the class \code{summary.types}.
+\code{summary.types} builds an object of the class \code{summary.types} from
+a \code{types} object; \code{print.summary.types} prints it.
 }
 \examples{
 

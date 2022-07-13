@@ -62,7 +62,7 @@ This argument is only relevant when \code{sort_crit} is \code{"orig_ranks"}
 Object of class \code{freqlist}.
 }
 \description{
-Sort an object of class \code{freqlist}.
+This method sorts an object of class \code{freqlist}.
 }
 \details{
 Because of the way ranks are calculated for ties (with lower ranks being

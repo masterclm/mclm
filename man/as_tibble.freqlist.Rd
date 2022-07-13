@@ -15,7 +15,7 @@
 Object of class \code{\link[tibble]{tibble}}.
 }
 \description{
-Coerce \code{freqlist} into \code{\link[tibble]{tibble}}.
+This method coerces \code{freqlist} into \code{\link[tibble]{tibble}}.
 }
 \examples{
 toy_corpus <- "Once upon a time there was a tiny toy corpus.

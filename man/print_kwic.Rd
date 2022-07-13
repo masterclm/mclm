@@ -39,7 +39,7 @@ characters, of the right co-text in the KWIC display.}
 Invisibly, \code{x}.
 }
 \description{
-Print a concordance in KWIC format.
+This function prints a concordance in KWIC format.
 }
 \examples{
 (conc_data <- conc('A very small corpus.', '\\\\w+', as_text = TRUE))

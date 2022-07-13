@@ -172,7 +172,7 @@ An object of the class \code{types}.
   The items in the output are sorted by their frequency in the input.
 }
 \description{
-Build an object of the class \code{types}.
+This function builds an object of the class \code{types}.
 }
 \details{
 The actual token identification is either based on the \code{re_token_splitter}

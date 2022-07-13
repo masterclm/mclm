@@ -43,7 +43,7 @@ because the result of removing duplicates is always sorted.}
 Object of class \code{types}.
 }
 \description{
-Reads an object of the class \code{'types'} from a text file. By default,
+This function read an object of the class \code{'types'} from a text file. By default,
 the text file is assumed to contain one type on each line.
 }
 \examples{

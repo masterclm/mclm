@@ -17,7 +17,7 @@
 Invisibly, \code{x}.
 }
 \description{
-Print an object of class \code{conc}.
+This method prints an object of class \code{conc}.
 }
 \examples{
 (conc_data <- conc('A very small corpus.', '\\\\w+', as_text = TRUE))

@@ -20,7 +20,7 @@ Numeric vector representing the current ranks, with as its names
   the types to which the ranks apply.
 }
 \description{
-Retrieves from a \code{freqlist} the ranks of its items.
+\code{ranks} retrieves from a \code{freqlist} the ranks of its items.
 These ranks are integer values running from one up to the number of items
 in \code{x}. Each items receives a unique rank.
 Items are first ranked by frequency in descending order. Items with

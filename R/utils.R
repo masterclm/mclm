@@ -111,8 +111,8 @@ to_utf8 <- function(x) {
 
 #' Drop empty rows and columns from a matrix
 #' 
-#' With \code{x} a matrix containing frequency counts, make a copy of \code{x}
-#' from which the all-zero rows and all-zero columns are removed.
+#' With \code{x} a matrix containing frequency counts, \code{drop_empty_rc} makes
+#' a copy of \code{x} from which the all-zero rows and all-zero columns are removed.
 #' No checks are performed by this function.
 #' 
 #' This is just a convenience function. It is identical to, and implemented as,

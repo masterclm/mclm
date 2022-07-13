@@ -20,7 +20,8 @@
 Object of class \code{summary.freqlist}
 }
 \description{
-Build and/or print an object of the class \code{summary.freqlist}.
+\code{summary.freqlist} builds an object of the class \code{summary.freqlist}
+from an object of class \code{freqlist}; \code{print.summary.freqlist} prints it.
 }
 \examples{
 flist <- freqlist(tokenize("the old man and the sea."))

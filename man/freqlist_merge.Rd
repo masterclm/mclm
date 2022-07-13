@@ -19,7 +19,7 @@ objects of class \code{freqlist}}
 An object of class \code{freqlist}.
 }
 \description{
-Merge two or more frequency lists, adding up the frequencies.
+The functions merge two or more frequency lists, adding up the frequencies.
 In the current implementation, original ranks are lost when merging.
 }
 \section{Functions}{

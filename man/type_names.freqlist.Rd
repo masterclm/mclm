@@ -2,7 +2,7 @@
 % Please edit documentation in R/freqlist.R
 \name{type_names.freqlist}
 \alias{type_names.freqlist}
-\title{Give Names of Types Represented in a Frequency List}
+\title{Give names of types represented in a Frequency List}
 \usage{
 \method{type_names}{freqlist}(x, ...)
 }
@@ -15,7 +15,7 @@
 Character vector.
 }
 \description{
-Return the names of the types represented in \code{x}.
+This method returns the names of the types represented in \code{x}.
 }
 \examples{
 (flist <- freqlist("The man and the mouse.", as_text = TRUE))

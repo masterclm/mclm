@@ -1,8 +1,9 @@
 # Create and coerce to class ===================================================
 
+# REVIEW document class itself here?
 #' Build the frequency list of a corpus
 #' 
-#' Build the word frequency list from a corpus.
+#' This function builds the word frequency list from a corpus.
 #' 
 #' The actual token identification is either based on the \code{re_token_splitter}
 #' argument, a regular expression that identifies the areas between the tokens,
@@ -256,7 +257,7 @@ freqlist <- function(x,
 
 #' Coerce table to a frequency list
 #' 
-#' Coerce object of class \code{table} to an object of class \code{freqlist}.
+#' This function coerces an object of class \code{table} to an object of class \code{freqlist}.
 #'
 #' @param x Object of class \code{table} or named numeric vector that will be
 #'   interpreted as such.
@@ -340,16 +341,16 @@ as_freqlist <- function(x, tot_n_tokens = NULL, sort_by_ranks = TRUE) {
 
 # S3 methods from mclm =========================================================
 
-#' Give Number of Tokens in a 'freqlist' Object
+#' Count types or tokens in a 'freqlist' Object
 #' 
-#' Return the number of tokens in \code{x}.
+#' \code{n_tokens} returns the number of tokens in \code{x}.
+#' \code{n_types} returns the number of tokens in \code{x}.
 #'
 #' @param x Object of class \code{freqlist}.
 #' @param ... Additional arguments.
 #'
 #' @return A number.
-#' @exportS3Method n_tokens freqlist
-#' @export
+#' @name n_freqlist
 #'
 #' @examples
 #' (tks <- tokenize("The old man and the sea."))
@@ -358,6 +359,11 @@ as_freqlist <- function(x, tot_n_tokens = NULL, sort_by_ranks = TRUE) {
 #' (flist <- freqlist(tks))
 #' n_tokens(flist)
 #' n_types(flist)
+NULL
+
+#' @describeIn n_freqlist Count number of tokens
+#' @exportS3Method n_tokens freqlist
+#' @export
 n_tokens.freqlist <- function(x, ...) {
   if (! "freqlist" %in% class(x)) {
     stop("argument 'x' must be of the class 'freqlist'")
@@ -365,24 +371,9 @@ n_tokens.freqlist <- function(x, ...) {
   sum(x)
 }  
 
-#' Give Number of Types in a 'freqlist' Object
-#' 
-#' Return the number of types in \code{x}.
-#'
-#' @param x An object of class \code{freqlist}.
-#' @param ... Additional arguments.
-#'
-#' @return A number.
-#' @exportMethod n_types freqlist
+#' @describeIn n_freqlist Count number of types
+#' @exportS3Method n_types freqlist
 #' @export
-#'
-#' @examples
-#' (tks <- tokenize("The old man and the sea."))
-#' n_tokens(tks)
-#' 
-#' (flist <- freqlist(tks))
-#' n_tokens(flist)
-#' n_types(flist)
 n_types.freqlist <- function(x, ...) {
   if (! "freqlist" %in% class(x)) {
     stop("argument 'x' must be of the class 'freqlist'")
@@ -390,9 +381,9 @@ n_types.freqlist <- function(x, ...) {
   length(x)
 }
 
-#' Give Names of Types Represented in a Frequency List
+#' Give names of types represented in a Frequency List
 #' 
-#' Return the names of the types represented in \code{x}.
+#' This method returns the names of the types represented in \code{x}.
 #'
 #' @param x Object of class \code{x}.
 #' @param ... Additional arguments.
@@ -544,7 +535,7 @@ explore.freqlist <- function(x,
 
 #' Retrieve or set the total number of tokens
 #' 
-#' Retrieves or sets, for a \code{freqlist}, the total number of tokens in
+#' These methods retrieve or set, for a \code{freqlist}, the total number of tokens in
 #' the corpus on which the frequency counts are based.
 #' This total number of tokens may be higher than the sum of all frequency
 #' counts in \code{x}, for instance, if \code{x} contains frequency counts
@@ -599,7 +590,7 @@ tot_n_tokens.freqlist <- function(x) {
 
 #' Retrieve or set original ranks
 #' 
-#' Retrieve or set, for a \code{freqlist}, the original ranks for its frequency
+#' These methods retrieve or set, for a \code{freqlist}, the original ranks for its frequency
 #' counts.
 #' These original ranks are only defined if \code{x} is the result of a selection
 #' procedure (i.e. if \code{x} contains frequency counts for a selection of items
@@ -660,7 +651,7 @@ orig_ranks.freqlist <- function(x, with_names = FALSE, ...) {
 
 #' Retrieve the ranks of the items in frequency lists
 #' 
-#' Retrieves from a \code{freqlist} the ranks of its items.
+#' \code{ranks} retrieves from a \code{freqlist} the ranks of its items.
 #' These ranks are integer values running from one up to the number of items
 #' in \code{x}. Each items receives a unique rank.
 #' Items are first ranked by frequency in descending order. Items with
@@ -737,8 +728,8 @@ ranks.freqlist <- function(x, with_names = FALSE, ...) {
 
 #' Subset a 'freqlist' object
 #' 
-#' Methods to subset objects of class \code{freqlist} by position, list of types,
-#' regex match or via boolean statements.
+#' These methods can be used to subset objects of class \code{freqlist} by position, list of types,
+#' regular expression match or via boolean statements.
 #' 
 #' @inherit subset_types description
 #'
@@ -1078,7 +1069,7 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
 
 #' Sort a frequency list
 #' 
-#' Sort an object of class \code{freqlist}.
+#' This method sorts an object of class \code{freqlist}.
 #' 
 #' Because of the way ranks are calculated for ties (with lower ranks being
 #' assigned to ties earlier in the list), sorting the list may affect the
@@ -1188,7 +1179,7 @@ sort.freqlist <- function(x,
 
 #' Coerce frequency list to data frame 
 #' 
-#' Coerce a \code{freqlist} to a \code{data.frame}.
+#' This method coerces a \code{freqlist} to a \code{data.frame}.
 #'
 #' @param x Object of class \code{freqlist}.
 #' @param row.names \code{NULL} or a character vector giving the row names for 
@@ -1237,7 +1228,7 @@ as.data.frame.freqlist <- function(x,
 
 #' Coerce frequency list into a tibble
 #' 
-#' Coerce \code{freqlist} into \code{\link[tibble]{tibble}}.
+#' This method coerces \code{freqlist} into \code{\link[tibble]{tibble}}.
 #' 
 #' @param x Object of class \code{freqlist}.
 #' @param ... Additional arguments.
@@ -1287,7 +1278,7 @@ plot.freqlist <- function(x, ...) {
 
 #' Print a frequency list
 #' 
-#' Print an object of class \code{freqlist}.
+#' This method prints an object of class \code{freqlist}.
 #'
 #' @param x Object of class \code{freqlist}.
 #' @param n Number of items to print.
@@ -1452,7 +1443,8 @@ print.freqlist <- function(x,
 
 #' Succint description of a 'freqlist' object
 #' 
-#' Build and/or print an object of the class \code{summary.freqlist}.
+#' \code{summary.freqlist} builds an object of the class \code{summary.freqlist}
+#' from an object of class \code{freqlist}; \code{print.summary.freqlist} prints it.
 #'
 #' @param object Object of class \code{freqlist}.
 #' @param x Object of class \code{summary.freqlist}.
@@ -1529,7 +1521,8 @@ plot.summary.freqlist <- function(x, ...) {
 
 #' Retrieve frequencies from 'freqlist' object
 #' 
-#' Retrieve the frequency of all or some of the items of a \code{freqlist} object.
+#' \code{type_freq} and \code{type_freqs} retrieve the frequency of all or
+#' some of the items of a \code{freqlist} object.
 #'
 #' @param x Object of class \code{freqlist}.
 #' @param types \code{NULL} or a character vector or an object of the class
@@ -1595,7 +1588,7 @@ type_freq <- function(x, types = NULL, with_names = FALSE, ...) {
 
 #' Merge frequency lists
 #' 
-#' Merge two or more frequency lists, adding up the frequencies.
+#' The functions merge two or more frequency lists, adding up the frequencies.
 #' In the current implementation, original ranks are lost when merging.
 #'
 #' @param x,y An object of class \code{freqlist}.
@@ -1657,7 +1650,7 @@ freqlist_merge_all <- function(...) {
 
 #' Subtract frequency lists
 #' 
-#' Merge information from two frequency lists, subtracting the frequencies found
+#' This function merges information from two frequency lists, subtracting the frequencies found
 #' in the second frequency lists from the frequencies found in the first list.
 #'
 #'
@@ -1689,12 +1682,12 @@ freqlist_diff <- function(x, y) {
 
 #' Read a frequency list from a csv file
 #' 
-#' Reads an object of the class \code{'freqlist'} from a csv file. The csv
+#' This function reads an object of the class \code{'freqlist'} from a csv file. The csv
 #' file is assumed to contain two columns, the first being the type and the
 #' second being the frequency of that type. The file is also assumed to
 #' have a header line with the names of both columns.
 #' 
-#' The function \code{read_freqlist} not only reads the file \code{file},
+#' \code{read_freqlist} not only reads the file \code{file},
 #' but also checks whether a configuration file exists with a name that
 #' is identical to \code{file}, except that it has the filename extension
 #' \code{".yaml"}.
@@ -1750,12 +1743,12 @@ read_freqlist <- function(file,
 
 #' Write a frequency list to a csv file
 #' 
-#' Writes an object of the class \code{freqlist} to a csv file. The
+#' This function writes an object of the class \code{freqlist} to a csv file. The
 #' resulting csv file contains two columns, the first being the type and the
 #' second being the frequency of that type. The file also contains
 #' a header line with the names of both columns. 
 #' 
-#' The function \code{write_freqlist} not only writes to the file \code{file},
+#' \code{write_freqlist} not only writes to the file \code{file},
 #' but also creates a configuration file with a name that
 #' is identical to \code{file}, except that it has the filename extension
 #' \code{".yaml"}. The frequency list attributes \code{"tot_n_tokens"}

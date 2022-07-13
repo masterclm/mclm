@@ -15,7 +15,7 @@
 An object of class \code{data.frame}.
 }
 \description{
-Coerce object of class \code{conc} to \code{data.frame}.
+This method coerces an object of class \code{conc} to \code{data.frame}.
 }
 \examples{
 (conc_data <- conc('A very small corpus.', '\\\\w+', as_text = TRUE))

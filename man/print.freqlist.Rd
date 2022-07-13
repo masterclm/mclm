@@ -21,7 +21,7 @@
 Invisibly, \code{x}.
 }
 \description{
-Print an object of class \code{freqlist}.
+This method prints an object of class \code{freqlist}.
 }
 \examples{
 toy_corpus <- "Once upon a time there was a tiny toy corpus.

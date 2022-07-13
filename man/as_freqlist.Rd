@@ -24,7 +24,7 @@ input type, either are sorted alphabetically or are not sorted at all.}
 Object of class \code{freqlist}.
 }
 \description{
-Coerce object of class \code{table} to an object of class \code{freqlist}.
+This function coerces an object of class \code{table} to an object of class \code{freqlist}.
 }
 \examples{
 toy_corpus <- "Once upon a time there was a tiny toy corpus.

@@ -1,7 +1,8 @@
 # Create and coerce to class ===================================================
+# REVIEW document class itself here?
 #' Build a 'types' object
 #' 
-#' Build an object of the class \code{types}.
+#' This function builds an object of the class \code{types}.
 #'
 #' @inheritParams freqlist
 #' @inherit freqlist details
@@ -62,6 +63,9 @@ types <- function(x,
 }
 
 #' Coerce object to a vector of types
+#' 
+#' This function coerces an object, such as a character vector, to an object of
+#' class \code{types}.
 #'
 #' @param x Object to coerce
 #' @param remove_duplicates Length one boolean vector that determines whether or not
@@ -118,7 +122,7 @@ as_types <- function(x,
 
 #' Give number of types in a 'types' object
 #' 
-#' When applied to an object of class \code{types}, it returns the number of types.
+#' When applied to an object of class \code{types}, \code{n_types} returns the number of types.
 #'
 #' @param x An object of the class \code{types}.
 #' @param ... Additional arguments
@@ -275,8 +279,8 @@ explore.types <- function(x,
 
 #' Subset a 'types' object
 #' 
-#' Methods to subset objects of class \code{types} by position, list of types,
-#' regex match or via boolean statements.
+#' These methods can be used to subset objects of class \code{types} by position, list of types,
+#' regular expression match or via boolean statements.
 #' 
 #'
 #' The S3 methods starting with \code{keep_} (\code{keep_re()}, \code{keep_pos()},
@@ -699,7 +703,7 @@ as_tibble.types <- function(x, ...) {
 
 #' Sort a collection of types
 #' 
-#' Sort an object of the class \code{types}.
+#' This method sorts an object of the class \code{types}.
 #' 
 #' At the moment, types collections are not allowed to contain \code{NA} values.
 #'   Therefore, no function argument is available
@@ -739,7 +743,7 @@ plot.types <- function(x, ...) {
 
 #' Print a vector of 'types'
 #' 
-#' Print objects of the class \code{types}.
+#' This method prints objects of the class \code{types}.
 #'
 #' @param x An object of class \code{types}.
 #' @param n Maximum number of types to print.
@@ -857,7 +861,8 @@ print.types <- function(x,
 
 #' Succinct Description of a 'types' Object
 #'
-#' Build and/or print an object of the class \code{summary.types}.
+#' \code{summary.types} builds an object of the class \code{summary.types} from
+#' a \code{types} object; \code{print.summary.types} prints it.
 #' 
 #' @param object An object of class \code{types}.
 #' @param x An object of class \code{summary.types}.
@@ -915,6 +920,8 @@ plot.summary.types <- function(x, ...) {
 # Public functions applied to the class ========================================
 
 #' Merge 'types' objects
+#' 
+#' These methods merge two or more objects of class \code{types}.
 #'   
 #' @param x,y An object of class \code{types}. 
 #' @param ... Either objects of the class \code{types} or lists containing such objects.
@@ -981,7 +988,7 @@ types_merge_all <- function(..., sort = FALSE) {
 
 #' Read a vector of types from a text file
 #' 
-#' Reads an object of the class \code{'types'} from a text file. By default,
+#' This function read an object of the class \code{'types'} from a text file. By default,
 #' the text file is assumed to contain one type on each line.
 #'
 #' @param file Name of the input file.
@@ -1036,7 +1043,7 @@ read_types <- function(file,
 
 #' Write a vector of types to a text file
 #' 
-#' Writes an object of the class \code{'types'} to a text file. Each type
+#' This function writes an object of the class \code{'types'} to a text file. Each type
 #' is written to a separate line. The file encoding that is used is
 #' \code{"UTF-8"}.
 #'

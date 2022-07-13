@@ -19,13 +19,13 @@ read_freqlist(file, sep = "\\t", file_encoding = "UTF-8", ...)
 Object of class \code{freqlist}.
 }
 \description{
-Reads an object of the class \code{'freqlist'} from a csv file. The csv
+This function reads an object of the class \code{'freqlist'} from a csv file. The csv
 file is assumed to contain two columns, the first being the type and the
 second being the frequency of that type. The file is also assumed to
 have a header line with the names of both columns.
 }
 \details{
-The function \code{read_freqlist} not only reads the file \code{file},
+\code{read_freqlist} not only reads the file \code{file},
 but also checks whether a configuration file exists with a name that
 is identical to \code{file}, except that it has the filename extension
 \code{".yaml"}.

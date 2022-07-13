@@ -18,7 +18,7 @@
 Numerical value.
 }
 \description{
-Retrieves or sets, for a \code{freqlist}, the total number of tokens in
+These methods retrieve or set, for a \code{freqlist}, the total number of tokens in
 the corpus on which the frequency counts are based.
 This total number of tokens may be higher than the sum of all frequency
 counts in \code{x}, for instance, if \code{x} contains frequency counts

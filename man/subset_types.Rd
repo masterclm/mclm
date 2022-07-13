@@ -82,8 +82,8 @@ class, it behaves differently:
 Object of class \code{types} with the selected elements only.
 }
 \description{
-Methods to subset objects of class \code{types} by position, list of types,
-regex match or via boolean statements.
+These methods can be used to subset objects of class \code{types} by position, list of types,
+regular expression match or via boolean statements.
 }
 \details{
 The S3 methods starting with \code{keep_} (\code{keep_re()}, \code{keep_pos()},
