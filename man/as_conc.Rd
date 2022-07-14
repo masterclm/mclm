@@ -23,15 +23,40 @@ to have the name \code{"right"}.}
 
 \item{keep_original}{Boolean value. If the values of
 \code{left}, \code{match} or \code{right} are not \code{NA}, should
-the original names of those columns be kept in the \code{conc} object.}
+the original names of those columns be kept in the \code{\link[=conc]{conc()}} object.}
 
 \item{...}{Additional arguments.}
 }
 \value{
-An object of class \code{conc}.
+Object of class \code{conc}, a kind of data frame with as its rows
+the matches and with the following columns:
+\itemize{
+\item \code{glob_id}: Number indicating the position of the match in the
+overall list of matches.
+\item \code{id}: Number indicating the position of the match in the list of matches
+for one specific query.
+\item \code{source}: Either the filename of the file in which the match was found
+(in case of the setting \code{as_text = FALSE}), or the string '-'
+(in case of the setting \code{as_text = TRUE}).
+\item \code{left}: The left-hand side co-text of each match.
+\item \code{match}: The actual match.
+\item \code{right}: The right-hand side co-text of each match.
+}
+
+It also has additional attributes and methods such as:
+\itemize{
+\item base \code{\link[=as.data.frame]{as.data.frame()}} and \code{\link[=print.types]{print()}} methods, as well as
+a \code{\link[=print_kwic]{print_kwic()}} function,
+\item an \code{\link[=explore]{explore()}} method.
+}
+
+An object of class \code{conc} can be merged with another by means of \code{\link[=merge_conc]{merge_conc()}}.
+It can be written to file with \code{\link[=write_conc]{write_conc()}} and then
+read with \code{\link[=read_conc]{read_conc()}}. It is also possible to import concordances created
+by means other than \code{\link[=write_conc]{write_conc()}} with \code{\link[=import_conc]{import_conc()}}.
 }
 \description{
-This function coerces a data frame to an object of the class \code{conc}.
+This function coerces a data frame to an object of the class \code{\link[=conc]{conc()}}.
 }
 \examples{
 (conc_data <- conc('A very small corpus.', '\\\\w+', as_text = TRUE))

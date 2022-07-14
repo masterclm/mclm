@@ -105,8 +105,7 @@ The 'token to lower' operation is conducted immediately after the
 flavor is being used in the arguments that contain regular expressions.}
 
 \item{blocksize}{Number that indicates how many corpus files are read to memory
-`at each individual step' during the steps in the procedure;
-normally the default value of \code{300} should not
+\verb{at each individual step' during the steps in the procedure; normally the default value of }300` should not
 be changed, but when one works with exceptionally small corpus files,
 it may be worthwhile to use a higher number, and when one works with
 exceptionally large corpus files, it may be worthwhile to use a lower number.}
@@ -168,11 +167,22 @@ If if \code{as_text} is \code{TRUE}, then the arguments
 and \code{file_encoding} are ignored.}
 }
 \value{
-An object of the class \code{types}.
-  The items in the output are sorted by their frequency in the input.
+An object of the class \code{types}, which is based on a character vector.
+It has additional attributes and methods such as:
+\itemize{
+\item base \code{\link[=print.types]{print()}}, \code{\link[=as.data.frame]{as.data.frame()}}, \code{\link[=sort]{sort()}} and
+\code{\link[base:summary]{base::summary()}} (which returns the number of items and of unique items),
+\item \code{\link[tibble:as_tibble]{tibble::as_tibble()}},
+\item the \code{\link[=n_types]{n_types()}} getter and the \code{\link[=explore]{explore()}} method,
+\item subsetting methods such as \code{\link[=keep_types]{keep_types()}}, \code{\link[=keep_pos]{keep_pos()}}, etc. including \verb{[]}
+subsetting (see \link{brackets}).
+}
+
+An object of class \code{types} can be merged with another by means of \code{\link[=types_merge]{types_merge()}},
+written to file with \code{\link[=write_types]{write_types()}} and read from file with \code{\link[=write_types]{write_types()}}.
 }
 \description{
-This function builds an object of the class \code{types}.
+This function builds an object of the class \code{\link[=types]{types()}}.
 }
 \details{
 The actual token identification is either based on the \code{re_token_splitter}
@@ -187,8 +197,15 @@ Currently the implementation of
 \examples{
 toy_corpus <- "Once upon a time there was a tiny toy corpus.
 It consisted of three sentences. And it lived happily ever after."
-types(toy_corpus, as_text = TRUE)
+(tps <- types(toy_corpus, as_text = TRUE))
+print(tps)
+
+as.data.frame(tps)
+as_tibble(tps)
+
+sort(tps)
+sort(tps, decreasing = TRUE)
 }
 \seealso{
-freqlist
+\code{\link[=as_types]{as_types()}}
 }

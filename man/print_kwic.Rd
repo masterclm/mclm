@@ -18,7 +18,7 @@ print_kwic(
 )
 }
 \arguments{
-\item{x}{An object of class \code{conc}.}
+\item{x}{An object of class \code{\link[=conc]{conc()}}.}
 
 \item{min_c_left, max_c_left}{Minimum and maximum size, expressed in number of
 characters, of the left co-text in the KWIC display.}
@@ -41,11 +41,6 @@ Invisibly, \code{x}.
 \description{
 This function prints a concordance in KWIC format.
 }
-\examples{
-(conc_data <- conc('A very small corpus.', '\\\\w+', as_text = TRUE))
-print_kwic(conc_data)
-print(conc_data, n = 3)
-}
 \seealso{
-\code{\link{print.conc}}
+\link[=print.conc]{print}
 }

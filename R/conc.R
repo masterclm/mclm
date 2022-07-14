@@ -3,26 +3,26 @@
 #' Build a concordance for the matches of a regex
 #' 
 #' This function builds a concordance for the matches of a regular expresion. The result is a
-#' dataset that can be written to a file with the function \code{\link{write_conc}}.
+#' dataset that can be written to a file with the function [write_conc()].
 #' It mimics the behavior of the concordance tool in the program AntConc.
 #' 
-#' In order to make sure that the columns \code{left}, \code{match},
-#' and \code{right} in the output of \code{conc} do not contain any TAB or NEWLINE
+#' In order to make sure that the columns `left`, `match`,
+#' and `right` in the output of `conc` do not contain any TAB or NEWLINE
 #' characters, whitespace in these items is being 'normalized'.
 #' More particularly, each stretch of whitespace, i.e. each  uninterrupted
 #' sequences of whitespace characters, is replaced by  a single SPACE character.
 #' 
-#' The values in the items the \code{glob_id} and \code{id} in the output
-#' of \code{conc} are always identical in a dataset that is the output of the
-#' function \code{conc}. The item \code{glob_id} only becomes useful when later,
+#' The values in the items the `glob_id` and `id` in the output
+#' of `conc` are always identical in a dataset that is the output of the
+#' function `conc`. The item `glob_id` only becomes useful when later,
 #' for instance, one wants to merge two datasets.#' 
 #'
 #' @param x A character vector determining which text is to be used as corpus.
 #'   
-#'   If \code{as_text = TRUE}, \code{x} is treated as the actual text to be used
+#'   If `as_text = TRUE`, `x` is treated as the actual text to be used
 #'   as corpus.
 #'   
-#'   If \code{as_text = FALSE} (the default), \code{x} is trated as a vector of
+#'   If `as_text = FALSE` (the default), `x` is treated as a vector of
 #'   filenames, interpreted as the names of the corpus files that contain the
 #'   actual corpus data.
 #' @param pattern Character string containing the regular expression that serves
@@ -31,56 +31,66 @@
 #'   included in the result as left co-text of the match.
 #' @param c_right Number. How many characters to the right of each match must be
 #'   included in the result as right co-text of the match.
-#' @param perl If \code{TRUE}, \code{pattern} is treated as a PCRE flavor regular
-#'   expression. Otherwise, \code{pattern} is treated as a regular expression in R's
-#'   default flavor of regular expression.
-#' @param re_drop_line Character vector or \code{NULL}. If \code{NULL}, the argument
+#' @param perl If `TRUE`, `pattern` is treated as a PCRE flavour regular
+#'   expression. Otherwise, `pattern` is treated as a regular expression in R's
+#'   default flavour of regular expression.
+#' @param re_drop_line Character vector or `NULL`. If `NULL`, the argument
 #'   is ignored.
-#'   Otherwise, lines in \code{x} containing a match for \code{re_drop_line} are
+#'   Otherwise, lines in `x` containing a match for `re_drop_line` are
 #'   treated as not belonging to the corpus and are excluded from the results.
-#' @param line_glue Character vector or \code{NULL}. If \code{NULL}, the argument
+#' @param line_glue Character vector or `NULL`. If `NULL`, the argument
 #'   is ignored.
 #'   Otherwise, all lines in the corpus are glued together in one character
-#'   vector of length 1, with the string \code{line_glue} pasted in between
+#'   vector of length 1, with the string `line_glue` pasted in between
 #'   consecutive lines.
-#'   The value of \code{line_glue} can also be equal to the empty string (\code{""}).
+#'   The value of `line_glue` can also be equal to the empty string (`""`).
 #'   The 'line_glue' operation is conducted immediately after the 'drop line' operation.
-#' @param re_cut_area Character vector or \code{NULL}. If \code{NULL}, the argument
+#' @param re_cut_area Character vector or `NULL`. If `NULL`, the argument
 #'   is ignored.
 #'   Otherwise, all matches in the corpus are 'cut out' of the text prior to the
 #'   identification of the tokens in the text (and are therefore not taken into
 #'   account when identifying tokens).
 #'   The 'cut area' operation is conducted immediately after the 'line glue' operation.
 #' @param file_encoding File encoding for reading each corpus file. Ignored if
-#'   \code{as_text = TRUE}. Otherwise, it must be a character vector of length one
+#'   `as_text = TRUE`. Otherwise, it must be a character vector of length one
 #'   (in which case the same encoding is used for all files) or with the same
-#'   length as \code{x} (in which case each file can have a different encoding).
+#'   length as `x` (in which case each file can have a different encoding).
 #' @param as_text Boolean value.
-#'   If \code{TRUE}, the content of \code{x} is treated
-#'   as the actual text of the corpus (with each item within \code{x} treated as
+#'   If `TRUE`, the content of `x` is treated
+#'   as the actual text of the corpus (with each item within `x` treated as
 #'   a separate 'document in RAM').
 #'   
-#'   If \code{FALSE}, \code{x} is treated as a vector of filenames, interpreted
+#'   If `FALSE`, `x` is treated as a vector of filenames, interpreted
 #'   as the namse of the corpus files with the actual corpus data.
 #'
-#' @return Object of class \code{conc}, a kind of data frame with as its rows
+#' @return Object of class `conc`, a kind of data frame with as its rows
 #'   the matches and with the following columns:
-#'   \describe{
-#'   \item{glob_id}{Number indicating the position of the match in the
-#'     overall list of matches.}
-#'   \item{id}{Number indicating the position of the match in the list of matches
-#'     for one specific query.}
-#'   \item{source}{Either the filename of the file in which the match was found
-#'     (in case of the setting \code{as_text = FALSE}), or the string '-'
-#'     (in case of the setting \code{as_text = TRUE}).}
-#'   \item{left}{The lefthandside co-text of each match.}
-#'   \item{match}{The actual match.}
-#'   \item{right}{The righthandside co-text of each match.}
-#'   }  
+#'   - `glob_id`: Number indicating the position of the match in the
+#'     overall list of matches.
+#'   - `id`: Number indicating the position of the match in the list of matches
+#'     for one specific query.
+#'   - `source`: Either the filename of the file in which the match was found
+#'     (in case of the setting `as_text = FALSE`), or the string '-'
+#'     (in case of the setting `as_text = TRUE`).
+#'   - `left`: The left-hand side co-text of each match.
+#'   - `match`: The actual match.
+#'   - `right`: The right-hand side co-text of each match.
+#'   
+#'   It also has additional attributes and methods such as:
+#'   - base [as.data.frame()] and [`print()`][print.types()] methods, as well as
+#'   a [print_kwic()] function,
+#'   - an [explore()] method.
+#'   
+#'   An object of class `conc` can be merged with another by means of [merge_conc()].
+#'   It can be written to file with [write_conc()] and then
+#'   read with [read_conc()]. It is also possible to import concordances created
+#'   by means other than [write_conc()] with [import_conc()].
+#'     
 #' @export
 #'
 #' @examples
 #' (conc_data <- conc('A very small corpus.', '\\w+', as_text = TRUE))
+#' print(conc_data)
 #' print_kwic(conc_data)
 conc <-    function(x,
                     pattern,
@@ -172,24 +182,24 @@ conc <-    function(x,
 
 #' Coerce data frame to a concordance object
 #' 
-#' This function coerces a data frame to an object of the class \code{conc}.
+#' This function coerces a data frame to an object of the class [conc()].
 #'
 #' @param x A data frame.
-#' @param left The name of the column in \code{x} that contains the left co-text
-#'   of the concordance. Is \code{is.na(left)}, then this column is assumed
-#'   to have the name \code{"left"}.
-#' @param match The name of the column in \code{x} that contains the match
-#'   of the concordance. Is \code{is.na(match)}, then this column is assumed
-#'   to have the name \code{"match"}.
-#' @param right The name of the column in \code{x} that contains the right co-text
-#'   of the concordance. Is \code{is.na(right)}, then this column is assumed
-#'   to have the name \code{"right"}.
+#' @param left The name of the column in `x` that contains the left co-text
+#'   of the concordance. Is `is.na(left)`, then this column is assumed
+#'   to have the name `"left"`.
+#' @param match The name of the column in `x` that contains the match
+#'   of the concordance. Is `is.na(match)`, then this column is assumed
+#'   to have the name `"match"`.
+#' @param right The name of the column in `x` that contains the right co-text
+#'   of the concordance. Is `is.na(right)`, then this column is assumed
+#'   to have the name `"right"`.
 #' @param keep_original Boolean value. If the values of
-#'   \code{left}, \code{match} or \code{right} are not \code{NA}, should
-#'   the original names of those columns be kept in the \code{conc} object.
+#'   `left`, `match` or `right` are not `NA`, should
+#'   the original names of those columns be kept in the [conc()] object.
 #' @param ... Additional arguments.
 #'
-#' @return An object of class \code{conc}.
+#' @inherit conc return
 #' @export
 #'
 #' @examples
@@ -343,23 +353,9 @@ explore.conc <- function(x,
 
 # S3 methods from other packages ===============================================
 
-#' Print a concordance-based data frame.
-#' 
-#' This method prints an object of class \code{conc}.
-#'
-#' @param x An object of class \code{conc}.
-#' @param n Number of items to print in the KWIC display.
-#' @param ... Additional arguments for \code{\link{print_kwic}}.
-#'
-#' @return Invisibly, \code{x}.
-#' @export
+#' @rdname mclm_print
 #' @exportS3Method print conc
-#' @seealso \code{\link{print_kwic}}
-#'
-#' @examples
-#' (conc_data <- conc('A very small corpus.', '\\w+', as_text = TRUE))
-#' print_kwic(conc_data)
-#' print(conc_data, n = 3)
+#' @export
 print.conc <- function(x, n = 30, ...) {
   if (! "conc" %in% class(x)) {
     stop("the argument 'x' must be an object of the class 'conc'")
@@ -381,21 +377,8 @@ print.conc <- function(x, n = 30, ...) {
   invisible(x)
 }
 
-#' Coerce concordance to data frame
-#' 
-#' This method coerces an object of class \code{conc} to \code{data.frame}.
-#'
-#' @param x An object of class \code{conc}.
-#' @param ... Additional arguments.
-#'
-#' @return An object of class \code{data.frame}.
 #' @export
 #' @exportS3Method as.data.frame conc
-#' @seealso \code{\link{as_tibble.conc}}
-#'
-#' @examples
-#' (conc_data <- conc('A very small corpus.', '\\w+', as_text = TRUE))
-#' as.data.frame(conc_data)
 as.data.frame.conc <- function(x, ...) {
   if (!"conc" %in% class(x)) {
     stop("x must be of class \"conc\"")
@@ -405,20 +388,8 @@ as.data.frame.conc <- function(x, ...) {
   d
 }
 
-#' Coerce concordance to tibble
-#' 
-#' This method coerces an object of class \code{conc} to \code{\link[tibble]{tibble}}.
-#'
-#' @param x Object of class \code{conc}.
-#' @param ... Additional arguments.
-#'
-#' @return Object of class \code{\link[tibble]{tibble}}.
 #' @export
 #' @exportS3Method tibble::as_tibble conc
-#'
-#' @examples
-#' (conc_data <- conc('A very small corpus.', '\\w+', as_text = TRUE))
-#' as_tibble(conc_data)
 as_tibble.conc <- function(x, ...) {
   if (!"conc" %in% class(x)) {
     stop("x must be of class \"conc\"")
@@ -432,22 +403,20 @@ as_tibble.conc <- function(x, ...) {
 #' 
 #' This function prints a concordance in KWIC format.
 #' 
-#' @param x An object of class \code{conc}.
+#' @param x An object of class [conc()].
 #' @param min_c_left,max_c_left Minimum and maximum size, expressed in number of
 #'   characters, of the left co-text in the KWIC display.
 #' @param min_c_match,max_c_match Minimum and maximum size, expressed in number of
 #'   characters, of the match in the KWIC display.
 #' @param min_c_right,max_c_right Minimum and maximum size, expressed in number of
 #'   characters, of the right co-text in the KWIC display.
-#' @param from Index of the first item of \code{x} to be displayed.
-#' @param n Number of consecutive items in \code{x} to be displayed.
+#' @param from Index of the first item of `x` to be displayed.
+#' @param n Number of consecutive items in `x` to be displayed.
 #' @param drop_tags Boolean. Should tags be hidden?
 #'
-#' @return Invisibly, \code{x}.
+#' @return Invisibly, `x`.
 #' @export
-#' @seealso \code{\link{print.conc}}
-#'
-#' @inherit print.conc examples
+#' @seealso [print][print.conc()]
 print_kwic <- function(x, 
                        min_c_left = NA,
                        max_c_left = NA,
@@ -615,19 +584,19 @@ print_kwic <- function(x,
 
 #' Read a concordance from a file
 #' 
-#' This function reads concordance-based data frames that are written to file with the function
-#' \code{\link{write_conc}}.
+#' This function reads concordance-based data frames that are written to file
+#' with the function [write_conc()].
 #'
 #' @param file Name of the input file.
 #' @param sep Field separator used in the input file.
 #' @param file_encoding Encoding of the input file.
 #' @param stringsAsFactors Boolean. Whether character data should automatically
-#'   be converted to factors. It applies to all columns except for \code{"source"},
-#'   \code{"left"}, \code{"match"} and \code{"right"}, which are never converted.
+#'   be converted to factors. It applies to all columns except for `"source"`,
+#'   `"left"`, `"match"` and `"right"`, which are never converted.
 #' @param ... Additional arguments, not implemented.
 #'
-#' @return Object of class \code{conc}.
-#' @seealso \code{\link{import_conc}} for files not generated with \code{\link{write_conc}}.
+#' @return Object of class [conc()].
+#' @seealso [import_conc()] for reading files not generated with [write_conc()].
 #' @export
 #'
 #' @examples
@@ -669,16 +638,16 @@ read_conc <- function(file,
 
 #' Write a concordance to file.
 #' 
-#' This function writes an object of class \code{conc} to a file.
+#' This function writes an object of class [conc()] to a file.
 #'
-#' @param x Object of class \code{conc}.
+#' @param x Object of class [conc()].
 #' @param file Path to output file.
 #' @param sep Field separator for the columns in the output file.
 #' @param file_encoding Encoding to be used in the output file.
 #'
-#' @return Invisibly, \code{x}.
+#' @return Invisibly, `x`.
 #' @export
-#' @seealso \code{\link{read_conc}}
+#' @seealso [read_conc()]
 #'
 #' @inherit read_conc examples
 write_conc <- function(x,
@@ -704,16 +673,16 @@ write_conc <- function(x,
 #' Import a concordance
 #' 
 #' This function imports a concordance from files generated by other means than
-#' \code{\link{write_conc}}.
+#' [write_conc()].
 #'
 #' @param x A vector of input filenames.
 #' @param file_encoding Encoding of the file(s).
 #' @param source_type Character string. How the file is read. Currently only
-#'   \code{"corpuseye"} is supported. 
+#'   `"corpuseye"` is supported. 
 #' @param ... Additional arguments (not implemented).
 #'
-#' @return An object of class \code{conc}.
-#' @seealso \code{\link{read_conc}} for files written with \code{\link{write_conc}}.
+#' @return An object of class [conc()].
+#' @seealso [read_conc()] for files written with [write_conc()].
 #' @export
 import_conc <- function(x,
                         file_encoding = "UTF-8",
@@ -731,12 +700,12 @@ import_conc <- function(x,
 
 #' Merge concordances
 #' 
-#' This function merges multiple objects of class \code{conc} into one \code{conc} object.
+#' This function merges multiple objects of class [conc()] into one [conc()] object.
 #'
-#' @param ... Two or more objects of class \code{conc}.
-#' @param show_warnings Boolean value. If \code{FALSE}, warnings are suppressed.
+#' @param ... Two or more objects of class [conc()].
+#' @param show_warnings Boolean value. If `FALSE`, warnings are suppressed.
 #'
-#' @return An object of class \code{conc}.
+#' @return An object of class [conc()].
 #' @export
 #'
 #' @examples
@@ -766,7 +735,7 @@ merge_conc <- function(..., show_warnings = TRUE) {
 #' @param x Filename.
 #' @param ... Additional arguments (not implemented).
 #'
-#' @return Object of class \code{conc}.
+#' @return Object of class [conc()].
 #' @noRd
 import_conc_corpuseye <- function(x, ...) {
   if (! is.character(x)) {

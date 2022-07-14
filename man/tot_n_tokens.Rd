@@ -2,11 +2,14 @@
 % Please edit documentation in R/generics.R, R/freqlist.R
 \name{tot_n_tokens}
 \alias{tot_n_tokens}
+\alias{tot_n_tokens<-}
 \alias{tot_n_tokens<-.freqlist}
 \alias{tot_n_tokens.freqlist}
 \title{Retrieve or set the total number of tokens}
 \usage{
 tot_n_tokens(x)
+
+tot_n_tokens(x) <- value
 
 \method{tot_n_tokens}{freqlist}(x) <- value
 

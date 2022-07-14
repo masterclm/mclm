@@ -13,7 +13,7 @@
 )
 }
 \arguments{
-\item{x}{Object of class \code{freqlist}.}
+\item{x}{Object of class \code{\link[=freqlist]{freqlist()}}.}
 
 \item{decreasing}{Boolean value. If \code{TRUE} items are sorted from large
 to small; if \code{FALSE}, from small to large.
@@ -46,23 +46,23 @@ ending up at the beginning of the sorted list.}
 \item{na_last}{Boolean value defining the behaviour of \code{NA} elements.
 
 This argument is only relevant when \code{sort_crit} is \code{"orig_ranks"}
- because currently names and frequencies are not allowed to be \code{NA}
- in frequency lists.
- 
- If \code{na_last} is \code{TRUE}, then items with a sorting criterion of
- \code{NA} end up at the end of the sorted frequency list.
- If \code{na_last} is \code{FALSE}, then items with a sorting criterion
- of \code{NA} end up at the start of the sorted frequency list.
- If \code{na_last} is \code{NA}, then items with a sorting criterion of
- \code{NA} are removed from the sorted frequency list.}
+because currently names and frequencies are not allowed to be \code{NA}
+in frequency lists.
+
+If \code{na_last} is \code{TRUE}, then items with a sorting criterion of
+\code{NA} end up at the end of the sorted frequency list.
+If \code{na_last} is \code{FALSE}, then items with a sorting criterion
+of \code{NA} end up at the start of the sorted frequency list.
+If \code{na_last} is \code{NA}, then items with a sorting criterion of
+\code{NA} are removed from the sorted frequency list.}
 
 \item{...}{Additional arguments.}
 }
 \value{
-Object of class \code{freqlist}.
+Object of class \code{\link[=freqlist]{freqlist()}}.
 }
 \description{
-This method sorts an object of class \code{freqlist}.
+This method sorts an object of class \code{\link[=freqlist]{freqlist()}}.
 }
 \details{
 Because of the way ranks are calculated for ties (with lower ranks being

@@ -26,11 +26,11 @@ be converted to factors. It applies to all columns except for \code{"source"},
 \item{...}{Additional arguments, not implemented.}
 }
 \value{
-Object of class \code{conc}.
+Object of class \code{\link[=conc]{conc()}}.
 }
 \description{
-This function reads concordance-based data frames that are written to file with the function
-\code{\link{write_conc}}.
+This function reads concordance-based data frames that are written to file
+with the function \code{\link[=write_conc]{write_conc()}}.
 }
 \examples{
 \dontrun{
@@ -40,5 +40,5 @@ write_conc(d, "example_data.tab")
 }
 }
 \seealso{
-\code{\link{import_conc}} for files not generated with \code{\link{write_conc}}.
+\code{\link[=import_conc]{import_conc()}} for reading files not generated with \code{\link[=write_conc]{write_conc()}}.
 }

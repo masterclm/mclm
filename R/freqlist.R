@@ -5,73 +5,73 @@
 #' 
 #' This function builds the word frequency list from a corpus.
 #' 
-#' The actual token identification is either based on the \code{re_token_splitter}
+#' The actual token identification is either based on the `re_token_splitter`
 #' argument, a regular expression that identifies the areas between the tokens,
-#' or on \code{re_token_extractor}, a regular expression that identifies the area
+#' or on `re_token_extractor`, a regular expression that identifies the area
 #' that are the tokens.
-#' The first mechanism is the default mechanism: the argument \code{re_token_extractor}
-#' is only used if \code{re_token_splitter} is \code{NULL}.
+#' The first mechanism is the default mechanism: the argument `re_token_extractor`
+#' is only used if `re_token_splitter` is `NULL`.
 #' Currently the implementation of
-#' \code{re_token_extractor} is a lot less time-efficient than that of \code{re_token_splitter}.
+#' `re_token_extractor` is a lot less time-efficient than that of `re_token_splitter`.
 #'
 #' @param x Either a list of filenames of the corpus files
-#'   (if \code{as_text} is \code{TRUE}) or the actual text of the corpus
-#'   (if \code{as_text} is \code{FALSE}).
+#'   (if `as_text` is `TRUE`) or the actual text of the corpus
+#'   (if `as_text` is `FALSE`).
 #'   
-#'   If \code{as_text} is \code{TRUE} and the length of the vector \code{x}
-#'   is higher than one, then each item in \code{x} is treated as a separate
+#'   If `as_text` is `TRUE` and the length of the vector `x`
+#'   is higher than one, then each item in `x` is treated as a separate
 #'   line (or a separate series of lines) in the corpus text. Within each
-#'   item of \code{x}, the character \code{"\\\\n"} is also treated as
+#'   item of `x`, the character `"\\n"` is also treated as
 #'   a line separator.
-#' @param re_drop_line \code{NULL} or character vector. If \code{NULL}, it is ignored.
+#' @param re_drop_line `NULL` or character vector. If `NULL`, it is ignored.
 #'   Otherwise, a character vector (assumed to be of length 1)
-#'   containing a regular expression. Lines in \code{x}
-#'   that contain a match for \code{re_drop_line} are
+#'   containing a regular expression. Lines in `x`
+#'   that contain a match for `re_drop_line` are
 #'   treated as not belonging to the corpus and are excluded from the results.
-#' @param line_glue \code{NULL} or character vector. If \code{NULL}, it is ignored.
-#'   Otherwise, all lines in a corpus file (or in \code{x}, if
-#'   \code{as_text} is \code{TRUE}), are glued together in one
-#'   character vector of length 1, with the string \code{line_glue}
+#' @param line_glue `NULL` or character vector. If `NULL`, it is ignored.
+#'   Otherwise, all lines in a corpus file (or in `x`, if
+#'   `as_text` is `TRUE`), are glued together in one
+#'   character vector of length 1, with the string `line_glue`
 #'   pasted in between consecutive lines.
-#'   The value of \code{line_glue} can also be equal to the empty string \code{""}.
+#'   The value of `line_glue` can also be equal to the empty string `""`.
 #'   The 'line glue' operation is conducted immediately after the 'drop line' operation.
-#' @param re_cut_area \code{NULL} or character vector. If \code{NULL}, it is ignored.
-#'   Otherwise, all matches in a corpus file (or in \code{x},
-#'   if \code{as_text} is \code{TRUE}), are 'cut out' of the text prior
+#' @param re_cut_area `NULL` or character vector. If `NULL`, it is ignored.
+#'   Otherwise, all matches in a corpus file (or in `x`,
+#'   if `as_text` is `TRUE`), are 'cut out' of the text prior
 #'   to the identification of the tokens in the text (and are therefore
 #'   not taken into account when identifying the tokens).
 #'   The 'cut area' operation is conducted immediately after the 'line glue' operation.
-#' @param re_token_splitter Regular expression or \code{NULL}.
+#' @param re_token_splitter Regular expression or `NULL`.
 #'   Regular expression that identifies the locations where lines in the corpus
 #'   files are split into tokens. (See Details.)
 #'   
 #'   The 'token identification' operation is conducted immediately after the
 #'   'cut area' operation.
 #' @param re_token_extractor Regular expression that identifies the locations of the
-#'   actual tokens. This argument is only used if \code{re_token_splitter} is \code{NULL}.
+#'   actual tokens. This argument is only used if `re_token_splitter` is `NULL`.
 #'   (See Details.)
 #'   
 #'   The 'token identification' operation is conducted immediately after the
 #'   'cut area' operation.
-#' @param re_drop_token Regular expression or \code{NULL}. If \code{NULL}, it is ignored.
+#' @param re_drop_token Regular expression or `NULL`. If `NULL`, it is ignored.
 #'   Otherwise, it identifies tokens that are to
 #'   be excluded from the results. Any token that contains a match for
-#'   \code{re_drop_token} is removed from the results.
+#'   `re_drop_token` is removed from the results.
 #'   The 'drop token' operation is conducted immediately after the 'token identification' operation.
 #' @param re_token_transf_in Regular expression that identifies areas in the
 #'   tokens that are to be transformed. This argument works together with the argument
-#'   \code{token_transf_out}.
+#'   `token_transf_out`.
 #'   
-#'   If both \code{re_token_transf_in} and \code{token_transf_out} differ
-#'   from \code{NA}, then all matches, in the tokens, for the
-#'   regular expression  \code{re_token_transf_in} are replaced with
-#'   the replacement string \code{token_transf_out}.
+#'   If both `re_token_transf_in` and `token_transf_out` differ
+#'   from `NA`, then all matches, in the tokens, for the
+#'   regular expression  `re_token_transf_in` are replaced with
+#'   the replacement string `token_transf_out`.
 #'   
 #'   The 'token transformation' operation is conducted immediately after the
 #'   'drop token' operation.
 #' @param token_transf_out Replacement string. This argument works together with
-#'   \code{re_token_transf_in} and is ignored if \code{re_token_transf_in}
-#'   is \code{NULL} or \code{NA}.
+#'   `re_token_transf_in` and is ignored if `re_token_transf_in`
+#'   is `NULL` or `NA`.
 #' @param token_to_lower Boolean value. Whether tokens must be converted
 #'   to lowercase before returning the result.
 #'   The 'token to lower' operation is conducted immediately after the
@@ -80,75 +80,91 @@
 #'   flavor is being used in the arguments that contain regular expressions.
 #' @param blocksize Number that indicates how many corpus files are read to memory
 #'   `at each individual step' during the steps in the procedure;
-#'   normally the default value of \code{300} should not
+#'   normally the default value of `300` should not
 #'   be changed, but when one works with exceptionally small corpus files,
 #'   it may be worthwhile to use a higher number, and when one works with
 #'   exceptionally large corpus files, it may be worthwhile to use a lower number.
-#' @param verbose If\code{TRUE}, messages are printed to the console to
+#' @param verbose If`TRUE`, messages are printed to the console to
 #'   indicate progress.
-#' @param show_dots,dot_blocksize If \code{TRUE}, dots are printed to the console to
+#' @param show_dots,dot_blocksize If `TRUE`, dots are printed to the console to
 #'   indicate progress.
 #' @param file_encoding File encoding that is assumed in the corpus files.
-#' @param ngram_size Argument in support of ngrams/skipgrams (see also \code{max_skip}).
+#' @param ngram_size Argument in support of ngrams/skipgrams (see also `max_skip`).
 #'   
-#'   If one wants to identify individual tokens, the value of \code{ngram_size}
-#'   should be \code{NULL} or \code{1}. If one wants to retrieve
-#'   token ngrams/skipgrams, \code{ngram_size} should be an integer indicating
-#'   the size of the ngrams/skipgrams. E.g. \code{2} for bigrams, or \code{3} for
+#'   If one wants to identify individual tokens, the value of `ngram_size`
+#'   should be `NULL` or `1`. If one wants to retrieve
+#'   token ngrams/skipgrams, `ngram_size` should be an integer indicating
+#'   the size of the ngrams/skipgrams. E.g. `2` for bigrams, or `3` for
 #'   trigrams, etc.
 #' @param max_skip Argument in support of skipgrams. This argument is ignored if
-#'   \code{ngram_size} is \code{NULL} or is \code{1}.
+#'   `ngram_size` is `NULL` or is `1`.
 #'   
-#'   If \code{ngram_size} is \code{2} or higher, and \code{max_skip}
-#'   is \code{0}, then regular ngrams are being retrieved (albeit that they
-#'   may contain open slots; see \code{ngram_n_open}).
+#'   If `ngram_size` is `2` or higher, and `max_skip`
+#'   is `0`, then regular ngrams are being retrieved (albeit that they
+#'   may contain open slots; see `ngram_n_open`).
 #'   
-#'   If \code{ngram_size} is \code{2} or higher, and \code{max_skip}
-#'   is \code{1} or higher, then skipgrams are being retrieved (which in the
-#'   current implementation cannot contain open slots; see \code{ngram_n_open}).
+#'   If `ngram_size` is `2` or higher, and `max_skip`
+#'   is `1` or higher, then skipgrams are being retrieved (which in the
+#'   current implementation cannot contain open slots; see `ngram_n_open`).
 #'   
-#'   For instance, if \code{ngram_size} is \code{3} and \code{max_skip} is
-#'   \code{2}, then 2-skip trigrams are being retrieved.
-#'   Or if \code{ngram_size} is \code{5} and \code{max_skip} is
-#'   \code{3}, then 3-skip 5-grams are being retrieved.
+#'   For instance, if `ngram_size` is `3` and `max_skip` is
+#'   `2`, then 2-skip trigrams are being retrieved.
+#'   Or if `ngram_size` is `5` and `max_skip` is
+#'   `3`, then 3-skip 5-grams are being retrieved.
 #' @param ngram_sep Character vector of length 1 containing the string that is used to
 #'   separate/link tokens in the representation of ngrams/skipgrams
 #'   in the output of this function.
-#' @param ngram_n_open If \code{ngram_size} is \code{2} or higher, and moreover
-#'   \code{ngram_n_open} is a number higher than \code{0}, then
+#' @param ngram_n_open If `ngram_size` is `2` or higher, and moreover
+#'   `ngram_n_open` is a number higher than `0`, then
 #'   ngrams with 'open slots' in them are retrieved. These
 #'   ngrams with 'open slots' are generalisations of fully lexically specific
 #'   ngrams (with the generalisation being that one or more of the items
 #'   in the ngram are replaced by a notation that stands for 'any arbitrary token').
 #'   
-#'   For instance, if \code{ngram_size} is \code{4} and \code{ngram_n_open} is
-#'   \code{1}, and if moreover the input contains a
-#'   4-gram \code{"it_is_widely_accepted"}, then the output will contain
-#'   all modifications of \code{"it_is_widely_accepted"} in which one (since
-#'   \code{ngram_n_open} is \code{1}) of the items in this n-gram is
+#'   For instance, if `ngram_size` is `4` and `ngram_n_open` is
+#'   `1`, and if moreover the input contains a
+#'   4-gram `"it_is_widely_accepted"`, then the output will contain
+#'   all modifications of `"it_is_widely_accepted"` in which one (since
+#'   `ngram_n_open` is `1`) of the items in this n-gram is
 #'   replaced by an open slot. The first and the last item inside
 #'   an ngram are never turned into an open slot; only the items in between
 #'   are candidates for being turned into open slots. Therefore, in the
-#'   example, the output will contain \code{"it_[]_widely_accepted"} and
-#'   \code{"it_is_[]_accepted"}.
+#'   example, the output will contain `"it_[]_widely_accepted"` and
+#'   `"it_is_[]_accepted"`.
 #'   
-#'   As a second example, if \code{ngram_size} is \code{5} and
-#'   \code{ngram_n_open} is \code{2}, and if moreover the input contains a
-#'   5-gram \code{"it_is_widely_accepted_that"}, then the output will contain
-#'   \code{"it_[]_[]_accepted_that"}, \code{"it_[]_widely_[]_that"}, and
-#'   \code{"it_is_[]_[]_that"}. 
+#'   As a second example, if `ngram_size` is `5` and
+#'   `ngram_n_open` is `2`, and if moreover the input contains a
+#'   5-gram `"it_is_widely_accepted_that"`, then the output will contain
+#'   `"it_[]_[]_accepted_that"`, `"it_[]_widely_[]_that"`, and
+#'   `"it_is_[]_[]_that"`. 
 #' @param ngram_open Character string used to represent open slots in ngrams in the
 #'   output of this function.
 #' @param as_text Boolean vector, assumed to be of length 1. Whether
-#'   \code{x} is to be interpreted as a character vector containing the
-#'   actual contents of the corpus (if \code{as_text} is \code{TRUE})
+#'   `x` is to be interpreted as a character vector containing the
+#'   actual contents of the corpus (if `as_text` is `TRUE`)
 #'   or as a character vector containing the names of the corpus files
-#'   (if \code{as_text} is \code{FALSE}).
-#'   If if \code{as_text} is \code{TRUE}, then the arguments
-#'   \code{blocksize}, \code{verbose}, \code{show_dots}, \code{dot_blocksize},
-#'   and \code{file_encoding} are ignored.
+#'   (if `as_text` is `FALSE`).
+#'   If if `as_text` is `TRUE`, then the arguments
+#'   `blocksize`, `verbose`, `show_dots`, `dot_blocksize`,
+#'   and `file_encoding` are ignored.
 #'
-#' @return Object of class \code{freqlist}.
+#' @return Object of class `freqlist`, which is based on the class `table`.
+#'   It has additional attributes and methods such as:
+#'   - base [`print()`][print.freqlist()], [base::as.data.frame()],
+#'   [base::summary()] and [`sort`][sort.freqlist()],
+#'   - [tibble::as_tibble()],
+#'   - an interactive [explore()] method,
+#'   - various getters, including [tot_n_tokens()], [n_types()], [n_tokens()],
+#'   values that are also returned by `summary()`, and more,
+#'   - subsetting methods such as [keep_types()], [keep_pos()], etc. including `[]`
+#'   subsetting (see [brackets]).
+#'   
+#'   Additional manipulation functions include [type_freqs()] to extract the frequencies
+#'   of different items, [freqlist_merge()] to combine frequency lists, and
+#'   [freqlist_diff()] to substract a frequency list from another.
+#'   
+#'   Objects of class `freqlist` can be saved to file with [write_freqlist()];
+#'   these files can be read with [read_freqlist()].
 #' @export
 #'
 #' @examples
@@ -157,6 +173,10 @@
 #' 
 #' (flist <- freqlist(toy_corpus, as_text = TRUE))
 #' print(flist, n = 20)
+#' as.data.frame(flist)
+#' as_tibble(flist)
+#' summary(flist) 
+#' print(summary(flist))
 #' 
 #' t_splitter <- "(?xi) [:\\s.;,?!\"]+"
 #' freqlist(toy_corpus,
@@ -257,21 +277,22 @@ freqlist <- function(x,
 
 #' Coerce table to a frequency list
 #' 
-#' This function coerces an object of class \code{table} to an object of class \code{freqlist}.
+#' This function coerces an object of class [base::table()] to an object of class [freqlist()].
 #'
-#' @param x Object of class \code{table} or named numeric vector that will be
+#' @param x Object of class `table` or named numeric vector that will be
 #'   interpreted as such.
 #' @param tot_n_tokens Number representing the total number of tokens in the
-#'   corpus from which the frequency list is derived. When \code{tot_n_tokens}
-#'   is \code{NULL}, this total number of tokens will be taken to be the sum
-#'   of the frequencies in \code{x}.
+#'   corpus from which the frequency list is derived. When `tot_n_tokens`
+#'   is `NULL`, this total number of tokens will be taken to be the sum
+#'   of the frequencies in `x`.
 #' @param sort_by_ranks Boolean value.
-#'   If \code{TRUE}, the items in the frequency list are sorted by frequency
-#'   rank. If \code{FALSE}, the items in the frequency list, depending on the
+#'   If `TRUE`, the items in the frequency list are sorted by frequency
+#'   rank. If `FALSE`, the items in the frequency list, depending on the
 #'   input type, either are sorted alphabetically or are not sorted at all.
 #'
-#' @return Object of class \code{freqlist}.
-#' @seealso \code{\link{freqlist}}
+#' @inherit freqlist return
+#'   
+#' @seealso [freqlist()]
 #' @export
 #' 
 #' @examples
@@ -552,55 +573,7 @@ ranks.freqlist <- function(x, with_names = FALSE, ...) {
 
 ## Subsetting ------------------------------------------------------------------
 
-#' Subset a 'freqlist' object
-#' 
-#' These methods can be used to subset objects of class \code{freqlist} by position, list of types,
-#' regular expression match or via boolean statements.
-#' 
-#' @inherit subset_types description
-#'
-#' @param x Object of class \code{freqlist}.
-#' @inheritParams subset_types
-#'
-#' @return Object of class \code{freqlist} with the selected elements only.
-#' @name subset_freqlist
-#'
-#' @examples
-#' 
-#' (flist <- freqlist("The man and the mouse.", as_text = TRUE))
-#' 
-#' keep_re(flist, "[ao]")
-#' drop_re(flist, "[ao]")
-#' keep_re(flist, "[ao]", invert = TRUE) # same as drop_re()
-#' 
-#' flist[re("[ao]")]
-#' flist[re("[ao]"), invert = TRUE]
-#' 
-#' keep_bool(flist, type_freqs(flist) < 2)
-#' drop_bool(flist, type_freqs(flist) >= 2)
-#' keep_bool(flist, ranks(flist) <= 3)
-#' 
-#' flist[type_freqs(flist) < 2]
-#' flist[ranks(flist) <= 3]
-#' flist[ranks(flist) <= 3, invert = TRUE]
-#' 
-#' keep_bool(flist, c(FALSE, TRUE, TRUE, FALSE)) 
-#' 
-#' (flist2 <- keep_bool(flist, type_freqs(flist) < 2))
-#' keep_bool(flist2, orig_ranks(flist2) > 2)
-#' flist2[orig_ranks(flist2) > 2]
-#' 
-#' keep_pos(flist, c(2, 3))
-#' flist[2:3]
-#' 
-#' keep_types(flist, c("man", "and"))
-#' drop_types(flist, c("man", "and"))
-#' keep_types(flist, c("man", "and"), invert = TRUE) # same as drop_types()
-#' flist[c("man", "and")]
-#' flist[as_types(c("man", "and"))]
-NULL
-
-#' @describeIn subset_freqlist Drop items by names of types
+#' @rdname keep_types
 #' @exportS3Method drop_pos freqlist
 #' @export
 drop_types.freqlist <- function(x, types, ...) {
@@ -611,7 +584,7 @@ drop_types.freqlist <- function(x, types, ...) {
   keep_types.freqlist(x, types, invert = TRUE, ...)
 }
 
-#' @describeIn subset_freqlist Keep items by names of types
+#' @rdname keep_types
 #' @exportS3Method keep_pos freqlist
 #' @export
 keep_types.freqlist <- function(x, types, invert = FALSE, ...) {
@@ -661,7 +634,7 @@ keep_types.freqlist <- function(x, types, invert = FALSE, ...) {
   result
 }
 
-#' @describeIn subset_freqlist Drop items by regular expression
+#' @rdname keep_re
 #' @exportS3Method drop_re freqlist
 #' @export
 drop_re.freqlist <- function(x, pattern, perl = TRUE, ...) {
@@ -672,8 +645,7 @@ drop_re.freqlist <- function(x, pattern, perl = TRUE, ...) {
   keep_re.freqlist(x, pattern, perl = perl, invert = TRUE, ...)
 }
 
-
-#' @describeIn subset_freqlist Keep items by regular expression
+#' @rdname keep_re
 #' @exportS3Method keep_re freqlist
 #' @export
 keep_re.freqlist <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
@@ -735,7 +707,7 @@ keep_re.freqlist <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   result
 }
 
-#' @describeIn subset_freqlist Keep items based on boolean expression
+#' @rdname keep_bool
 #' @exportS3Method drop_bool freqlist
 #' @export
 drop_bool.freqlist <- function(x, bool, ...) {
@@ -746,7 +718,7 @@ drop_bool.freqlist <- function(x, bool, ...) {
   keep_bool.freqlist(x, !bool, ...)
 }
 
-#' @describeIn subset_freqlist Keep items based on boolean expression
+#' @rdname keep_bool
 #' @exportS3Method keep_bool freqlist
 #' @export
 keep_bool.freqlist <- function(x, bool, invert = FALSE, ...) {
@@ -783,7 +755,7 @@ keep_bool.freqlist <- function(x, bool, invert = FALSE, ...) {
   result
 }
 
-#' @describeIn subset_freqlist Keep items by position
+#' @rdname keep_pos
 #' @exportS3Method drop_pos freqlist
 #' @export
 drop_pos.freqlist <- function(x, pos, ...) {
@@ -794,7 +766,7 @@ drop_pos.freqlist <- function(x, pos, ...) {
   keep_pos.freqlist(x, pos, invert = TRUE, ...)
 }
 
-#' @describeIn subset_freqlist Keep items by position
+#' @rdname keep_pos
 #' @exportS3Method keep_pos freqlist
 #' @export
 keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
@@ -841,7 +813,7 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
   result
 }
 
-#' @describeIn subset_freqlist Keep items based on different criteria
+#' @rdname brackets
 #' @exportS3Method `[` freqlist
 #' @export
 `[.freqlist` <- function(x, i, invert = FALSE, ...) {
@@ -895,7 +867,7 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
 
 #' Sort a frequency list
 #' 
-#' This method sorts an object of class \code{freqlist}.
+#' This method sorts an object of class [freqlist()].
 #' 
 #' Because of the way ranks are calculated for ties (with lower ranks being
 #' assigned to ties earlier in the list), sorting the list may affect the
@@ -903,48 +875,48 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
 #' More specifically, ranks among ties may differ depending on the criterion
 #' that is used to sort the frequency list.
 #'
-#' @param x Object of class \code{freqlist}.
-#' @param decreasing Boolean value. If \code{TRUE} items are sorted from large
-#'   to small; if \code{FALSE}, from small to large.
+#' @param x Object of class [freqlist()].
+#' @param decreasing Boolean value. If `TRUE` items are sorted from large
+#'   to small; if `FALSE`, from small to large.
 #'   
 #'   Note, however, that ranking in frequency lists is such that lower ranks
 #'   correspond to higher frequencies. Therefore, sorting by rank (either
-#'   \code{"ranks"} or \code{"orig_ranks"}) with \code{decreasing} set
-#'   to its default value \code{FALSE} results in the highest frequencies
+#'   `"ranks"` or `"orig_ranks"`) with `decreasing` set
+#'   to its default value `FALSE` results in the highest frequencies
 #'   ending up at the beginning of the sorted list.
 #' @param sort_crit Character string determining the sorting criterion.
 #'   
-#'   If \code{sort_crit} is \code{"ranks"}, then the items in the frequency list
+#'   If `sort_crit` is `"ranks"`, then the items in the frequency list
 #'   are sorted by their current frequency rank.
 #'   
-#'   If \code{sort_crit} is \code{"names"}, then the items in the frequency
+#'   If `sort_crit` is `"names"`, then the items in the frequency
 #'   list are sorted alphabetically their name.
 #'   
-#'   If \code{sort_crit} is \code{"orig_ranks"}, then the items in the frequency
+#'   If `sort_crit` is `"orig_ranks"`, then the items in the frequency
 #'   list are sorted by their original ranks (if those are present),
 #'   or by their current frequency ranks (if no original ranks are present).
 #'   
-#'   Finally, sorting with \code{sort_crit} set to \code{"freqs"} is identical
+#'   Finally, sorting with `sort_crit` set to `"freqs"` is identical
 #'   to sorting by frequency ranks, but with the meaning of the argument
-#'   \code{decreasing} being reversed.
-#'   In other words, sorting by frequencies (\code{"freqs"}) with \code{decreasing} set
-#'   to its default value \code{FALSE} results in the lowest frequencies
+#'   `decreasing` being reversed.
+#'   In other words, sorting by frequencies (`"freqs"`) with `decreasing` set
+#'   to its default value `FALSE` results in the lowest frequencies
 #'   ending up at the beginning of the sorted list.
-#' @param na_last Boolean value defining the behaviour of \code{NA} elements.
+#' @param na_last Boolean value defining the behaviour of `NA` elements.
 #'   
-#'   This argument is only relevant when \code{sort_crit} is \code{"orig_ranks"}
-#'    because currently names and frequencies are not allowed to be \code{NA}
+#'   This argument is only relevant when `sort_crit` is `"orig_ranks"`
+#'    because currently names and frequencies are not allowed to be `NA`
 #'    in frequency lists.
 #'    
-#'    If \code{na_last} is \code{TRUE}, then items with a sorting criterion of
-#'    \code{NA} end up at the end of the sorted frequency list.
-#'    If \code{na_last} is \code{FALSE}, then items with a sorting criterion
-#'    of \code{NA} end up at the start of the sorted frequency list.
-#'    If \code{na_last} is \code{NA}, then items with a sorting criterion of
-#'    \code{NA} are removed from the sorted frequency list.
+#'    If `na_last` is `TRUE`, then items with a sorting criterion of
+#'    `NA` end up at the end of the sorted frequency list.
+#'    If `na_last` is `FALSE`, then items with a sorting criterion
+#'    of `NA` end up at the start of the sorted frequency list.
+#'    If `na_last` is `NA`, then items with a sorting criterion of
+#'    `NA` are removed from the sorted frequency list.
 #' @param ... Additional arguments.
 #'
-#' @return Object of class \code{freqlist}.
+#' @return Object of class [freqlist()].
 #' @export
 #' @exportS3Method sort freqlist
 #'
@@ -1003,31 +975,8 @@ sort.freqlist <- function(x,
   result
 }
 
-#' Coerce frequency list to data frame 
-#' 
-#' This method coerces a \code{freqlist} to a \code{data.frame}.
-#'
-#' @param x Object of class \code{freqlist}.
-#' @param row.names \code{NULL} or a character vector giving the row names for 
-#'   the data frame. Missing values are not allowed.
-#' @param optional Boolean. Whether setting row names and converting column names
-#'   to syntactic names is optional. See \code{\link{as.data.frame}}.
-#' @param ... Additional arguments.
-#'
-#' @return A \code{data.frame}.
 #' @exportS3Method as.data.frame freqlist
 #' @export
-#' @seealso \code{\link{as_tibble.freqlist}}
-#'
-#' @examples
-#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
-#' It consisted of three sentences. And it lived happily ever after."
-#' 
-#' (flist <- freqlist(toy_corpus, as_text = TRUE))
-#' as.data.frame(flist)
-#' 
-#' (flist2 <- keep_re(flist, "^..?$"))
-#' as.data.frame(flist2)
 as.data.frame.freqlist <- function(x,
                                    row.names = NULL,
                                    optional = FALSE,
@@ -1052,27 +1001,8 @@ as.data.frame.freqlist <- function(x,
   result
 }
 
-#' Coerce frequency list into a tibble
-#' 
-#' This method coerces \code{freqlist} into \code{\link[tibble]{tibble}}.
-#' 
-#' @param x Object of class \code{freqlist}.
-#' @param ... Additional arguments.
-#'
-#' @return Object of class \code{\link[tibble]{tibble}}.
-#' @export
 #' @exportS3Method tibble::as_tibble freqlist
-#' @seealso \code{\link{as.data.frame.freqlist}}
-#'
-#' @examples
-#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
-#' It consisted of three sentences. And it lived happily ever after."
-#' 
-#' (flist <- freqlist(toy_corpus, as_text = TRUE))
-#' as_tibble(flist)
-#' 
-#' (flist2 <- keep_re(flist, "^..?$"))
-#' as_tibble(flist2)
+#' @export
 as_tibble.freqlist <- function(x, ...) {
   if (!"freqlist" %in% class(x)) {
     stop("x must be of class 'freqlist'")
@@ -1102,26 +1032,9 @@ plot.freqlist <- function(x, ...) {
   invisible(NULL)
 }
 
-#' Print a frequency list
-#' 
-#' This method prints an object of class \code{freqlist}.
-#'
-#' @param x Object of class \code{freqlist}.
-#' @param n Number of items to print.
-#' @param from Position of the first item to print.
-#' @param extra Extra settings.
-#' @param ... Additional arguments.
-#'
-#' @return Invisibly, \code{x}.
-#' @export
+#' @rdname mclm_print
 #' @exportS3Method print freqlist
-#'
-#' @examples
-#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
-#' It consisted of three sentences. And it lived happily ever after."
-#' (flist <- freqlist(toy_corpus, as_text = TRUE))
-#' print(flist)
-#' print(flist, from = 7, n = 10)
+#' @export
 print.freqlist <- function(x,
                            n = 20, from = 1,
                            extra = NULL,
@@ -1267,40 +1180,8 @@ print.freqlist <- function(x,
 
 ## Summary ---------------------------------------------------------------------
 
-#' Succint description of a 'freqlist' object
-#' 
-#' \code{summary.freqlist} builds an object of the class \code{summary.freqlist}
-#' from an object of class \code{freqlist}; \code{print.summary.freqlist} prints it.
-#'
-#' @param object Object of class \code{freqlist}.
-#' @param x Object of class \code{summary.freqlist}.
-#' @param ... Additional arguments
-#'
-#' @return Object of class \code{summary.freqlist}
 #' @export
 #' @exportS3Method summary freqlist
-#'
-#' @examples
-#' flist <- freqlist(tokenize("the old man and the sea."))
-#' summary(flist) 
-#' print(summary(flist))
-#' 
-#' (flist_sum <- summary(flist))
-#' names(flist_sum)
-#' flist_sum[["n_tokens"]]
-#' flist_sum$n_tokens
-#' flist_sum[["n_types"]]
-#' flist_sum$n_types
-#' 
-#' flist2 <- flist["man", invert = TRUE]
-#' (flist2_sum <- summary(flist2))
-#' names(flist2_sum)
-#' flist2_sum[["n_tokens"]]
-#' flist2_sum$n_tokens
-#' flist2_sum[["n_types"]]
-#' flist2_sum$n_types
-#' flist2_sum[["tot_n_tokens"]]
-#' flist2_sum$tot_n_tokens
 summary.freqlist <- function(object, ...) {
   if (! "freqlist" %in% class(object)) {
     stop("argument 'object' must be of the class 'freqlist'")
@@ -1313,7 +1194,6 @@ summary.freqlist <- function(object, ...) {
   result
 }
 
-#' @rdname summary.freqlist
 #' @exportS3Method print summary.freqlist
 #' @export
 print.summary.freqlist <- function(x, ...) {
@@ -1347,29 +1227,29 @@ plot.summary.freqlist <- function(x, ...) {
 
 #' Retrieve frequencies from 'freqlist' object
 #' 
-#' \code{type_freq} and \code{type_freqs} retrieve the frequency of all or
-#' some of the items of a \code{freqlist} object.
+#' `type_freq` and `type_freqs` retrieve the frequency of all or
+#' some of the items of a [freqlist()] object.
 #'
-#' @param x Object of class \code{freqlist}.
-#' @param types \code{NULL} or a character vector or an object of the class
-#'   \code{'types'}.
+#' @param x Object of class [freqlist()].
+#' @param types `NULL` or a character vector or an object of the class
+#'   [types()].
 #'   
-#'   If the argument \code{types} is \code{NULL}, then the frequencies of all
-#'   the items in \code{x} are returned, in the order in which
-#'   these items appear in \code{x}.
+#'   If the argument `types` is `NULL`, then the frequencies of all
+#'   the items in `x` are returned, in the order in which
+#'   these items appear in `x`.
 #'   
-#'   If the argument \code{types} is a character vector or an object of the
-#'   class \code{'types'}, then only the frequencies (in \code{x})
-#'   of the items in \code{'types'} are given,
-#'   in the order in which these items appear in \code{'types'}.
-#'   For all items in \code{'types'} that do not occur in \code{x},
+#'   If the argument `types` is a character vector or an object of the
+#'   class [types()], then only the frequencies (in `x`)
+#'   of the items in `types` are given,
+#'   in the order in which these items appear in `types`.
+#'   For all items in `types` that do not occur in `x`,
 #'   a frequency of zero is returned.
 #' @param with_names Boolean. Whether or not the items in the output should
-#'   be given names. If \code{with_names} is \code{TRUE}, then the names
+#'   be given names. If `with_names` is `TRUE`, then the names
 #'   of the types in the frequency list are used as names.
 #' @param ... Additional arguments.
 #'
-#' @return Numeric vector, representing the frequencies of the items.
+#' @return Numeric vector representing the frequencies of the items.
 #' @export
 #'
 #' @examples
@@ -1417,11 +1297,11 @@ type_freq <- function(x, types = NULL, with_names = FALSE, ...) {
 #' The functions merge two or more frequency lists, adding up the frequencies.
 #' In the current implementation, original ranks are lost when merging.
 #'
-#' @param x,y An object of class \code{freqlist}.
-#' @param ... Various objects of class \code{freqlist} or a list of
-#'   objects of class \code{freqlist} 
+#' @param x,y An object of class [freqlist()].
+#' @param ... Various objects of class [freqlist()] or a list of
+#'   objects of class [freqlist()]. 
 #'
-#' @return An object of class \code{freqlist}.
+#' @return An object of class [freqlist()].
 #' @name freqlist_merge
 #'
 #' @examples
@@ -1445,6 +1325,7 @@ freqlist_merge <- function(x, y) {
 }  
 
 #' @describeIn freqlist_merge Merge multiple frequency lists
+#' @export
 freqlist_merge_all <- function(...) {
   arg_list <- list(...)
   result_car <- NULL  # result for car of arg_list
@@ -1480,9 +1361,9 @@ freqlist_merge_all <- function(...) {
 #' in the second frequency lists from the frequencies found in the first list.
 #'
 #'
-#' @param x,y Objects of class \code{freqlist}.
+#' @param x,y Objects of class [freqlist()].
 #'
-#' @return An object of class \code{freqlist}.
+#' @return An object of class [freqlist()].
 #' @export
 #'
 #' @examples
@@ -1508,22 +1389,22 @@ freqlist_diff <- function(x, y) {
 
 #' Read a frequency list from a csv file
 #' 
-#' This function reads an object of the class \code{'freqlist'} from a csv file. The csv
+#' This function reads an object of the class [freqlist()] from a csv file. The csv
 #' file is assumed to contain two columns, the first being the type and the
 #' second being the frequency of that type. The file is also assumed to
 #' have a header line with the names of both columns.
 #' 
-#' \code{read_freqlist} not only reads the file \code{file},
+#' `read_freqlist` not only reads the file `file`,
 #' but also checks whether a configuration file exists with a name that
-#' is identical to \code{file}, except that it has the filename extension
-#' \code{".yaml"}.
+#' is identical to `file`, except that it has the filename extension
+#' `".yaml"`.
 #' 
 #' If such a file exists, then that configuration file
-#' is taken to 'belong' to \code{file} and is also read and the frequency list attributes
-#' \code{"tot_n_tokens"} and \code{"tot_n_types"} are retrieved from it.
+#' is taken to 'belong' to `file` and is also read and the frequency list attributes
+#' `"tot_n_tokens"` and `"tot_n_types"` are retrieved from it.
 #' 
 #' If no such configuration file exists,
-#' then the values for \code{"tot_n_tokens"} and \code{"tot_n_types"} are
+#' then the values for `"tot_n_tokens"` and `"tot_n_types"` are
 #' calculated on the basis of the frequencies in the frequency list. 
 #'
 #' @param file Character vector of length 1. Path to the input file.
@@ -1531,9 +1412,9 @@ freqlist_diff <- function(x, y) {
 #' @param file_encoding File encoding used in the input file.
 #' @param ... Additional arguments (not implemented).
 #'
-#' @return Object of class \code{freqlist}.
+#' @return Object of class [freqlist()].
 #' @export
-#' @seealso \code{\link{write_freqlist}}
+#' @seealso [write_freqlist()]
 #'
 #' @examples
 #' \dontrun{
@@ -1569,27 +1450,27 @@ read_freqlist <- function(file,
 
 #' Write a frequency list to a csv file
 #' 
-#' This function writes an object of the class \code{freqlist} to a csv file. The
+#' This function writes an object of the class [freqlist()] to a csv file. The
 #' resulting csv file contains two columns, the first being the type and the
 #' second being the frequency of that type. The file also contains
 #' a header line with the names of both columns. 
 #' 
-#' \code{write_freqlist} not only writes to the file \code{file},
+#' `write_freqlist` not only writes to the file `file`,
 #' but also creates a configuration file with a name that
-#' is identical to \code{file}, except that it has the filename extension
-#' \code{".yaml"}. The frequency list attributes \code{"tot_n_tokens"}
-#' and \code{"tot_n_types"} are stored to that configuration file. 
+#' is identical to `file`, except that it has the filename extension
+#' `".yaml"`. The frequency list attributes `"tot_n_tokens"`
+#' and `"tot_n_types"` are stored to that configuration file. 
 #'
-#' @param x Object of class \code{freqlist}.
+#' @param x Object of class [freqlist()].
 #' @param file Character vector of length 1. Path to the output file.
 #' @param sep Character vector of length 1. Column separator.
 #' @param make_config_file Boolean value. Whether or not a configuration file
-#'   needs to be created. In most circumstances, this should be set to \code{TRUE}.
+#'   needs to be created. In most circumstances, this should be set to `TRUE`.
 #' @param ... Additional arguments (not implemented).
 #'
-#' @return Invisibly, \code{x}.
+#' @return Invisibly, `x`.
 #' @export
-#' @seealso \code{\link{read_freqlist}}
+#' @seealso [read_freqlist()]
 #'
 #' @inherit read_freqlist examples
 write_freqlist <- function(x,
@@ -1619,12 +1500,12 @@ write_freqlist <- function(x,
 
 #' Build a 'freqlist' on the basis of texts
 #' 
-#' Called by \code{\link{freqlist}} when \code{x} contains the actual textual data.
+#' Called by [freqlist()] when `x` contains the actual textual data.
 #'
 #' @param x Corpus text.
 #' @inheritParams tokenize
 #'
-#' @return Object of class \code{freqlist}.
+#' @return Object of class [freqlist()].
 #' @noRd
 freqlist_char <- function(x,
                           re_drop_line = NULL,
@@ -1669,12 +1550,12 @@ freqlist_char <- function(x,
 
 #' Build a 'freqlist' on the basis of texts in x
 #' 
-#' Called by \code{\link{freqlist}} when \code{x} contains filenames.
+#' Called by [freqlist()] when `x` contains filenames.
 #'
 #' @param x Filenames of the corpus files
 #' @inheritParams tokenize
 #'
-#' @return Object of class \code{freqlist}.
+#' @return Object of class [freqlist()].
 #' @noRd
 freqlist_corp <- function(x,
                           re_drop_line = NULL,
@@ -1763,10 +1644,10 @@ freqlist_corp <- function(x,
 
 #' Subset freqlist
 #'
-#' @param x Object of class \code{freqlist}.
+#' @param x Object of class [freqlist()].
 #' @param sel Numeric vector with positions or boolean vector.
 #'
-#' @return Filtered object of class \code{freqlist}
+#' @return Filtered object of class [freqlist()]
 #' @noRd
 subset_freqlist <- function(x, sel) {
   result <- as.numeric(x)[sel]
@@ -1782,15 +1663,15 @@ subset_freqlist <- function(x, sel) {
 #' Merge two frequency lists
 #' 
 #' This private function does not sort the types in the result by rank,
-#' so this is something the public functions freqlist_merge() and 
-#' freqlist_merge_all() need to take care of !!!
+#' so this is something the public functions [freqlist_merge()] and 
+#' [freqlist_merge_all()] need to take care of !!!
 #' 
 #' In the current implementation, orig_ranks are lost when merging, because
 #' they are no longer necessarily unique.
 #'
-#' @param x,y Object of class freqlist 
+#' @param x,y Object of class [freqlist()] 
 #'
-#' @return Object of class freqlist
+#' @return Object of class [freqlist()]
 #' @noRd
 freqlist_merge_two <- function(x, y) {
   names <- dplyr::union(names(x), names(y))
@@ -1810,9 +1691,9 @@ freqlist_merge_two <- function(x, y) {
 
 #' Reverse order of 'freqlist'
 #'
-#' @param x Object of class \code{freqlist}.
+#' @param x Object of class [freqlist()].
 #'
-#' @return Object of class \code{freqlist}.
+#' @return Object of class [freqlist()].
 #' @noRd
 rev.freqlist <- function(x) {
   if (! "freqlist" %in% class(x)) {

@@ -4,7 +4,7 @@
 #'
 #' @param x A matrix?
 #'
-#' @return Distances between row items of \code{x}.
+#' @return Distances between row items of `x`.
 #' @noRd
 cosine_dist <- function(x) {
   (1 - x %*% t(x) / (sqrt(rowSums(x^2) %*% t(rowSums(x^2)))))
@@ -78,13 +78,13 @@ rep_str <- function(x, n) {
 #' 
 #' Motivation: stringr::str_pad and string::stri_pad_left appear to mess up in
 #' certain contexts, e.g.
-#'   \code{Sys.setlocale(category = "LC_ALL", locale = "Greek")}
-#'   \code{stringr::str_pad(c("Λορεμ", "ιπσθμ", "δολορ", "σιτ", "αμετ"), 20)}
+#'   `Sys.setlocale(category = "LC_ALL", locale = "Greek")`
+#'   `stringr::str_pad(c("Λορεμ", "ιπσθμ", "δολορ", "σιτ", "αμετ"), 20)`
 #'
 #' @param x Character string
 #' @param width Desired width of complete text
 #' @param pad Character to use for padding
-#' @param nchar_x Number of characters of text. If \code{NULL}, \code{nchar(x)}.
+#' @param nchar_x Number of characters of text. If `NULL`, `nchar(x)`.
 #'
 #' @return Character string with left padding.
 #' @noRd
@@ -111,12 +111,12 @@ to_utf8 <- function(x) {
 
 #' Drop empty rows and columns from a matrix
 #' 
-#' With \code{x} a matrix containing frequency counts, \code{drop_empty_rc} makes
-#' a copy of \code{x} from which the all-zero rows and all-zero columns are removed.
+#' With `x` a matrix containing frequency counts, `drop_empty_rc` makes
+#' a copy of `x` from which the all-zero rows and all-zero columns are removed.
 #' No checks are performed by this function.
 #' 
 #' This is just a convenience function. It is identical to, and implemented as,
-#' \code{x[rowSums(x) > 0, colSums(x) > 0, drop = FALSE]}
+#' `x[rowSums(x) > 0, colSums(x) > 0, drop = FALSE]`.
 #'
 #' @param x A matrix, assumed to contain frequency counts.
 #'

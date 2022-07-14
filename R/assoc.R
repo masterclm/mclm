@@ -17,10 +17,10 @@
 
 #' Constructor of class 'cooc_info'
 #'
-#' @param target_freqlist,ref_freqlist An object of class \code{freqlist}.
+#' @param target_freqlist,ref_freqlist An object of class [freqlist()].
 #'
-#' @return A named list of two \code{freqlist} objects, "target_freqlist"
-#'   and "ref_freqlist", of class \code{cooc_info}.
+#' @return A named list of two [freqlist()] objects, "target_freqlist"
+#'   and "ref_freqlist", of class `cooc_info`.
 #' @noRd
 cooc_info <- function(target_freqlist,
                       ref_freqlist) {
@@ -41,92 +41,92 @@ cooc_info <- function(target_freqlist,
 #' These functions builds a surface or textual collocation frequency for a specific node.
 #' 
 #' Two major steps can be distinguished in the procedure conducted by these functions.
-#' The first major step is the \emph{identification of the (sequence of) tokens} that,
+#' The first major step is the *identification of the (sequence of) tokens* that,
 #' for the purpose of this analysis, will be considered to be the content of the corpus.
 #' 
 #' The function arguments that jointly determine the details of this step are
-#' \code{re_drop_line}, \code{line_glue}, \code{re_cut_area}, \code{re_token_splitter},
-#' \code{re_token_extractor}, \code{re_drop_token}, \code{re_token_transf_in},
-#' \code{token_transf_out}, and \code{token_to_lower}.
+#' `re_drop_line`, `line_glue`, `re_cut_area`, `re_token_splitter`,
+#' `re_token_extractor`, `re_drop_token`, `re_token_transf_in`,
+#' `token_transf_out`, and `token_to_lower`.
 #' The sequence of tokens that is the ultimate outcome of this step is then
 #' handed over to the second major step of the procedure.
 #' 
-#' The second major step is the \emph{establishment of the co-occurrence frequencies}.
+#' The second major step is the *establishment of the co-occurrence frequencies*.
 #' The function arguments that jointly determine the details of this step are
-#' \code{re_node} and \code{re_boundary} for both functions,
-#' and \code{w_left} and \code{w_right} for \code{surf_cooc()} only.
+#' `re_node` and `re_boundary` for both functions,
+#' and `w_left` and `w_right` for `surf_cooc()` only.
 #' It is important to know that this second step is conducted after the tokens
 #' of the corpus have been identified, and that it is applied to a sequence of
 #' tokens, not to the original text. More specifically the regular expressions
-#' \code{re_node} and \code{re_boundary} are tested against individual tokens,
+#' `re_node` and `re_boundary` are tested against individual tokens,
 #' as they are identified by the token identification procedure.
-#' Moreover, in \code{surf_cooc()}, the numbers \code{w_left} and \code{w_right}
+#' Moreover, in `surf_cooc()`, the numbers `w_left` and `w_right`
 #' also apply to tokens a they are identified by the token identification procedure.
 #'
 #' @param x List of filenames of the corpus files.
 #' @param re_node Regular expression used for identifying instances of the 'node',
 #'   i.e. the target item for which collocation information is collected.
 #' @param w_left Number of tokens to the left of the 'node' that are treated as
-#'   belonging to the co-text of the 'node'. (But also see \code{re_boundary}.)
+#'   belonging to the co-text of the 'node'. (But also see `re_boundary`.)
 #' @param w_right Number of tokens to the right of the 'node' that are treated as
-#'   belonging to the co-text of the 'node'. (But also see \code{re_boundary}.)
+#'   belonging to the co-text of the 'node'. (But also see `re_boundary`.)
 #' @param re_boundary Regular expression.
 #'   
-#'   For \code{text_cooc()}, it identifies boundaries between 'textual units'.
+#'   For `text_cooc()`, it identifies boundaries between 'textual units'.
 #'   
-#'   For \code{surf_cooc()}, it identifies 'cut-off' points for the co-text of
-#'   the 'node'. If it is not \code{NULL}, the maximum length of the left and right
-#'   co-texts are still given by \code{w_left} and \code{w_right}, but if a match
-#'   for \code{re_boundary} is found within the co-text, both the 'boundary token'
+#'   For `surf_cooc()`, it identifies 'cut-off' points for the co-text of
+#'   the 'node'. If it is not `NULL`, the maximum length of the left and right
+#'   co-texts are still given by `w_left` and `w_right`, but if a match
+#'   for `re_boundary` is found within the co-text, both the 'boundary token'
 #'   and all tokens beyond it are excluded.
-#' @param re_drop_line Regular expression or \code{NULL}. if \code{NULL}, the
+#' @param re_drop_line Regular expression or `NULL`. if `NULL`, the
 #'   argument  is ignored. Otherwise, lines in the corpus that match it are
 #'   treated as not belonging to the corpus and excluded from the results.
-#' @param line_glue Character vector or \code{NULL}. if \code{NULL}, the argument
+#' @param line_glue Character vector or `NULL`. if `NULL`, the argument
 #'   is ignored.
 #'   Otherwise, all the lines in the corpus are glued together in one character
-#'   vector of length 1, with the string \code{line_glue} pasted in between
+#'   vector of length 1, with the string `line_glue` pasted in between
 #'   consecutive lines.
 #'   
-#'   This value can also be equal to an empty string \code{""}.
+#'   This value can also be equal to an empty string `""`.
 #'   
 #'   The 'line glue' operation is conducted immediately after the 'drop line' operation.
-#' @param re_cut_area Regular expression or \code{NULL}. if \code{NULL}, the
+#' @param re_cut_area Regular expression or `NULL`. if `NULL`, the
 #'   argument  is ignored.
 #'   Otherwise, all matches in the corpus are 'cut out' from the text
 #'   prior to the identification of the tokens and are therefore not taken into
 #'   account when identifying the tokens.
 #'   
 #'   The 'cut area' operation is conducted immediately after the 'line glue' operation.
-#' @param re_token_splitter Regular expression or \code{NULL}. if \code{NULL},
-#'   the argument is ignored and \code{re_token_extractor} is used instead.
+#' @param re_token_splitter Regular expression or `NULL`. if `NULL`,
+#'   the argument is ignored and `re_token_extractor` is used instead.
 #'   Otherwise, it identifies the areas between the tokens within a line of the corpus.
 #'   
 #'   The 'token identification' operation is conducted immediately after the
 #'   'cut area' operation.
 #' @param re_token_extractor Regular expression that identifies the locations of
-#'   the actual tokens. It is only used if \code{re_token_splitter} is \code{NULL}.
+#'   the actual tokens. It is only used if `re_token_splitter` is `NULL`.
 #'   Currently the implementation of this argument is a lot less time-efficient
-#'   than that of \code{re_token_splitter}.
+#'   than that of `re_token_splitter`.
 #'   
 #'   The 'token identification' operation is conducted immediately after the
 #'   'cut area' operation.
-#' @param re_drop_token Regular expression or \code{NULL}. if \code{NULL}, the
+#' @param re_drop_token Regular expression or `NULL`. if `NULL`, the
 #'   argument is ignored. Otherwise, it identifies tokens to be excluded from the results.
 #'   
 #'   The 'drop token' operation is conducted immediately after the 'token
 #'   identification' operation.
 #' @param re_token_transf_in A regular expression that identifies areas in the
 #'   tokens that are to be transformed. This argument works together with
-#'   \code{token_transf_out}. If either of them is \code{NULL}, they are both ignored.
+#'   `token_transf_out`. If either of them is `NULL`, they are both ignored.
 #'   
-#'   Otherwise, all matches in the tokens for \code{re_token_transf_in} are
-#'   replaced with the replacement string \code{token_transf_out}.
+#'   Otherwise, all matches in the tokens for `re_token_transf_in` are
+#'   replaced with the replacement string `token_transf_out`.
 #'   
 #'   The 'token transformation' operation is conducted immediately after the
 #'   'drop token' transformation.
 #' @param token_transf_out A 'replacement string'. This argument works together
-#'   with \code{re_token_transf_in} and is ignored if either argument is \code{NULL}.
+#'   with `re_token_transf_in` and is ignored if either argument is `NULL`.
 #' @param token_to_lower Boolean value. Whether tokens should be converted to
 #'   lowercase before returning the results.
 #'   
@@ -136,21 +136,21 @@ cooc_info <- function(target_freqlist,
 #'   should be used in the arguments that contain regular expressions.
 #' @param blocksize Number indicating how many corpus files are read to memory
 #'   'at each individual step' during the steps in the procedure. Normally the
-#'   default value of \code{300} should not be changed, but when one works with
+#'   default value of `300` should not be changed, but when one works with
 #'   exceptionally small corpus files, it may be worthwhile to use a higher
 #'   number, and when one works with exceptionally large corpus files, it may be
 #'   worthwhile to use a lower number.
-#' @param verbose Boolean value. If \code{TRUE}, messages are pritned to the
+#' @param verbose Boolean value. If `TRUE`, messages are pritned to the
 #'   console to indicate progress.
-#' @param dot_blocksize Boolean value. If \code{TRUE}, dots are printed to the
+#' @param dot_blocksize Boolean value. If `TRUE`, dots are printed to the
 #'   console to indicate progress.
 #' @param file_encoding Encoding of the input files.
 #'   
 #'   Either a character vector of length 1, in which case all files are assumed
 #'   to be in the same encoding, or a character vector with the same length as
-#'   \code{x}, which allows for different encodings for different files.
+#'   `x`, which allows for different encodings for different files.
 #'
-#' @return An object of class \code{cooc_info}, containing information on
+#' @return An object of class `cooc_info`, containing information on
 #'   co-occurrence frequencies.
 #' @name create_cooc
 NULL
@@ -433,8 +433,8 @@ text_cooc <- function(x,
 #' @details 
 #' ## Input and output
 #' [assoc_scores()] takes as its arguments a target frequency list and a reference
-#' frequency lists (either as two [`freqlist`][freqlist()] objects or as a
-#' [`cooc_info`][create_cooc] object) and returns a number of popular measures
+#' frequency lists (either as two [freqlist()] objects or as a
+#' [`cooc_info`][create_cooc()] object) and returns a number of popular measures
 #' expressing, for (almost) every item in either one of these lists, the extent
 #' to which the item is attracted to the target context, when compared to the
 #' reference context. The "almost" is added between parentheses because, with
@@ -481,20 +481,20 @@ text_cooc <- function(x,
 #' zero values for `a`, `b`, `c`, and `d`. The argument `small_pos`
 #' determines which small positive value is added in such cases. Its default value is `0.00001`.
 #'
-#' @param x Either an object of class `freqlist` (see [freqlist()] or [as_freqlist()])
-#'   or an object of class `cooc_info` (see [create_cooc]).
+#' @param x Either an object of class [freqlist()]
+#'   or an object of class [`cooc_info`][create_cooc()].
 #'   
-#'   If `x` is a `freqlist`, it is interpreted as the target frequency
+#'   If `x` is a [freqlist()], it is interpreted as the target frequency
 #'   list (i.e. the list with the frequency of items in the target context) and
-#'   `y` must be a `freqlist` with the frequency of items in the
+#'   `y` must be a [freqlist()] with the frequency of items in the
 #'   reference context.
 #'   
-#'   If `x` is an object of class `cooc_info` instead, it is interpreted
+#'   If `x` is an object of class [`cooc_info`][create_cooc()] instead, it is interpreted
 #'   as containting target frequency information, reference frequency information
 #'   and corpus size information.
-#' @param y An object of class `freqlist` with the frequencies of the
-#'   reference context if `x` is also a `freqlist`. If `x` is an
-#'   object of class `cooc_info`, this argument is ignored.
+#' @param y An object of class [freqlist()] with the frequencies of the
+#'   reference context if `x` is also a [freqlist()]. If `x` is an
+#'   object of class [`cooc_info`][create_cooc()], this argument is ignored.
 #' @param a Numeric vector expressing how many times some tested item
 #'   occurs in the target context.
 #'   More specifically, `a[[i]]`, with `i` an integer, expresses
@@ -565,13 +565,15 @@ text_cooc <- function(x,
 #'   Some columns don't contain actual measures but rather additional information
 #'   that is useful for interpreting other measures.
 #'   
+#'   ## Possible columns
+#'   
 #'   The following sections describe the (possible) columns in the output. All
 #'   of these measures are reported if `measures` is set to `"ALL"`. Alternatively,
 #'   each measure can be requested by specifying its name in a character vector
 #'   given to the `measures` argument. Exceptions are described in the sections
 #'   below.
 #'   
-#'   ## Observed and expected frequencies
+#'   ### Observed and expected frequencies
 #'   
 #'   - `a`, `b`, `c`, `d`: The frequencies in cells *a*, *b*, *c* and *d*,
 #'   respectively. If one of them is `0`, they will be augmented by 0.5 or `small_pos`
@@ -589,7 +591,7 @@ text_cooc <- function(x,
 #'       + `exp_c` = \eqn{\frac{n \times k}{N}}
 #'       + `exp_d` = \eqn{\frac{n \times l}{N}}
 #'       
-#'   ## Effect size measures
+#'   ### Effect size measures
 #'   
 #'   Some of these measures are based on proportions and can therefore be
 #'   computed either on the rows or on the columns of the contingency table. Each
@@ -679,7 +681,7 @@ text_cooc <- function(x,
 #'       + `PMI2` = \eqn{\log_2\left(\frac{a^2}{\mathrm{exp\_a}}\right)}
 #'       + `PMI3` = \eqn{\log_2\left(\frac{a^3}{\mathrm{exp\_a}}\right)}
 #'       
-#'   ## Measures of statistical significance
+#'   ### Strength of evidence measures
 #'   
 #'   The first measures in this section tend to come in triples: a test statistic,
 #'   its p-value (preceded by `p_`) and its signed version (followed by `_signed`).
@@ -805,10 +807,20 @@ text_cooc <- function(x,
 #'  in `measures` or if `measures` is `"ALL"` or `NULL` and if, additionally, `p_fisher_2` is
 #'  `TRUE`. `fisher_2_as_chisq1` is present if `p_fisher_2` was requested and,
 #'  additionally, `with_variants` is `TRUE`.
+#'  
+#'  ## Properties of the class
+#'  
+#'  An object of class `assoc_scores` has:
+#'  - associated [as.data.frame()], [print()][print.assoc_scores()] and [tibble::as_tibble()]
+#'  methods,
+#'  - an interactive [explore()] method and useful getters, viz. [n_types()] and
+#'  [type_names()].
+#'  
+#'  An object of this class can be saved to file with [write_assoc()] and read
+#'  with [read_assoc()].
 #'   
 #' @name assoc_scores
 #' @export
-#' @md
 #' @examples 
 #' assoc_abcd(10 , 200, 100,  300, types = "four")
 #' assoc_abcd(30, 1000,  14, 5000, types = "fictitious")
@@ -821,6 +833,7 @@ text_cooc <- function(x,
 #' d <- c(300, 5000, 10000, 6000)
 #' types <- c("four", "fictitious", "toy", "examples")
 #' (scores <- assoc_abcd(a, b, c, d, types = types))
+#' 
 #' print(scores, sort_order = "PMI")
 #' print(scores, sort_order = "alpha")
 #' print(scores, sort_order = "none")
@@ -1455,8 +1468,9 @@ explore.assoc_scores <- function(
 }
 
 # S3 methods from other packages ==============================
-# TODO should the generic methods be documented at all?
-# Maybe in the constructor?
+
+#' @exportS3Method as.data.frame assoc_scores
+#' @export
 as.data.frame.assoc_scores <- function(x, ...) {
   class(x) <- "data.frame"
   df <- cbind(type = rownames(x), x)
@@ -1464,11 +1478,15 @@ as.data.frame.assoc_scores <- function(x, ...) {
   df
 }
 
+#' @exportS3Method tibble::as_tibble assoc_scores
+#' @export
 as_tibble.assoc_scores <- function(x, ...) {
   as_tibble(as.data.frame(x), ...)
 }
 
-# public S3 function print()
+#' @rdname mclm_print
+#' @exportS3Method print assoc_scores
+#' @export
 print.assoc_scores <- function(
     x,
     n            = 20,
@@ -1480,44 +1498,6 @@ print.assoc_scores <- function(
     sort_order   = c("none", "G_signed", "PMI", "alpha"),
     extra        = NULL,
     ...) {
-  # About the different column selection arguments:
-  #   - Argument values in the 'extra' argument take precedence over
-  #     the other arguments; for instance, if 'extra$from_col' is not NULL,
-  #     then it will overrule the 'from_col' argument.
-  #   - The output consist of two areas:
-  #       - the 'frozen area' at the left
-  #       - the 'regular area' at the right
-  #     Both areas are visually separated by a vertocal line (consisting
-  #     of pipe symbols.
-  #     The distinction between a 'frozen area' and a 'regular area' is
-  #     most intuitive if you think of the explore.assoc_scores() function,
-  #     which can be used with roughly the same arguments as
-  #     print.assoc_scores(): the difference between both areas is that
-  #     if in 'exploration' mode you move right or left (with the 'r' and 'l'
-  #     commands), then the only columns that move are the ones in the regular
-  #     area. In the print.assoc_scores() function, the tool for moving
-  #     left or right is the 'from_col' command (see below).
-  #   - The names of the types are always displayed and are always the first
-  #     column of the 'frozen' area. None of the function arguments can change
-  #     this. Likewise, the indices of the items are always displayed.
-  #   - The 'freeze_cols' argument determines which other columns are displayed
-  #     in the frozen area. If freeze_cols is NULL, then the default setting
-  #     applies, which means that the columns "a", "PMI", and "G_signed", are
-  #     displayed in the "frozen area" (at least, if they are present in x).
-  #     If you want no measures in the "frozen area", then specify
-  #     freeze_cols = NA or freeze_cols = character(0).
-  #   - The keep_cols and drop_cols arguments jointly determine which measures
-  #     are displayed in the 'regular area'. [Notice that keep_cols and
-  #     drop_cols have no effect on the 'frozen area'.]
-  #   - 'keep_cols' is stronger than 'drop_cols': for instance, if
-  #     a column name is present in both 'keep_cols' and 'drop_cols', then
-  #     it will be displayed in the 'regular area' (at least, if it is present
-  #     in x and if moreover it fits on the screen).
-  #   - 'from_col' identifies the first column in the regular area to show;
-  #     if it is a number, then it is an index among the columns that 
-  #     are selected for display in the 'regular area'. If from_col points
-  #     to  another column than the first one, then anything before that
-  #     column is not displayed. 
   
   # testing and processing argument 'x'
   if (!"assoc_scores" %in% class(x)) {

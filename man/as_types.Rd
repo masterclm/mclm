@@ -20,24 +20,39 @@ because the result of removing duplicates is always sorted.}
 \item{...}{Additional arguments (not implemented)}
 }
 \value{
-An object of class \code{types}.
+An object of the class \code{types}, which is based on a character vector.
+It has additional attributes and methods such as:
+\itemize{
+\item base \code{\link[=print.types]{print()}}, \code{\link[=as.data.frame]{as.data.frame()}}, \code{\link[=sort]{sort()}} and
+\code{\link[base:summary]{base::summary()}} (which returns the number of items and of unique items),
+\item \code{\link[tibble:as_tibble]{tibble::as_tibble()}},
+\item the \code{\link[=n_types]{n_types()}} getter and the \code{\link[=explore]{explore()}} method,
+\item subsetting methods such as \code{\link[=keep_types]{keep_types()}}, \code{\link[=keep_pos]{keep_pos()}}, etc. including \verb{[]}
+subsetting (see \link{brackets}).
+}
+
+An object of class \code{types} can be merged with another by means of \code{\link[=types_merge]{types_merge()}},
+written to file with \code{\link[=write_types]{write_types()}} and read from file with \code{\link[=write_types]{write_types()}}.
 }
 \description{
 This function coerces an object, such as a character vector, to an object of
-class \code{types}.
+class \code{\link[=types]{types()}}.
 }
 \examples{
 
 toy_corpus <- "Once upon a time there was a tiny toy corpus.
 It consisted of three sentences. And it lived happily ever after."
 
-flist <- freqlist(toy_corpus, re_token_splitter = "\\\\\\\\W+", as_text = TRUE)
+flist <- freqlist(toy_corpus, re_token_splitter = "\\\\W+", as_text = TRUE)
 print(flist, n = 1000)
 (sel_types <- as_types(c("happily", "lived", "once")))
 keep_types(flist, sel_types)
-tks <- tokenize(toy_corpus, re_token_splitter = "\\\\\\\\W+")
+tks <- tokenize(toy_corpus, re_token_splitter = "\\\\W+")
 print(tks, n = 1000)
 tks[3:12] # idx is relative to selection
 head(tks) # idx is relative to selection
 tail(tks) # idx is relative to selection
+}
+\seealso{
+\code{\link[=types]{types()}}
 }

@@ -2,36 +2,42 @@
 % Please edit documentation in R/generics.R, R/freqlist.R
 \name{orig_ranks}
 \alias{orig_ranks}
+\alias{orig_ranks<-}
 \alias{orig_ranks<-.freqlist}
 \alias{orig_ranks.freqlist}
+\alias{orig_ranks<-.default}
 \title{Retrieve or set original ranks}
 \usage{
 orig_ranks(x, ...)
 
+orig_ranks(x) <- value
+
 \method{orig_ranks}{freqlist}(x) <- value
 
 \method{orig_ranks}{freqlist}(x, with_names = FALSE, ...)
+
+\method{orig_ranks}{default}(x) <- value
 }
 \arguments{
 \item{x}{An object of any of the classes for which the method is implemented.}
 
 \item{...}{Additional arguments.}
 
-\item{value}{Currently it can only be `NULL`.}
+\item{value}{Currently it can only be \code{NULL}.}
 
 \item{with_names}{Boolean. Whether or not the items in the output should
-be given names. If `TRUE`, then the names
+be given names. If \code{TRUE}, then the names
 of the types in the frequency list are used as names.}
 }
 \value{
-Either `NULL` or a numeric vector, representing the
-  original ranks, with as its names the types to which these ranks apply.
+Either \code{NULL} or a numeric vector, representing the
+original ranks, with as its names the types to which these ranks apply.
 }
 \description{
 These methods retrieve or set, for a the original ranks for the frequency
 counts of an object.
-These original ranks are only defined if `x` is the result of a selection
-procedure (i.e. if `x` contains frequency counts for a selection of items
+These original ranks are only defined if \code{x} is the result of a selection
+procedure (i.e. if \code{x} contains frequency counts for a selection of items
 only, and not for all tokens in the corpus).
 }
 \examples{

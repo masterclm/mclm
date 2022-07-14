@@ -17,7 +17,7 @@ read_types(
 \arguments{
 \item{file}{Name of the input file.}
 
-\item{sep}{If not \code{is.ba(sep)}, then \code{sep} must be a character vector
+\item{sep}{If not \code{is.na(sep)}, then \code{sep} must be a character vector
 of length one. In that case, \code{sep} is interpreted as a
 type separator in the input file. This separator the serves as an
 additional type separator, next to the end of each line.
@@ -27,7 +27,7 @@ words, types cannot cross lines).}
 \item{file_encoding}{The file encoding used in the input file.}
 
 \item{trim_types}{Boolean value that indicates whether or not leading and trailing
-whitespace should be stripped from the types.}
+white space should be stripped from the types.}
 
 \item{remove_duplicates}{Length one boolean vector that determines whether or not
 duplicates are removed from \code{x} prior to coercing to a vector of types.}
@@ -40,10 +40,10 @@ because the result of removing duplicates is always sorted.}
 \item{...}{Additional arguments (not implemented).}
 }
 \value{
-Object of class \code{types}.
+Object of class \code{\link[=types]{types()}}.
 }
 \description{
-This function read an object of the class \code{'types'} from a text file. By default,
+This function read an object of the class \code{\link[=types]{types()}} from a text file. By default,
 the text file is assumed to contain one type on each line.
 }
 \examples{
@@ -54,5 +54,5 @@ the text file is assumed to contain one type on each line.
   }
 }
 \seealso{
-\code{\link{write_types}}
+\code{\link[=write_types]{write_types()}}
 }

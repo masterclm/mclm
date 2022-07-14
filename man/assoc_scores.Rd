@@ -32,21 +32,21 @@ assoc_abcd(
 )
 }
 \arguments{
-\item{x}{Either an object of class \code{freqlist} (see \code{\link[=freqlist]{freqlist()}} or \code{\link[=as_freqlist]{as_freqlist()}})
-or an object of class \code{cooc_info} (see \link{create_cooc}).
+\item{x}{Either an object of class \code{\link[=freqlist]{freqlist()}}
+or an object of class \code{\link[=create_cooc]{cooc_info}}.
 
-If \code{x} is a \code{freqlist}, it is interpreted as the target frequency
+If \code{x} is a \code{\link[=freqlist]{freqlist()}}, it is interpreted as the target frequency
 list (i.e. the list with the frequency of items in the target context) and
-\code{y} must be a \code{freqlist} with the frequency of items in the
+\code{y} must be a \code{\link[=freqlist]{freqlist()}} with the frequency of items in the
 reference context.
 
-If \code{x} is an object of class \code{cooc_info} instead, it is interpreted
+If \code{x} is an object of class \code{\link[=create_cooc]{cooc_info}} instead, it is interpreted
 as containting target frequency information, reference frequency information
 and corpus size information.}
 
-\item{y}{An object of class \code{freqlist} with the frequencies of the
-reference context if \code{x} is also a \code{freqlist}. If \code{x} is an
-object of class \code{cooc_info}, this argument is ignored.}
+\item{y}{An object of class \code{\link[=freqlist]{freqlist()}} with the frequencies of the
+reference context if \code{x} is also a \code{\link[=freqlist]{freqlist()}}. If \code{x} is an
+object of class \code{\link[=create_cooc]{cooc_info}}, this argument is ignored.}
 
 \item{min_freq}{Minimum value for \code{a[[i]]} (or for the frequency of an
 item in the target frequency list) needed for its corresponding item to be
@@ -128,6 +128,7 @@ the items are attracted to the target context (when compared to the reference
 context).
 Some columns don't contain actual measures but rather additional information
 that is useful for interpreting other measures.
+\subsection{Possible columns}{
 
 The following sections describe the (possible) columns in the output. All
 of these measures are reported if \code{measures} is set to \code{"ALL"}. Alternatively,
@@ -261,7 +262,7 @@ modification, they are not pure effect size measures any more.
 }
 }
 
-\subsection{Measures of statistical significance}{
+\subsection{Strength of evidence measures}{
 
 The first measures in this section tend to come in triples: a test statistic,
 its p-value (preceded by \code{p_}) and its signed version (followed by \verb{_signed}).
@@ -392,6 +393,22 @@ in \code{measures} or if \code{measures} is \code{"ALL"} or \code{NULL} and if, 
 additionally, \code{with_variants} is \code{TRUE}.
 }
 }
+
+}
+
+\subsection{Properties of the class}{
+
+An object of class \code{assoc_scores} has:
+\itemize{
+\item associated \code{\link[=as.data.frame]{as.data.frame()}}, \link[=print.assoc_scores]{print()} and \code{\link[tibble:as_tibble]{tibble::as_tibble()}}
+methods,
+\item an interactive \code{\link[=explore]{explore()}} method and useful getters, viz. \code{\link[=n_types]{n_types()}} and
+\code{\link[=type_names]{type_names()}}.
+}
+
+An object of this class can be saved to file with \code{\link[=write_assoc]{write_assoc()}} and read
+with \code{\link[=read_assoc]{read_assoc()}}.
+}
 }
 \description{
 \code{assoc_scores} and \code{assoc_abcd} take as their arguments co-occurrence
@@ -402,7 +419,7 @@ in collocation analysis, collostruction analysis and keyword analysis.
 \subsection{Input and output}{
 
 \code{\link[=assoc_scores]{assoc_scores()}} takes as its arguments a target frequency list and a reference
-frequency lists (either as two \code{\link[=freqlist]{freqlist}} objects or as a
+frequency lists (either as two \code{\link[=freqlist]{freqlist()}} objects or as a
 \code{\link[=create_cooc]{cooc_info}} object) and returns a number of popular measures
 expressing, for (almost) every item in either one of these lists, the extent
 to which the item is attracted to the target context, when compared to the
@@ -464,6 +481,7 @@ c <- c(100,   14,    16,    4)
 d <- c(300, 5000, 10000, 6000)
 types <- c("four", "fictitious", "toy", "examples")
 (scores <- assoc_abcd(a, b, c, d, types = types))
+
 print(scores, sort_order = "PMI")
 print(scores, sort_order = "alpha")
 print(scores, sort_order = "none")

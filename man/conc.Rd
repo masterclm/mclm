@@ -23,7 +23,7 @@ conc(
 If \code{as_text = TRUE}, \code{x} is treated as the actual text to be used
 as corpus.
 
-If \code{as_text = FALSE} (the default), \code{x} is trated as a vector of
+If \code{as_text = FALSE} (the default), \code{x} is treated as a vector of
 filenames, interpreted as the names of the corpus files that contain the
 actual corpus data.}
 
@@ -36,9 +36,9 @@ included in the result as left co-text of the match.}
 \item{c_right}{Number. How many characters to the right of each match must be
 included in the result as right co-text of the match.}
 
-\item{perl}{If \code{TRUE}, \code{pattern} is treated as a PCRE flavor regular
+\item{perl}{If \code{TRUE}, \code{pattern} is treated as a PCRE flavour regular
 expression. Otherwise, \code{pattern} is treated as a regular expression in R's
-default flavor of regular expression.}
+default flavour of regular expression.}
 
 \item{re_drop_line}{Character vector or \code{NULL}. If \code{NULL}, the argument
 is ignored.
@@ -75,23 +75,35 @@ as the namse of the corpus files with the actual corpus data.}
 }
 \value{
 Object of class \code{conc}, a kind of data frame with as its rows
-  the matches and with the following columns:
-  \describe{
-  \item{glob_id}{Number indicating the position of the match in the
-    overall list of matches.}
-  \item{id}{Number indicating the position of the match in the list of matches
-    for one specific query.}
-  \item{source}{Either the filename of the file in which the match was found
-    (in case of the setting \code{as_text = FALSE}), or the string '-'
-    (in case of the setting \code{as_text = TRUE}).}
-  \item{left}{The lefthandside co-text of each match.}
-  \item{match}{The actual match.}
-  \item{right}{The righthandside co-text of each match.}
-  }
+the matches and with the following columns:
+\itemize{
+\item \code{glob_id}: Number indicating the position of the match in the
+overall list of matches.
+\item \code{id}: Number indicating the position of the match in the list of matches
+for one specific query.
+\item \code{source}: Either the filename of the file in which the match was found
+(in case of the setting \code{as_text = FALSE}), or the string '-'
+(in case of the setting \code{as_text = TRUE}).
+\item \code{left}: The left-hand side co-text of each match.
+\item \code{match}: The actual match.
+\item \code{right}: The right-hand side co-text of each match.
+}
+
+It also has additional attributes and methods such as:
+\itemize{
+\item base \code{\link[=as.data.frame]{as.data.frame()}} and \code{\link[=print.types]{print()}} methods, as well as
+a \code{\link[=print_kwic]{print_kwic()}} function,
+\item an \code{\link[=explore]{explore()}} method.
+}
+
+An object of class \code{conc} can be merged with another by means of \code{\link[=merge_conc]{merge_conc()}}.
+It can be written to file with \code{\link[=write_conc]{write_conc()}} and then
+read with \code{\link[=read_conc]{read_conc()}}. It is also possible to import concordances created
+by means other than \code{\link[=write_conc]{write_conc()}} with \code{\link[=import_conc]{import_conc()}}.
 }
 \description{
 This function builds a concordance for the matches of a regular expresion. The result is a
-dataset that can be written to a file with the function \code{\link{write_conc}}.
+dataset that can be written to a file with the function \code{\link[=write_conc]{write_conc()}}.
 It mimics the behavior of the concordance tool in the program AntConc.
 }
 \details{
@@ -108,5 +120,6 @@ for instance, one wants to merge two datasets.#'
 }
 \examples{
 (conc_data <- conc('A very small corpus.', '\\\\w+', as_text = TRUE))
+print(conc_data)
 print_kwic(conc_data)
 }

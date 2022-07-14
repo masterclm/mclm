@@ -4,9 +4,6 @@
 \alias{plot.tokens}
 \alias{plot.summary.re}
 \alias{plot.summary.tokens}
-\alias{n_tokens.default}
-\alias{n_types.default}
-\alias{type_names.default}
 \title{
 Stubs (Functions/Methods Not Implemented)
 }
@@ -31,27 +28,14 @@ The \code{mclm} package contains a number of methods which don't do
 }
 \usage{
 
-\method{plot}{freqlist}(x, \dots)
 
 \method{plot}{re}(x, \dots)
 
 \method{plot}{tokens}(x, \dots)
 
-\method{plot}{types}(x, \dots)
-
-\method{plot}{summary.freqlist}(x, \dots)
-
 \method{plot}{summary.re}(x, \dots)
 
 \method{plot}{summary.tokens}(x, \dots)
-
-\method{plot}{summary.types}(x, \dots)
-
-\method{n_tokens}{default}(x, \dots)
-
-\method{n_types}{default}(x, \dots)
-
-\method{type_names}{default}(x, \dots)
 
 
 }

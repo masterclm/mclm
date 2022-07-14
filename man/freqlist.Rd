@@ -106,8 +106,7 @@ The 'token to lower' operation is conducted immediately after the
 flavor is being used in the arguments that contain regular expressions.}
 
 \item{blocksize}{Number that indicates how many corpus files are read to memory
-`at each individual step' during the steps in the procedure;
-normally the default value of \code{300} should not
+\verb{at each individual step' during the steps in the procedure; normally the default value of }300` should not
 be changed, but when one works with exceptionally small corpus files,
 it may be worthwhile to use a higher number, and when one works with
 exceptionally large corpus files, it may be worthwhile to use a lower number.}
@@ -185,7 +184,25 @@ If if \code{as_text} is \code{TRUE}, then the arguments
 and \code{file_encoding} are ignored.}
 }
 \value{
-Object of class \code{freqlist}.
+Object of class \code{freqlist}, which is based on the class \code{table}.
+It has additional attributes and methods such as:
+\itemize{
+\item base \code{\link[=print.freqlist]{print()}}, \code{\link[base:as.data.frame]{base::as.data.frame()}},
+\code{\link[base:summary]{base::summary()}} and \code{\link[=sort.freqlist]{sort}},
+\item \code{\link[tibble:as_tibble]{tibble::as_tibble()}},
+\item an interactive \code{\link[=explore]{explore()}} method,
+\item various getters, including \code{\link[=tot_n_tokens]{tot_n_tokens()}}, \code{\link[=n_types]{n_types()}}, \code{\link[=n_tokens]{n_tokens()}},
+values that are also returned by \code{summary()}, and more,
+\item subsetting methods such as \code{\link[=keep_types]{keep_types()}}, \code{\link[=keep_pos]{keep_pos()}}, etc. including \verb{[]}
+subsetting (see \link{brackets}).
+}
+
+Additional manipulation functions include \code{\link[=type_freqs]{type_freqs()}} to extract the frequencies
+of different items, \code{\link[=freqlist_merge]{freqlist_merge()}} to combine frequency lists, and
+\code{\link[=freqlist_diff]{freqlist_diff()}} to substract a frequency list from another.
+
+Objects of class \code{freqlist} can be saved to file with \code{\link[=write_freqlist]{write_freqlist()}};
+these files can be read with \code{\link[=read_freqlist]{read_freqlist()}}.
 }
 \description{
 This function builds the word frequency list from a corpus.
@@ -206,6 +223,10 @@ It consisted of three sentences. And it lived happily ever after."
 
 (flist <- freqlist(toy_corpus, as_text = TRUE))
 print(flist, n = 20)
+as.data.frame(flist)
+as_tibble(flist)
+summary(flist) 
+print(summary(flist))
 
 t_splitter <- "(?xi) [:\\\\s.;,?!\"]+"
 freqlist(toy_corpus,

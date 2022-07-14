@@ -7,7 +7,7 @@
 write_freqlist(x, file, sep = "\\t", make_config_file = TRUE, ...)
 }
 \arguments{
-\item{x}{Object of class \code{freqlist}.}
+\item{x}{Object of class \code{\link[=freqlist]{freqlist()}}.}
 
 \item{file}{Character vector of length 1. Path to the output file.}
 
@@ -22,7 +22,7 @@ needs to be created. In most circumstances, this should be set to \code{TRUE}.}
 Invisibly, \code{x}.
 }
 \description{
-This function writes an object of the class \code{freqlist} to a csv file. The
+This function writes an object of the class \code{\link[=freqlist]{freqlist()}} to a csv file. The
 resulting csv file contains two columns, the first being the type and the
 second being the frequency of that type. The file also contains
 a header line with the names of both columns.
@@ -47,5 +47,5 @@ print(freqs2, n = 1000)
 }
 }
 \seealso{
-\code{\link{read_freqlist}}
+\code{\link[=read_freqlist]{read_freqlist()}}
 }

@@ -21,10 +21,28 @@ rank. If \code{FALSE}, the items in the frequency list, depending on the
 input type, either are sorted alphabetically or are not sorted at all.}
 }
 \value{
-Object of class \code{freqlist}.
+Object of class \code{freqlist}, which is based on the class \code{table}.
+It has additional attributes and methods such as:
+\itemize{
+\item base \code{\link[=print.freqlist]{print()}}, \code{\link[base:as.data.frame]{base::as.data.frame()}},
+\code{\link[base:summary]{base::summary()}} and \code{\link[=sort.freqlist]{sort}},
+\item \code{\link[tibble:as_tibble]{tibble::as_tibble()}},
+\item an interactive \code{\link[=explore]{explore()}} method,
+\item various getters, including \code{\link[=tot_n_tokens]{tot_n_tokens()}}, \code{\link[=n_types]{n_types()}}, \code{\link[=n_tokens]{n_tokens()}},
+values that are also returned by \code{summary()}, and more,
+\item subsetting methods such as \code{\link[=keep_types]{keep_types()}}, \code{\link[=keep_pos]{keep_pos()}}, etc. including \verb{[]}
+subsetting (see \link{brackets}).
+}
+
+Additional manipulation functions include \code{\link[=type_freqs]{type_freqs()}} to extract the frequencies
+of different items, \code{\link[=freqlist_merge]{freqlist_merge()}} to combine frequency lists, and
+\code{\link[=freqlist_diff]{freqlist_diff()}} to substract a frequency list from another.
+
+Objects of class \code{freqlist} can be saved to file with \code{\link[=write_freqlist]{write_freqlist()}};
+these files can be read with \code{\link[=read_freqlist]{read_freqlist()}}.
 }
 \description{
-This function coerces an object of class \code{table} to an object of class \code{freqlist}.
+This function coerces an object of class \code{\link[base:table]{base::table()}} to an object of class \code{\link[=freqlist]{freqlist()}}.
 }
 \examples{
 toy_corpus <- "Once upon a time there was a tiny toy corpus.
@@ -48,5 +66,5 @@ flist <- as_freqlist(c("a" = 12, "toy" = 53, "example" = 20),
 flist
 }
 \seealso{
-\code{\link{freqlist}}
+\code{\link[=freqlist]{freqlist()}}
 }

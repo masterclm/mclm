@@ -10,17 +10,17 @@ types_merge(x, y, sort = FALSE)
 types_merge_all(..., sort = FALSE)
 }
 \arguments{
-\item{x, y}{An object of class \code{types}.}
+\item{x, y}{An object of class \code{\link[=types]{types()}}.}
 
 \item{sort}{Boolean value that indicates whether the result should be sorted.}
 
-\item{...}{Either objects of the class \code{types} or lists containing such objects.}
+\item{...}{Either objects of the class \code{\link[=types]{types()}} or lists containing such objects.}
 }
 \value{
-An object of the class \code{types}.
+An object of the class \code{\link[=types]{types()}}.
 }
 \description{
-These methods merge two or more objects of class \code{types}.
+These methods merge two or more objects of class \code{\link[=types]{types()}}.
 }
 \section{Functions}{
 \itemize{

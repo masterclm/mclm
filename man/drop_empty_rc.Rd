@@ -19,7 +19,7 @@ No checks are performed by this function.
 }
 \details{
 This is just a convenience function. It is identical to, and implemented as,
-\code{x[rowSums(x) > 0, colSums(x) > 0, drop = FALSE]}
+\code{x[rowSums(x) > 0, colSums(x) > 0, drop = FALSE]}.
 }
 \examples{
 # first example

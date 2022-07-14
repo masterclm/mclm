@@ -156,7 +156,7 @@ to be in the same encoding, or a character vector with the same length as
 }
 \value{
 An object of class \code{cooc_info}, containing information on
-  co-occurrence frequencies.
+co-occurrence frequencies.
 }
 \description{
 These functions builds a surface or textual collocation frequency for a specific node.

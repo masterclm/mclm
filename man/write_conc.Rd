@@ -7,7 +7,7 @@
 write_conc(x, file = "", sep = "\\t", file_encoding = "UTF-8")
 }
 \arguments{
-\item{x}{Object of class \code{conc}.}
+\item{x}{Object of class \code{\link[=conc]{conc()}}.}
 
 \item{file}{Path to output file.}
 
@@ -19,7 +19,7 @@ write_conc(x, file = "", sep = "\\t", file_encoding = "UTF-8")
 Invisibly, \code{x}.
 }
 \description{
-This function writes an object of class \code{conc} to a file.
+This function writes an object of class \code{\link[=conc]{conc()}} to a file.
 }
 \examples{
 \dontrun{
@@ -29,5 +29,5 @@ write_conc(d, "example_data.tab")
 }
 }
 \seealso{
-\code{\link{read_conc}}
+\code{\link[=read_conc]{read_conc()}}
 }

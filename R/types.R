@@ -2,20 +2,36 @@
 # REVIEW document class itself here?
 #' Build a 'types' object
 #' 
-#' This function builds an object of the class \code{types}.
+#' This function builds an object of the class [types()].
 #'
 #' @inheritParams freqlist
 #' @inherit freqlist details
-#' @return An object of the class \code{types}.
-#'   The items in the output are sorted by their frequency in the input.
+#' @return An object of the class `types`, which is based on a character vector.
+#'   It has additional attributes and methods such as:
+#'   - base [`print()`][print.types()], [as.data.frame()], [sort()] and
+#'   [base::summary()] (which returns the number of items and of unique items),
+#'   - [tibble::as_tibble()],
+#'   - the [n_types()] getter and the [explore()] method,
+#'   - subsetting methods such as [keep_types()], [keep_pos()], etc. including `[]`
+#'   subsetting (see [brackets]).
+#'   
+#'   An object of class `types` can be merged with another by means of [types_merge()],
+#'   written to file with [write_types()] and read from file with [write_types()].
 #' 
-#' @seealso freqlist
+#' @seealso [as_types()]
 #' @export
 #'
 #' @examples
 #' toy_corpus <- "Once upon a time there was a tiny toy corpus.
 #' It consisted of three sentences. And it lived happily ever after."
-#' types(toy_corpus, as_text = TRUE)
+#' (tps <- types(toy_corpus, as_text = TRUE))
+#' print(tps)
+#' 
+#' as.data.frame(tps)
+#' as_tibble(tps)
+#' 
+#' sort(tps)
+#' sort(tps, decreasing = TRUE)
 types <- function(x,
                   re_drop_line = NULL,
                   line_glue = NULL, 
@@ -65,18 +81,19 @@ types <- function(x,
 #' Coerce object to a vector of types
 #' 
 #' This function coerces an object, such as a character vector, to an object of
-#' class \code{types}.
+#' class [types()].
 #'
 #' @param x Object to coerce
 #' @param remove_duplicates Length one boolean vector that determines whether or not
-#'   duplicates are removed from \code{x} prior to coercing to a vector of types.
+#'   duplicates are removed from `x` prior to coercing to a vector of types.
 #' @param sort Length one boolean vector that determines whether or not
-#'   \code{x} is alphabetically sorted prior to coercing to a vector of types;
-#'   this argument is ignored if \code{remove_duplicates} is \code{TRUE},
+#'   `x` is alphabetically sorted prior to coercing to a vector of types;
+#'   this argument is ignored if `remove_duplicates` is `TRUE`,
 #'   because the result of removing duplicates is always sorted.
 #' @param ... Additional arguments (not implemented)
 #'
-#' @return An object of class \code{types}.
+#' @inherit types return
+#' @seealso [types()]
 #' @export
 #'
 #' @examples
@@ -84,11 +101,11 @@ types <- function(x,
 #' toy_corpus <- "Once upon a time there was a tiny toy corpus.
 #' It consisted of three sentences. And it lived happily ever after."
 #' 
-#' flist <- freqlist(toy_corpus, re_token_splitter = "\\\\W+", as_text = TRUE)
+#' flist <- freqlist(toy_corpus, re_token_splitter = "\\W+", as_text = TRUE)
 #' print(flist, n = 1000)
 #' (sel_types <- as_types(c("happily", "lived", "once")))
 #' keep_types(flist, sel_types)
-#' tks <- tokenize(toy_corpus, re_token_splitter = "\\\\W+")
+#' tks <- tokenize(toy_corpus, re_token_splitter = "\\W+")
 #' print(tks, n = 1000)
 #' tks[3:12] # idx is relative to selection
 #' head(tks) # idx is relative to selection
@@ -244,108 +261,7 @@ explore.types <- function(x,
 ## Subsetting ------------------------------------------------------------------
 # (Including `[` even though it's not from mclm)
 
-#' Subset a 'types' object
-#' 
-#' These methods can be used to subset objects of class \code{types} by position, list of types,
-#' regular expression match or via boolean statements.
-#' 
-#'
-#' The S3 methods starting with \code{keep_} (\code{keep_re()}, \code{keep_pos()},
-#' \code{keep_bool()}, and \code{keep_types()}), when applied to an object of the
-#' class \code{'types'}, take as their first argument \code{x}
-#' an object of the class \code{'types'}, and extract from it those
-#' items that \emph{match} the selection criterion which is their second argument,
-#' viz. \code{pattern} in \code{keep_re()}, \code{pos} in \code{keep_pos()},
-#' \code{bool} in \code{keep_bool()}, and \code{types} in \code{keep_types()}.
-#' In this documentation, these methods are collectively called the \code{keep}-methods.
-#' 
-#' The S3 methods starting with \code{drop_} (\code{drop_re()}, \code{drop_pos()},
-#' \code{drop_bool()}, and \code{drop_types()}), collectively called the \code{drop}-methods,
-#' behave identical to how the \code{keep}-methods work when the argument \code{invert}
-#' (which by default is \code{FALSE}) is set to \code{TRUE}.
-#' In that case,  the items that \emph{do not match} the selection criterion are selected.
-#' 
-#' Subset selection with the notation \code{[]},
-#' in which case argument \code{i} is the selection criterion, behaves
-#' similarly to the \code{keep}-methods. For more details on the relation
-#' between the \code{[]} notation and the \code{keep}-methods, 
-#' see the description of the argument \code{i}.
-#' When the notation \code{x[i, \dots]} is used, it is also possible to
-#' use the \code{invert} argument (which then is one of the additional
-#' arguments in \code{\dots}). This \code{invert} argument
-#' then serves the same purpose as the \code{invert} argument in the \code{keep}-methods.
-#' When the notation \code{x[i, \dots]} is used, and no \code{invert} argument
-#' is given, then \code{invert} is taken to be \code{FALSE}.
-#'
-#' @param x Object of class \code{types}.
-#' @param pattern Either an object of the class \code{'re'} (see \code{\link{re}})
-#'   or a character vector of length one, which contains a regular expression.
-#' @param pos A numeric vector, the numbers in which identify positions (= indices)
-#'   of items in \code{x}.
-#'   
-#'   If the numbers are positive, then their values point
-#'   to the items that are to be selected.
-#'   
-#'   If the numbers are negative,
-#'   then their absolute values point to the items that are not to be selected.
-#'   Positive and negative numbers must not be mixed.
-#' @param bool A logical vector of the same length as \code{x}. If \code{bool} is not
-#'   of the correct length, it is \emph{recycled}. Assuming \code{invert} is
-#'   \code{FALSE}, those items are selected for which \code{bool} is \code{TRUE}.
-#' @param types Either an object of the class \code{'types'}
-#'   (see \code{\link{types}} and \code{\link{as_types}}) or a character vector.
-#'   Assuming \code{invert} is \code{FALSE}, the items whose names are included
-#'   in these argument are selected.
-#' @param i Selection criterion when subsetting with \code{[]}; depending on its
-#'  class, it behaves differently:
-#'   \describe{
-#'     \item{\code{re}}{It works like \code{keep_re}.}
-#'     \item{numeric}{It works like \code{keep_pos}.}
-#'     \item{logical}{It works like \code{keep_bool}.}
-#'     \item{\code{types} or character}{It works like \code{keep_types}.}
-#'   }
-#' @param perl Boolean vector of length one, which indicates whether or not
-#'   \code{pattern} is treated as a PCRE flavor regular expression.
-#'   The \code{perl} argument is only used if \code{pattern} is a regular character vector.
-#'   If \code{pattern} is an object of the class \code{'re'}, then the
-#'   \code{perl} argument is ignored, and the relevant information in the
-#'   \code{'re'} object \code{pattern}, viz. the value of \code{pattern$perl}, is
-#'   used instead.
-#' @param invert Boolean vector of length one, which indicates whether the matches
-#'   or the non-matches should be selected.
-#' @param ... Additional arguments.
-#'
-#' @return Object of class \code{types} with the selected elements only.
-#' @name subset_types
-#'
-#' @examples
-#' 
-#' (tps <- as_types(letters[1:10]))
-#' 
-#' keep_re(tps, "[acegi]")
-#' drop_re(tps, "[acegi]")
-#' 
-#' keep_pos(tps, c(1, 3, 5, 7, 9))
-#' drop_pos(tps, c(1, 3, 5, 7, 9))
-#' 
-#' keep_bool(tps, c(TRUE, FALSE))
-#' drop_bool(tps, c(TRUE, FALSE))
-#' 
-#' keep_types(tps, c("a", "c", "e", "g", "i"))
-#' drop_types(tps,  c("a", "c", "e", "g", "i"))
-#' 
-#' tps[re("[acegi]")]
-#' tps[c(1, 3, 5, 7, 9)]
-#' tps[c(TRUE, FALSE)]
-#' tps[c("a", "c", "e", "g", "i")]
-#' 
-#' tps[re("[acegi]"), invert = TRUE]
-#' tps[c(1, 3, 5, 7, 9), invert = TRUE]
-#' tps[c(TRUE, FALSE), invert = TRUE]
-#' tps[c("a", "c", "e", "g", "i"), invert = TRUE]
-NULL
-
-#' @describeIn subset_types Drop items by position
+#' @rdname keep_pos
 #' @exportS3Method drop_pos types
 #' @export
 drop_pos.types <- function(x, pos, ...) {
@@ -356,7 +272,7 @@ drop_pos.types <- function(x, pos, ...) {
   keep_pos.types(x, pos, invert = TRUE, ...)
 }
 
-#' @describeIn subset_types Select items by position
+#' @rdname keep_pos
 #' @exportS3Method keep_pos types
 #' @export
 keep_pos.types <- function(x, pos, invert = FALSE, ...) {
@@ -404,7 +320,7 @@ keep_pos.types <- function(x, pos, invert = FALSE, ...) {
   result
 }
 
-#' @describeIn subset_types Drop items by list of types
+#' @rdname keep_types
 #' @exportS3Method drop_types types
 #' @export
 drop_types.types <- function(x, types, ...) {
@@ -415,7 +331,7 @@ drop_types.types <- function(x, types, ...) {
   keep_types.types(x, types, invert = TRUE, ...)
 }
 
-#' @describeIn subset_types Keep items by list of types
+#' @rdname keep_types
 #' @exportS3Method keep_types types
 #' @export
 keep_types.types <- function(x, types, invert = FALSE, ...) {
@@ -447,7 +363,7 @@ keep_types.types <- function(x, types, invert = FALSE, ...) {
   result
 }
 
-#' @describeIn subset_types Drop items by regular expression
+#' @rdname keep_re
 #' @exportS3Method drop_re types
 #' @export
 drop_re.types <- function(x, pattern, perl = TRUE, ...) {
@@ -458,7 +374,7 @@ drop_re.types <- function(x, pattern, perl = TRUE, ...) {
   keep_re.types(x, pattern, perl = perl, invert = TRUE, ...)
 }
 
-#' @describeIn subset_types Keep items by regular expression
+#' @rdname keep_re
 #' @exportS3Method keep_re types
 #' @export
 keep_re.types <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
@@ -519,7 +435,7 @@ keep_re.types <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   result
 }
 
-#' @describeIn subset_types Drop items based on boolean statement
+#' @rdname keep_bool
 #' @exportS3Method drop_bool types
 #' @export
 drop_bool.types <- function(x, bool, ...) {
@@ -530,7 +446,7 @@ drop_bool.types <- function(x, bool, ...) {
   keep_bool.types(x, !bool, ...)
 }
 
-#' @describeIn subset_types Keep items based on boolean statement
+#' @rdname keep_bool
 #' @exportS3Method keep_bool types
 #' @export
 keep_bool.types <- function(x, bool, invert = FALSE, ...) {
@@ -564,7 +480,7 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
   result
 }
 
-#' @describeIn subset_types Keep items based on different criteria
+#' @rdname brackets
 #' @exportS3Method `[` types
 #' @export
 `[.types` <- function(x, i, invert = FALSE, ...) {
@@ -619,78 +535,21 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
 # S3 methods from other packages ===============================================
 # (Including not supported functions)
 
-#' Coerce `types` object to Data Frame
-#'
-#' The S3 method \code{as.data.frame}, when applied to an object \code{x} of the
-#'   class \code{types}, coerces an object of the class \code{types} to a data frame.
-#'   
-#' @param x An object of class \code{types}.
-#' @param ... Other arguments.
-#'
 #' @exportS3Method as.data.frame types
-#' @return A dataframe. In this dataframe, the types sit in a column named \code{type}.
 #' @export
-#' @seealso as_tibble.types
-#' @examples 
-#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
-#' It consisted of three sentences. And it lived happily ever after."
-#' 
-#' (typs <- types(toy_corpus, as_text = TRUE))
-#' 
-#' as.data.frame(typs)
 as.data.frame.types <- function(x, ...) {
   class(x) <- "character"
   data.frame(type = x, ...)
 }
 
-#' Coerce 'types' object to tibble
-#' 
-#' The S3 method \code{as_tibble}, when applied to an object \code{x} of the
-#'   class \code{types}, coerces an object of the class \code{types} to a tibble.
-#'
-#' @param x An object of the class \code{types}.
-#' @param ... Other arguments
-#'
-#' @return A tibble. In this tibble, the types sit in a colum named \code{type}.
 #' @exportS3Method tibble::as_tibble types
 #' @export 
-#' @seealso as.data.frame.types
-#' 
-#' @examples
-#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
-#' It consisted of three sentences. And it lived happily ever after."
-#' 
-#' (typs <- types(toy_corpus, as_text = TRUE))
-#' 
-#' as_tibble(typs)
 as_tibble.types <- function(x, ...) {
   tibble(type = x, ...)
 }
 
-
-#' Sort a collection of types
-#' 
-#' This method sorts an object of the class \code{types}.
-#' 
-#' At the moment, types collections are not allowed to contain \code{NA} values.
-#'   Therefore, no function argument is available
-#'   that specifies how \code{NA} values should be sorted.
-#'
-#' @param x An object of the class \code{types}.
-#' @param decreasing Logical value that indicates whether the items should be
-#'   sorted from small to large (when \code{decreasing} in \code{FALSE})
-#'   or from large to small (when \code{decreasing} is \code{TRUE}).
-#'   The default value is \code{FALSE}.
-#' @param ... Other arguments
-#'
-#' @return An object of class \code{types}.
 #' @exportS3Method sort types
 #' @export
-#' 
-#' @examples
-#' (tps <- as_types(c("the", "a", "some", "no")))
-#' sort(tps)
-#' sort(tps, decreasing = TRUE)
 sort.types <- function(x, decreasing = FALSE, ...) {
   as_types(sort(as_character(x),
                decreasing = decreasing,
@@ -708,26 +567,9 @@ plot.types <- function(x, ...) {
   invisible(NULL)
 }
 
-#' Print a vector of 'types'
-#' 
-#' This method prints objects of the class \code{types}.
-#'
-#' @param x An object of class \code{types}.
-#' @param n Maximum number of types to print.
-#' @param from Position of the first item to print.
-#' @param sort_order Order in which the items are to be printed. Possible value
-#'   are \code{"alpha"} (meaning that the items are to be sorted alphabetically),
-#'   and \code{"none"} (meaning that the items are not to be sorted).
-#' @param extra Extra settings.
-#' @param ... Additional printing arguments.
-#'
-#' @return Invisibly, \code{x}.
+#' @rdname mclm_print
 #' @exportS3Method print types
 #' @export
-#'
-#' @examples
-#' x <- as_types(c("first", "second", "third"))
-#' print(x, n = 1000)
 print.types <- function(x,
                         n = 20, from = 1,
                         sort_order = c("none", "alpha"),
@@ -826,28 +668,8 @@ print.types <- function(x,
 
 ## Summary ---------------------------------------------------------------------
 
-#' Succinct Description of a 'types' Object
-#'
-#' \code{summary.types} builds an object of the class \code{summary.types} from
-#' a \code{types} object; \code{print.summary.types} prints it.
-#' 
-#' @param object An object of class \code{types}.
-#' @param x An object of class \code{summary.types}.
-#' @param ... Additional arguments.
-#'
-#' @return An object of class \code{summary.types}.
 #' @exportS3Method summary types
 #' @export
-#'
-#' @examples
-#' 
-#' tps <- as_types(c("the", "a", "it", "is", "was", "are", "be", "being"))
-#' summary(tps) 
-#' print(summary(tps))
-#' (tps_sum <- summary(tps))
-#' names(tps_sum)
-#' tps_sum[["n_types"]]
-#' tps_sum$n_types
 summary.types <- function(object, ...) {
   if (! "types" %in% class(object)) {
     stop("argument 'object' must be of the class 'types'")
@@ -859,7 +681,6 @@ summary.types <- function(object, ...) {
   result
 }
 
-#' @rdname summary.types
 #' @exportS3Method print summary.types
 #' @export
 print.summary.types <- function(x, ...) {
@@ -888,13 +709,13 @@ plot.summary.types <- function(x, ...) {
 
 #' Merge 'types' objects
 #' 
-#' These methods merge two or more objects of class \code{types}.
+#' These methods merge two or more objects of class [types()].
 #'   
-#' @param x,y An object of class \code{types}. 
-#' @param ... Either objects of the class \code{types} or lists containing such objects.
+#' @param x,y An object of class [types()]. 
+#' @param ... Either objects of the class [types()] or lists containing such objects.
 #' @param sort Boolean value that indicates whether the result should be sorted.
 #'
-#' @return An object of the class \code{types}.
+#' @return An object of the class [types()].
 #' @name types_merge
 #'
 #' @examples
@@ -955,24 +776,24 @@ types_merge_all <- function(..., sort = FALSE) {
 
 #' Read a vector of types from a text file
 #' 
-#' This function read an object of the class \code{'types'} from a text file. By default,
+#' This function read an object of the class [types()] from a text file. By default,
 #' the text file is assumed to contain one type on each line.
 #'
 #' @param file Name of the input file.
-#' @param sep If not \code{is.ba(sep)}, then \code{sep} must be a character vector
-#'   of length one. In that case, \code{sep} is interpreted as a
+#' @param sep If not `is.na(sep)`, then `sep` must be a character vector
+#'   of length one. In that case, `sep` is interpreted as a
 #'   type separator in the input file. This separator the serves as an
 #'   additional type separator, next to the end of each line.
 #'   The end of a line always indicated a separator between types (in other
 #'   words, types cannot cross lines).
 #' @param file_encoding The file encoding used in the input file.
 #' @param trim_types Boolean value that indicates whether or not leading and trailing
-#'   whitespace should be stripped from the types.
+#'   white space should be stripped from the types.
 #' @inheritParams as_types
 #' @param ... Additional arguments (not implemented).
 #'
-#' @return Object of class \code{types}.
-#' @seealso \code{\link{write_types}}
+#' @return Object of class [types()].
+#' @seealso [write_types()]
 #' @export
 #'
 #' @examples
@@ -1010,19 +831,19 @@ read_types <- function(file,
 
 #' Write a vector of types to a text file
 #' 
-#' This function writes an object of the class \code{'types'} to a text file. Each type
+#' This function writes an object of the class [types()] to a text file. Each type
 #' is written to a separate line. The file encoding that is used is
-#' \code{"UTF-8"}.
+#' `"UTF-8"`.
 #'
-#' @param x Object of class \code{types}.
+#' @param x Object of class [types()].
 #' @param file Name of the output file
 #' @param make_config_file Boolean value. Whether or not, next to the actual
 #'   types file, a second output file should be created containing a brief
 #'   description of the format of the types file.
 #' @param ... Additional arguments (not implemented).
 #'
-#' @return Invisibly, \code{x}.
-#' @seealso \code{\link{read_types}}
+#' @return Invisibly, `x`.
+#' @seealso [read_types()]
 #' @export
 #'
 #' @inherit read_types examples
@@ -1050,10 +871,10 @@ write_types <- function(x,
 
 #' Merge two 'types' objects
 #'
-#' @param x,y An object of class \code{types}
+#' @param x,y An object of class [types()]
 #' @param sort Whether or not to sort the result.
 #'
-#' @return An object of class \code{types}
+#' @return An object of class [types()]
 #' @noRd
 types_merge_two <- function(x, y, sort = FALSE) {
   as_types(dplyr::union(x, y),
@@ -1063,10 +884,10 @@ types_merge_two <- function(x, y, sort = FALSE) {
 
 #' Subset types
 #'
-#' @param x Object of class \code{types}.
+#' @param x Object of class [types()].
 #' @param sel Numeric vector with positions or boolean vector.
 #'
-#' @return Filtered object of class \code{types}
+#' @return Filtered object of class [types()]
 #' @noRd
 subset_types <- function(x, sel) {
   result <- as.character(x)[sel]
