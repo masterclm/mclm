@@ -26,7 +26,7 @@ be converted to factors. It applies to all columns except for \code{"source"},
 \item{...}{Additional arguments, not implemented.}
 }
 \value{
-Object of class \code{\link[=conc]{conc()}}.
+Object of class \code{\link{conc}}.
 }
 \description{
 This function reads concordance-based data frames that are written to file

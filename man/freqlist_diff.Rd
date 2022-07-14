@@ -7,10 +7,10 @@
 freqlist_diff(x, y)
 }
 \arguments{
-\item{x, y}{Objects of class \code{\link[=freqlist]{freqlist()}}.}
+\item{x, y}{Objects of class \code{\link{freqlist}}.}
 }
 \value{
-An object of class \code{\link[=freqlist]{freqlist()}}.
+An object of class \code{\link{freqlist}}.
 }
 \description{
 This function merges information from two frequency lists, subtracting the frequencies found

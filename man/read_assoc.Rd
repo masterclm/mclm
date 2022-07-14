@@ -16,7 +16,7 @@ read_assoc(file, sep = "\\t", file_encoding = "UTF-8", ...)
 \item{...}{Additional arguments.}
 }
 \value{
-An object of class \code{\link[=assoc_scores]{assoc_scores()}}.
+An object of class \code{\link{assoc_scores}}.
 }
 \description{
 This function reads a file written by \code{\link[=write_assoc]{write_assoc()}}.

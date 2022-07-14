@@ -10,13 +10,13 @@ freqlist_merge(x, y)
 freqlist_merge_all(...)
 }
 \arguments{
-\item{x, y}{An object of class \code{\link[=freqlist]{freqlist()}}.}
+\item{x, y}{An object of class \code{\link{freqlist}}.}
 
-\item{...}{Various objects of class \code{\link[=freqlist]{freqlist()}} or a list of
-objects of class \code{\link[=freqlist]{freqlist()}}.}
+\item{...}{Various objects of class \code{\link{freqlist}} or a list of
+objects of class \code{\link{freqlist}}.}
 }
 \value{
-An object of class \code{\link[=freqlist]{freqlist()}}.
+An object of class \code{\link{freqlist}}.
 }
 \description{
 The functions merge two or more frequency lists, adding up the frequencies.

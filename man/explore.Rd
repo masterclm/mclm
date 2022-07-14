@@ -49,7 +49,7 @@ exploration session use the PERL flavour of regular expression.}
 \item{sort_order}{Order in which the items are to be printed. In general, possible values
 are \code{"alpha"} (meaning that the items are to be sorted alphabetically),
 and \code{"none"} (meaning that the items are not to be sorted).
-If \code{x} is an object of class \code{\link[=assoc_scores]{assoc_scores}}, a column name
+If \code{x} is an object of class \code{\link{assoc_scores}}, a column name
 or vector of column names may be provided instead.}
 
 \item{use_clear}{Boolean. If \code{TRUE}, and if the feature is supported by the R

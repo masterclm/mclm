@@ -40,10 +40,10 @@ because the result of removing duplicates is always sorted.}
 \item{...}{Additional arguments (not implemented).}
 }
 \value{
-Object of class \code{\link[=types]{types()}}.
+Object of class \code{\link{types}}.
 }
 \description{
-This function read an object of the class \code{\link[=types]{types()}} from a text file. By default,
+This function read an object of the class \code{\link{types}} from a text file. By default,
 the text file is assumed to contain one type on each line.
 }
 \examples{

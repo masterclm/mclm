@@ -42,7 +42,7 @@ Objects of class \code{freqlist} can be saved to file with \code{\link[=write_fr
 these files can be read with \code{\link[=read_freqlist]{read_freqlist()}}.
 }
 \description{
-This function coerces an object of class \code{\link[base:table]{base::table()}} to an object of class \code{\link[=freqlist]{freqlist()}}.
+This function coerces an object of class \code{\link{table}} to an object of class \code{\link{freqlist}}.
 }
 \examples{
 toy_corpus <- "Once upon a time there was a tiny toy corpus.

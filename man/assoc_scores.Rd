@@ -32,20 +32,20 @@ assoc_abcd(
 )
 }
 \arguments{
-\item{x}{Either an object of class \code{\link[=freqlist]{freqlist()}}
+\item{x}{Either an object of class \code{\link{freqlist}}
 or an object of class \code{\link[=create_cooc]{cooc_info}}.
 
-If \code{x} is a \code{\link[=freqlist]{freqlist()}}, it is interpreted as the target frequency
+If \code{x} is a \code{\link{freqlist}}, it is interpreted as the target frequency
 list (i.e. the list with the frequency of items in the target context) and
-\code{y} must be a \code{\link[=freqlist]{freqlist()}} with the frequency of items in the
+\code{y} must be a \code{\link{freqlist}} with the frequency of items in the
 reference context.
 
 If \code{x} is an object of class \code{\link[=create_cooc]{cooc_info}} instead, it is interpreted
 as containting target frequency information, reference frequency information
 and corpus size information.}
 
-\item{y}{An object of class \code{\link[=freqlist]{freqlist()}} with the frequencies of the
-reference context if \code{x} is also a \code{\link[=freqlist]{freqlist()}}. If \code{x} is an
+\item{y}{An object of class \code{\link{freqlist}} with the frequencies of the
+reference context if \code{x} is also a \code{\link{freqlist}}. If \code{x} is an
 object of class \code{\link[=create_cooc]{cooc_info}}, this argument is ignored.}
 
 \item{min_freq}{Minimum value for \code{a[[i]]} (or for the frequency of an
@@ -346,7 +346,7 @@ The \code{"2T"} stands for 'two terms'.
 The final two groups of measures take a different shape. The
 \verb{_as_chisq1} columns compute \code{qchisq(1 - p, 1)}, with \code{p} being the p-values
 they are transforming, i.e. the \code{p} right quantile in a \eqn{\chi^2}
-distribution with one degree of freedom.
+distribution with one degree of freedom (see \code{\link[=p_to_chisq1]{p_to_chisq1()}}).
 \itemize{
 \item \code{t}, \code{p_t_1}, \code{t_1_as_chisq1}, \code{p_t_2} and \code{t_2_as_chisq1}:
 The t-test statistic, used for a t-test for the proportion \eqn{\frac{a}{N}}
@@ -413,7 +413,7 @@ in collocation analysis, collostruction analysis and keyword analysis.
 \subsection{Input and output}{
 
 \code{\link[=assoc_scores]{assoc_scores()}} takes as its arguments a target frequency list and a reference
-frequency lists (either as two \code{\link[=freqlist]{freqlist()}} objects or as a
+frequency lists (either as two \code{\link{freqlist}} objects or as a
 \code{\link[=create_cooc]{cooc_info}} object) and returns a number of popular measures
 expressing, for (almost) every item in either one of these lists, the extent
 to which the item is attracted to the target context, when compared to the

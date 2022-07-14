@@ -7,7 +7,7 @@
 write_assoc(x, file = "", sep = "\\t", file_encoding = "UTF-8")
 }
 \arguments{
-\item{x}{An object of class \code{\link[=assoc_scores]{assoc_scores()}}.}
+\item{x}{An object of class \code{\link{assoc_scores}}.}
 
 \item{file}{Name of the output file.}
 
@@ -19,7 +19,7 @@ write_assoc(x, file = "", sep = "\\t", file_encoding = "UTF-8")
 Invisibly, \code{x}.
 }
 \description{
-This function writes an object of class \code{\link[=assoc_scores]{assoc_scores()}} to a file.
+This function writes an object of class \code{\link{assoc_scores}} to a file.
 }
 \examples{
 \dontrun{
@@ -39,5 +39,5 @@ write_assoc(scores, "example_scores.tab")
 }
 }
 \seealso{
-\code{\link[=write_assoc]{write_assoc()}}
+\code{\link[=read_assoc]{read_assoc()}}
 }

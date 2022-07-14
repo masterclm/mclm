@@ -31,20 +31,20 @@ identical frequency are further ranked by alphabetic order.
 }
 \details{
 The mclm method \code{\link[=ranks]{ranks()}} is not
-to be confused with the base R function \code{\link[base:rank]{base::rank()}}. There are two
+to be confused with \code{\link[base:rank]{base::rank()}}. There are two
 important differences.
 
-First, the base R function \code{\link[base:rank]{base::rank()}} always ranks items from low values to
+First,\code{\link[base:rank]{base::rank()}} always ranks items from low values to
 high values and \code{\link[=ranks]{ranks()}} ranks from high
 frequency items to low frequency items.
 
-Second, the base R function \code{\link[base:rank]{base::rank()}} allows the user to choose among
+Second, \code{\link[base:rank]{base::rank()}} allows the user to choose among
 a number of different ways to handle ties.
 In contrast, \code{\link[=ranks]{ranks()}} always handles ties
 in the same way. More specifically, items with identical frequencies
 are always ranked in alphabetical order.
 
-In other words, the base R function \code{\link[base:rank]{base::rank()}} is a flexible tool that
+In other words, \code{\link[base:rank]{base::rank()}} is a flexible tool that
 supports a number of different ranking methods that are commonly used in
 statistics. In contrast, \code{\link[=ranks]{ranks()}} is a
 rigid tool that supports only one type of ranking, which is a type of

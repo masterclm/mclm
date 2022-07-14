@@ -182,7 +182,7 @@ conc <-    function(x,
 
 #' Coerce data frame to a concordance object
 #' 
-#' This function coerces a data frame to an object of the class [conc()].
+#' This function coerces a data frame to an object of the class [`conc`].
 #'
 #' @param x A data frame.
 #' @param left The name of the column in `x` that contains the left co-text
@@ -196,7 +196,7 @@ conc <-    function(x,
 #'   to have the name `"right"`.
 #' @param keep_original Boolean value. If the values of
 #'   `left`, `match` or `right` are not `NA`, should
-#'   the original names of those columns be kept in the [conc()] object.
+#'   the original names of those columns be kept in the [`conc`] object.
 #' @param ... Additional arguments.
 #'
 #' @inherit conc return
@@ -403,7 +403,7 @@ as_tibble.conc <- function(x, ...) {
 #' 
 #' This function prints a concordance in KWIC format.
 #' 
-#' @param x An object of class [conc()].
+#' @param x An object of class [`conc`].
 #' @param min_c_left,max_c_left Minimum and maximum size, expressed in number of
 #'   characters, of the left co-text in the KWIC display.
 #' @param min_c_match,max_c_match Minimum and maximum size, expressed in number of
@@ -595,7 +595,7 @@ print_kwic <- function(x,
 #'   `"left"`, `"match"` and `"right"`, which are never converted.
 #' @param ... Additional arguments, not implemented.
 #'
-#' @return Object of class [conc()].
+#' @return Object of class [`conc`].
 #' @seealso [import_conc()] for reading files not generated with [write_conc()].
 #' @export
 #'
@@ -638,9 +638,9 @@ read_conc <- function(file,
 
 #' Write a concordance to file.
 #' 
-#' This function writes an object of class [conc()] to a file.
+#' This function writes an object of class [`conc`] to a file.
 #'
-#' @param x Object of class [conc()].
+#' @param x Object of class [`conc`].
 #' @param file Path to output file.
 #' @param sep Field separator for the columns in the output file.
 #' @param file_encoding Encoding to be used in the output file.
@@ -681,7 +681,7 @@ write_conc <- function(x,
 #'   `"corpuseye"` is supported. 
 #' @param ... Additional arguments (not implemented).
 #'
-#' @return An object of class [conc()].
+#' @return An object of class [`conc`].
 #' @seealso [read_conc()] for files written with [write_conc()].
 #' @export
 import_conc <- function(x,
@@ -700,12 +700,12 @@ import_conc <- function(x,
 
 #' Merge concordances
 #' 
-#' This function merges multiple objects of class [conc()] into one [conc()] object.
+#' This function merges multiple objects of class [`conc`] into one [`conc`] object.
 #'
-#' @param ... Two or more objects of class [conc()].
+#' @param ... Two or more objects of class [`conc`].
 #' @param show_warnings Boolean value. If `FALSE`, warnings are suppressed.
 #'
-#' @return An object of class [conc()].
+#' @return An object of class [`conc`].
 #' @export
 #'
 #' @examples
@@ -735,7 +735,7 @@ merge_conc <- function(..., show_warnings = TRUE) {
 #' @param x Filename.
 #' @param ... Additional arguments (not implemented).
 #'
-#' @return Object of class [conc()].
+#' @return Object of class [`conc`].
 #' @noRd
 import_conc_corpuseye <- function(x, ...) {
   if (! is.character(x)) {

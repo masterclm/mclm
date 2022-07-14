@@ -7,15 +7,15 @@
 merge_conc(..., show_warnings = TRUE)
 }
 \arguments{
-\item{...}{Two or more objects of class \code{\link[=conc]{conc()}}.}
+\item{...}{Two or more objects of class \code{\link{conc}}.}
 
 \item{show_warnings}{Boolean value. If \code{FALSE}, warnings are suppressed.}
 }
 \value{
-An object of class \code{\link[=conc]{conc()}}.
+An object of class \code{\link{conc}}.
 }
 \description{
-This function merges multiple objects of class \code{\link[=conc]{conc()}} into one \code{\link[=conc]{conc()}} object.
+This function merges multiple objects of class \code{\link{conc}} into one \code{\link{conc}} object.
 }
 \examples{
 (cd_1 <- conc('A first very small corpus.', '\\\\w+', as_text = TRUE))

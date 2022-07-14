@@ -2,7 +2,7 @@
 # REVIEW document class itself here?
 #' Build a 'types' object
 #' 
-#' This function builds an object of the class [types()].
+#' This function builds an object of the class [`types`].
 #'
 #' @inheritParams freqlist
 #' @inherit freqlist details
@@ -81,7 +81,7 @@ types <- function(x,
 #' Coerce object to a vector of types
 #' 
 #' This function coerces an object, such as a character vector, to an object of
-#' class [types()].
+#' class [`types`].
 #'
 #' @param x Object to coerce
 #' @param remove_duplicates Length one boolean vector that determines whether or not
@@ -709,13 +709,13 @@ plot.summary.types <- function(x, ...) {
 
 #' Merge 'types' objects
 #' 
-#' These methods merge two or more objects of class [types()].
+#' These methods merge two or more objects of class [`types`].
 #'   
-#' @param x,y An object of class [types()]. 
-#' @param ... Either objects of the class [types()] or lists containing such objects.
+#' @param x,y An object of class [`types`]. 
+#' @param ... Either objects of the class [`types`] or lists containing such objects.
 #' @param sort Boolean value that indicates whether the result should be sorted.
 #'
-#' @return An object of the class [types()].
+#' @return An object of the class [`types`].
 #' @name types_merge
 #'
 #' @examples
@@ -776,7 +776,7 @@ types_merge_all <- function(..., sort = FALSE) {
 
 #' Read a vector of types from a text file
 #' 
-#' This function read an object of the class [types()] from a text file. By default,
+#' This function read an object of the class [`types`] from a text file. By default,
 #' the text file is assumed to contain one type on each line.
 #'
 #' @param file Name of the input file.
@@ -792,7 +792,7 @@ types_merge_all <- function(..., sort = FALSE) {
 #' @inheritParams as_types
 #' @param ... Additional arguments (not implemented).
 #'
-#' @return Object of class [types()].
+#' @return Object of class [`types`].
 #' @seealso [write_types()]
 #' @export
 #'
@@ -831,11 +831,11 @@ read_types <- function(file,
 
 #' Write a vector of types to a text file
 #' 
-#' This function writes an object of the class [types()] to a text file. Each type
+#' This function writes an object of the class [`types`] to a text file. Each type
 #' is written to a separate line. The file encoding that is used is
 #' `"UTF-8"`.
 #'
-#' @param x Object of class [types()].
+#' @param x Object of class [`types`].
 #' @param file Name of the output file
 #' @param make_config_file Boolean value. Whether or not, next to the actual
 #'   types file, a second output file should be created containing a brief
@@ -871,10 +871,10 @@ write_types <- function(x,
 
 #' Merge two 'types' objects
 #'
-#' @param x,y An object of class [types()]
+#' @param x,y An object of class [`types`]
 #' @param sort Whether or not to sort the result.
 #'
-#' @return An object of class [types()]
+#' @return An object of class [`types`]
 #' @noRd
 types_merge_two <- function(x, y, sort = FALSE) {
   as_types(dplyr::union(x, y),
@@ -884,10 +884,10 @@ types_merge_two <- function(x, y, sort = FALSE) {
 
 #' Subset types
 #'
-#' @param x Object of class [types()].
+#' @param x Object of class [`types`].
 #' @param sel Numeric vector with positions or boolean vector.
 #'
-#' @return Filtered object of class [types()]
+#' @return Filtered object of class [`types`]
 #' @noRd
 subset_types <- function(x, sel) {
   result <- as.character(x)[sel]

@@ -30,7 +30,7 @@ drop_types(x, types, ...)
 \arguments{
 \item{x}{An object of any of the classes for which the method is implemented.}
 
-\item{types}{Either an object of the class \code{types} (see \code{\link[=types]{types()}} or \code{\link[=as_types]{as_types()}})
+\item{types}{Either an object of the class \code{\link{types}}
 or a character vector.}
 
 \item{invert}{Boolean vector of length one, which indicates whether the matches

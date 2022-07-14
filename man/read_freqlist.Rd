@@ -16,10 +16,10 @@ read_freqlist(file, sep = "\\t", file_encoding = "UTF-8", ...)
 \item{...}{Additional arguments (not implemented).}
 }
 \value{
-Object of class \code{\link[=freqlist]{freqlist()}}.
+Object of class \code{\link{freqlist}}.
 }
 \description{
-This function reads an object of the class \code{\link[=freqlist]{freqlist()}} from a csv file. The csv
+This function reads an object of the class \code{\link{freqlist}} from a csv file. The csv
 file is assumed to contain two columns, the first being the type and the
 second being the frequency of that type. The file is also assumed to
 have a header line with the names of both columns.

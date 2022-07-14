@@ -18,7 +18,7 @@ print_kwic(
 )
 }
 \arguments{
-\item{x}{An object of class \code{\link[=conc]{conc()}}.}
+\item{x}{An object of class \code{\link{conc}}.}
 
 \item{min_c_left, max_c_left}{Minimum and maximum size, expressed in number of
 characters, of the left co-text in the KWIC display.}

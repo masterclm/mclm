@@ -277,7 +277,7 @@ freqlist <- function(x,
 
 #' Coerce table to a frequency list
 #' 
-#' This function coerces an object of class [base::table()] to an object of class [freqlist()].
+#' This function coerces an object of class [`table`] to an object of class [`freqlist`].
 #'
 #' @param x Object of class `table` or named numeric vector that will be
 #'   interpreted as such.
@@ -867,7 +867,7 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
 
 #' Sort a frequency list
 #' 
-#' This method sorts an object of class [freqlist()].
+#' This method sorts an object of class [`freqlist`].
 #' 
 #' Because of the way ranks are calculated for ties (with lower ranks being
 #' assigned to ties earlier in the list), sorting the list may affect the
@@ -875,7 +875,7 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
 #' More specifically, ranks among ties may differ depending on the criterion
 #' that is used to sort the frequency list.
 #'
-#' @param x Object of class [freqlist()].
+#' @param x Object of class [`freqlist`].
 #' @param decreasing Boolean value. If `TRUE` items are sorted from large
 #'   to small; if `FALSE`, from small to large.
 #'   
@@ -916,7 +916,7 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
 #'    `NA` are removed from the sorted frequency list.
 #' @param ... Additional arguments.
 #'
-#' @return Object of class [freqlist()].
+#' @return Object of class [`freqlist`].
 #' @export
 #' @exportS3Method sort freqlist
 #'
@@ -1228,18 +1228,18 @@ plot.summary.freqlist <- function(x, ...) {
 #' Retrieve frequencies from 'freqlist' object
 #' 
 #' `type_freq` and `type_freqs` retrieve the frequency of all or
-#' some of the items of a [freqlist()] object.
+#' some of the items of a [`freqlist`] object.
 #'
-#' @param x Object of class [freqlist()].
+#' @param x Object of class [`freqlist`].
 #' @param types `NULL` or a character vector or an object of the class
-#'   [types()].
+#'   [`types`].
 #'   
 #'   If the argument `types` is `NULL`, then the frequencies of all
 #'   the items in `x` are returned, in the order in which
 #'   these items appear in `x`.
 #'   
 #'   If the argument `types` is a character vector or an object of the
-#'   class [types()], then only the frequencies (in `x`)
+#'   class [`types`], then only the frequencies (in `x`)
 #'   of the items in `types` are given,
 #'   in the order in which these items appear in `types`.
 #'   For all items in `types` that do not occur in `x`,
@@ -1297,11 +1297,11 @@ type_freq <- function(x, types = NULL, with_names = FALSE, ...) {
 #' The functions merge two or more frequency lists, adding up the frequencies.
 #' In the current implementation, original ranks are lost when merging.
 #'
-#' @param x,y An object of class [freqlist()].
-#' @param ... Various objects of class [freqlist()] or a list of
-#'   objects of class [freqlist()]. 
+#' @param x,y An object of class [`freqlist`].
+#' @param ... Various objects of class [`freqlist`] or a list of
+#'   objects of class [`freqlist`]. 
 #'
-#' @return An object of class [freqlist()].
+#' @return An object of class [`freqlist`].
 #' @name freqlist_merge
 #'
 #' @examples
@@ -1361,9 +1361,9 @@ freqlist_merge_all <- function(...) {
 #' in the second frequency lists from the frequencies found in the first list.
 #'
 #'
-#' @param x,y Objects of class [freqlist()].
+#' @param x,y Objects of class [`freqlist`].
 #'
-#' @return An object of class [freqlist()].
+#' @return An object of class [`freqlist`].
 #' @export
 #'
 #' @examples
@@ -1389,7 +1389,7 @@ freqlist_diff <- function(x, y) {
 
 #' Read a frequency list from a csv file
 #' 
-#' This function reads an object of the class [freqlist()] from a csv file. The csv
+#' This function reads an object of the class [`freqlist`] from a csv file. The csv
 #' file is assumed to contain two columns, the first being the type and the
 #' second being the frequency of that type. The file is also assumed to
 #' have a header line with the names of both columns.
@@ -1412,7 +1412,7 @@ freqlist_diff <- function(x, y) {
 #' @param file_encoding File encoding used in the input file.
 #' @param ... Additional arguments (not implemented).
 #'
-#' @return Object of class [freqlist()].
+#' @return Object of class [`freqlist`].
 #' @export
 #' @seealso [write_freqlist()]
 #'
@@ -1450,7 +1450,7 @@ read_freqlist <- function(file,
 
 #' Write a frequency list to a csv file
 #' 
-#' This function writes an object of the class [freqlist()] to a csv file. The
+#' This function writes an object of the class [`freqlist`] to a csv file. The
 #' resulting csv file contains two columns, the first being the type and the
 #' second being the frequency of that type. The file also contains
 #' a header line with the names of both columns. 
@@ -1461,7 +1461,7 @@ read_freqlist <- function(file,
 #' `".yaml"`. The frequency list attributes `"tot_n_tokens"`
 #' and `"tot_n_types"` are stored to that configuration file. 
 #'
-#' @param x Object of class [freqlist()].
+#' @param x Object of class [`freqlist`].
 #' @param file Character vector of length 1. Path to the output file.
 #' @param sep Character vector of length 1. Column separator.
 #' @param make_config_file Boolean value. Whether or not a configuration file
@@ -1505,7 +1505,7 @@ write_freqlist <- function(x,
 #' @param x Corpus text.
 #' @inheritParams tokenize
 #'
-#' @return Object of class [freqlist()].
+#' @return Object of class [`freqlist`].
 #' @noRd
 freqlist_char <- function(x,
                           re_drop_line = NULL,
@@ -1555,7 +1555,7 @@ freqlist_char <- function(x,
 #' @param x Filenames of the corpus files
 #' @inheritParams tokenize
 #'
-#' @return Object of class [freqlist()].
+#' @return Object of class [`freqlist`].
 #' @noRd
 freqlist_corp <- function(x,
                           re_drop_line = NULL,
@@ -1644,10 +1644,10 @@ freqlist_corp <- function(x,
 
 #' Subset freqlist
 #'
-#' @param x Object of class [freqlist()].
+#' @param x Object of class [`freqlist`].
 #' @param sel Numeric vector with positions or boolean vector.
 #'
-#' @return Filtered object of class [freqlist()]
+#' @return Filtered object of class [`freqlist`]
 #' @noRd
 subset_freqlist <- function(x, sel) {
   result <- as.numeric(x)[sel]
@@ -1669,9 +1669,9 @@ subset_freqlist <- function(x, sel) {
 #' In the current implementation, orig_ranks are lost when merging, because
 #' they are no longer necessarily unique.
 #'
-#' @param x,y Object of class [freqlist()] 
+#' @param x,y Object of class [`freqlist`] 
 #'
-#' @return Object of class [freqlist()]
+#' @return Object of class [`freqlist`]
 #' @noRd
 freqlist_merge_two <- function(x, y) {
   names <- dplyr::union(names(x), names(y))
@@ -1691,9 +1691,9 @@ freqlist_merge_two <- function(x, y) {
 
 #' Reverse order of 'freqlist'
 #'
-#' @param x Object of class [freqlist()].
+#' @param x Object of class [`freqlist`].
 #'
-#' @return Object of class [freqlist()].
+#' @return Object of class [`freqlist`].
 #' @noRd
 rev.freqlist <- function(x) {
   if (! "freqlist" %in% class(x)) {

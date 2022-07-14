@@ -17,9 +17,9 @@
 
 #' Constructor of class 'cooc_info'
 #'
-#' @param target_freqlist,ref_freqlist An object of class [freqlist()].
+#' @param target_freqlist,ref_freqlist An object of class [`freqlist`].
 #'
-#' @return A named list of two [freqlist()] objects, "target_freqlist"
+#' @return A named list of two [`freqlist`] objects, "target_freqlist"
 #'   and "ref_freqlist", of class `cooc_info`.
 #' @noRd
 cooc_info <- function(target_freqlist,
@@ -433,7 +433,7 @@ text_cooc <- function(x,
 #' @details 
 #' ## Input and output
 #' [assoc_scores()] takes as its arguments a target frequency list and a reference
-#' frequency lists (either as two [freqlist()] objects or as a
+#' frequency lists (either as two [`freqlist`] objects or as a
 #' [`cooc_info`][create_cooc()] object) and returns a number of popular measures
 #' expressing, for (almost) every item in either one of these lists, the extent
 #' to which the item is attracted to the target context, when compared to the
@@ -481,19 +481,19 @@ text_cooc <- function(x,
 #' zero values for `a`, `b`, `c`, and `d`. The argument `small_pos`
 #' determines which small positive value is added in such cases. Its default value is `0.00001`.
 #'
-#' @param x Either an object of class [freqlist()]
+#' @param x Either an object of class [`freqlist`]
 #'   or an object of class [`cooc_info`][create_cooc()].
 #'   
-#'   If `x` is a [freqlist()], it is interpreted as the target frequency
+#'   If `x` is a [`freqlist`], it is interpreted as the target frequency
 #'   list (i.e. the list with the frequency of items in the target context) and
-#'   `y` must be a [freqlist()] with the frequency of items in the
+#'   `y` must be a [`freqlist`] with the frequency of items in the
 #'   reference context.
 #'   
 #'   If `x` is an object of class [`cooc_info`][create_cooc()] instead, it is interpreted
 #'   as containting target frequency information, reference frequency information
 #'   and corpus size information.
-#' @param y An object of class [freqlist()] with the frequencies of the
-#'   reference context if `x` is also a [freqlist()]. If `x` is an
+#' @param y An object of class [`freqlist`] with the frequencies of the
+#'   reference context if `x` is also a [`freqlist`]. If `x` is an
 #'   object of class [`cooc_info`][create_cooc()], this argument is ignored.
 #' @param a Numeric vector expressing how many times some tested item
 #'   occurs in the target context.
@@ -764,7 +764,7 @@ text_cooc <- function(x,
 #'   The final two groups of measures take a different shape. The
 #'   `_as_chisq1` columns compute `qchisq(1 - p, 1)`, with `p` being the p-values
 #'   they are transforming, i.e. the `p` right quantile in a \eqn{\chi^2}
-#'   distribution with one degree of freedom.
+#'   distribution with one degree of freedom (see [p_to_chisq1()]).
 #'   
 #'   - `t`, `p_t_1`, `t_1_as_chisq1`, `p_t_2` and `t_2_as_chisq1`:
 #'   The t-test statistic, used for a t-test for the proportion \eqn{\frac{a}{N}}
@@ -1728,7 +1728,8 @@ zero_plus <- function(x, small_pos = 0.00001) {
 #'
 #' @return The `p` *right quantile* in the \eqn{\chi^2} distribution with
 #'   one degree of freedom.
-#' @noRd
+#' @export
+#' @seealso [chisq1_to_p()]
 p_to_chisq1 <- function(p) {
   # returns the 'p right quantile' in the chi-square distribution with one df
   return(qchisq(1 - p, 1))
@@ -1744,7 +1745,8 @@ p_to_chisq1 <- function(p) {
 #'
 #' @return The proportion *p* of the chi-squared distribution with one
 #' degree of freedom that sits to the right of the value `x`.
-#' @noRd
+#' @export
+#' @seealso [p_to_chisq1()]
 chisq1_to_p <- function(x) {
   1 - pchisq(x, 1)
 }
@@ -1753,15 +1755,15 @@ chisq1_to_p <- function(x) {
 
 #' Write association scores to file
 #' 
-#' This function writes an object of class [assoc_scores()] to a file.
+#' This function writes an object of class [`assoc_scores`] to a file.
 #'
-#' @param x An object of class [assoc_scores()].
+#' @param x An object of class [`assoc_scores`].
 #' @param file Name of the output file.
 #' @param sep Field separator for the output file.
 #' @param file_encoding Encoding for the output file.
 #'
 #' @return Invisibly, `x`.
-#' @seealso [write_assoc()]
+#' @seealso [read_assoc()]
 #' @export
 #'
 #' @examples
@@ -1808,7 +1810,7 @@ write_assoc <- function(x,
 #' @param file_encoding Encoding of the input file.
 #' @param ... Additional arguments.
 #'
-#' @return An object of class [assoc_scores()].
+#' @return An object of class [`assoc_scores`].
 #' @export
 #' @seealso [write_assoc()]
 #'

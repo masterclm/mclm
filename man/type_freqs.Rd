@@ -10,17 +10,17 @@ type_freqs(x, types = NULL, with_names = FALSE, ...)
 type_freq(x, types = NULL, with_names = FALSE, ...)
 }
 \arguments{
-\item{x}{Object of class \code{\link[=freqlist]{freqlist()}}.}
+\item{x}{Object of class \code{\link{freqlist}}.}
 
 \item{types}{\code{NULL} or a character vector or an object of the class
-\code{\link[=types]{types()}}.
+\code{\link{types}}.
 
 If the argument \code{types} is \code{NULL}, then the frequencies of all
 the items in \code{x} are returned, in the order in which
 these items appear in \code{x}.
 
 If the argument \code{types} is a character vector or an object of the
-class \code{\link[=types]{types()}}, then only the frequencies (in \code{x})
+class \code{\link{types}}, then only the frequencies (in \code{x})
 of the items in \code{types} are given,
 in the order in which these items appear in \code{types}.
 For all items in \code{types} that do not occur in \code{x},
@@ -37,7 +37,7 @@ Numeric vector representing the frequencies of the items.
 }
 \description{
 \code{type_freq} and \code{type_freqs} retrieve the frequency of all or
-some of the items of a \code{\link[=freqlist]{freqlist()}} object.
+some of the items of a \code{\link{freqlist}} object.
 }
 \examples{
 (flist <- freqlist("The man and the mouse.", as_text = TRUE))

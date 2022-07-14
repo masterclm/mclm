@@ -23,7 +23,7 @@ to have the name \code{"right"}.}
 
 \item{keep_original}{Boolean value. If the values of
 \code{left}, \code{match} or \code{right} are not \code{NA}, should
-the original names of those columns be kept in the \code{\link[=conc]{conc()}} object.}
+the original names of those columns be kept in the \code{\link{conc}} object.}
 
 \item{...}{Additional arguments.}
 }
@@ -56,7 +56,7 @@ read with \code{\link[=read_conc]{read_conc()}}. It is also possible to import c
 by means other than \code{\link[=write_conc]{write_conc()}} with \code{\link[=import_conc]{import_conc()}}.
 }
 \description{
-This function coerces a data frame to an object of the class \code{\link[=conc]{conc()}}.
+This function coerces a data frame to an object of the class \code{\link{conc}}.
 }
 \examples{
 (conc_data <- conc('A very small corpus.', '\\\\w+', as_text = TRUE))

@@ -32,10 +32,10 @@ is part of a family of subsetting methods: see \code{\link[=keep_pos]{keep_pos()
 \code{\link[=keep_types]{keep_types()}} and \code{\link[=keep_bool]{keep_bool()}}. In this case, the argument \code{i} is the selection
 criterion and, depending on its class, the method behaves different:
 \itemize{
-\item providing a \code{\link[=re]{re()}} object is equivalent to calling \code{\link[=keep_re]{keep_re()}},
+\item providing a \code{\link{re}} object is equivalent to calling \code{\link[=keep_re]{keep_re()}},
 \item providing a numeric vector is equivalent to calling \code{\link[=keep_pos]{keep_pos()}},
 \item providing a logical vector is equivalent to calling \code{\link[=keep_bool]{keep_bool()}},
-\item providing a \code{\link[=types]{types()}} object or a character vector is equivalent to calling \code{\link[=keep_types]{keep_types()}}.
+\item providing a \code{\link{types}} object or a character vector is equivalent to calling \code{\link[=keep_types]{keep_types()}}.
 }
 
 When the notation \code{x[i, ...]} is used, it is also possible to set the \code{invert}

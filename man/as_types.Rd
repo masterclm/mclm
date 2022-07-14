@@ -36,7 +36,7 @@ written to file with \code{\link[=write_types]{write_types()}} and read from fil
 }
 \description{
 This function coerces an object, such as a character vector, to an object of
-class \code{\link[=types]{types()}}.
+class \code{\link{types}}.
 }
 \examples{
 

@@ -182,7 +182,7 @@ An object of class \code{types} can be merged with another by means of \code{\li
 written to file with \code{\link[=write_types]{write_types()}} and read from file with \code{\link[=write_types]{write_types()}}.
 }
 \description{
-This function builds an object of the class \code{\link[=types]{types()}}.
+This function builds an object of the class \code{\link{types}}.
 }
 \details{
 The actual token identification is either based on the \code{re_token_splitter}

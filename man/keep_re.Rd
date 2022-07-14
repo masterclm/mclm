@@ -30,15 +30,15 @@ drop_re(x, pattern, perl = TRUE, ...)
 \arguments{
 \item{x}{An object of any of the classes for which the method is implemented.}
 
-\item{pattern}{Either an object of the class \code{\link[=re]{re()}}
+\item{pattern}{Either an object of the class \code{\link{re}}
 or a character vector of length one containing a regular expression.}
 
 \item{perl}{Boolean vector of length one, which indicates whether or not
 \code{pattern} is treated as a PCRE flavour regular expression.
 The \code{perl} argument is only used if \code{pattern} is a regular character vector.
-If \code{pattern} is an object of the class \code{\link[=re]{re()}}, then the
+If \code{pattern} is an object of the class \code{\link{re}}, then the
 \code{perl} argument is ignored, and the relevant information in the
-\code{\link[=re]{re()}} object \code{pattern}, viz. the value of \code{pattern$perl}, is
+\code{\link{re}} object \code{pattern}, viz. the value of \code{pattern$perl}, is
 used instead.}
 
 \item{invert}{Boolean vector of length one, which indicates whether the matches

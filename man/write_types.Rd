@@ -7,7 +7,7 @@
 write_types(x, file, make_config_file = TRUE, ...)
 }
 \arguments{
-\item{x}{Object of class \code{\link[=types]{types()}}.}
+\item{x}{Object of class \code{\link{types}}.}
 
 \item{file}{Name of the output file}
 
@@ -21,7 +21,7 @@ description of the format of the types file.}
 Invisibly, \code{x}.
 }
 \description{
-This function writes an object of the class \code{\link[=types]{types()}} to a text file. Each type
+This function writes an object of the class \code{\link{types}} to a text file. Each type
 is written to a separate line. The file encoding that is used is
 \code{"UTF-8"}.
 }

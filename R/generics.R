@@ -110,14 +110,14 @@ drop_pos.default <- function(x,
 #' @inherit keep_pos details
 #'
 #' @inheritParams keep_pos
-#' @param pattern Either an object of the class [re()]
+#' @param pattern Either an object of the class [`re`]
 #'   or a character vector of length one containing a regular expression.
 #' @param perl Boolean vector of length one, which indicates whether or not
 #'   `pattern` is treated as a PCRE flavour regular expression.
 #'   The `perl` argument is only used if `pattern` is a regular character vector.
-#'   If `pattern` is an object of the class [re()], then the
+#'   If `pattern` is an object of the class [`re`], then the
 #'   `perl` argument is ignored, and the relevant information in the
-#'   [re()] object `pattern`, viz. the value of `pattern$perl`, is
+#'   [`re`] object `pattern`, viz. the value of `pattern$perl`, is
 #'   used instead.
 #'   
 #' @return Object of the same class as `x` with the selected elements only.
@@ -179,7 +179,7 @@ drop_re.default <- function(x,
 #' @inherit keep_pos details
 #'
 #' @inheritParams keep_pos
-#' @param types Either an object of the class `types` (see [types()] or [as_types()])
+#' @param types Either an object of the class [`types`]
 #'   or a character vector.
 #'   
 #' @return Object of the same class as `x` with the selected elements only.
@@ -303,10 +303,10 @@ drop_bool.default <- function(x,
 #' [keep_types()] and [keep_bool()]. In this case, the argument `i` is the selection
 #' criterion and, depending on its class, the method behaves different:
 #' 
-#' - providing a [re()] object is equivalent to calling [keep_re()],
+#' - providing a [`re`] object is equivalent to calling [keep_re()],
 #' - providing a numeric vector is equivalent to calling [keep_pos()],
 #' - providing a logical vector is equivalent to calling [keep_bool()],
-#' - providing a [types()] object or a character vector is equivalent to calling [keep_types()].
+#' - providing a [`types`] object or a character vector is equivalent to calling [keep_types()].
 #' 
 #' When the notation `x[i, ...]` is used, it is also possible to set the `invert`
 #' argument to `TRUE` (which then is one of the additional arguments in `...`).
@@ -577,20 +577,20 @@ orig_ranks.default <- function(x, ...) NULL
 #' identical frequency are further ranked by alphabetic order.
 #' 
 #' The `r packageName()` method [ranks()] is not
-#' to be confused with the base R function [base::rank()]. There are two
+#' to be confused with [base::rank()]. There are two
 #' important differences.
 #' 
-#' First, the base R function [base::rank()] always ranks items from low values to
+#' First,[base::rank()] always ranks items from low values to
 #' high values and [ranks()] ranks from high
 #' frequency items to low frequency items.
 #' 
-#' Second, the base R function [base::rank()] allows the user to choose among
+#' Second, [base::rank()] allows the user to choose among
 #' a number of different ways to handle ties.
 #' In contrast, [ranks()] always handles ties
 #' in the same way. More specifically, items with identical frequencies
 #' are always ranked in alphabetical order.
 #' 
-#' In other words, the base R function [base::rank()] is a flexible tool that
+#' In other words, [base::rank()] is a flexible tool that
 #' supports a number of different ranking methods that are commonly used in
 #' statistics. In contrast, [ranks()] is a
 #' rigid tool that supports only one type of ranking, which is a type of
@@ -653,10 +653,10 @@ as_numeric.default <- function(x, ...) as.numeric(x, ...)
 #' @param sort_order Order in which the items are to be printed. In general, possible values
 #'   are `"alpha"` (meaning that the items are to be sorted alphabetically),
 #'   and `"none"` (meaning that the items are not to be sorted).
-#'   If `x` is an object of class [`assoc_scores`][assoc_scores()], a column name
+#'   If `x` is an object of class [`assoc_scores`], a column name
 #'   or vector of column names may be provided instead.
-#' @param extra Extra settings, as an [base::environment]. Arguments defined here
-#'   take precendence over other arguments. For instance, if `extra$from_col` is
+#' @param extra Extra settings, as an [environment]. Arguments defined here
+#'   take precedence over other arguments. For instance, if `extra$from_col` is
 #'   not `NULL`, it will overrule the `from_col` argument.
 #' @param ... Additional printing arguments.
 #' @param freeze_cols Names of columns that should not be affected by the argument

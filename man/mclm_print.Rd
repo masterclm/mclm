@@ -62,11 +62,11 @@ to \code{sort_order}.}
 \item{sort_order}{Order in which the items are to be printed. In general, possible values
 are \code{"alpha"} (meaning that the items are to be sorted alphabetically),
 and \code{"none"} (meaning that the items are not to be sorted).
-If \code{x} is an object of class \code{\link[=assoc_scores]{assoc_scores}}, a column name
+If \code{x} is an object of class \code{\link{assoc_scores}}, a column name
 or vector of column names may be provided instead.}
 
-\item{extra}{Extra settings, as an \link[base:environment]{base::environment}. Arguments defined here
-take precendence over other arguments. For instance, if \code{extra$from_col} is
+\item{extra}{Extra settings, as an \link{environment}. Arguments defined here
+take precedence over other arguments. For instance, if \code{extra$from_col} is
 not \code{NULL}, it will overrule the \code{from_col} argument.}
 
 \item{...}{Additional printing arguments.}

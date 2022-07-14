@@ -13,7 +13,7 @@
 )
 }
 \arguments{
-\item{x}{Object of class \code{\link[=freqlist]{freqlist()}}.}
+\item{x}{Object of class \code{\link{freqlist}}.}
 
 \item{decreasing}{Boolean value. If \code{TRUE} items are sorted from large
 to small; if \code{FALSE}, from small to large.
@@ -59,10 +59,10 @@ If \code{na_last} is \code{NA}, then items with a sorting criterion of
 \item{...}{Additional arguments.}
 }
 \value{
-Object of class \code{\link[=freqlist]{freqlist()}}.
+Object of class \code{\link{freqlist}}.
 }
 \description{
-This method sorts an object of class \code{\link[=freqlist]{freqlist()}}.
+This method sorts an object of class \code{\link{freqlist}}.
 }
 \details{
 Because of the way ranks are calculated for ties (with lower ranks being
