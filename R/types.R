@@ -120,23 +120,9 @@ as_types <- function(x,
 
 # S3 methods from mclm =========================================================
 
-#' Give number of types in a 'types' object
-#' 
-#' When applied to an object of class \code{types}, \code{n_types} returns the number of types.
-#'
-#' @param x An object of the class \code{types}.
-#' @param ... Additional arguments
-#'
-#' @return The number of types in \code{x}.
-#' 
+#' @rdname n_types
 #' @exportS3Method n_types types
 #' @export
-#'
-#' @examples
-#' (tks <- tokenize("The old man and the sea."))
-#' n_tokens(tks)
-#' (tps <- types(tks))
-#' n_types(tps)
 n_types.types <- function(x, ...) {
   if (! "types" %in% class(x)) {
     stop("argument 'x' must be of the class 'types'")
@@ -149,26 +135,7 @@ n_types.types <- function(x, ...) {
   with_duplicates
 }  
 
-#' Interactively navigate through 'types' object
-#' 
-#' This method only works in an interactive R session to open
-#'   'exploration mode', in which the user can navigate through the \code{types}
-#'   object \code{x} by means of brief commands. In 'exploration mode' the user can
-#'   ask of a list of available commands by keying in \code{?}, followed by ENTER.
-#'   The user can quiet 'exploration mode' by keying in \code{q}, followed by ENTER.
-#'
-#' @param x An object of class \code{types}.
-#' @param n Maximum number of items in the \code{types} object to be shown at once.
-#' @param from First item in the types object that is shown at the beginning of
-#'   the explroation session.
-#' @param perl Boolean. Whether or not regular expressions used in the exploration
-#'   session use the PERL flavor of regular expression.
-#' @param use_clear Boolean value. If \code{use_clear} is \code{TRUE},
-#'   and if moreover the feature is supported by the R environment,
-#'   the console will be cleared in between all interactive steps in the exploration session.
-#' @param ... Additional arguments (not implemented)
-#'
-#' @return Invisibly, \code{x}
+#' @rdname explore
 #' @exportS3Method explore types
 #' @export
 explore.types <- function(x,

@@ -341,27 +341,7 @@ as_freqlist <- function(x, tot_n_tokens = NULL, sort_by_ranks = TRUE) {
 
 # S3 methods from mclm =========================================================
 
-#' Count types or tokens in a 'freqlist' Object
-#' 
-#' \code{n_tokens} returns the number of tokens in \code{x}.
-#' \code{n_types} returns the number of tokens in \code{x}.
-#'
-#' @param x Object of class \code{freqlist}.
-#' @param ... Additional arguments.
-#'
-#' @return A number.
-#' @name n_freqlist
-#'
-#' @examples
-#' (tks <- tokenize("The old man and the sea."))
-#' n_tokens(tks)
-#' 
-#' (flist <- freqlist(tks))
-#' n_tokens(flist)
-#' n_types(flist)
-NULL
-
-#' @describeIn n_freqlist Count number of tokens
+#' @rdname n_tokens
 #' @exportS3Method n_tokens freqlist
 #' @export
 n_tokens.freqlist <- function(x, ...) {
@@ -371,7 +351,7 @@ n_tokens.freqlist <- function(x, ...) {
   sum(x)
 }  
 
-#' @describeIn n_freqlist Count number of types
+#' @rdname n_types
 #' @exportS3Method n_types freqlist
 #' @export
 n_types.freqlist <- function(x, ...) {
@@ -381,23 +361,9 @@ n_types.freqlist <- function(x, ...) {
   length(x)
 }
 
-#' Give names of types represented in a Frequency List
-#' 
-#' This method returns the names of the types represented in \code{x}.
-#'
-#' @param x Object of class \code{x}.
-#' @param ... Additional arguments.
-#'
-#' @return Character vector.
+#' @rdname type_names
 #' @exportS3Method type_names freqlist
 #' @export
-#'
-#' @examples
-#' (flist <- freqlist("The man and the mouse.", as_text = TRUE))
-#' 
-#' n_types(flist)
-#' type_names(flist)
-#' type_freqs(flist)
 type_names.freqlist <- function(x, ...) {
   if (! "freqlist" %in% class(x)) {
     stop("argument 'x' must be of the class 'freqlist'")
@@ -405,27 +371,7 @@ type_names.freqlist <- function(x, ...) {
   names(x)
 }
 
-#' Interactively navigate through frequency list
-#' 
-#' This method only works in an interactive R session to open
-#' 'exploration mode', in which the user can navigate through the \code{freqlist}
-#' object \code{x} by means of brief commands. In 'exploration mode' the user can
-#' ask of a list of available commands by keying in \code{?}, followed by ENTER.
-#' The user can quiet 'exploration mode' by keying in \code{q}, followed by ENTER.
-#'
-#' @param x Object of class \code{freqlist}.
-#' @param n Maximum number of items in the frequency list to be shown at once.
-#' @param from First item in the frequency list that is shown at the beginning
-#'   of the interactive session.
-#' @param perl Boolean value. Whether regular expressions used in the
-#'   exploration session use the PERL flavor of regular expression.
-#' @param use_clear Boolean value. If \code{use_clear} is \code{TRUE},
-#'   and if moreover the feature is supported by the R environment,
-#'   the console will be cleared in between all interactive steps
-#'   in the exploration session.
-#' @param ... Additional arguments.
-#'
-#' @return Invisibly, \code{x}.
+#' @rdname explore
 #' @exportS3Method explore freqlist
 #' @export
 explore.freqlist <- function(x,
@@ -533,38 +479,7 @@ explore.freqlist <- function(x,
 
 ## Setters and getters ---------------------------------------------------------
 
-#' Retrieve or set the total number of tokens
-#' 
-#' These methods retrieve or set, for a \code{freqlist}, the total number of tokens in
-#' the corpus on which the frequency counts are based.
-#' This total number of tokens may be higher than the sum of all frequency
-#' counts in \code{x}, for instance, if \code{x} contains frequency counts
-#' for a selection of items only, and not for all tokens in the corpus.
-#'
-#' @param x Object of class \code{freqlist}.
-#' @param value Numerical value.
-#'
-#' @return Numerical value.
-#' @name tot_n_tokens.freqlist
-#' @family freqlist setters and getters
-#' 
-#' @examples
-#' x <- freqlist("The man and the mouse.",
-#'               re_token_splitter = "(?xi) [:\\s.;,?!\"]+",
-#'               as_text = TRUE)
-#' x
-#' tot_n_tokens(x)
-#' 
-#' y <- keep_types(x, c("man", "and"))
-#' tot_n_tokens(y)
-#' y
-#' 
-#' tot_n_tokens(y) <- sum(y)
-#' y
-#' tot_n_tokens(y)
-NULL
-
-#' @describeIn tot_n_tokens.freqlist Set total number of tokens
+#' @rdname tot_n_tokens
 #' @exportS3Method `tot_n_tokens<-` freqlist
 #' @export
 `tot_n_tokens<-.freqlist` <- function(x, value) {
@@ -580,7 +495,7 @@ NULL
   x
 }
 
-#' @describeIn tot_n_tokens.freqlist Retrieve the total number of tokens
+#' @rdname tot_n_tokens
 #' @exportS3Method tot_n_tokens freqlist
 #' @export
 tot_n_tokens.freqlist <- function(x) {
@@ -588,46 +503,7 @@ tot_n_tokens.freqlist <- function(x) {
   attr(x, 'tot_n_tokens')
 }
 
-#' Retrieve or set original ranks
-#' 
-#' These methods retrieve or set, for a \code{freqlist}, the original ranks for its frequency
-#' counts.
-#' These original ranks are only defined if \code{x} is the result of a selection
-#' procedure (i.e. if \code{x} contains frequency counts for a selection of items
-#' only, and not for all tokens in the corpus).
-#'
-#' @param x Object of class \code{freqlist}.
-#' @param value Currently it can only be \code{NULL}.
-#' @param with_names Boolean. Whether or not the items in the output should
-#'   be given names. If \code{TRUE}, then the names
-#'   of the types in the frequency list are used as names.
-#' @param ... Additional arguments.
-#'
-#' @return Either \code{NULL} or a numeric vector, representing the
-#'   original ranks, with as its names the types to which these ranks apply.
-#' @name orig_ranks.freqlist
-#' @family freqlist setters and getters
-#'
-#' @examples
-#' x <- freqlist("The man and the mouse.",
-#'               as_text = TRUE)
-#' x
-#' orig_ranks(x)
-#' orig_ranks(x, with_names = TRUE)
-#' 
-#' y <- keep_types(x, c("man", "and"))
-#' orig_ranks(y)
-#' y
-#' 
-#' orig_ranks(y) <- NULL
-#' y
-#' orig_ranks(y)
-#' 
-#' tot_n_tokens(y) <- sum(y)
-#' y
-NULL
-
-#' @describeIn orig_ranks.freqlist Set original ranks
+#' @rdname orig_ranks
 #' @exportS3Method `orig_ranks<-` freqlist
 #' @export
 `orig_ranks<-.freqlist` <- function(x, value) {
@@ -637,7 +513,7 @@ NULL
   x
 }
 
-#' @describeIn orig_ranks.freqlist Get original ranks
+#' @rdname orig_ranks
 #' @exportS3Method orig_ranks freqlist
 #' @export
 orig_ranks.freqlist <- function(x, with_names = FALSE, ...) {
@@ -649,59 +525,9 @@ orig_ranks.freqlist <- function(x, with_names = FALSE, ...) {
   result
 }
 
-#' Retrieve the ranks of the items in frequency lists
-#' 
-#' \code{ranks} retrieves from a \code{freqlist} the ranks of its items.
-#' These ranks are integer values running from one up to the number of items
-#' in \code{x}. Each items receives a unique rank.
-#' Items are first ranked by frequency in descending order. Items with
-#' identical frequency are further ranked by alphabetic order.
-#' 
-#' The \code{mclm} method \code{ranks}, applied to frequency lists, is not
-#' to be confused with the base R function \code{\link{rank}}. There are two
-#' important differences.
-#' 
-#' First, the base R function \code{\link{rank}} always ranks items from low values to
-#' high values and the \code{mclm} method \code{ranks} ranks from high
-#' frequency items to low frequency items.
-#' 
-#' Second, the base R function \code{\link{rank}} allows the user to choose among
-#' a number of different ways #' to handle ties.
-#' The \code{mclm} method \code{ranks} on the other hand always handles ties
-#' in the same way. More specifically, items with identical frequencies
-#' are always ranked in alphabetical order.
-#' 
-#' In other words, the base R function \code{\link{rank}} is a flexible tool that
-#' supports a number of different ranking methods that are commonly used in
-#' statistics. The \code{mclm} method \code{ranks} on the other hand is a
-#' rigid tool that supports only one type of ranking, which is a type of
-#' ranking that is atypical from a statistics point of view, but is commonly
-#' used in linguistic frequency lists. Also, it is designed to be unaffected
-#' by the order of the items in the frequency list.
-#'
-#' @param x Object of class \code{freqlist}.
-#' @param with_names Boolean. Whether or not the items in the output should
-#'   be given names. If \code{TRUE}, then the names
-#'   of the types in the frequency list are used as names.
-#' @param ... Additional arguments.
-#'
-#' @return Numeric vector representing the current ranks, with as its names
-#'   the types to which the ranks apply.
+#' @rdname ranks
 #' @exportS3Method ranks freqlist
-#' @family freqlist setters and getters
 #' @export
-#'
-#' @examples
-#' (flist <- freqlist("The man and the mouse.", as_text = TRUE))
-#' 
-#' orig_ranks(flist)
-#' ranks(flist)
-#' ranks(flist, with_names = TRUE)
-#' 
-#' (flist2 <- keep_types(flist, c("man", "and")))
-#' 
-#' orig_ranks(flist2)
-#' ranks(flist2)
 ranks.freqlist <- function(x, with_names = FALSE, ...) {
   if (!"freqlist" %in% class(x)) stop("x must be of class 'freqlist'")
   # ranks are by decreasing frequency first, and by alphabetic order

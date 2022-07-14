@@ -1264,6 +1264,10 @@ assoc_abcd <- function(a, b, c, d,
 }
 
 # S3 methods from mclm ========================================
+
+#' @rdname n_types
+#' @exportS3Method n_types assoc_scores
+#' @export
 n_types.assoc_scores <- function(x, ...) {
   if (! "assoc_scores" %in% class(x)) {
     stop("argument 'x' must be of the class 'assoc_scores'")
@@ -1271,6 +1275,9 @@ n_types.assoc_scores <- function(x, ...) {
   nrow(x)
 }
 
+#' @rdname type_names
+#' @exportS3Method type_names assoc_scores
+#' @export
 type_names.assoc_scores <- function(x, ...) {
   if (! "assoc_scores" %in% class(x)) {
     stop("argument 'x' must be of the class 'assoc_scores'")
@@ -1278,6 +1285,9 @@ type_names.assoc_scores <- function(x, ...) {
   rownames(x)
 }
 
+#' @rdname explore
+#' @exportS3Method explore assoc_scores
+#' @export
 explore.assoc_scores <- function(
     x,
     n = 20,
@@ -1445,6 +1455,8 @@ explore.assoc_scores <- function(
 }
 
 # S3 methods from other packages ==============================
+# TODO should the generic methods be documented at all?
+# Maybe in the constructor?
 as.data.frame.assoc_scores <- function(x, ...) {
   class(x) <- "data.frame"
   df <- cbind(type = rownames(x), x)
@@ -1455,6 +1467,7 @@ as.data.frame.assoc_scores <- function(x, ...) {
 as_tibble.assoc_scores <- function(x, ...) {
   as_tibble(as.data.frame(x), ...)
 }
+
 # public S3 function print()
 print.assoc_scores <- function(
     x,
