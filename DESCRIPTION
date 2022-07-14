@@ -20,7 +20,9 @@ Imports: crayon,
          XML,
          yaml
 LinkingTo: Rcpp         
-Suggests: MASS
+Suggests: 
+    learnr,
+    MASS
 License: GPL-2
 LazyData: TRUE
 RoxygenNote: 7.2.0

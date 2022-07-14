@@ -1,0 +1,305 @@
+---
+title: "First steps with MCLM"
+output: learnr::tutorial
+runtime: shiny_prerendered
+description: >
+  Learn how to read corpus files and generate frequency lists and concordance lines with `mclm`.
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(tibble)
+library(ggplot2)
+library(dplyr)
+library(mclm)
+knitr::opts_chunk$set(echo = FALSE)
+my_question <- function(...){
+  question(...,
+           allow_retry = TRUE,
+           random_answer_order = TRUE,
+           correct = random_praise(),
+           incorrect = random_encouragement()
+           )
+} 
+open_pres_speech <- function(...) {
+  presidents <- list(...)
+  pres_speech <- "data/pres_speech"
+  my_fnames <- get_fnames(file.path(pres_speech, presidents[[1]]))
+  if (length(presidents) == 1) {
+    return(my_fnames)
+  }
+  for (president in presidents[2:length(presidents)]) {
+    my_fnames <- fnames_merge(my_fnames, get_fnames(file.path(pres_speech, president)))
+  }
+  my_fnames
+}
+my_fnames <- open_pres_speech("harrison", "cleveland", "mckinely", "roosevelt")
+stop_list <- read_types("data/stop_list.txt")
+```
+
+## Setting up
+
+To start with our work, we will load three main packages: {tidyverse} for data wrangling and {mclm} to work with corpora. The function to load packages in R is `library()`:
+
+```{r load-tidyverse, echo=TRUE, eval=FALSE}
+library(tidyverse)
+library(mclm)
+```
+
+Next we have to load our files: first make our collections of filenames!
+
+> Note that, when you're working on your own scripts, you might also want to use the {here} package to find your files more easily!
+
+The `get_fnames()` function takes the path to a directory and creates a list of corpus filenames with the content of that directory. We can get the path to the "harrison" speeches by joining the path where the speeches are stored (here "data/pres_speech") and the name of the folder with those texts.
+
+```{r get-fnames, exercise = TRUE, exercise.eval = TRUE}
+get_fnames("data/pres_speech/harrison")
+```
+
+With `fnames_merge()` we can merge two fnames objects. For example, we could create an `my_fnames` variable with the filenames of presidential speeches from the period 1889-1909, i.e. those by Harrison, Cleveland, McKinley and Roosevelt. In the exercise below, fill in the appropriate filenames to add the missing speeches (remember: the folder names are in lowercase!).
+
+```{r all-fnames, exercise = TRUE}
+my_fnames <- get_fnames("data/pres_speech/harrison") %>% 
+  fnames_merge(get_fnames("")) %>% 
+  fnames_merge(get_fnames("")) %>% 
+  fnames_merge(get_fnames(""))
+my_fnames
+```
+
+```{r all-fnames-solution}
+# presidential speeches from the period 1889-1909
+my_fnames <-   get_fnames("data/pres_speech/harrison") %>%
+  fnames_merge(get_fnames("data/pres_speech/cleveland")) %>%
+  fnames_merge(get_fnames("data/pres_speech/mckinley")) %>% 
+  fnames_merge(get_fnames("data/pres_speech/roosevelt"))
+my_fnames
+```
+
+Just typing the name of a variable prints it. But you can also refine how to print an {mclm} object by adding arguments to their `print()` method!
+For an fnames object, you can decide how many items you print with the `n` argument, from which position you start printing (with the `from` argument) and whether you want to sort it alphabetically (`sort_order = "alpha"`) or not (`sort_order = "none"`).
+
+Play around with these arguments to get familiar with them and inspect `my_fnames`!
+
+```{r, fnames-print, exercise = TRUE, exercise.eval = TRUE}
+print(my_fnames, n = 5, sort_order = "alpha")
+```
+
+### Quiz time!
+
+```{r fnames-quiz}
+quiz(
+  my_question("Which function loads a package to your R session?",
+           answer("load"),
+           answer("package"),
+           answer("library", correct = TRUE),
+           answer("install.packages")
+           ),
+  my_question("Which function makes a list of corpus file names out of a directory path?",
+           answer("corpus_fnames"),
+           answer("get_fnames", correct = TRUE),
+           answer("collect_fnames"),
+           answer("fnames_merge")
+           ),
+  my_question("What does `fnames_merge()` do?",
+           answer("It takes only two fnames objects and merges them into one.", correct = TRUE),
+           answer("It takes one fnames object as input and merges it with the last fnames object created.", message = "Note that the term to the left of the pipe `%>%` is the first argument of the function!"),
+           answer("It takes any number of fnames objects and merges them into one.")
+           ),
+  caption = "Let's review!"
+)
+```
+
+
+## Working with frequency lists
+
+To first create a frequency list from the files of a corpus, we need to run a function on our fnames object.
+
+```{r freqlist, exercise = TRUE, exercise.eval = TRUE}
+my_flist <- freqlist(my_fnames)
+my_flist
+```
+
+The output lists all the **types** (different words) in the corpus sorted by descending frequency and shows you their rank (the higher the frequency, the lower the rank), their absolute frequency (the number of times they occur in the corpus) and their *normalized* frequency (their frequency per 10,000 occurrences). In addition, it tells you the number of types and of tokens in your list: each token is an occurrence of a type.
+
+You can also manipulate how to print a frequency list with `print()` and the arguments `n` (number) and `from`:
+
+```{r freqlist-print, exercise = TRUE, exercise.eval = TRUE, exercise.setup = "freqlist"}
+print(my_flist, n = 6, from = 3)
+```
+
+### Filter by position
+
+If you want to extract (or exclude) items that are in a specific position in the ranking, you can use the functions `keep_pos()` and `drop_pos()`, which take first a frequency list and then a vector of positions. The resulting table will update the number of types and tokens but also remind you of the original number of tokens.
+
+Modify the following code to extract the types from the 10th to the 39th position.
+
+```{r keep-pos, exercise = TRUE, exercise.eval = TRUE, exercise.setup = "freqlist"}
+my_flist %>% keep_pos(1:15)
+```
+
+If you did it right, the output will only show you the first 20 items of your selection, but it also prints a message on top telling you the number of types (and tokens!) in your frequency list. How could you *print* all the elements in your list?
+
+```{r keep-print, exercise = TRUE, exercise.setup = "freqlist"}
+
+```
+
+```{r keep-print-solution}
+my_flist %>% keep_pos(10:39) %>% print(n = 30)
+```
+
+*Why* would you do this? Filtering by position can let us inspect the frequency distribution of the frequency list. Use the following code box to get the answers to the questions below.
+
+```{r topfreq, exercise = TRUE, exercise.setup = "freqlist"}
+
+```
+
+```{r topfreq-quiz}
+quiz(
+  my_question("How many tokens are covered by the top 50 types in `my_flist`?",
+           answer(as.character(tot_n_tokens(my_flist))),
+           answer(as.character(sum(keep_pos(my_flist, 1:50))), correct = TRUE),
+           answer(as.character(sum(keep_pos(my_flist, 51:100)))),
+           answer(as.character(n_types(my_flist)))
+           ),
+  my_question("How many tokens are covered by the second set of 50 types in `my_flist` (positions 51 to 100)?",
+           answer(as.character(tot_n_tokens(my_flist))),
+           answer(as.character(sum(keep_pos(my_flist, 1:50)))),
+           answer(as.character(sum(keep_pos(my_flist, 51:100))), correct = TRUE),
+           answer(as.character(n_types(my_flist)))
+           ),
+  caption = "Oh frequency"
+)
+```
+
+The frequency distribution can also be plotted, like so:
+
+```{r freq-plot, exercise = TRUE, exercise.eval = TRUE, exercise.setup = "freqlist"}
+my_flist %>%
+  as_tibble() %>% # turn freqlist to tibble
+  ggplot(aes(x = rank, y = abs_freq)) + # variables for the axes
+  geom_point(alpha = 0.1) + # transparent points
+  theme_minimal() + # to edit the look
+  labs(x = "Frequency rank", y = "Absolute frequency")
+```
+
+We can also plot only the 100 types we inspected:
+
+```{r freq-plot-top, exercise = TRUE, exercise.eval = TRUE, exercise.setup = "freqlist"}
+my_flist %>%
+  as_tibble() %>% # turn freqlist to tibble
+  slice_head(n = 100) %>% # get top 100 items
+  ggplot(aes(x = rank, y = abs_freq)) + # variables for the axes
+  geom_point(alpha = 0.4) + # transparent points
+  geom_vline(xintercept = 50, linetype = 2) + # vertical line at rank 50
+  theme_minimal() + # to edit the look
+  labs(x = "Frequency rank", y = "Absolute frequency")
+```
+
+The inverse of `keep_pos()` is `drop_pos()` (in fact, it's the same as running `keep_pos(invert = TRUE)`{.R}!). Modify the code below so you exclude the first 5 uneven positions (1, 3, 5...) instead of the random selection shown below:
+
+```{r drop-pos, exercise = TRUE, exercise.eval = TRUE, exercise.setup = "freqlist"}
+my_flist %>% drop_pos(c(6, 10, 2, 8, 3))
+```
+
+### Filter by type
+
+Another interesting pair of functions to refine your frequency list is `keep_types()` and `drop_types()`, which take an object such as a frequency list and a list of types, which can be a character vector such as `c("and", "of")`. For example, the code below loads a list of types into a variable called `stop_list` and removes those types from `my_flist`:
+
+```{r stop-list, exercise = TRUE, exercise.setup = "freqlist", exercise.eval = TRUE}
+stop_list <- read_types("data/stop_list.txt")
+my_flist %>% drop_types(stop_list)
+```
+
+Just to practice, try to filter one of the frequency lists using a selection of types defined by you. Experiment: what happens if you add types to the vector? What happens if you use `keep_types()`? And `drop_types()`? What if you ask for a word that is *not* in the frequency list?
+
+```{r keep-types, exercise = TRUE, exercise.setup = "freqlist"}
+my_types <- c("you", "can", "start", "like", "this")
+```
+
+```{r keep-types-hint}
+my_flist %>% keep_types("the")
+```
+
+### Quiz time!
+
+```{r freqlist-quiz}
+quiz(
+  my_question("What do you use to filter a frequency list *by types*?",
+           answer("keep_pos"),
+           answer("keep_types", correct = TRUE),
+           answer("drop_pos"),
+           answer("drop_types", correct = TRUE)
+           ),
+  my_question("What do you use to filter a frequency list *by position*?",
+           answer("keep_pos", correct = TRUE),
+           answer("keep_types"),
+           answer("drop_pos", correct = TRUE),
+           answer("drop_types")
+           ),
+  my_question("What happens if you filter a frequency list asking for a type that is not present in the list?",
+           answer("R crashes and my computer catches fire"),
+           answer("The missing type is ignored"),
+           answer("The missing type is included with frequency 0 and `orig_rank = NA`", correct = TRUE),
+           answer("The type is included with a random frequency and `orig_rank = NULL`")
+           ),
+  caption = "Let's review! Select ALL answers that apply."
+)
+```
+
+
+## Concordances
+
+Before we used a function that read a list of file names and collected and counted all the different words (types) occurring in those files.
+
+```{r freqlist2-quiz}
+quiz(
+  my_question("Do you remember the name of that function?",
+           answer("get_freqlist"),
+           answer("freqlist_from_fnames"),
+           answer("freqlist", correct = TRUE),
+           answer("my_flist")
+           ),
+  caption = "Surprise quiz!"
+)
+```
+
+There is also a function that takes a list of file names and a *pattern* and extracts a concordance based on that pattern. Play around with the argument in `conc()` to see what happens.
+
+```{r conc1, exercise = TRUE, exercise.eval = TRUE}
+my_fnames %>% conc("nation") %>% print()
+```
+
+This returns a dataframe with 6 columns and nicely prints the concordance: on the central column, in a different color, you can see the pattern you searched for, and to the left and right you can see the context of each instance as found in the corpus. At the top of the output you can also see the number of observations: how many instances were found.
+
+If you look closely, you may notice that these are not instances of the *word* "nation", but matches of a pattern. This pattern uses [regex](https://regexr.com/), so if you want to specify full words you need to add certain symbols. Here, for example, I added `\\b` to the beginning and end of the pattern to indicate *word boundaries*. 
+
+> Note: We need `print()` to emulate the console output in the tutorial, but when you run such code in your script, you won't need it!
+
+```{r conc2, exercise = TRUE, exercise.eval = TRUE}
+my_fnames %>% conc("\\bnation\\b") %>% print()
+```
+
+### What for?
+
+Suppose you filtered out stop words from a frequency list, but there is still something weird going on... for example, check the 13th type in the cleaned `my_flist`:
+
+```{r flist-drop, exercise = TRUE, exercise.eval = TRUE}
+my_flist %>%
+  drop_types(stop_list)
+```
+
+A concordance gives you access to the actual usage of a word (or pattern, in this case): we can get back to the source of information to figure out why our data looks the way it does. Check out a concordance of "000" to see what is going on:
+
+```{r f000, exercise = TRUE}
+
+```
+
+```{r f000-solution}
+my_fnames %>% conc("000") %>% print()
+```
+
+By looking at the concordance we can hypothesize that the tokenizer that defines types and tokens for `my_flist` is collecting the sequences of "000" as separate tokens, because of the commas that separate them from the rest of the number they belong to. Since we know this is simply not correct, we can now use `drop_types("000")` to clean the frequency list a bit more.
+
+> NOTE: `conc()`, unlike other functions, does not tokenize the corpus!
+
+
