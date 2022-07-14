@@ -343,7 +343,10 @@ The \code{"2T"} stands for 'two terms'.
                  }
 }
 
-The final two groups of measures take a different shape.
+The final two groups of measures take a different shape. The
+\verb{_as_chisq1} columns compute \code{qchisq(1 - p, 1)}, with \code{p} being the p-values
+they are transforming, i.e. the \code{p} right quantile in a \eqn{\chi^2}
+distribution with one degree of freedom.
 \itemize{
 \item \code{t}, \code{p_t_1}, \code{t_1_as_chisq1}, \code{p_t_2} and \code{t_2_as_chisq1}:
 The t-test statistic, used for a t-test for the proportion \eqn{\frac{a}{N}}
@@ -360,15 +363,10 @@ additionally, \code{with_variants} is \code{TRUE}.
                    }
                     }
 \item \code{p_t_1} is the p-value that corresponds to \code{t} when assuming a one-tailed
-test that only looks at attraction.
-\item \code{t_1_as_chisq1} is a transformation of \code{p_t_1} such that, if we refer
-to it as \emph{p}, it returns the '\emph{p} right quantile' in the chi-square
-distribution with one degree of freedom.
+test that only looks at attraction; \code{t_1_as_chisq1} is its transformation.
 \item \code{p_t_2} is the p-value that corresponds to \code{t} when assuming a two-tailed
-test, viz. that looks at both attraction and repulsion.
-\item \code{t_2_as_chisq1} is a transformation of \code{p_t_2} such that, if we refer
-to it as \emph{p}, it returns the '*p right quantile' in the chi-square
-distribution with one degree of freedom.
+test, viz. that looks at both attraction and repulsion; \code{t_2_as_chisq1} is
+its transformation.
 }
 \item \code{p_fisher_1}, \code{fisher_1_as_chisq1}, \code{p_fisher_1r}, \code{fisher_1r_as_chisq1}:
 The p-value of a one-sided Fisher exact test.
@@ -378,15 +376,11 @@ been requested and if, additionally, \code{with_variants} is \code{TRUE}.
 \itemize{
 \item \code{p_fisher_1} and \code{p_fisher_1r} are the p-values of the Fisher exact test
 that look at attraction and repulsion respectively.
-\item \code{fisher_1_as_chisq1} and \code{fisher_1r_as_chisq1} return the '\emph{p} right quantile'
-in the chi-square distribution with one degree of freedom, with \emph{p} being,
-respectively, \code{p_fisher_1} and \code{p_fisher_1r}.
+\item \code{fisher_1_as_chisq1} and \code{fisher_1r_as_chisq1} are their respective transformations..
 }
 \item \code{p_fisher_2} and \code{fisher_2_as_chisq1}: p-value for a two-sided Fisher
 exact test, viz. looking at both attraction and repulsion. \code{p_fisher_2}
-returns the p-value and \code{fisher_2_as_chisq1}, its transformation, i.e. the
-'\emph{p} right quantile' in the chi-square distribution with one degree of freedom,
-with \emph{p} being \code{p_fisher_2}.
+returns the p-value and \code{fisher_2_as_chisq1} is its transformation.
 The \code{p_fisher_2} column is present if either \code{"fisher"} or \code{"p_fisher_1"} are
 in \code{measures} or if \code{measures} is \code{"ALL"} or \code{NULL} and if, additionally, \code{p_fisher_2} is
 \code{TRUE}. \code{fisher_2_as_chisq1} is present if \code{p_fisher_2} was requested and,

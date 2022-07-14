@@ -19,7 +19,6 @@
 #' @param ... Additional arguments.
 #'
 #' @return Invisibly, `x`.
-#' @md
 #' @export
 #' @order 1
 explore <- function(x, ...) UseMethod("explore")
@@ -484,7 +483,6 @@ type_names.default <- function(x, ...) {
 #' @return A number.
 #' @family getters and setters
 #' @order 1
-#' @md
 #' 
 #' @examples
 #' x <- freqlist("The man and the mouse.",
@@ -611,7 +609,6 @@ orig_ranks.default <- function(x, ...) NULL
 #' @family getters and setters
 #' @order 1
 #' @export
-#' @md
 #'
 #' @examples
 #' (flist <- freqlist("The man and the mouse.", as_text = TRUE))

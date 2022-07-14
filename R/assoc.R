@@ -761,7 +761,10 @@ text_cooc <- function(x,
 #'                   \right)
 #'                  }
 #'                  
-#'   The final two groups of measures take a different shape.
+#'   The final two groups of measures take a different shape. The
+#'   `_as_chisq1` columns compute `qchisq(1 - p, 1)`, with `p` being the p-values
+#'   they are transforming, i.e. the `p` right quantile in a \eqn{\chi^2}
+#'   distribution with one degree of freedom.
 #'   
 #'   - `t`, `p_t_1`, `t_1_as_chisq1`, `p_t_2` and `t_2_as_chisq1`:
 #'   The t-test statistic, used for a t-test for the proportion \eqn{\frac{a}{N}}
@@ -777,15 +780,10 @@ text_cooc <- function(x,
 #'                    }
 #'                     }
 #'       + `p_t_1` is the p-value that corresponds to `t` when assuming a one-tailed
-#'       test that only looks at attraction.
-#'       + `t_1_as_chisq1` is a transformation of `p_t_1` such that, if we refer
-#'       to it as *p*, it returns the '*p* right quantile' in the chi-square
-#'       distribution with one degree of freedom.
+#'       test that only looks at attraction; `t_1_as_chisq1` is its transformation.
 #'       + `p_t_2` is the p-value that corresponds to `t` when assuming a two-tailed
-#'       test, viz. that looks at both attraction and repulsion.
-#'       + `t_2_as_chisq1` is a transformation of `p_t_2` such that, if we refer
-#'       to it as *p*, it returns the '*p right quantile' in the chi-square
-#'       distribution with one degree of freedom.
+#'       test, viz. that looks at both attraction and repulsion; `t_2_as_chisq1` is
+#'       its transformation.
 #'  - `p_fisher_1`, `fisher_1_as_chisq1`, `p_fisher_1r`, `fisher_1r_as_chisq1`:
 #'  The p-value of a one-sided Fisher exact test.
 #'  The column `p_fisher_1` is present if either `"fisher"` or `"p_fisher"` are in `measures`
@@ -795,14 +793,10 @@ text_cooc <- function(x,
 #'      + `p_fisher_1` and `p_fisher_1r` are the p-values of the Fisher exact test
 #'    that look at attraction and repulsion respectively.
 #'    
-#'      + `fisher_1_as_chisq1` and `fisher_1r_as_chisq1` return the '*p* right quantile'
-#'    in the chi-square distribution with one degree of freedom, with *p* being,
-#'    respectively, `p_fisher_1` and `p_fisher_1r`.
+#'      + `fisher_1_as_chisq1` and `fisher_1r_as_chisq1` are their respective transformations..
 #'  - `p_fisher_2` and `fisher_2_as_chisq1`: p-value for a two-sided Fisher
 #'  exact test, viz. looking at both attraction and repulsion. `p_fisher_2`
-#'  returns the p-value and `fisher_2_as_chisq1`, its transformation, i.e. the
-#'  '*p* right quantile' in the chi-square distribution with one degree of freedom,
-#'  with *p* being `p_fisher_2`.
+#'  returns the p-value and `fisher_2_as_chisq1` is its transformation.
 #'  The `p_fisher_2` column is present if either `"fisher"` or `"p_fisher_1"` are
 #'  in `measures` or if `measures` is `"ALL"` or `NULL` and if, additionally, `p_fisher_2` is
 #'  `TRUE`. `fisher_2_as_chisq1` is present if `p_fisher_2` was requested and,
@@ -1702,27 +1696,90 @@ print.assoc_scores <- function(
 
 # Utility functions ============================================================
 
+#' Make all values strictly higher than zero
+#' 
+#' This is an auxiliary function that makes all values in numeric vector x strictly
+#' positive by replacing all values equal to or lower than zero with
+#' the values in `small.pos`. `small_pos` stands for 'small positive constant'.
+#' 
+#' @param x A numeric vector.
+#' @param small_pos A (small) positive number to replace negative values and 0s.
+#'
+#' @return A copy of `x` in which all values equal to or lower than zero are
+#'   replaced by `small_pos`.
+#' @export
+#'
+#' @examples
+#' (x <- rnorm(30))
+#' zero_plus(x)
 zero_plus <- function(x, small_pos = 0.00001) {
-  # auxiliary function that makes all values in numeric vector x strictly positive
-  # small.pos stands for 'small positive constant'
   x[x <= 0] <- small_pos
   x
 }
 
+#' P right quantile in chi-squared distribution with 1 df
+#' 
+#' P right quantile that takes as its argument a probability `p` and that returns
+#' the `p` *right quantile* in the \eqn{\chi^2} distribution with one degree of 
+#' freedom. In other words, it returns a value *q* such that a proportion `p`
+#' \eqn{\chi^2} distribution with one degree of freedom lies above *q*.
+#'
+#' @param p A proportion.
+#'
+#' @return The `p` *right quantile* in the \eqn{\chi^2} distribution with
+#'   one degree of freedom.
+#' @noRd
 p_to_chisq1 <- function(p) {
   # returns the 'p right quantile' in the chi-square distribution with one df
   return(qchisq(1 - p, 1))
 }
 
+#' Proportion of chi-squared distribution with 1 df that sits to the right of x
+#' Helper function that takes as its argument a numerical value `x` and
+#' that returns the proportion *p* of the chi-squared
+#' distribution with one degree of freedom that sits to the right of the
+#' value `x.
+#'
+#' @param x A number.
+#'
+#' @return The proportion *p* of the chi-squared distribution with one
+#' degree of freedom that sits to the right of the value `x`.
+#' @noRd
 chisq1_to_p <- function(x) {
-  # returns the proportion of the chi-square distribution with one df
-  # that sits to the right of x
   1 - pchisq(x, 1)
 }
 
 # Public functions applied to assoc_scores =====================================
 
-# write an assoc_scores object
+#' Write association scores to file
+#' 
+#' This function writes an object of class [assoc_scores()] to a file.
+#'
+#' @param x An object of class [assoc_scores()].
+#' @param file Name of the output file.
+#' @param sep Field separator for the output file.
+#' @param file_encoding Encoding for the output file.
+#'
+#' @return Invisibly, `x`.
+#' @seealso [write_assoc()]
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' txt1 <- "we're just two lost souls swimming in a fish bowl,
+#' year after year, running over the same old ground,
+#' what have we found? the same old fears.
+#' wish you were here."
+#' flist1 <- freqlist(txt1, as_text = TRUE)
+#' txt2 <- "picture yourself in a boat on a river
+#' with tangerine dreams and marmelade skies
+#' somebody calls you, you answer quite slowly
+#' a girl with kaleidoscope eyes"
+#' flist2 <- freqlist(txt2, as_text = TRUE)
+#' (scores <- assoc_scores(flist1, flist2, min_freq = 0))
+#' write_assoc(scores, "example_scores.tab")
+#' (scores2 <- read_assoc("example_scores.tab"))
+#' }
 write_assoc <- function(x,
                         file = "",
                         sep = "\t",
@@ -1741,12 +1798,23 @@ write_assoc <- function(x,
   invisible(x)
 }
 
-# read association scores from file
+# CHANGED removed arguments that are not used at all, namely header, quote and comment_char
+#' Read association scores from file
+#' 
+#' This function reads a file written by [write_assoc()].
+#'
+#' @param file Path of the input file.
+#' @param sep Field separator in the input file.
+#' @param file_encoding Encoding of the input file.
+#' @param ... Additional arguments.
+#'
+#' @return An object of class [assoc_scores()].
+#' @export
+#' @seealso [write_assoc()]
+#'
+#' @inherit write_assoc examples
 read_assoc <- function(file,
-                       header = TRUE,
                        sep = "\t",
-                       quote = "",
-                       comment_char = "",
                        file_encoding = "UTF-8",
                        ...) {
   lines <- read_txt(file, file_encoding = file_encoding) 
