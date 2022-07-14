@@ -13,14 +13,7 @@ library(ggplot2)
 library(dplyr)
 library(mclm)
 knitr::opts_chunk$set(echo = FALSE)
-my_question <- function(...){
-  question(...,
-           allow_retry = TRUE,
-           random_answer_order = TRUE,
-           correct = random_praise(),
-           incorrect = random_encouragement()
-           )
-} 
+
 open_pres_speech <- function(...) {
   presidents <- list(...)
   pres_speech <- "data/pres_speech"
@@ -88,19 +81,19 @@ print(my_fnames, n = 5, sort_order = "alpha")
 
 ```{r fnames-quiz}
 quiz(
-  my_question("Which function loads a package to your R session?",
+  mclm_question("Which function loads a package to your R session?",
            answer("load"),
            answer("package"),
            answer("library", correct = TRUE),
            answer("install.packages")
            ),
-  my_question("Which function makes a list of corpus file names out of a directory path?",
+  mclm_question("Which function makes a list of corpus file names out of a directory path?",
            answer("corpus_fnames"),
            answer("get_fnames", correct = TRUE),
            answer("collect_fnames"),
            answer("fnames_merge")
            ),
-  my_question("What does `fnames_merge()` do?",
+  mclm_question("What does `fnames_merge()` do?",
            answer("It takes only two fnames objects and merges them into one.", correct = TRUE),
            answer("It takes one fnames object as input and merges it with the last fnames object created.", message = "Note that the term to the left of the pipe `%>%` is the first argument of the function!"),
            answer("It takes any number of fnames objects and merges them into one.")
@@ -155,13 +148,13 @@ my_flist %>% keep_pos(10:39) %>% print(n = 30)
 
 ```{r topfreq-quiz}
 quiz(
-  my_question("How many tokens are covered by the top 50 types in `my_flist`?",
+  mclm_question("How many tokens are covered by the top 50 types in `my_flist`?",
            answer(as.character(tot_n_tokens(my_flist))),
            answer(as.character(sum(keep_pos(my_flist, 1:50))), correct = TRUE),
            answer(as.character(sum(keep_pos(my_flist, 51:100)))),
            answer(as.character(n_types(my_flist)))
            ),
-  my_question("How many tokens are covered by the second set of 50 types in `my_flist` (positions 51 to 100)?",
+  mclm_question("How many tokens are covered by the second set of 50 types in `my_flist` (positions 51 to 100)?",
            answer(as.character(tot_n_tokens(my_flist))),
            answer(as.character(sum(keep_pos(my_flist, 1:50)))),
            answer(as.character(sum(keep_pos(my_flist, 51:100))), correct = TRUE),
@@ -224,19 +217,19 @@ my_flist %>% keep_types("the")
 
 ```{r freqlist-quiz}
 quiz(
-  my_question("What do you use to filter a frequency list *by types*?",
+  mclm_question("What do you use to filter a frequency list *by types*?",
            answer("keep_pos"),
            answer("keep_types", correct = TRUE),
            answer("drop_pos"),
            answer("drop_types", correct = TRUE)
            ),
-  my_question("What do you use to filter a frequency list *by position*?",
+  mclm_question("What do you use to filter a frequency list *by position*?",
            answer("keep_pos", correct = TRUE),
            answer("keep_types"),
            answer("drop_pos", correct = TRUE),
            answer("drop_types")
            ),
-  my_question("What happens if you filter a frequency list asking for a type that is not present in the list?",
+  mclm_question("What happens if you filter a frequency list asking for a type that is not present in the list?",
            answer("R crashes and my computer catches fire"),
            answer("The missing type is ignored"),
            answer("The missing type is included with frequency 0 and `orig_rank = NA`", correct = TRUE),
@@ -253,7 +246,7 @@ Before we used a function that read a list of file names and collected and count
 
 ```{r freqlist2-quiz}
 quiz(
-  my_question("Do you remember the name of that function?",
+  mclm_question("Do you remember the name of that function?",
            answer("get_freqlist"),
            answer("freqlist_from_fnames"),
            answer("freqlist", correct = TRUE),

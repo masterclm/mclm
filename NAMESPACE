@@ -246,6 +246,9 @@ export("write_txt")
 export("xlim4ca")
 export("ylim4ca")
 export("zero_plus")
+export("mclm_question")
+export("mclm_question_num")
+export("mclm_question_text")
 # ----------------------------------------------------------------------------
 
 
