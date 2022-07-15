@@ -662,9 +662,26 @@ n_fnames <- function(x, ...) {
   with_duplicates
 }  
 
-
-# public function fnames_merge()
-# merge two fnames objects
+#' Merge filenames collections
+#' 
+#' These functions merge two or more [`fnames`] objects into one larger [`fnames`]
+#' object, removing duplicates (keeping only the first appearance) and only
+#' resorting the items if `sort = TRUE`.
+#'
+#' @param x,y An object of class [`fnames`].
+#' @param ... Various objects of class [`fnames`] or a list of
+#'   objects of class [`fnames`]. 
+#'
+#' @return An object of class [`fnames`].
+#'
+#' @examples
+#' \dontrun{
+#' cwd_fnames <- get_fnames(recursive = FALSE)
+#' cwd_fnames2 <- get_fnames("some_subdirectory")
+#' cwd_fnames3 <- get_fnames("another_subdirectory")
+#' fnames_merge(cwd_fnames, cwd_fnames2)
+#' fnames_merge_all(cwd_fnames, cwd_fnames2, cwd_fnames3)
+#' }
 fnames_merge <- function(x, y, sort = FALSE) {
   if ((!"fnames" %in% class(x)) || (!"fnames" %in% class(y))) {
     stop("both x and y must be of the class 'fnames'")
@@ -672,8 +689,8 @@ fnames_merge <- function(x, y, sort = FALSE) {
   fnames_merge_two(x, y, sort = sort)
 }  
 
-# public function fnames_merge_all()
-# merge two or more fnames objects
+#' @rdname fnames_merge
+#' @export
 fnames_merge_all <- function(..., sort = FALSE) {
   arg_list <- list(...)
   result_car <- NULL  # result for car of arg_list
@@ -709,16 +726,33 @@ fnames_merge_all <- function(..., sort = FALSE) {
   result
 }
 
-# drop_fnames() : drops from x the items y
-drop_fnames <- function(x, y, ...) {
-  dot_args <- names(list(...))
-  if ("invert" %in% dot_args) {
-    stop("argument 'invert' is not supported")
-  }
-  keep_fnames(x, y, invert = TRUE, ...)
-}
-
-# keep_fnames() : drops from y anything but the items y
+#' Filter collection of filenames by name
+#' 
+#' The functions build a subset of an object of class [`fnames`] based on a vector
+#' of characters, either including them (with `keep_fnames(invert = FALSE)`) or
+#' excluding them (with `keep_fnames(invert = FALSE)` or `drop_fnames()`).
+#'
+#' @param x An object of class [`fnames`], to be filtered.
+#' @param y An object of class [`fnames`] or class [`types`] or a character vector.
+#'   This is the filtering criterion.
+#' @param invert Boolean value. If `TRUE`, the elements in `y` are excluded rather
+#'   than kept (and `keep_fnames()` behaves like `drop_fnames()`)
+#' @param ... Additional arguments.
+#'
+#' @return An object of class [`fnames`].
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' all_fnames <- get_fnames(recursive = TRUE)
+#' 
+#' unwanted_fnames <- get_fnames("some_subdirectory")
+#' keep_fnames(all_fnames, unwanted_fnames, invert = TRUE)
+#' drop_fnames(all_fnames, unwanted_fnames)
+#' 
+#' wanted_fnames <- get_fnames("another_subdirectory")
+#' keep_fnames(all_fnames, wanted_fnames)
+#' }
 keep_fnames <- function(x, y, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"fnames" %in% class(x)) {
@@ -747,6 +781,16 @@ keep_fnames <- function(x, y, invert = FALSE, ...) {
   }
   # return result
   result
+}
+
+#' @rdname keep_fnames
+#' @export
+drop_fnames <- function(x, y, ...) {
+  dot_args <- names(list(...))
+  if ("invert" %in% dot_args) {
+    stop("argument 'invert' is not supported")
+  }
+  keep_fnames(x, y, invert = TRUE, ...)
 }
 
 read_fnames <- function(file,

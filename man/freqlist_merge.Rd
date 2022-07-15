@@ -19,16 +19,9 @@ objects of class \code{\link{freqlist}}.}
 An object of class \code{\link{freqlist}}.
 }
 \description{
-The functions merge two or more frequency lists, adding up the frequencies.
+These functions merge two or more frequency lists, adding up the frequencies.
 In the current implementation, original ranks are lost when merging.
 }
-\section{Functions}{
-\itemize{
-\item \code{freqlist_merge}: Merge two frequency lists
-
-\item \code{freqlist_merge_all}: Merge multiple frequency lists
-}}
-
 \examples{
 (flist1 <- freqlist("A first toy corpus.", as_text = TRUE))
 (flist2 <- freqlist("A second toy corpus.", as_text = TRUE))

@@ -1295,7 +1295,7 @@ type_freq <- function(x, types = NULL, with_names = FALSE, ...) {
 
 #' Merge frequency lists
 #' 
-#' The functions merge two or more frequency lists, adding up the frequencies.
+#' These functions merge two or more frequency lists, adding up the frequencies.
 #' In the current implementation, original ranks are lost when merging.
 #'
 #' @param x,y An object of class [`freqlist`].
@@ -1303,7 +1303,6 @@ type_freq <- function(x, types = NULL, with_names = FALSE, ...) {
 #'   objects of class [`freqlist`]. 
 #'
 #' @return An object of class [`freqlist`].
-#' @name freqlist_merge
 #'
 #' @examples
 #' (flist1 <- freqlist("A first toy corpus.", as_text = TRUE))
@@ -1314,10 +1313,6 @@ type_freq <- function(x, types = NULL, with_names = FALSE, ...) {
 #' 
 #' freqlist_merge_all(flist1, flist2, flist3)
 #' freqlist_merge_all(list(flist1, flist2, flist3)) # same result
-NULL
-
-#' @describeIn freqlist_merge Merge two frequency lists
-#' @export
 freqlist_merge <- function(x, y) {
   if ((!"freqlist" %in% class(x)) || (!"freqlist" %in% class(y))) {
     stop("both x and y must be of the class 'freqlist'")
@@ -1325,7 +1320,7 @@ freqlist_merge <- function(x, y) {
   as_freqlist(freqlist_merge_two(x, y)) # as_freqlist sorts types by rank
 }  
 
-#' @describeIn freqlist_merge Merge multiple frequency lists
+#' @rdname freqlist_merge
 #' @export
 freqlist_merge_all <- function(...) {
   arg_list <- list(...)
