@@ -876,14 +876,30 @@ write_fnames <- function(x,
 }
 
 # Private functions applied to class ===========================================
-# private function fnames_merge_two()
-# both x and y are assumed to be of class "fnames"
+
+#' Merge two 'fnames' objects
+#'
+#' @param x,y Objects of class [fnames()]
+#' @param sort Boolean. Whether to sort the output
+#'
+#' @return An object of class [fnames()].
+#' @noRd
 fnames_merge_two <- function(x, y, sort = FALSE) {
   as_fnames(dplyr::union(x, y),
             remove_duplicates = FALSE, # done by union
             sort = sort)
 }
 
+# IDEA If this function is made public, it can be used in examples :)
+#' Coerce object to 'fnames'
+#'
+#' @param x A character vector (or a [freqlist()] object!)
+#' @param remove_duplicates Boolean. Whether duplicates should be removed.
+#' @param sort Boolean. Whether the output should be sorted.
+#' @param ... Additional arguments.
+#'
+#' @return An object of class [freqlist()].
+#' @noRd
 as_fnames <- function(x,
                       remove_duplicates = TRUE,
                       sort = TRUE,
@@ -909,14 +925,13 @@ as_fnames <- function(x,
   result
 }
 
-
-
-
-# private subset selection function
-# x is assumed to be a types object (not tested)
-# sel can be:
-#  - numeric vector with positions
-#  - boolean vector
+#' Subset an 'fnames' object
+#'
+#' @param x Object of class [`fnames`].
+#' @param sel Numeric vector with positions or boolean vector for subsetting.
+#'
+#' @return Object of class [`fnames`].
+#' @noRd
 subset_fnames <- function(x, sel) {
   result <- as.character(x)[sel]
   class(result) <- c("fnames",
@@ -924,5 +939,3 @@ subset_fnames <- function(x, sel) {
                              c("tokens", "types")))
   result
 }
-
-
