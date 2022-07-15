@@ -14,19 +14,7 @@ library(dplyr)
 library(mclm)
 knitr::opts_chunk$set(echo = FALSE)
 
-open_pres_speech <- function(...) {
-  presidents <- list(...)
-  pres_speech <- "data/pres_speech"
-  my_fnames <- get_fnames(file.path(pres_speech, presidents[[1]]))
-  if (length(presidents) == 1) {
-    return(my_fnames)
-  }
-  for (president in presidents[2:length(presidents)]) {
-    my_fnames <- fnames_merge(my_fnames, get_fnames(file.path(pres_speech, president)))
-  }
-  my_fnames
-}
-my_fnames <- open_pres_speech("harrison", "cleveland", "mckinely", "roosevelt")
+my_fnames <- get_fnames("data/pres_speech", recursive = TRUE)
 stop_list <- read_types("data/stop_list.txt")
 ```
 
@@ -65,6 +53,19 @@ my_fnames <-   get_fnames("data/pres_speech/harrison") %>%
   fnames_merge(get_fnames("data/pres_speech/cleveland")) %>%
   fnames_merge(get_fnames("data/pres_speech/mckinley")) %>% 
   fnames_merge(get_fnames("data/pres_speech/roosevelt"))
+#or also
+my_fnames <- fnames_merge_all(
+  get_fnames("data/pres_speech/harrison"),
+  get_fnames("data/pres_speech/cleveland"),
+  get_fnames("data/pres_speech/mckinley"),
+  get_fnames("data/pres_speech/roosevelt")
+)
+
+#or, more advanced
+my_fnames <- file.path("data/pres_speech",
+            c("harrison", "cleveland", "mckinley", "roosevelt")) %>% 
+  lapply(get_fnames) %>% # or purrr::map()
+  fnames_merge_all()
 my_fnames
 ```
 
@@ -140,7 +141,7 @@ If you did it right, the output will only show you the first 20 items of your se
 my_flist %>% keep_pos(10:39) %>% print(n = 30)
 ```
 
-*Why* would you do this? Filtering by position can let us inspect the frequency distribution of the frequency list. Use the following code box to get the answers to the questions below.
+Filtering by position can let us inspect the frequency distribution of the frequency list. Use the following code box to get the answers to the questions below.
 
 ```{r topfreq, exercise = TRUE, exercise.setup = "freqlist"}
 
@@ -148,19 +149,19 @@ my_flist %>% keep_pos(10:39) %>% print(n = 30)
 
 ```{r topfreq-quiz}
 quiz(
-  mclm_question("How many tokens are covered by the top 50 types in `my_flist`?",
-           answer(as.character(tot_n_tokens(my_flist))),
-           answer(as.character(sum(keep_pos(my_flist, 1:50))), correct = TRUE),
-           answer(as.character(sum(keep_pos(my_flist, 51:100)))),
-           answer(as.character(n_types(my_flist)))
-           ),
-  mclm_question("How many tokens are covered by the second set of 50 types in `my_flist` (positions 51 to 100)?",
-           answer(as.character(tot_n_tokens(my_flist))),
-           answer(as.character(sum(keep_pos(my_flist, 1:50)))),
-           answer(as.character(sum(keep_pos(my_flist, 51:100))), correct = TRUE),
-           answer(as.character(n_types(my_flist)))
-           ),
-  caption = "Oh frequency"
+  mclm_question_num(
+    "How many tokens are covered by the top 50 types in `my_flist`?",
+    sum(keep_pos(my_flist, 1:50))
+    ),
+  mclm_question_num(
+    "How many tokens are covered by the second set of 50 types in `my_flist` (positions 51 to 100)?",
+    sum(keep_pos(my_flist, 51:100))
+    ),
+  mclm_question_num(
+    "How many tokens are covered by the third set of 50 types in `my_flist` (positions 101 to 150)?",
+    sum(keep_pos(my_flist, 101:150))
+    ),
+  caption = "Oh frequency..."
 )
 ```
 
