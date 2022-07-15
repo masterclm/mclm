@@ -817,6 +817,7 @@ read_types <- function(file,
   if (trim_types) {
     result <- stringr::str_trim(result) 
   }
+  # QUESTION: config files is not read?
   # to consider: not run following line if config file says
   #              txt_comment_char is "" and not "#"
   result <- gsub('#.*$', '', result, perl = TRUE) 
@@ -827,7 +828,6 @@ read_types <- function(file,
                      sort = sort)
   result
 }
-
 
 #' Write a vector of types to a text file
 #' 

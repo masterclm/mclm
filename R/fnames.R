@@ -793,6 +793,29 @@ drop_fnames <- function(x, y, ...) {
   keep_fnames(x, y, invert = TRUE, ...)
 }
 
+#' Read a colelction of filenames from a text file
+#' 
+#' This function reads an object of class [`fnames`] from a text file, which is
+#' assumed to contain one filename on each line.
+#'
+#' @param file Path to input file.
+#' @param sep Character vector of length 1 or `NA`. If it is a character, it
+#'   indicates a separator between input files, in addition to the new line.
+#' @param file_encoding Encoding used in the input file.
+#' @param trim_fnames Boolean. Should leading and trailing whitespace be stripped
+#'   from the filenames?
+#' @param ... Additional arguments (not implemented).
+#'
+#' @return An object of class [`fnames`].
+#' @export
+#' @seealso [write_fnames()]
+#'
+#' @examples
+#' \dontrun{
+#' cwd_fnames <- get_fnames(recursive = FALSE)
+#' write_fnames(cwd_fnames, "file_with_filenames.txt")
+#' cwd_fnames_2 <- read_fnames("file_with_filenames.txt")
+#' }
 read_fnames <- function(file,
                         sep = NA,
                         file_encoding = "UTF-8",
@@ -806,6 +829,7 @@ read_fnames <- function(file,
   if (trim_fnames) {
     result <- stringr::str_trim(result) 
   }
+  # QUESTION config file is not read?
   # to consider: not run following line if config file says
   #              txt_comment_char is "" and not "#"
   result <- gsub('#.*$', '', result, perl = TRUE) 
@@ -815,10 +839,22 @@ read_fnames <- function(file,
   result
 }
 
-
-# public function write_fnames()
-#  - writes a 'types' object to a txt file
-#  - by default also creates an associated config file
+#' Write a collection of filenames to a text file
+#' 
+#' This function writes an object of class [`fnames`] to a text file. Each filename
+#' is written in a separate line. The file encoding is always `"UTF-8"`.
+#' In addition, it can store metadata in an additional configuration file.
+#'
+#' @param x Object of class [`fnames`].
+#' @param file Path to output file.
+#' @param make_config_file Boolean. Should a configuration file be created?
+#' @param ... Additional arguments (not implemented).
+#'
+#' @return Invisibly, `x`.
+#' @export
+#' @seealso [read_fnames()]
+#'
+#' @inherit read_fnames examples
 write_fnames <- function(x,
                          file,
                          make_config_file = TRUE,
