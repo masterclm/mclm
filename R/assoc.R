@@ -1,4 +1,3 @@
-# TODO implement sort function
 # TODO check as.data.frame
 # TODO do a sort as the last step in assoc_scores
 # IDEA maybe add citations in the class definition? (For the measures...)
@@ -805,8 +804,8 @@ text_cooc <- function(x,
 #'  ## Properties of the class
 #'  
 #'  An object of class `assoc_scores` has:
-#'  - associated [as_data_frame()], [print()][print.assoc_scores()] and [tibble::as_tibble()]
-#'  methods,
+#'  - associated [as.data.frame()], [`print()`][print.assoc_scores()],
+#'  [`sort()`][sort.assoc_scores()] and [tibble::as_tibble()] methods,
 #'  - an interactive [explore()] method and useful getters, viz. [n_types()] and
 #'  [type_names()].
 #'  
@@ -1378,32 +1377,8 @@ print.assoc_scores <- function(
   # adjusting 'n' to 'from'
   n <- max(0, min(n, n_items - from + 1))
   # testing and processing argument 'sort_order'
-  if (is.null(sort_order)  ||
-      is.na(sort_order[1])) {
-    sort_order <- "none"
-  } else {
-    sort_order <- sort_order[1]
-  }
-  if (!sort_order %in% c("none", "alpha") &&
-      !sort_order %in% names(x)) {
-    sort_order <- "none" # we choose not to send a warning
-  }
-  # testing and processing sort_order (continued)
-  if (n > 0) {
-    idx <- from:(from + n - 1)
-    ord <- idx # applies when sort_order is 'none'
-    if (sort_order == "alpha") {
-      ord <- order(rownames(x))[idx]
-    } else if (sort_order %in% c("p_chi2", "p_chi2_Y",
-                                 "p_chi2_2T", "p_chi2_2T_Y",
-                                 "p_G", "p_G_2T",
-                                 "p_t_1", "p_t_2",
-                                 "p_fisher_1", "p_fisher_1r")) {
-      ord <- order(x[[sort_order]])[idx]
-    } else if (!sort_order == "none") {
-      ord <- order(x[[sort_order]], decreasing = TRUE)[idx]
-    }  
-  }
+  sorted_res <- sort_assoc_scores(x, sort_order = sort_order, n = n, from = from)
+  
   sel_cols <- names(x) # all cols are selected at this point
   # testing and processing argument freeze_cols
   if (is.null(freeze_cols)) {
@@ -1439,21 +1414,21 @@ print.assoc_scores <- function(
   cat(mclm_style_dim(paste0(
     "Association scores (types in list: ",
     n_items)))
-  if (sort_order != "none") {
+  if (sorted_res$sort_order != "none") {
     cat(mclm_style_dim(paste0(
       ", sort order criterion: ",
-      sort_order)))
+      sorted_res$sort_order)))
   }
   cat(mclm_style_dim(paste0(
     ")\n")))
   # --
   if (n > 0) {
-    types <- rownames(x)[ord]
+    types <- rownames(x)[sorted_res$ord]
     form_cols <- vector(mode = "list",
                         length = length(sel_cols))
     for (j in seq_along(sel_cols)) {
       form_cols[[j]] <- format(c(sel_cols[j], 
-                                 format(round(x[[sel_cols[j]]][ord], 3),
+                                 format(round(x[[sel_cols[j]]][sorted_res$ord], 3),
                                         scientify = FALSE, 
                                         justify = "right")), 
                                justify = "right")
@@ -1471,7 +1446,7 @@ print.assoc_scores <- function(
     #                  c("type", types),
     #                  max(nchar("type"), nchar(types)))
     format_idx <- format(c("", 
-                           format(idx,
+                           format(sorted_res$idx,
                                   scientify = FALSE, 
                                   justify = "right")), 
                          justify = "right")
@@ -1543,6 +1518,60 @@ print.assoc_scores <- function(
   }
   
   invisible(x)
+}
+
+#' Sort an 'assoc_scores' object
+#' 
+#' Sort a full object of class [`assoc_scores`] based on some criterion. It's the
+#' same that [`print`][print.assoc_scores()] does but with a bit more flexibility.
+#'
+#' @param x Object of class [`assoc_scores`].
+#' @param sort_order Criterion to order the rows. Possible values
+#'   are `"alpha"` (meaning that the items are to be sorted alphabetically),
+#'   `"none"` (meaning that the items are not to be sorted) and any present
+#'   column name.
+#' @param decreasing Boolean value.
+#' 
+#'   If `sort_order = "alpha"` and `decreasing = FALSE`, the rows will follow the
+#'   alphabetic order of the types. If `decreasing = TRUE` instead, it will follow
+#'   an inverted alphabetic order (from Z to A). This follows the behavior of
+#'   applying `sort()` to a character vector: note that the default value is
+#'   probably not what you would want.
+#'   
+#'   If `sort_order` is a column for which a *lower* value indicates a higher association,
+#'   i.e. it's a form of p-value, `decreasing = TRUE` will place lower values on top
+#'   and higher values at the bottom.
+#'   
+#'   For any other column, `decreasing = TRUE` will place higher values on top and
+#'   lower values at the bottom.
+#' @param ... Additional arguments.
+#'
+#' @return An object of class [`assoc_scores`].
+#' @export
+#' @exportS3Method sort assoc_scores
+#'
+#' @examples
+#' a <- c(10,    30,    15,    1)
+#' b <- c(200, 1000,  5000,  300)
+#' c <- c(100,   14,    16,    4)
+#' d <- c(300, 5000, 10000, 6000)
+#' types <- c("four", "fictitious", "toy", "examples")
+#' (scores <- assoc_abcd(a, b, c, d, types = types))
+#' 
+#' print(scores, sort_order = "PMI")
+#' sorted_scores <- sort(scores, sort_order = "PMI")
+#' sorted_scores
+#' 
+#' sort(scores, decreasing = FALSE, sort_order = "PMI")
+sort.assoc_scores <- function(x, decreasing = TRUE, sort_order = "none", ...) {
+  if (! "assoc_scores" %in% class(x)) {
+    stop("argument 'x' must be of the class 'assoc_scores'")
+  }
+  ord <- sort_assoc_scores(x, sort_order, decreasing_p = !decreasing,
+                           decreasing_others = decreasing,
+                           decreasing_alpha = decreasing)
+  x[ord$ord,]
+  
 }
 
 # Utility functions ============================================================
@@ -1686,3 +1715,67 @@ read_assoc <- function(file,
   class(d) <- c("assoc_scores", class(d))
   d
 }
+
+# Private functions applied to class ===========================================
+#' Sort an 'assoc_scores' object
+#'
+#' @param x Object of class [`assoc_scores`] (not tested)
+#' @param sort_order Criterion to sort by. If `"none"`, `NULL` or `NA`, then no sorting is done.
+#'   If `"alpha"`, it sorts based on the type. If it's a name of the column, that
+#'   column will be used for sorting. If the vector has multiple items, only the
+#'   first one will be taken into account.
+#' @param decreasing_p Whether columns that correspond to p-values (where a lower
+#'   value indicates higher association) should be sorted in decreasing order.
+#' @param decreasing_others Whether columns that do not correspond to p-values,
+#'   i.e. types or other values for which a higher value indicates higher association,
+#'   should be sorted in decreasing order.
+#' @param decreasing_alpha Whether the alphabetic order should be inverted.
+#' @param n Number of elements to sort
+#' @param from Index of first element to sort
+#'
+#' @return A list with three elements (that [print.assoc_scores] needs):
+#'   - `sort_order`: The final sort_order criterion, after validating
+#'   - `idx`: The old indices
+#'   - `ord`: The new indices (this is the only value used in [sort.assoc_scores()])
+#' @noRd
+sort_assoc_scores <- function(
+    x,
+    sort_order = NULL,
+    decreasing_p = FALSE,
+    decreasing_others = TRUE,
+    decreasing_alpha = FALSE,
+    n = nrow(x),
+    from = 1) {
+  
+  if (is.null(sort_order)  ||
+      is.na(sort_order[1])) {
+    sort_order <- "none"
+  } else {
+    sort_order <- sort_order[1]
+  }
+  if (!sort_order %in% c("none", "alpha") &&
+      !sort_order %in% names(x)) {
+    sort_order <- "none" # we choose not to send a warning
+  }
+  res <- list(sort_order = sort_order)
+  if (n == 0) {
+    res$ord = numeric(0)
+    return(res)
+  }
+  # testing and processing sort_order (continued)
+  res$idx <- from:(from + n - 1)
+  res$ord <- res$idx # applies when sort_order is 'none'
+  if (sort_order == "alpha") {
+    res$ord <- order(rownames(x), decreasing = decreasing_alpha)[res$idx]
+  } else if (sort_order %in% c("p_chi2", "p_chi2_Y",
+                               "p_chi2_2T", "p_chi2_2T_Y",
+                               "p_G", "p_G_2T",
+                               "p_t_1", "p_t_2",
+                               "p_fisher_1", "p_fisher_1r")) {
+    res$ord <- order(x[[sort_order]], decreasing = decreasing_p)[res$idx]
+  } else if (!sort_order == "none") {
+    res$ord <- order(x[[sort_order]], decreasing = decreasing_others)[res$idx]
+  }
+  res
+}
+
