@@ -12,6 +12,8 @@ fnames_merge_all(..., sort = FALSE)
 \arguments{
 \item{x, y}{An object of class \code{\link{fnames}}.}
 
+\item{sort}{Boolean value. Should the items in the output be sorted?}
+
 \item{...}{Various objects of class \code{\link{fnames}} or a list of
 objects of class \code{\link{fnames}}.}
 }

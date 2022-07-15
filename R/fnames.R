@@ -18,6 +18,22 @@
 #'
 #' @return An object of class `fnames`, which is a special kind of character
 #'   vector storing the absolute paths of the corpus files.
+#'   It has additional attributes and methods such as:
+#'   - base [`print()`][print.freqlist()], [as.data.frame()],
+#'   [sort()] and [summary()] (which returns the number of items and of unique items),
+#'   - [tibble::as_tibble()],
+#'   - an interactive [explore()] method,
+#'   - a function to get the number of items [n_fnames()],
+#'   - subsetting methods such as [keep_types()], [keep_pos()], etc. including `[]`
+#'   subsetting (see [brackets]), as well as the specific functions [keep_fnames()]
+#'   and [drop_fnames()].
+#'   
+#'   Additional manipulation functions includes [fnames_merge()] to combine
+#'   filenames collections and the [short_names()] family of functions to shorten
+#'   the names.
+#'   
+#'   Objects of class `fnames` can be saved to file with [write_fnames()];
+#'   these files can be read with [read_fnames()].
 #' @export
 #' @name fnames
 #'
@@ -669,6 +685,7 @@ n_fnames <- function(x, ...) {
 #' resorting the items if `sort = TRUE`.
 #'
 #' @param x,y An object of class [`fnames`].
+#' @param sort Boolean value. Should the items in the output be sorted?
 #' @param ... Various objects of class [`fnames`] or a list of
 #'   objects of class [`fnames`]. 
 #'

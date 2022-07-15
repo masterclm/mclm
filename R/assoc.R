@@ -1,7 +1,7 @@
 # TODO implement sort function
 # TODO check as.data.frame
 # TODO do a sort as the last step in assoc_scores
-
+# IDEA maybe add citations in the class definition? (For the measures...)
 
 # All functions in this section assume the data stem from frequency tables of 
 # the form:

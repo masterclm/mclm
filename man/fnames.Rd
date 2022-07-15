@@ -34,6 +34,24 @@ excluded.}
 \value{
 An object of class \code{fnames}, which is a special kind of character
 vector storing the absolute paths of the corpus files.
+It has additional attributes and methods such as:
+\itemize{
+\item base \code{\link[=print.freqlist]{print()}}, \code{\link[=as.data.frame]{as.data.frame()}},
+\code{\link[=sort]{sort()}} and \code{\link[=summary]{summary()}} (which returns the number of items and of unique items),
+\item \code{\link[tibble:as_tibble]{tibble::as_tibble()}},
+\item an interactive \code{\link[=explore]{explore()}} method,
+\item a function to get the number of items \code{\link[=n_fnames]{n_fnames()}},
+\item subsetting methods such as \code{\link[=keep_types]{keep_types()}}, \code{\link[=keep_pos]{keep_pos()}}, etc. including \verb{[]}
+subsetting (see \link{brackets}), as well as the specific functions \code{\link[=keep_fnames]{keep_fnames()}}
+and \code{\link[=drop_fnames]{drop_fnames()}}.
+}
+
+Additional manipulation functions includes \code{\link[=fnames_merge]{fnames_merge()}} to combine
+filenames collections and the \code{\link[=short_names]{short_names()}} family of functions to shorten
+the names.
+
+Objects of class \code{fnames} can be saved to file with \code{\link[=write_fnames]{write_fnames()}};
+these files can be read with \code{\link[=read_fnames]{read_fnames()}}.
 }
 \description{
 Build an object of class \code{fnames}.

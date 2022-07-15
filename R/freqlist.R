@@ -148,10 +148,10 @@
 #'   `blocksize`, `verbose`, `show_dots`, `dot_blocksize`,
 #'   and `file_encoding` are ignored.
 #'
-#' @return Object of class `freqlist`, which is based on the class `table`.
+#' @return An object of class `freqlist`, which is based on the class `table`.
 #'   It has additional attributes and methods such as:
-#'   - base [`print()`][print.freqlist()], [base::as.data.frame()],
-#'   [base::summary()] and [`sort`][sort.freqlist()],
+#'   - base [`print()`][print.freqlist()], [as.data.frame()],
+#'   [summary()] and [`sort`][sort.freqlist()],
 #'   - [tibble::as_tibble()],
 #'   - an interactive [explore()] method,
 #'   - various getters, including [tot_n_tokens()], [n_types()], [n_tokens()],

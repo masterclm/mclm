@@ -184,11 +184,11 @@ If if \code{as_text} is \code{TRUE}, then the arguments
 and \code{file_encoding} are ignored.}
 }
 \value{
-Object of class \code{freqlist}, which is based on the class \code{table}.
+An object of class \code{freqlist}, which is based on the class \code{table}.
 It has additional attributes and methods such as:
 \itemize{
-\item base \code{\link[=print.freqlist]{print()}}, \code{\link[base:as.data.frame]{base::as.data.frame()}},
-\code{\link[base:summary]{base::summary()}} and \code{\link[=sort.freqlist]{sort}},
+\item base \code{\link[=print.freqlist]{print()}}, \code{\link[=as.data.frame]{as.data.frame()}},
+\code{\link[=summary]{summary()}} and \code{\link[=sort.freqlist]{sort}},
 \item \code{\link[tibble:as_tibble]{tibble::as_tibble()}},
 \item an interactive \code{\link[=explore]{explore()}} method,
 \item various getters, including \code{\link[=tot_n_tokens]{tot_n_tokens()}}, \code{\link[=n_types]{n_types()}}, \code{\link[=n_tokens]{n_tokens()}},
