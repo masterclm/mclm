@@ -1,5 +1,38 @@
 # Create an fnames object ======================================================
-# public constructor get_fnames()
+#' Retrieve the names of files in a given path
+#' 
+#' Build an object of class `fnames`.
+#'
+#' @param path The location of the files to be listed.
+#' @param re_pattern Optional regular expression. If present, then only the
+#'   filenames that match it are retrieved (unless `invert = TRUE`, in which
+#'   case those filenames are excluded). The match is done over the absolute
+#'   path of the files.
+#' @param recursive Boolean value. Should the subdirectories of `path` also be
+#'   searched?
+#' @param perl Boolean value. Whether `re_pattern` should be interpreted as a
+#'   PERL flavour of regular expression.
+#' @param invert Boolean value. If `TRUE`, filenames matching `re_pattern` are
+#'   the only ones retrieved. If `FALSE`, filenames matching `re_pattern` are
+#'   excluded.
+#'
+#' @return An object of class `fnames`, which is a special kind of character
+#'   vector storing the absolute paths of the corpus files.
+#' @export
+#' @name fnames
+#'
+#' @examples
+#' \dontrun{
+#' cwd_fnames <- get_fnames(recursive = FALSE)
+#' cwd_fnames
+#' print(cwd_fnames)
+#' as.data.frame(cwd_fnames)
+#' as_tibble(cwd_fnames)
+#' 
+#' sort(cwd_fnames)
+#' 
+#' summary(cwd_fnames)
+#' }
 get_fnames <- function(path = ".",
                   re_pattern = NULL,
                   recursive = TRUE,
@@ -17,6 +50,10 @@ get_fnames <- function(path = ".",
 }
 
 # S3 methods from mclm =========================================================
+
+#' @rdname explore
+#' @exportS3Method explore fnames
+#' @export
 explore.fnames <- function(x,
                            n = 20,
                            from = 1,
@@ -121,7 +158,10 @@ explore.fnames <- function(x,
 }
 
 ## Subsetting ------------------------------------------------------------------
-# public S3 function drop_pos()
+
+#' @rdname keep_pos
+#' @exportS3Method drop_pos fnames
+#' @export
 drop_pos.fnames <- function(x, pos, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -130,7 +170,9 @@ drop_pos.fnames <- function(x, pos, ...) {
   keep_pos.fnames(x, pos, invert = TRUE, ...)
 }
 
-# public S3 function keep_pos()
+#' @rdname keep_pos
+#' @exportS3Method keep_pos fnames
+#' @export
 keep_pos.fnames <- function(x, pos, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"fnames" %in% class(x)) {
@@ -176,7 +218,9 @@ keep_pos.fnames <- function(x, pos, invert = FALSE, ...) {
   result
 }
 
-# public S3 function drop_types()
+#' @rdname keep_types
+#' @exportS3Method drop_types fnames
+#' @export
 drop_types.fnames <- function(x, types, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -185,7 +229,9 @@ drop_types.fnames <- function(x, types, ...) {
   keep_types.fnames(x, types, invert = TRUE, ...)
 }
 
-# public S3 function keep_types()
+#' @rdname keep_types
+#' @exportS3Method keep_types fnames
+#' @export
 keep_types.fnames <- function(x, types, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"fnames" %in% class(x)) {
@@ -215,7 +261,10 @@ keep_types.fnames <- function(x, types, invert = FALSE, ...) {
   # return result
   result
 }
-# public S3 function drop_bool()
+
+#' @rdname keep_bool
+#' @exportS3Method drop_bool fnames
+#' @export
 drop_bool.fnames <- function(x, bool, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -224,7 +273,9 @@ drop_bool.fnames <- function(x, bool, ...) {
   keep_bool.fnames(x, !bool, ...)
 }
 
-# public S3 function keep_bool()
+#' @rdname keep_bool
+#' @exportS3Method keep_bool fnames
+#' @export
 keep_bool.fnames <- function(x, bool, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"fnames" %in% class(x)) {
@@ -256,7 +307,9 @@ keep_bool.fnames <- function(x, bool, invert = FALSE, ...) {
   result
 }
 
-# public S3 function drop_re()
+#' @rdname keep_re
+#' @exportS3Method drop_re fnames
+#' @export
 drop_re.fnames <- function(x, pattern, perl = TRUE, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -265,7 +318,9 @@ drop_re.fnames <- function(x, pattern, perl = TRUE, ...) {
   keep_re.fnames(x, pattern, perl = perl, invert = TRUE, ...)
 }
 
-# public S3 function keep_re()
+#' @rdname keep_re
+#' @exportS3Method keep_re fnames
+#' @export
 keep_re.fnames <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"fnames" %in% class(x)) {
@@ -324,6 +379,9 @@ keep_re.fnames <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   result
 }
 
+#' @rdname brackets
+#' @exportS3Method `[` fnames
+#' @export
 `[.fnames` <- function(x, i, invert = FALSE, ...) {
   if (!"fnames" %in% class(x)) {
     stop("subsetted object must be of class 'fnames'")
@@ -364,23 +422,30 @@ keep_re.fnames <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   result
 }
 
-
+#' @rdname stubs
+#' @exportS3Method `[<-` fnames
+#' @export
 `[<-.fnames` <- function(x, i, invert = FALSE, value) {
   stop("subset assignment is not supported for 'fnames' objects")
 }
 
 # S3 methods from other packages ===============================================
-# S3 method as.data.frame() for objects of the class 'fnames'
+
+#' @exportS3Method as.data.frame fnames
+#' @export
 as.data.frame.fnames <- function(x, ...) {
   class(x) <- "character"
   data.frame(filename = x, ...)
 }
 
-# S3 method as.tibble() for objects of the class 'fnames'
+#' @exportS3Method tibble::as_tibble fnames
+#' @export
 as_tibble.fnames <- function(x, ...) {
   tibble(filename = x, ...)
 }
-# S3 method sort() for objects of the class 'types'
+
+#' @exportS3Method sort fnames
+#' @export
 sort.fnames <- function(x, decreasing = FALSE, ...) {
   as_fnames(sort(as_character(x),
                  decreasing = decreasing,
@@ -390,13 +455,17 @@ sort.fnames <- function(x, decreasing = FALSE, ...) {
             sort = FALSE)              # sort() already did this    
 }
 
-# public S3 function plot()
+#' @rdname stubs
+#' @exportS3Method plot fnames
+#' @export
 plot.fnames <- function(x, ...) {
   warning("'fnames' objects have no plotting function; doing nothing")
   invisible(NULL)
 }
 
-# public S3 function print()
+#' @rdname mclm_print
+#' @exportS3Method print fnames
+#' @export
 print.fnames <- function(x,
                          n = 20, from = 1,
                          sort_order = c("none", "alpha"),
@@ -493,7 +562,8 @@ print.fnames <- function(x,
 }
 ## Summary ---------------------------------------------------------------------
 
-# public S3 function summary()
+#' @export
+#' @exportS3Method summary fnames
 summary.fnames <- function(object, ...) {
   if (! "fnames" %in% class(object)) {
     stop("argument 'object' must be of the class 'fnames'")
@@ -505,7 +575,8 @@ summary.fnames <- function(object, ...) {
   result
 }
 
-# public S3 function summary()
+#' @export
+#' @exportS3Method print summary.fnames
 print.summary.fnames <- function(x, ...) {
   if (!"summary.fnames" %in% class(x)) {
     stop("argument 'x' must be of the class 'summary.fnames'")
@@ -520,7 +591,9 @@ print.summary.fnames <- function(x, ...) {
   invisible(x)
 }
 
-# public S3 function plot()
+#' @rdname stubs
+#' @exportS3Method plot summary.fnames
+#' @export
 plot.summary.fnames <- function(x, ...) {
   warning("'summary.fnames' objects have no plotting function; doing nothing")
   invisible(NULL)
