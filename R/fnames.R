@@ -601,18 +601,55 @@ plot.summary.fnames <- function(x, ...) {
 
 # Public functions applied to class ============================================
 
+#' Shorten filenames
+#' 
+#' Helper functions that make the paths to a file shorter.
+#'
+#' @param x An object of class [`fnames`] or a character vector.
+#' @param ... Additional arguments.
+#'
+#' @return An object of the same class as `x`.
+#' @export
+#' @name short_names
+#'
+#' @examples
+#' cwd_fnames <- "some/path/to/a/file.txt"
+#' drop_path(cwd_fnames)
+#' drop_extension(cwd_fnames)
+#' short_names(cwd_fnames) # same as drop_path(drop_extension(cwd_fnames))
+NULL
+
+#' @describeIn short_names Extract the base name of a path, removing the paths leading to it.
 drop_path <- function(x, ...) {
   gsub("^.*/([^/]*)$", "\\1", x, perl = TRUE)
 }
 
+#' @describeIn short_names Remove extension from a filename.
 drop_extension <- function(x, ...) {
   gsub("^(.*)[.][^.]*$", "\\1", x, perl = TRUE)
 }
 
+#' @describeIn short_names Remove both paths leading to a file and its extension.
 short_names <- function(x, ...) {
   drop_path(drop_extension(x, ...), ...)
 }
 
+#' Count number of items in an 'fnames' object
+#' 
+#' This function counts the number of items, duplicated or not, in an [`fnames`]
+#' object. If there are duplicated items, it will return a warning.
+#'
+#' @param x Object of class [`fnames`].
+#' @param ... Additional arguments.
+#'
+#' @return A number.
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' cwd_fnames <- get_fnames()
+#' n_fnames(cwd_fnames)
+#' }
 n_fnames <- function(x, ...) {
   if (! "fnames" %in% class(x)) {
     stop("argument 'x' must be of the class 'fnames'")
