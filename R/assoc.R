@@ -934,293 +934,152 @@ assoc_abcd <- function(a, b, c, d,
   # output also
   retval$dir <- ifelse(a/m < c/n, -1, 1)     # direction
   
-  
+  compute_measure <- function(measure_names, expr, just_assign = TRUE, triple = FALSE) {
+    if (triple) { # for significance statistics with signed version and p-value
+      measure_names <- c(measure_names, paste0(measure_names, "_signed"))
+      just_assign <- TRUE
+    }
+    
+    if (!any(is.element(c(measure_names, "ALL"), measures))) { # measure is not called
+      return()
+    }
+    
+    if (!just_assign) { # just run code in expr
+      expr
+      show_dot(show_dots)
+      return()
+    }
+    
+    main_name <- measure_names[[1]]
+    retval[[main_name]] <<- expr
+    
+    if (triple) {
+      retval[[paste0(main_name, "_signed")]] <<- retval[[main_name]] * retval$dir
+      
+      if (with_variants) {
+        retval[[paste0("p_", main_name)]] <<- 1 - pchisq(retval[[main_name]], 1)
+      } else {
+        if (!any(is.element(c(main_name, "ALL"), measures))) {
+          retval[[main_name]] <<- NULL
+        }
+      }
+    }
+    show_dot(show_dots)
+  }
+  # Expected values ==
   # -- exp_a --
-  if (is.element("exp_a", measures) ||
-      is.element("expected", measures) ||
-      is.element("ALL", measures)) {
-    retval$exp_a <- ea
-    show_dot(show_dots)
-  }
+  compute_measure(c("exp_a", "expected"), ea)
   # -- exp_b --
-  if (is.element("exp_b", measures) ||
-      is.element("expected", measures) ||
-      is.element("ALL", measures)) {
-    retval$exp_b <- eb
-    show_dot(show_dots)
-  }
+  compute_measure(c("exp_b", "expected"), eb)
   # -- exp_c --
-  if (is.element("exp_c", measures) ||
-      is.element("expected", measures) ||
-      is.element("ALL", measures)) {
-    retval$exp_c <- ec
-    show_dot(show_dots)
-  }
+  compute_measure(c("exp_c", "expected"), ec)
   # -- exp_d --
-  if (is.element("exp_d", measures) ||
-      is.element("expected", measures) ||
-      is.element("ALL", measures)) {
-    retval$exp_d <- ed
-    show_dot(show_dots)
-  }
+  compute_measure(c("exp_d", "expected"), ed)
   
   # Measures ==
   # -- DP_rows, difference of proportions (aka delta p) --
-  if (is.element("DP_rows", measures) ||
-      is.element("DP", measures) ||
-      is.element("ALL", measures)) {
-    retval$DP_rows <- (a / m) - (c / n)
-    show_dot(show_dots)
-  }
+  compute_measure(c("DP_rows", "DP"), (a / m) - (c / n))
   # -- DP_cols, difference of proportions (aka delta p) --
-  if (is.element("DP_cols", measures) ||
-      is.element("DP", measures) ||
-      is.element("ALL", measures)) {
-    retval$DP_cols <- (a / k) - (b / l)
-    show_dot(show_dots)
-  }
+  compute_measure(c("DP_cols", "DP"), (a / k) - (b / l))
   # -- perc_DIFF_rows, %DIFF --
-  if (is.element("perc_DIFF_rows", measures) ||
-      is.element("perc_DIFF", measures) ||
-      is.element("ALL", measures)) {
-    retval$perc_DIFF_rows <- 100 * (a / m - c / n) / (c / n) 
-    show_dot(show_dots)
-  }  
+  compute_measure(
+    c("perc_DIFF_rows", "perc_DIFF"),
+    100 * (a / m - c / n) / (c / n) 
+    )
   # -- perc_DIFF_cols, %DIFF --
-  if (is.element("perc_DIFF_cols", measures) ||
-      is.element("perc_DIFF", measures) ||
-      is.element("ALL", measures)) {
-    retval$perc_DIFF_cols <- 100 * (a / k - b / l) / (b / l) 
-    show_dot(show_dots)
-  }
+  compute_measure(
+    c("perc_DIFF_cols", "perc_DIFF"),
+    100 * (a / k - b / l) / (b / l) 
+  )
   # -- DC_rows, difference coefficient --
-  if (is.element("DC_rows", measures) ||
-      is.element("DC", measures) ||
-      is.element("ALL", measures)) {
-    retval$DC_rows <- (a/m - c/n) / (a / m + c / n) 
-    show_dot(show_dots)
-  }
+  compute_measure(
+    c("DC_rows", "DC"),
+    (a/m - c/n) / (a / m + c / n)
+  )
   # -- DC_cols, difference coefficient --
-  if (is.element("DC_cols", measures) ||
-      is.element("DC", measures) ||
-      is.element("ALL", measures)) {
-    retval$DC_cols <- (a/k - b/l) / (a / k + b / l)
-    show_dot(show_dots)
-  }    
-  
+  compute_measure(
+    c("DC_cols", "DC"),
+    (a/k - b/l) / (a / k + b / l)
+  )
   
   # -- RR_rows, relative risk --
-  if (is.element("RR_rows", measures) ||
-      is.element("RR", measures) ||
-      is.element("ALL", measures)) {
-    retval$RR_rows <- (a/m) / (c/n)
-    show_dot(show_dots)
-  }
+  compute_measure(c("RR_rows", "RR"), (a/m) / (c/n))
   # -- RR_cols, relative risk --
-  if (is.element("RR_cols", measures) ||
-      is.element("RR", measures) ||
-      is.element("ALL", measures)) {
-    retval$RR_cols <- (a/k) / (b/l)
-    show_dot(show_dots)
-  }
+  compute_measure(c("RR_cols", "RR"), (a/k) / (b/l))
   # -- LR_rows, Hardie's Log Ratio (rows) --
-  if (is.element("LR_rows", measures) ||
-      is.element("LR", measures) ||
-      is.element("ALL", measures)) {
-    retval$LR_rows <- log2((a / m) / (c / n))
-    show_dot(show_dots)
-  }
+  compute_measure(c("LR_rows", "LR"), log2((a / m) / (c / n)))
   # -- LR_cols, Hardie's Log Ratio (cols) --
-  if (is.element("LR_cols", measures) ||
-      is.element("LR", measures) ||
-      is.element("ALL", measures)) {
-    retval$LR_cols <- log2((a / k) / (b / l))
-    show_dot(show_dots)
-  }
-  
+  compute_measure(c("LR_cols", "LR"), log2((a / k) / (b / l)))
   # -- OR, odds ratio --
-  if (is.element("OR", measures) ||
-      is.element("ALL", measures)) {
-    retval$OR <- (a / b) / (c / d) # also equals (a / c) / (b / d)
-    show_dot(show_dots)
-  }
+  compute_measure("OR", (a / b) / (c / d)) # also equals (a / c) / (b / d)
   # -- log_OR --
-  if (is.element("log_OR", measures) ||
-      is.element("ALL", measures)) {
-    retval$log_OR <- log((a / b) / (c / d))
-    show_dot(show_dots)
-  }
+  compute_measure("log_OR", log((a / b) / (c / d)))
   
-  # ==
   # -- MS, minimum sensitivity --
-  if (is.element("MS", measures) ||
-      is.element("ALL", measures)) {
-    retval$MS <- pmin(a / m, a / k)
-    show_dot(show_dots)
-  }
+  compute_measure("MS", pmin(a / m, a / k))
   # -- Jaccard --
-  if (is.element("Jaccard", measures) ||
-      is.element("ALL", measures)) {
-    retval$Jaccard <- a/(m + k -a)
-    show_dot(show_dots)
-  }  
+  compute_measure("Jaccard", a/(m + k -a))
   # -- Dice --
-  if (is.element("Dice", measures) ||
-      is.element("ALL", measures)) {
-    retval$Dice <- (2 * a) / (m + k)
-    show_dot(show_dots)
-  }
+  compute_measure("Dice", (2 * a) / (m + k))
   # -- logDice --
-  if (is.element("logDice", measures) ||
-      is.element("ALL", measures)) {
-    retval$logDice <- 14 + log2((2 * a)/(m + k))
-    show_dot(show_dots)
-  }  
-  
+  compute_measure("logDice", 14 + log2((2 * a)/(m + k)))
   # -- phi (Cramer's V) --
-  if (is.element("phi", measures) ||
-      is.element("ALL", measures)) {
-    retval$phi <- (a * d - b * c) / sqrt((a + b) * (c + d) * (a + c) * (b + d))
-    show_dot(show_dots)
-  }
+  compute_measure("phi", (a * d - b * c) / sqrt((a + b) * (c + d) * (a + c) * (b + d)))
   # -- Q (Yule's Q) --
-  if (is.element("Q", measures) ||
-      is.element("ALL", measures)) {
-    retval$Q <- (a * d - b * c) / (a * d + b * c)
-    show_dot(show_dots)
-  }
-  
+  compute_measure("Q", (a * d - b * c) / (a * d + b * c))
   # -- mu --
-  if (is.element("mu", measures) ||
-      is.element("ALL", measures)) {
-    retval$mu <- a / ea
-    show_dot(show_dots)
-  }    
+  compute_measure("mu", a / ea)
   # -- PMI --
-  if (is.element("PMI", measures) ||
-      is.element("ALL", measures)) {
-    retval$PMI <- log2((a / N) / ((k / N) * (m / N))) # is log van mu
-    show_dot(show_dots)
-  }
+  compute_measure("PMI", log2((a / N) / ((k / N) * (m / N)))) # is log van mu
   # -- pos.PMI --
-  if (is.element("pos_PMI", measures) ||
-      is.element("ALL", measures)) {
-    retval$pos_PMI <- log2((a / N) / ((k / N) * (m / N)))
-    retval$pos_PMI[retval$pos_PMI < 0] <- 0 # remove negs
-    show_dot(show_dots)
-  }
+  compute_measure(
+    "pos_PMI",
+    {
+      retval$pos_PMI <- log2((a / N) / ((k / N) * (m / N)))
+      retval$pos_PMI[retval$pos_PMI < 0] <- 0 # remove negs  
+    },
+    just_assign = FALSE)
   # -- PMI2 --
-  if (is.element("PMI2", measures) ||
-      is.element("ALL", measures)) {
-    retval$PMI2 <- log2(((a^2) / N) / ((k / N) * (m / N))) 
-    show_dot(show_dots)
-  }
+  compute_measure("PMI2", log2(((a^2) / N) / ((k / N) * (m / N))) )
   # -- PMI3 --
-  if (is.element("PMI3", measures) ||
-      is.element("ALL", measures)) {
-    retval$PMI3 <- log2(((a^3) / N) / ((k / N) * (m / N))) 
-    show_dot(show_dots)
-  }  
+  compute_measure("PMI3", log2(((a^3) / N) / ((k / N) * (m / N))) )
   
   # -- chi2 (4-term) --
-  if (is.element("chi2", measures) ||
-      is.element("chi2_signed", measures) ||
-      is.element("ALL", measures)) {
-    retval$chi2 <- (a - ea)^2 / ea + (b - eb)^2 / eb +
-      (c - ec)^2 / ec + (d - ed)^2 / ed
-    retval$chi2_signed <- retval$chi2 * retval$dir
-    if (with_variants) {
-      retval$p_chi2 <- 1 - pchisq(retval$chi2, 1)
-    } else {
-      if (!is.element("chi2", measures) && !is.element("ALL", measures)) {
-        retval$chi2 <- NULL
-      }
-    }
-    show_dot(show_dots)
-  }
+  compute_measure("chi2",
+                  expr = (a - ea)^2 / ea + (b - eb)^2 / eb +
+        (c - ec)^2 / ec + (d - ed)^2 / ed,
+        triple = TRUE
+        )
   # -- chi2 (4-term) with Yates correction --
-  if (is.element("chi2_Y", measures) ||
-      is.element("chi2_Y_signed", measures) ||
-      is.element("ALL", measures)) {
-    retval$chi2_Y <- (abs(a - ea) - .5)^2 / ea + (abs(b - eb) - .5)^2 / eb +
-      (abs(c - ec) - .5)^2 / ec + (abs(d - ed) - .5)^2 / ed
-    retval$chi2_Y_signed <- retval$chi2_Y * retval$dir
-    if (with_variants) {
-      retval$p_chi2_Y <- 1 - pchisq(retval$chi2_Y, 1)
-    } else {
-      if (!is.element("chi2_Y", measures) && !is.element("ALL", measures)) {
-        retval$chi2_Y <- NULL
-      }
-    }
-    show_dot(show_dots)
-  }
+  compute_measure("chi2_Y",
+                  expr = (abs(a - ea) - .5)^2 / ea + (abs(b - eb) - .5)^2 / eb +
+                    (abs(c - ec) - .5)^2 / ec + (abs(d - ed) - .5)^2 / ed,
+                  triple = TRUE
+                  )
   # -- chi2 (2-term) --
-  if (is.element("chi2_2T", measures) ||
-      is.element("chi2_2T_signed", measures) ||
-      is.element("ALL", measures)) {
-    retval$chi2_2T <- (a - ea)^2 / ea + (c - ec)^2 / ec
-    retval$chi2_2T_signed <- retval$chi2_2T * retval$dir
-    if (with_variants) {
-      retval$p_chi2_2T <- 1 - pchisq(retval$chi2_2T, 1)
-    } else {
-      if (!is.element("chi2_2T", measures) && !is.element("ALL", measures)) {
-        retval$chi2_2T <- NULL
-      }
-    }
-    show_dot(show_dots)
-  }
+  compute_measure("chi2_2T",
+                  expr = (a - ea)^2 / ea + (c - ec)^2 / ec,
+                  triple = TRUE
+                  )
   # -- chi2 (2-term) with Yates correction --
-  if (is.element("chi2_2T_Y", measures) ||
-      is.element("chi2_2T_Y_signed", measures) ||
-      is.element("ALL", measures)) {
-    retval$chi2_2T_Y <- (abs(a - ea) - .5)^2 / ea + (abs(c - ec) - .5)^2 / ec
-    retval$chi2_2T_Y_signed <- retval$chi2_2T_Y * retval$dir
-    if (with_variants) {
-      retval$p_chi2_2T_Y <- 1 - pchisq(retval$chi2_2T_Y, 1)
-    } else {
-      if (!is.element("chi2_2T_Y", measures) && !is.element("ALL", measures)) {
-        retval$chi2_2T_Y <- NULL
-      }
-    }
-    show_dot(show_dots)
-  }
-  
+  compute_measure("chi2_2T_Y",
+                  expr = (abs(a - ea) - .5)^2 / ea + (abs(c - ec) - .5)^2 / ec,
+                  triple = TRUE
+                  )
   # -- G (4-term) --
   # NOTE I call this G, but often in linguistics the name G2 is used
-  if (is.element("G", measures) ||
-      is.element("G_signed", measures) ||
-      is.element("ALL", measures)) {
-    retval$G <- 2 * (a * log(a / ea) + b * log(b / eb) +
-                       c * log(c / ec) + d * log(d / ed))
-    retval$G_signed <- retval$G * retval$dir
-    if (with_variants) {
-      retval$p_G <- 1 - pchisq(retval$G, 1)
-    } else {
-      if (!is.element("G", measures) && !is.element("ALL", measures)) {
-        retval$G <- NULL
-      }
-    }
-    show_dot(show_dots)
-  }
+  compute_measure("G",
+                  expr = 2 * (a * log(a / ea) + b * log(b / eb) +
+                                c * log(c / ec) + d * log(d / ed)),
+                  triple = TRUE
+                  )
   # -- G (2-term) --
-  if (is.element("G_2T", measures) ||
-      is.element("G_2T_signed", measures) ||
-      is.element("ALL", measures)) {
-    retval$G_2T <- 2 * (a * log(a / ea) + c * log(c / ec))
-    retval$G_2T_signed <- retval$G_2T * retval$dir
-    if (with_variants) {
-      retval$p_G_2T <- 1 - pchisq(retval$G_2T, 1)     
-    } else {
-      if (!is.element("G_2T", measures) && !is.element("ALL", measures)) {
-        retval$G_2T <- NULL
-      }
-    }
-    show_dot(show_dots)
-  }
-  
+  compute_measure("G_2T",
+                  expr = 2 * (a * log(a / ea) + c * log(c / ec)),
+                  triple = TRUE
+                  )
   # -- t --
-  if (is.element("t", measures) ||
-      is.element("ALL", measures)) {
+  compute_measure("t", just_assign = FALSE, expr = {
     retval$t <- ((a / N - k / N * m / N) /
                    sqrt(((a / N) * (1 - a / N)) / N))
     if (with_variants) {
@@ -1233,13 +1092,9 @@ assoc_abcd <- function(a, b, c, d,
       }
       retval$t_2_as_chisq1 <- p_to_chisq1(retval$p_t_2)
     }
-    show_dot(show_dots)
-  }
-  
+  })
   # -- fisher (one-sided!) --
-  if (is.element("fisher", measures) ||
-      is.element("p_fisher_1", measures) ||
-      is.element("ALL", measures)) {
+  compute_measure(c("fisher", "p_fisher_1"), just_assign = FALSE, expr = {
     retval$p_fisher_1 <- 1 - phyper(a - 1, m, n, k) # attraction
     if (with_variants) {
       retval$fisher_1_as_chisq1 <- p_to_chisq1(retval$p_fisher_1)
@@ -1259,8 +1114,7 @@ assoc_abcd <- function(a, b, c, d,
         retval$fisher_2_as_chisq1 <- p_to_chisq1(retval$p_fisher_2)
       }
     }
-    show_dot(show_dots)
-  }
+  })
   
   # quick conversion from list to data.frame
   class(retval) <- c("assoc_scores", "data.frame")
