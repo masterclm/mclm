@@ -194,6 +194,9 @@ scores %>%
   select(type, a, PMI, G_signed)
 ```
 
+> Some frequencies are 0.5: they are original `0`s that were transformed to avoid
+breaking computations that cannot be performed with zeros (e.g. $\log$, division by 0).
+
 From such a selection we can create a `types` object of words that are significantly more attracted to the 20th Century speeches than to the 18th and 19th Century speeches.
 
 ```{r scores-types, exercise = TRUE, exercise.eval = TRUE, exercise.setup = "scores"}
