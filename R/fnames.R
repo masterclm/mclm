@@ -1,46 +1,4 @@
-# =============================================================================
-# the class "types" and related classes
-# =============================================================================
-
-# to be exported:
-#     get_fnames()
-#     fnames_merge()
-#     fnames_merge_all()
-#     as_fnames()
-#     drop_path()
-#     drop_extension()
-#     short_names()
-#     as.data.frame.fnames() [S3method]
-#     as_tibble.fnames() [S3method]
-#     plot.fnames() [S3method]
-#     print.fnames() [S3method]
-#     keep_pos.fnames() [S3method]
-#     keep_types.fnames() [S3method]
-#     keep_fnames()
-#     keep_re.fnames() [S3method]
-#     keep_bool.fnames() [S3method]
-#     drop_pos.fnames() [S3method]
-#     drop_types.fnames() [S3method]
-#     drop_fnames()
-#     drop_re.fnames() [S3method]
-#     drop_bool.fnames() [S3method]
-#     read_fnames()
-#     write_fnames()
-#     n_fnames()
-#     sort.fnames() [S3method]
-#     summary.fnames() [S3method]
-#     print.summary.fnames() [S3method]
-#     plot.summary.fnames() [S3method]
-
-# dependencies:
-#     readr::locale()
-#     readr::read_lines()
-#     readr::write_lines()
-#     stringr::str_sort()
-#     stringr::str_trim()
-#     stringr::str_split()
-#     dplyr::union()
-
+# Create an fnames object ======================================================
 # public constructor get_fnames()
 get_fnames <- function(path = ".",
                   re_pattern = NULL,
@@ -58,180 +16,15 @@ get_fnames <- function(path = ".",
   x
 }
 
-# S3 method as.data.frame() for objects of the class 'fnames'
-as.data.frame.fnames <- function(x, ...) {
-  class(x) <- "character"
-  data.frame(filename = x, ...)
-}
-
-# S3 method as.tibble() for objects of the class 'fnames'
-as_tibble.fnames <- function(x, ...) {
-  tibble(filename = x, ...)
-}
-
-drop_path <- function(x, ...) {
-  gsub("^.*/([^/]*)$", "\\1", x, perl = TRUE)
-}
-
-drop_extension <- function(x, ...) {
-  gsub("^(.*)[.][^.]*$", "\\1", x, perl = TRUE)
-}
-
-short_names <- function(x, ...) {
-  drop_path(drop_extension(x, ...), ...)
-}
-
-# S3 method sort() for objects of the class 'types'
-sort.fnames <- function(x, decreasing = FALSE, ...) {
-  as_fnames(sort(as_character(x),
-                 decreasing = decreasing,
-                 na.last = NA,
-                 ...),
-            remove_duplicates = FALSE, # not needed
-            sort = FALSE)              # sort() already did this    
-}
-
-n_fnames <- function(x, ...) {
-  if (! "fnames" %in% class(x)) {
-    stop("argument 'x' must be of the class 'fnames'")
-  }
-  without_duplicates <- length(table(x))
-  with_duplicates <- length(x)
-  if (without_duplicates < with_duplicates) {
-    warning("duplicates detected and counted double in 'fnames' object")
-  }
-  with_duplicates
-}  
-
-
-# public function fnames_merge()
-# merge two fnames objects
-fnames_merge <- function(x, y, sort = FALSE) {
-  if ((!"fnames" %in% class(x)) || (!"fnames" %in% class(y))) {
-    stop("both x and y must be of the class 'fnames'")
-  }
-  fnames_merge_two(x, y, sort = sort)
-}  
-
-# public function fnames_merge_all()
-# merge two or more fnames objects
-# ---------------------------------------------------------------------------
-fnames_merge_all <- function(..., sort = FALSE) {
-  arg_list <- list(...)
-  result_car <- NULL  # result for car of arg_list
-  result_cdr <- NULL  # result for cdr of arg_list
-  # -- processing car ----------------------------
-  if (length(arg_list) > 0) {
-    car <- arg_list[[1]]
-    if ("fnames" %in% class(car)) {
-      result_car <- car
-    } else if (is.list(car) && length(car) > 0) {
-      result_car <- do.call("fnames_merge_all", car)
-    }
-  }   
-  # -- processing cdr ----------------------------
-  if (length(arg_list) > 1) {
-    cdr <- arg_list[-1]
-    result_cdr <- do.call("fnames_merge_all", cdr)
-  }
-  # -- merge results if needed -------------------
-  result <- result_car
-  if (is.null(result_car)) {
-    result <- result_cdr
-  } else if (!is.null(result_cdr)) {
-    result <- fnames_merge_two(result_car, result_cdr)
-  }
-  # -- sort if needed ------------------------------------
-  if (sort) {
-    result <- as_fnames(result,
-                        remove_duplicates = FALSE,
-                        sort = TRUE)
-  }
-  # -- result --------------------------------------------
-  result
-}
-
-# private function fnames_merge_two()
-# both x and y are assumed to be of class "fnames"
-# ---------------------------------------------------------------------------
-fnames_merge_two <- function(x, y, sort = FALSE) {
-  as_fnames(dplyr::union(x, y),
-            remove_duplicates = FALSE, # done by union
-            sort = sort)
-}
-
-as_fnames <- function(x,
-                      remove_duplicates = TRUE,
-                      sort = TRUE,
-                      ...) {
-  result <- x
-  if ("freqlist" %in% class(result)) {
-    result <- type_names(result)
-  }
-  if (is.null(result)) {
-    result <- vector(mode = "character", length = 0)
-  } else if (!"character" %in% class(result)) {
-    result <- as.character(result)
-  }
-  result <- result[!is.na(result)] # remove NAs
-  if (remove_duplicates && (length(result) > 0)) {
-    result <- names(table(result))
-  }
-  if (sort) {
-    result <- stringr::str_sort(result)
-  }
-  class(result) <- c("fnames",
-                     setdiff(class(result), c("types", "tokens")))
-  result
-}
-
-# public S3 function plot()
-plot.fnames <- function(x, ...) {
-  warning("'fnames' objects have no plotting function; doing nothing")
-  invisible(NULL)
-}
-
-# public S3 function summary()
-summary.fnames <- function(object, ...) {
-  if (! "fnames" %in% class(object)) {
-    stop("argument 'object' must be of the class 'fnames'")
-  }
-  result <- list()
-  result$n_items <- length(object)
-  result$n_unique_items <- length(table(object))
-  class(result) <- "summary.fnames"
-  result
-}
-
-# public S3 function summary()
-print.summary.fnames <- function(x, ...) {
-  if (!"summary.fnames" %in% class(x)) {
-    stop("argument 'x' must be of the class 'summary.fnames'")
-  }
-  cat("Filename collection of length ",
-      x$n_items,
-      "\n",
-      sep = "")
-  if (x$n_unique_items < x$n_items) {
-    cat("[duplicates present and counted double]\n")
-  }
-  invisible(x)
-}
-
-# public S3 function plot()
-plot.summary.fnames <- function(x, ...) {
-  warning("'summary.fnames' objects have no plotting function; doing nothing")
-  invisible(NULL)
-}
-
+# S3 methods from mclm =========================================================
 explore.fnames <- function(x,
                            n = 20,
                            from = 1,
                            perl = TRUE,
                            use_clear = TRUE,
-                            ...) {
+                           ...) {
   if (interactive()) {
-    length_x <- n_types(x)                     # n items in x
+    length_x <- n_fnames(x)                     # n items in x
     cur_command <- "i"                         # "idle" (no change of state)
     cur_com_verb <- substr(cur_command, 1, 1)  # actual command 
     cur_regex <- ".*"                          # last regex that was used
@@ -276,19 +69,19 @@ explore.fnames <- function(x,
           old_regex <- cur_regex
           old_hits <- cur_hits
           tryCatch({
-               f_arg <- cleanup_spaces(
-                  substr(cur_command, 2, nchar(cur_command)))
-               if (nchar(f_arg) == 0) {
-                 cur_regex <- old_regex
-               } else {
-                 cur_regex <- f_arg
-               }
-               cur_hits <- grep(cur_regex, x, perl = perl)
-             },
-             error = function(e) {
-               cur_regex <- old_regex
-               cur_hits <- old_hits
-             })
+            f_arg <- cleanup_spaces(
+              substr(cur_command, 2, nchar(cur_command)))
+            if (nchar(f_arg) == 0) {
+              cur_regex <- old_regex
+            } else {
+              cur_regex <- f_arg
+            }
+            cur_hits <- grep(cur_regex, x, perl = perl)
+          },
+          error = function(e) {
+            cur_regex <- old_regex
+            cur_hits <- old_hits
+          })
           tot_n_hits <- length(cur_hits)
           if (nchar(f_arg) == 0) {
             cur_hits <- cur_hits[cur_hits > from]
@@ -297,8 +90,8 @@ explore.fnames <- function(x,
           }
           pos_cur_hit <- tot_n_hits - length(cur_hits) + 1 
           if (length(cur_hits) > 0) {
-             from <- cur_hits[1]
-             assign("type_regex", cur_regex, envir = print_extra)
+            from <- cur_hits[1]
+            assign("type_regex", cur_regex, envir = print_extra)
           } 
         } else if (cur_com_verb == "g") { ## g stands for '[g]o to item'
           old_from <- from
@@ -312,7 +105,7 @@ explore.fnames <- function(x,
       if (!is.null(print_extra$type_regex)) {
         cat(mclm_style_dim(paste0("search pattern: ", print_extra$type_regex, "\n")))
         cat(mclm_style_dim(paste0("<looking at matching item ", pos_cur_hit,
-                            " out of ", tot_n_hits, " matching items>\n"))) 
+                                  " out of ", tot_n_hits, " matching items>\n"))) 
       }
       cat(mclm_style_dim(char_line())); cat("\n")
       cat(mclm_style_dim("Enter command (? for help; q to quit explore mode) "))
@@ -327,104 +120,7 @@ explore.fnames <- function(x,
   invisible(x)
 }
 
-
-
-# public S3 function print()
-print.fnames <- function(x,
-                        n = 20, from = 1,
-                        sort_order = c("none", "alpha"),
-                        extra = NULL,
-                        ...) {
-  # testing and processing argument 'x'
-  if (!"fnames" %in% class(x)) {
-    stop("x must be of the class 'fnames'")
-  }
-  n_types <- length(x)
-  # testing and processing argument 'n'
-  if (length(n) == 0) {
-    stop("n must be a numeric vector of length one")
-  } else if (length(n) > 1) {
-    n <- n[1]
-    warning("only using n[1] instead of the whole of n")
-  } 
-  if (is.na(n) || !is.numeric(n)) {
-    stop("inappropriate value for n")
-  }
-  n <- max(0, round(n))
-  # testing and processing argument 'from'
-  if (length(from) == 0) {
-    stop("from must be a numeric vector of length one")
-  } else if (length(from) > 1) {
-    from <- from[1]
-    warning("only using from[1] instead of the whole of from")
-  } 
-  if (is.na(from) || !is.numeric(from)) {
-    stop("inappropriate value for from")
-  }
-  from <- max(1, round(from))
-  # adjusting 'n' to 'from'
-  n <- max(0, min(n, n_types - from + 1))
-  # testing and processing argument 'sort_order'
-  if (is.null(sort_order)  ||
-      is.na(sort_order[1]) ||
-      (!sort_order[1] %in% c("alpha", "none"))) {
-    sort_order <- "none"
-    warning("unknown sort_order value found; 'none' assumed")
-  }  
-  if (n > 0) {
-    idx <- from:(from + n - 1)
-    ord <- idx # applies when sort_order is 'none'
-    if (sort_order[1] == "alpha") {
-      ord <- order(x)[idx]
-    }  
-  }
-  # testing argument 'extra'
-  if (!is.null(extra) && !is.environment(extra)) {
-    stop("incorrect use of the argument 'extra'")
-  }  
-  # printing 'x'
-  cat(mclm_style_dim(paste0(
-    "Filename collection of length ",
-    n_types,
-    "\n")))
-  if (n > 0) {
-    types <- x[ord]
-    format_idx <- format(c("", 
-                           format(idx, scientify = FALSE, 
-                                  justify = "right")), 
-                         justify = "right")    
-    # we don't use format() [problems with unicode !]
-    # nor do we use stringi::stri_pad_left [hickups with greek and Set.locale]
-    nchar_types <- nchar(types)
-    if (!is.null(extra$type_regex)) {
-      types <- show_matches(types, extra$type_regex)
-    }    
-    format_types <- mclm_pad_left(
-                      c("filename", types),
-                      max(nchar("filename"), nchar_types),
-                      nchar_x = c(nchar("filename"), nchar_types))
-    # -- print titles
-    cat(format_idx[1], " ", sep = "")
-    cat(format_types[1], "\n", sep = "")
-    # -- print horizontal lines
-    cat(paste0(rep_len(" ", nchar(format_idx[1])), collapse = ""),
-        " ",
-        paste0(rep_len("-", nchar(format_types[1])), collapse = ""),
-        sep = "")
-    cat("\n")
-    # -- optionally print dots
-    if (from > 1) cat(mclm_style_very_dim("...\n"))
-    # -- print items  
-    for (j in seq_along(idx)) {
-      cat(mclm_style_very_dim(format_idx[j + 1]), " ", 
-          format_types[j + 1], "\n", sep = "")
-    }
-    # -- optionally print dots
-    if ((from + n - 1) < n_types) cat(mclm_style_very_dim("...\n"))
-  }
-  invisible(x)
-}
-
+## Subsetting ------------------------------------------------------------------
 # public S3 function drop_pos()
 drop_pos.fnames <- function(x, pos, ...) {
   dot_args <- names(list(...))
@@ -509,77 +205,56 @@ keep_types.fnames <- function(x, types, invert = FALSE, ...) {
   if (length(x) == 0) {
     result <- x
   } else {
-    # -- old code, which followed different logic -------------------------
-    # # prepare creation of result
-    # if (invert) {
-    #   mtch <- match(x, types)
-    #   mtch <- is.na(mtch)
-    # } else {
-    #   mtch <- match(types, x) # we avoid x_ranks[types] and x[types]
-    #   mtch <- mtch[!is.na(mtch)]
-    # }
-    # ---------------------------------------------------------------------
     mtch <- !is.na(match(x, types)) # we avoid x_ranks[types] and x[types]
     if (invert) {
       mtch <- !mtch
     }
-    # --------------------------------------------------------------------
+    
     result <- subset_fnames(x, mtch)
   }
   # return result
   result
 }
-
-# drop_fnames() : drops from x the items y
-drop_fnames <- function(x, y, ...) {
+# public S3 function drop_bool()
+drop_bool.fnames <- function(x, bool, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
     stop("argument 'invert' is not supported")
   }
-  keep_fnames(x, y, invert = TRUE, ...)
+  keep_bool.fnames(x, !bool, ...)
 }
 
-# keep_fnames() : drops from y anything but the items y
-keep_fnames <- function(x, y, invert = FALSE, ...) {
+# public S3 function keep_bool()
+keep_bool.fnames <- function(x, bool, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"fnames" %in% class(x)) {
     stop("x must be of class 'fnames'")
   }
-  # -- test and process argument 'types'
-  types <- as.character(y) # turns NULL into character(0)
-  types <- types[!is.na(types)]
+  # -- test and process argument 'bool'
+  if (is.null(bool)) stop("bool must not be NULL")
+  if (!is.logical(bool)) stop("bool must be a logical vector")
+  if (any(is.na(bool))) stop("bool must not contain NAs")
+  if (length(x) != length(bool)) bool <- rep_len(bool, length(x))
   # -- test and process argument 'invert' !
   if (is.null(invert)) {
     stop("invert must not be NULL")    
   }
   if (!is.logical(invert) || is.na(invert[1])) {
     stop("invert must either be TRUE or FALSE")
-  }  
-  # build result
+  }
+  if (length(invert) > 1) {
+    warning("invert contains multiple items; only invert[1] is used")
+  }
+  if (invert[1]) bool <- !bool
+  # create result
   if (length(x) == 0) {
     result <- x
-  } else {
-    # -- old code, which followed different logic -------------------------
-    # # prepare creation of result
-    # if (invert) {
-    #   mtch <- match(x, types)
-    #   mtch <- is.na(mtch)
-    # } else {
-    #   mtch <- match(types, x) # we avoid x_ranks[types] and x[types]
-    #   mtch <- mtch[!is.na(mtch)]
-    # }
-    # ---------------------------------------------------------------------
-    mtch <- !is.na(match(x, types)) # we avoid x_ranks[types] and x[types]
-    if (invert) {
-      mtch <- !mtch
-    }
-    # --------------------------------------------------------------------
-    result <- subset_fnames(x, mtch)
+  } else {  
+    result <- subset_fnames(x, bool)
   }
   # return result
   result
 }
-
 
 # public S3 function drop_re()
 drop_re.fnames <- function(x, pattern, perl = TRUE, ...) {
@@ -649,109 +324,6 @@ keep_re.fnames <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   result
 }
 
-# public S3 function drop_bool()
-drop_bool.fnames <- function(x, bool, ...) {
-  dot_args <- names(list(...))
-  if ("invert" %in% dot_args) {
-    stop("argument 'invert' is not supported")
-  }
-  keep_bool.fnames(x, !bool, ...)
-}
-
-# public S3 function keep_bool()
-keep_bool.fnames <- function(x, bool, invert = FALSE, ...) {
-  # -- test and process argument 'x'
-  if (!"fnames" %in% class(x)) {
-    stop("x must be of class 'fnames'")
-  }
-  # -- test and process argument 'bool'
-  if (is.null(bool)) stop("bool must not be NULL")
-  if (!is.logical(bool)) stop("bool must be a logical vector")
-  if (any(is.na(bool))) stop("bool must not contain NAs")
-  if (length(x) != length(bool)) bool <- rep_len(bool, length(x))
-  # -- test and process argument 'invert' !
-  if (is.null(invert)) {
-    stop("invert must not be NULL")    
-  }
-  if (!is.logical(invert) || is.na(invert[1])) {
-    stop("invert must either be TRUE or FALSE")
-  }
-  if (length(invert) > 1) {
-    warning("invert contains multiple items; only invert[1] is used")
-  }
-  if (invert[1]) bool <- !bool
-  # create result
-  if (length(x) == 0) {
-    result <- x
-  } else {  
-    result <- subset_fnames(x, bool)
-  }
-  # return result
-  result
-}
-
-# private subset selection function
-# x is assumed to be a types object (not tested)
-# sel can be:
-#  - numeric vector with positions
-#  - boolean vector
-subset_fnames <- function(x, sel) {
-  result <- as.character(x)[sel]
-  class(result) <- c("fnames",
-                     setdiff(class(x),
-                             c("tokens", "types")))
-  result
-}
-
-
-
-read_fnames <- function(file,
-                        sep = NA,
-                        file_encoding = "UTF-8",
-                        trim_fnames = FALSE,
-                        ...) {
-  result <- readr::read_lines(file,
-                              locale = readr::locale(encoding = file_encoding))
-  if (!is.na(sep) && is.character(sep)  && (length(sep) > 0)) {
-    result <- unlist(stringr::str_split(result, sep[1]))
-  }
-  if (trim_fnames) {
-    result <- stringr::str_trim(result) 
-  }
-  # to consider: not run following line if config file says
-  #              txt_comment_char is "" and not "#"
-  result <- gsub('#.*$', '', result, perl = TRUE) 
-  result <- result[nchar(result) > 0]
-  result <- restore_unicode(result) 
-  class(result) <- c("fnames", setdiff(class(result), c("tokens", "types")))  
-  result
-}
-
-
-# public function write_fnames()
-#  - writes a 'types' object to a txt file
-#  - by default also creates an associated config file
-# ------------------------------------------------------
-write_fnames <- function(x,
-                        file,
-                        make_config_file = TRUE,
-                        ...) {
-  if (! "fnames" %in% class(x)) {
-    stop("argument 'x' must be of the class 'fnames'")
-  }
-  # hide any real '#' that is actually part of a type
-  x <- gsub('#', '<U+0023>', x, perl = TRUE) 
-  readr::write_lines(x, file)
-  if (make_config_file) {
-    config <- list(data_class = "fnames",
-                   txt_header = "FALSE",
-                   txt_quote = "",
-                   txt_comment_char = "#")
-    write_config(config, file)
-  }
-  invisible(x)
-}
-
 `[.fnames` <- function(x, i, invert = FALSE, ...) {
   if (!"fnames" %in% class(x)) {
     stop("subsetted object must be of class 'fnames'")
@@ -796,3 +368,371 @@ write_fnames <- function(x,
 `[<-.fnames` <- function(x, i, invert = FALSE, value) {
   stop("subset assignment is not supported for 'fnames' objects")
 }
+
+# S3 methods from other packages ===============================================
+# S3 method as.data.frame() for objects of the class 'fnames'
+as.data.frame.fnames <- function(x, ...) {
+  class(x) <- "character"
+  data.frame(filename = x, ...)
+}
+
+# S3 method as.tibble() for objects of the class 'fnames'
+as_tibble.fnames <- function(x, ...) {
+  tibble(filename = x, ...)
+}
+# S3 method sort() for objects of the class 'types'
+sort.fnames <- function(x, decreasing = FALSE, ...) {
+  as_fnames(sort(as_character(x),
+                 decreasing = decreasing,
+                 na.last = NA,
+                 ...),
+            remove_duplicates = FALSE, # not needed
+            sort = FALSE)              # sort() already did this    
+}
+
+# public S3 function plot()
+plot.fnames <- function(x, ...) {
+  warning("'fnames' objects have no plotting function; doing nothing")
+  invisible(NULL)
+}
+
+# public S3 function print()
+print.fnames <- function(x,
+                         n = 20, from = 1,
+                         sort_order = c("none", "alpha"),
+                         extra = NULL,
+                         ...) {
+  # testing and processing argument 'x'
+  if (!"fnames" %in% class(x)) {
+    stop("x must be of the class 'fnames'")
+  }
+  n_types <- length(x)
+  # testing and processing argument 'n'
+  if (length(n) == 0) {
+    stop("n must be a numeric vector of length one")
+  } else if (length(n) > 1) {
+    n <- n[1]
+    warning("only using n[1] instead of the whole of n")
+  } 
+  if (is.na(n) || !is.numeric(n)) {
+    stop("inappropriate value for n")
+  }
+  n <- max(0, round(n))
+  # testing and processing argument 'from'
+  if (length(from) == 0) {
+    stop("from must be a numeric vector of length one")
+  } else if (length(from) > 1) {
+    from <- from[1]
+    warning("only using from[1] instead of the whole of from")
+  } 
+  if (is.na(from) || !is.numeric(from)) {
+    stop("inappropriate value for from")
+  }
+  from <- max(1, round(from))
+  # adjusting 'n' to 'from'
+  n <- max(0, min(n, n_types - from + 1))
+  # testing and processing argument 'sort_order'
+  if (is.null(sort_order)  ||
+      is.na(sort_order[1]) ||
+      (!sort_order[1] %in% c("alpha", "none"))) {
+    sort_order <- "none"
+    warning("unknown sort_order value found; 'none' assumed")
+  }  
+  if (n > 0) {
+    idx <- from:(from + n - 1)
+    ord <- idx # applies when sort_order is 'none'
+    if (sort_order[1] == "alpha") {
+      ord <- order(x)[idx]
+    }  
+  }
+  # testing argument 'extra'
+  if (!is.null(extra) && !is.environment(extra)) {
+    stop("incorrect use of the argument 'extra'")
+  }  
+  # printing 'x'
+  cat(mclm_style_dim(paste0(
+    "Filename collection of length ",
+    n_types,
+    "\n")))
+  if (n > 0) {
+    types <- x[ord]
+    format_idx <- format(c("", 
+                           format(idx, scientify = FALSE, 
+                                  justify = "right")), 
+                         justify = "right")    
+    # we don't use format() [problems with unicode !]
+    # nor do we use stringi::stri_pad_left [hickups with greek and Set.locale]
+    nchar_types <- nchar(types)
+    if (!is.null(extra$type_regex)) {
+      types <- show_matches(types, extra$type_regex)
+    }    
+    format_types <- mclm_pad_left(
+      c("filename", types),
+      max(nchar("filename"), nchar_types),
+      nchar_x = c(nchar("filename"), nchar_types))
+    # -- print titles
+    cat(format_idx[1], " ", sep = "")
+    cat(format_types[1], "\n", sep = "")
+    # -- print horizontal lines
+    cat(paste0(rep_len(" ", nchar(format_idx[1])), collapse = ""),
+        " ",
+        paste0(rep_len("-", nchar(format_types[1])), collapse = ""),
+        sep = "")
+    cat("\n")
+    # -- optionally print dots
+    if (from > 1) cat(mclm_style_very_dim("...\n"))
+    # -- print items  
+    for (j in seq_along(idx)) {
+      cat(mclm_style_very_dim(format_idx[j + 1]), " ", 
+          format_types[j + 1], "\n", sep = "")
+    }
+    # -- optionally print dots
+    if ((from + n - 1) < n_types) cat(mclm_style_very_dim("...\n"))
+  }
+  invisible(x)
+}
+## Summary ---------------------------------------------------------------------
+
+# public S3 function summary()
+summary.fnames <- function(object, ...) {
+  if (! "fnames" %in% class(object)) {
+    stop("argument 'object' must be of the class 'fnames'")
+  }
+  result <- list()
+  result$n_items <- length(object)
+  result$n_unique_items <- length(table(object))
+  class(result) <- "summary.fnames"
+  result
+}
+
+# public S3 function summary()
+print.summary.fnames <- function(x, ...) {
+  if (!"summary.fnames" %in% class(x)) {
+    stop("argument 'x' must be of the class 'summary.fnames'")
+  }
+  cat("Filename collection of length ",
+      x$n_items,
+      "\n",
+      sep = "")
+  if (x$n_unique_items < x$n_items) {
+    cat("[duplicates present and counted double]\n")
+  }
+  invisible(x)
+}
+
+# public S3 function plot()
+plot.summary.fnames <- function(x, ...) {
+  warning("'summary.fnames' objects have no plotting function; doing nothing")
+  invisible(NULL)
+}
+
+# Public functions applied to class ============================================
+
+drop_path <- function(x, ...) {
+  gsub("^.*/([^/]*)$", "\\1", x, perl = TRUE)
+}
+
+drop_extension <- function(x, ...) {
+  gsub("^(.*)[.][^.]*$", "\\1", x, perl = TRUE)
+}
+
+short_names <- function(x, ...) {
+  drop_path(drop_extension(x, ...), ...)
+}
+
+n_fnames <- function(x, ...) {
+  if (! "fnames" %in% class(x)) {
+    stop("argument 'x' must be of the class 'fnames'")
+  }
+  without_duplicates <- length(table(x))
+  with_duplicates <- length(x)
+  if (without_duplicates < with_duplicates) {
+    warning("duplicates detected and counted double in 'fnames' object")
+  }
+  with_duplicates
+}  
+
+
+# public function fnames_merge()
+# merge two fnames objects
+fnames_merge <- function(x, y, sort = FALSE) {
+  if ((!"fnames" %in% class(x)) || (!"fnames" %in% class(y))) {
+    stop("both x and y must be of the class 'fnames'")
+  }
+  fnames_merge_two(x, y, sort = sort)
+}  
+
+# public function fnames_merge_all()
+# merge two or more fnames objects
+fnames_merge_all <- function(..., sort = FALSE) {
+  arg_list <- list(...)
+  result_car <- NULL  # result for car of arg_list
+  result_cdr <- NULL  # result for cdr of arg_list
+  # -- processing car --
+  if (length(arg_list) > 0) {
+    car <- arg_list[[1]]
+    if ("fnames" %in% class(car)) {
+      result_car <- car
+    } else if (is.list(car) && length(car) > 0) {
+      result_car <- do.call("fnames_merge_all", car)
+    }
+  }   
+  # -- processing cdr --
+  if (length(arg_list) > 1) {
+    cdr <- arg_list[-1]
+    result_cdr <- do.call("fnames_merge_all", cdr)
+  }
+  # -- merge results if needed ---
+  result <- result_car
+  if (is.null(result_car)) {
+    result <- result_cdr
+  } else if (!is.null(result_cdr)) {
+    result <- fnames_merge_two(result_car, result_cdr)
+  }
+  # -- sort if needed --
+  if (sort) {
+    result <- as_fnames(result,
+                        remove_duplicates = FALSE,
+                        sort = TRUE)
+  }
+  # -- result --
+  result
+}
+
+# drop_fnames() : drops from x the items y
+drop_fnames <- function(x, y, ...) {
+  dot_args <- names(list(...))
+  if ("invert" %in% dot_args) {
+    stop("argument 'invert' is not supported")
+  }
+  keep_fnames(x, y, invert = TRUE, ...)
+}
+
+# keep_fnames() : drops from y anything but the items y
+keep_fnames <- function(x, y, invert = FALSE, ...) {
+  # -- test and process argument 'x'
+  if (!"fnames" %in% class(x)) {
+    stop("x must be of class 'fnames'")
+  }
+  # -- test and process argument 'types'
+  types <- as.character(y) # turns NULL into character(0)
+  types <- types[!is.na(types)]
+  # -- test and process argument 'invert' !
+  if (is.null(invert)) {
+    stop("invert must not be NULL")    
+  }
+  if (!is.logical(invert) || is.na(invert[1])) {
+    stop("invert must either be TRUE or FALSE")
+  }  
+  # build result
+  if (length(x) == 0) {
+    result <- x
+  } else {
+    mtch <- !is.na(match(x, types)) # we avoid x_ranks[types] and x[types]
+    if (invert) {
+      mtch <- !mtch
+    }
+    
+    result <- subset_fnames(x, mtch)
+  }
+  # return result
+  result
+}
+
+read_fnames <- function(file,
+                        sep = NA,
+                        file_encoding = "UTF-8",
+                        trim_fnames = FALSE,
+                        ...) {
+  result <- readr::read_lines(file,
+                              locale = readr::locale(encoding = file_encoding))
+  if (!is.na(sep) && is.character(sep)  && (length(sep) > 0)) {
+    result <- unlist(stringr::str_split(result, sep[1]))
+  }
+  if (trim_fnames) {
+    result <- stringr::str_trim(result) 
+  }
+  # to consider: not run following line if config file says
+  #              txt_comment_char is "" and not "#"
+  result <- gsub('#.*$', '', result, perl = TRUE) 
+  result <- result[nchar(result) > 0]
+  result <- restore_unicode(result) 
+  class(result) <- c("fnames", setdiff(class(result), c("tokens", "types")))  
+  result
+}
+
+
+# public function write_fnames()
+#  - writes a 'types' object to a txt file
+#  - by default also creates an associated config file
+write_fnames <- function(x,
+                         file,
+                         make_config_file = TRUE,
+                         ...) {
+  if (! "fnames" %in% class(x)) {
+    stop("argument 'x' must be of the class 'fnames'")
+  }
+  # hide any real '#' that is actually part of a type
+  x <- gsub('#', '<U+0023>', x, perl = TRUE) 
+  readr::write_lines(x, file)
+  if (make_config_file) {
+    config <- list(data_class = "fnames",
+                   txt_header = "FALSE",
+                   txt_quote = "",
+                   txt_comment_char = "#")
+    write_config(config, file)
+  }
+  invisible(x)
+}
+
+# Private functions applied to class ===========================================
+# private function fnames_merge_two()
+# both x and y are assumed to be of class "fnames"
+fnames_merge_two <- function(x, y, sort = FALSE) {
+  as_fnames(dplyr::union(x, y),
+            remove_duplicates = FALSE, # done by union
+            sort = sort)
+}
+
+as_fnames <- function(x,
+                      remove_duplicates = TRUE,
+                      sort = TRUE,
+                      ...) {
+  result <- x
+  if ("freqlist" %in% class(result)) {
+    result <- type_names(result)
+  }
+  if (is.null(result)) {
+    result <- vector(mode = "character", length = 0)
+  } else if (!"character" %in% class(result)) {
+    result <- as.character(result)
+  }
+  result <- result[!is.na(result)] # remove NAs
+  if (remove_duplicates && (length(result) > 0)) {
+    result <- names(table(result))
+  }
+  if (sort) {
+    result <- stringr::str_sort(result)
+  }
+  class(result) <- c("fnames",
+                     setdiff(class(result), c("types", "tokens")))
+  result
+}
+
+
+
+
+# private subset selection function
+# x is assumed to be a types object (not tested)
+# sel can be:
+#  - numeric vector with positions
+#  - boolean vector
+subset_fnames <- function(x, sel) {
+  result <- as.character(x)[sel]
+  class(result) <- c("fnames",
+                     setdiff(class(x),
+                             c("tokens", "types")))
+  result
+}
+
+

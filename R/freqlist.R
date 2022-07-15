@@ -1024,6 +1024,7 @@ as_tibble.freqlist <- function(x, ...) {
   result
 }
 
+# IDEA a rank/frequency plot could be an option, right?
 #' @rdname stubs
 #' @exportS3Method plot freqlist
 #' @export
