@@ -7,7 +7,6 @@
 \alias{explore.conc}
 \alias{explore.fnames}
 \alias{explore.freqlist}
-\alias{explore.default}
 \alias{explore.types}
 \title{Interactively navigate through an object}
 \usage{
@@ -29,8 +28,6 @@ explore(x, ...)
 \method{explore}{fnames}(x, n = 20, from = 1, perl = TRUE, use_clear = TRUE, ...)
 
 \method{explore}{freqlist}(x, n = 20, from = 1, perl = TRUE, use_clear = TRUE, ...)
-
-\method{explore}{default}(x, ...)
 
 \method{explore}{types}(x, n = 20, from = 1, perl = TRUE, use_clear = TRUE, ...)
 }
@@ -65,7 +62,37 @@ Invisibly, \code{x}.
 \description{
 This method only works in an interactive R session to open
 'exploration mode', in which the user can navigate through the
-object \code{x} by means of brief commands. In 'exploration mode' the user can
-ask of a list of available commands by keying in \verb{?}, followed by \code{ENTER}.
-The user can quiet 'exploration mode' by keying in \code{q}, followed by \code{ENTER}.
+object \code{x} by means of brief commands.
+}
+\details{
+\code{explore()} is different from other R instructions because it does not
+automatically stop executing and show a new regular prompt (\code{>}) in the console.
+Instead it shows a special prompt (\verb{>>}) at which you can use \code{explore()}-specific
+commands. Note that at the special prompt \verb{>>} none of the regular R instructions
+will work. The instructions that do work at this prompt, for \code{explore()}, are
+listed below. After each instruction the user must press \code{ENTER}.
+\itemize{
+\item \code{b} (begin): The first items in \code{x} are shown.
+\item \code{e} (end): The last items in \code{x} are shown.
+\item \code{d} (down \emph{n} items): The 'next page' of items is shown.
+\item \code{u} (up \emph{n} items): The 'previous page' of items is shown.
+\item \code{n} (next item): The list/table shifts one item down the list.
+\item \code{p} (previous item): The list/table shifts one item up the list.
+\item \verb{g \{linenumber\}} (go to...): Jump to line \code{{linenumber}}.
+
+E.g. \verb{g 1000} will jump to the 1000th line.
+\item \verb{f \{regex\}} (find...): Jump to the next item matching the regular expression \code{{regex}}.
+
+E.g. \verb{f (?xi) astic $} will jump to the next item ending in \code{"astic"}.
+The software starts searching from the \emph{second item} presently visible onwards.
+
+\code{f} will jump to the next item matching the last regular expression used with
+\verb{f \{regex\}}.
+
+This command is \strong{not} available when \code{x} is a \code{\link{conc}} object.
+\item \code{l} (left): In \code{\link{assoc_scores}} objects, move one column to the left.
+\item \code{r} (right): In \code{\link{assoc_scores}} objects, move one column to the right.
+\item \verb{?}: A help page is displayed, showing all possible commands.
+\item \code{q} (quit): Terminate interactive session.
+}
 }

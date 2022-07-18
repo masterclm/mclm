@@ -7,8 +7,6 @@
 \alias{keep_re.fnames}
 \alias{drop_re.freqlist}
 \alias{keep_re.freqlist}
-\alias{keep_re.default}
-\alias{drop_re.default}
 \alias{drop_re.types}
 \alias{keep_re.types}
 \title{Subset an object based on regular expressions}
@@ -24,10 +22,6 @@ drop_re(x, pattern, perl = TRUE, ...)
 \method{drop_re}{freqlist}(x, pattern, perl = TRUE, ...)
 
 \method{keep_re}{freqlist}(x, pattern, perl = TRUE, invert = FALSE, ...)
-
-\method{keep_re}{default}(x, pattern, perl = TRUE, invert = FALSE, ...)
-
-\method{drop_re}{default}(x, pattern, perl = TRUE, ...)
 
 \method{drop_re}{types}(x, pattern, perl = TRUE, ...)
 

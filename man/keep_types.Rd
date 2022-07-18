@@ -3,12 +3,10 @@
 \name{keep_types}
 \alias{keep_types}
 \alias{drop_types}
-\alias{drop_types.default}
 \alias{drop_types.fnames}
 \alias{keep_types.fnames}
 \alias{drop_types.freqlist}
 \alias{keep_types.freqlist}
-\alias{keep_types.default}
 \alias{drop_types.types}
 \alias{keep_types.types}
 \title{Subset an object based on a selection of types}
@@ -17,8 +15,6 @@ keep_types(x, types, invert = FALSE, ...)
 
 drop_types(x, types, ...)
 
-\method{drop_types}{default}(x, types, ...)
-
 \method{drop_types}{fnames}(x, types, ...)
 
 \method{keep_types}{fnames}(x, types, invert = FALSE, ...)
@@ -26,8 +22,6 @@ drop_types(x, types, ...)
 \method{drop_types}{freqlist}(x, types, ...)
 
 \method{keep_types}{freqlist}(x, types, invert = FALSE, ...)
-
-\method{keep_types}{default}(x, types, invert = FALSE, ...)
 
 \method{drop_types}{types}(x, types, ...)
 

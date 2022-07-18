@@ -8,6 +8,15 @@
 \alias{[<-.freqlist}
 \alias{plot.freqlist}
 \alias{plot.summary.freqlist}
+\alias{explore.default}
+\alias{keep_pos.default}
+\alias{drop_pos.default}
+\alias{keep_re.default}
+\alias{drop_re.default}
+\alias{keep_types.default}
+\alias{drop_types.default}
+\alias{keep_bool.default}
+\alias{drop_bool.default}
 \alias{n_tokens.default}
 \alias{n_types.default}
 \alias{type_names.default}
@@ -32,6 +41,24 @@
 \method{plot}{freqlist}(x, ...)
 
 \method{plot}{summary.freqlist}(x, ...)
+
+\method{explore}{default}(x, ...)
+
+\method{keep_pos}{default}(x, pos, invert = FALSE, ...)
+
+\method{drop_pos}{default}(x, pos, ...)
+
+\method{keep_re}{default}(x, pattern, perl = TRUE, invert = FALSE, ...)
+
+\method{drop_re}{default}(x, pattern, perl = TRUE, ...)
+
+\method{keep_types}{default}(x, types, invert = FALSE, ...)
+
+\method{drop_types}{default}(x, types, ...)
+
+\method{keep_bool}{default}(x, bool, invert = FALSE, ...)
+
+\method{drop_bool}{default}(x, bool, ...)
 
 \method{n_tokens}{default}(x, ...)
 

@@ -5,10 +5,38 @@
 #' 
 #' This method only works in an interactive R session to open
 #' 'exploration mode', in which the user can navigate through the
-#' object `x` by means of brief commands. In 'exploration mode' the user can
-#' ask of a list of available commands by keying in `?`, followed by `ENTER`.
-#' The user can quiet 'exploration mode' by keying in `q`, followed by `ENTER`.
-#'
+#' object `x` by means of brief commands.
+#' 
+#' `explore()` is different from other R instructions because it does not
+#' automatically stop executing and show a new regular prompt (`>`) in the console.
+#' Instead it shows a special prompt (`>>`) at which you can use `explore()`-specific
+#' commands. Note that at the special prompt `>>` none of the regular R instructions
+#' will work. The instructions that do work at this prompt, for `explore()`, are
+#' listed below. After each instruction the user must press `ENTER`.
+#' 
+#' - `b` (begin): The first items in `x` are shown.
+#' - `e` (end): The last items in `x` are shown.
+#' - `d` (down *n* items): The 'next page' of items is shown.
+#' - `u` (up *n* items): The 'previous page' of items is shown.
+#' - `n` (next item): The list/table shifts one item down the list.
+#' - `p` (previous item): The list/table shifts one item up the list.
+#' - `g {linenumber}` (go to...): Jump to line `{linenumber}`.
+#'   
+#'     E.g. `g 1000` will jump to the 1000th line.
+#' - `f {regex}` (find...): Jump to the next item matching the regular expression `{regex}`.
+#'   
+#'     E.g. `f (?xi) astic $` will jump to the next item ending in `"astic"`.
+#'     The software starts searching from the *second item* presently visible onwards.
+#'  
+#'     `f` will jump to the next item matching the last regular expression used with
+#'     `f {regex}`.
+#'   
+#'      This command is **not** available when `x` is a [`conc`] object.
+#' - `l` (left): In [`assoc_scores`] objects, move one column to the left.
+#' - `r` (right): In [`assoc_scores`] objects, move one column to the right.
+#' - `?`: A help page is displayed, showing all possible commands.
+#' - `q` (quit): Terminate interactive session.
+#' 
 #' @param x An object of any of the classes for which the method is implemented.
 #' @inheritParams mclm_print
 #' @param perl Boolean value. Whether or not the regular expressions used in the
@@ -23,8 +51,7 @@
 #' @order 1
 explore <- function(x, ...) UseMethod("explore")
 
-#' @rdname explore
-#' @exportMethod 
+#' @rdname stubs
 explore.default <- function(x, ...) invisible(x)
 
 # Subsetters ===================================================================
@@ -77,8 +104,7 @@ keep_pos <- function(x,
                      invert = FALSE,
                      ...) UseMethod("keep_pos")
 
-#' @rdname keep_pos
-#' @exportMethod 
+#' @rdname stubs 
 keep_pos.default <- function(x,
                              pos,
                              invert = FALSE,
@@ -93,9 +119,7 @@ drop_pos <- function(x,
                      pos,
                      ...) UseMethod("drop_pos")
 
-#' @rdname keep_pos
-#' @order 2
-#' @exportMethod 
+#' @rdname stubs 
 drop_pos.default <- function(x,
                              pos,
                              ...) {
@@ -143,8 +167,7 @@ keep_re <- function(x,
                     invert = FALSE,
                     ...) UseMethod("keep_re")
 
-#' @rdname keep_re
-#' @exportMethod 
+#' @rdname stubs
 keep_re.default <- function(x,
                             pattern,
                             perl = TRUE,
@@ -162,8 +185,7 @@ drop_re <- function(x,
                     perl = TRUE,
                     ...) UseMethod("drop_re")
 
-#' @rdname keep_re
-#' @exportMethod 
+#' @rdname stubs 
 drop_re.default <- function(x,
                             pattern,
                             perl = TRUE,
@@ -203,8 +225,7 @@ keep_types <- function(x,
                        invert = FALSE,
                        ...) UseMethod("keep_types")
 
-#' @rdname keep_types
-#' @exportMethod 
+#' @rdname stubs 
 keep_types.default <- function(x,
                                types,
                                invert = FALSE,
@@ -220,9 +241,7 @@ drop_types <- function(x,
                        types,
                        ...) UseMethod("drop_types")
 
-#' @rdname keep_types
-#' @order 2
-#' @exportMethod 
+#' @rdname stubs
 drop_types.default <- function(x,
                                types,
                                ...) {
@@ -268,8 +287,7 @@ keep_bool <- function(x,
                       invert = FALSE,
                       ...) UseMethod("keep_bool")
 
-#' @rdname keep_bool
-#' @exportMethod 
+#' @rdname stubs 
 keep_bool.default <- function(x,
                               bool,
                               invert = FALSE,
@@ -285,8 +303,7 @@ drop_bool <- function(x,
                       bool,
                       ...) UseMethod("drop_bool")
 
-#' @rdname keep_bool
-#' @exportMethod 
+#' @rdname stubs
 drop_bool.default <- function(x,
                               bool,
                               ...) {
@@ -382,8 +399,6 @@ NULL
 n_tokens <- function(x, ...) UseMethod("n_tokens")
 
 #' @rdname stubs
-#' @exportS3Method n_tokens default
-#' @export
 n_tokens.default <- function(x, ...) {
   warning("unsupported type of x; returning NA")
   as.numeric(NA)
@@ -425,8 +440,6 @@ n_tokens.default <- function(x, ...) {
 n_types <- function(x, ...) UseMethod("n_types")
 
 #' @rdname stubs
-#' @exportS3Method n_types default
-#' @export
 n_types.default <- function(x, ...) {
   warning("unsupported type of x; returning NA")
   as.numeric(NA)
@@ -462,8 +475,6 @@ n_types.default <- function(x, ...) {
 type_names <- function(x, ...) UseMethod("type_names")
 
 #' @rdname stubs
-#' @exportS3Method type_names default
-#' @export
 type_names.default <- function(x, ...) {
   warning("unsupported type of x; returning NA")
   as.character(NA)
@@ -501,8 +512,6 @@ type_names.default <- function(x, ...) {
 tot_n_tokens <- function(x) UseMethod("tot_n_tokens")
 
 #' @rdname stubs
-#' @exportS3Method tot_n_tokens default
-#' @export
 tot_n_tokens.default <- function(x) NULL
 
 #' @rdname tot_n_tokens
@@ -511,8 +520,6 @@ tot_n_tokens.default <- function(x) NULL
 "tot_n_tokens<-" <- function(x, value) UseMethod("tot_n_tokens<-")
 
 #' @rdname stubs
-#' @exportS3Method `tot_n_tokens<-` default
-#' @export
 "tot_n_tokens<-.default" <- function(x, value) x
 
 #' Retrieve or set original ranks
@@ -555,8 +562,6 @@ tot_n_tokens.default <- function(x) NULL
 orig_ranks <- function(x, ...) UseMethod("orig_ranks")
 
 #' @rdname stubs
-#' @exportS3Method rog_ranks default
-#' @export
 orig_ranks.default <- function(x, ...) NULL
 
 #' @rdname orig_ranks
@@ -624,8 +629,6 @@ orig_ranks.default <- function(x, ...) NULL
 ranks <- function(x, ...) UseMethod("ranks")
 
 #' @rdname stubs
-#' @exportS3Method ranks default
-#' @export
 ranks.default <- function(x, ...) NULL
 
 trunc_at <- function(x, pattern, ...) UseMethod("trunc_at")

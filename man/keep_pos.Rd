@@ -2,20 +2,16 @@
 % Please edit documentation in R/generics.R, R/fnames.R, R/freqlist.R, R/types.R
 \name{keep_pos}
 \alias{keep_pos}
-\alias{drop_pos.default}
 \alias{drop_pos.fnames}
 \alias{keep_pos.fnames}
 \alias{drop_pos.freqlist}
 \alias{keep_pos.freqlist}
-\alias{keep_pos.default}
 \alias{drop_pos}
 \alias{drop_pos.types}
 \alias{keep_pos.types}
 \title{Subset an object by index}
 \usage{
 keep_pos(x, pos, invert = FALSE, ...)
-
-\method{drop_pos}{default}(x, pos, ...)
 
 \method{drop_pos}{fnames}(x, pos, ...)
 
@@ -24,8 +20,6 @@ keep_pos(x, pos, invert = FALSE, ...)
 \method{drop_pos}{freqlist}(x, pos, ...)
 
 \method{keep_pos}{freqlist}(x, pos, invert = FALSE, ...)
-
-\method{keep_pos}{default}(x, pos, invert = FALSE, ...)
 
 drop_pos(x, pos, ...)
 

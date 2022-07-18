@@ -1227,7 +1227,6 @@ explore.assoc_scores <- function(
         cat(mclm_style_dim("d: move down n items\n"))
         cat(mclm_style_dim("l: move one column to the left\n"))        
         cat(mclm_style_dim("r: move one column to the right\n"))        
-        cat(mclm_style_dim("d: move down n items\n"))
         cat(mclm_style_dim("g 123: go to item 123\n"))
         cat(mclm_style_dim("f regex: find next match for regex\n"))
         cat(mclm_style_dim("ENTER: back to list of items\n")) 

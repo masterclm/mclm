@@ -7,8 +7,6 @@
 \alias{keep_bool.fnames}
 \alias{drop_bool.freqlist}
 \alias{keep_bool.freqlist}
-\alias{keep_bool.default}
-\alias{drop_bool.default}
 \alias{drop_bool.types}
 \alias{keep_bool.types}
 \title{Subset an object based on logical criteria}
@@ -24,10 +22,6 @@ drop_bool(x, bool, ...)
 \method{drop_bool}{freqlist}(x, bool, ...)
 
 \method{keep_bool}{freqlist}(x, bool, invert = FALSE, ...)
-
-\method{keep_bool}{default}(x, bool, invert = FALSE, ...)
-
-\method{drop_bool}{default}(x, bool, ...)
 
 \method{drop_bool}{types}(x, bool, ...)
 
