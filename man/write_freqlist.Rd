@@ -13,7 +13,7 @@ write_freqlist(x, file, sep = "\\t", make_config_file = TRUE, ...)
 
 \item{sep}{Character vector of length 1. Column separator.}
 
-\item{make_config_file}{Boolean value. Whether or not a configuration file
+\item{make_config_file}{Logical. Whether or not a configuration file
 needs to be created. In most circumstances, this should be set to \code{TRUE}.}
 
 \item{...}{Additional arguments (not implemented).}

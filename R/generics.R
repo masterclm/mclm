@@ -39,9 +39,9 @@
 #' 
 #' @param x An object of any of the classes for which the method is implemented.
 #' @inheritParams mclm_print
-#' @param perl Boolean value. Whether or not the regular expressions used in the
+#' @param perl Logical. Whether or not the regular expressions used in the
 #'   exploration session use the PERL flavour of regular expression.
-#' @param use_clear Boolean. If `TRUE`, and if the feature is supported by the R
+#' @param use_clear Logical. If `TRUE`, and if the feature is supported by the R
 #'   environment, the console will be cleared in between all interactive steps
 #'   in the exploration session.
 #' @param ... Additional arguments.
@@ -72,8 +72,8 @@ explore.default <- function(x, ...) invisible(x)
 #' 
 #' @param x An object of any of the classes for which the method is implemented.
 #' @param ... Additional arguments.
-#' @param invert Boolean vector of length one, which indicates whether the matches
-#'   or the non-matches should be selected.
+#' @param invert Logical. Whether the matches should be selected rather than the
+#'   non-matches.
 #' @param pos A numeric vector, the numbers in which identify positions (= indices)
 #'   of items in `x`.
 #'   
@@ -136,8 +136,8 @@ drop_pos.default <- function(x,
 #' @inheritParams keep_pos
 #' @param pattern Either an object of the class [`re`]
 #'   or a character vector of length one containing a regular expression.
-#' @param perl Boolean vector of length one, which indicates whether or not
-#'   `pattern` is treated as a PCRE flavour regular expression.
+#' @param perl Logical.
+#'   Whether `pattern` is treated as a PCRE flavour regular expression.
 #'   The `perl` argument is only used if `pattern` is a regular character vector.
 #'   If `pattern` is an object of the class [`re`], then the
 #'   `perl` argument is ignored, and the relevant information in the
@@ -332,8 +332,8 @@ drop_bool.default <- function(x,
 #'
 #' @param x An object of any of the classes for which the method is implemented.
 #' @param ... Additional arguments.
-#' @param invert Boolean vector of length one, which indicates whether the matches
-#'   or the non-matches should be selected.
+#' @param invert Logical. Whether the matches should be selected rather than the
+#'   non-matches.
 #' @param i Selection criterion; depending on its class, it behaves differently.
 #'
 #' @return Object of the same class as `x` with the selected elements only.
@@ -532,7 +532,7 @@ tot_n_tokens.default <- function(x) NULL
 #'
 #' @param x An object of any of the classes for which the method is implemented.
 #' @param value Currently it can only be `NULL`.
-#' @param with_names Boolean. Whether or not the items in the output should
+#' @param with_names Logical. Whether or not the items in the output should
 #'   be given names. If `TRUE`, then the names
 #'   of the types in the frequency list are used as names.
 #' @param ... Additional arguments.
@@ -604,7 +604,7 @@ orig_ranks.default <- function(x, ...) NULL
 #' by the order of the items in the frequency list.
 #'
 #' @param x An object of any of the classes for which the method is implemented.
-#' @param with_names Boolean. Whether or not the items in the output should
+#' @param with_names Logical. Whether or not the items in the output should
 #'   be given names. If `TRUE`, then the names
 #'   of the types in the frequency list are used as names.
 #' @param ... Additional arguments.

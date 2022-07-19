@@ -15,7 +15,7 @@
 \arguments{
 \item{x}{Object of class \code{\link{freqlist}}.}
 
-\item{decreasing}{Boolean value. If \code{TRUE} items are sorted from large
+\item{decreasing}{Logical. If \code{TRUE} items are sorted from large
 to small; if \code{FALSE}, from small to large.
 
 Note, however, that ranking in frequency lists is such that lower ranks
@@ -43,7 +43,7 @@ In other words, sorting by frequencies (\code{"freqs"}) with \code{decreasing} s
 to its default value \code{FALSE} results in the lowest frequencies
 ending up at the beginning of the sorted list.}
 
-\item{na_last}{Boolean value defining the behaviour of \code{NA} elements.
+\item{na_last}{Logical defining the behaviour of \code{NA} elements.
 
 This argument is only relevant when \code{sort_crit} is \code{"orig_ranks"}
 because currently names and frequencies are not allowed to be \code{NA}

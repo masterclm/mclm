@@ -15,7 +15,7 @@ corpus from which the frequency list is derived. When \code{tot_n_tokens}
 is \code{NULL}, this total number of tokens will be taken to be the sum
 of the frequencies in \code{x}.}
 
-\item{sort_by_ranks}{Boolean value.
+\item{sort_by_ranks}{Logical.
 If \code{TRUE}, the items in the frequency list are sorted by frequency
 rank. If \code{FALSE}, the items in the frequency list, depending on the
 input type, either are sorted alphabetically or are not sorted at all.}

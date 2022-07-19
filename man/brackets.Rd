@@ -18,8 +18,8 @@
 
 \item{i}{Selection criterion; depending on its class, it behaves differently.}
 
-\item{invert}{Boolean vector of length one, which indicates whether the matches
-or the non-matches should be selected.}
+\item{invert}{Logical. Whether the matches should be selected rather than the
+non-matches.}
 
 \item{...}{Additional arguments.}
 }

@@ -11,7 +11,7 @@ write_types(x, file, make_config_file = TRUE, ...)
 
 \item{file}{Name of the output file}
 
-\item{make_config_file}{Boolean value. Whether or not, next to the actual
+\item{make_config_file}{Logical. Whether or not, next to the actual
 types file, a second output file should be created containing a brief
 description of the format of the types file.}
 

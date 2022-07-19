@@ -34,8 +34,8 @@ drop_bool(x, bool, ...)
 of the correct length, it is \emph{recycled}. Assuming \code{invert} is
 \code{FALSE}, those items are selected for which \code{bool} is \code{TRUE}.}
 
-\item{invert}{Boolean vector of length one, which indicates whether the matches
-or the non-matches should be selected.}
+\item{invert}{Logical. Whether the matches should be selected rather than the
+non-matches.}
 
 \item{...}{Additional arguments.}
 }

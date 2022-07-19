@@ -19,7 +19,7 @@ read_conc(
 
 \item{file_encoding}{Encoding of the input file.}
 
-\item{stringsAsFactors}{Boolean. Whether character data should automatically
+\item{stringsAsFactors}{Logical. Whether character data should automatically
 be converted to factors. It applies to all columns except for \code{"source"},
 \code{"left"}, \code{"match"} and \code{"right"}, which are never converted.}
 

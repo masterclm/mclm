@@ -12,10 +12,10 @@ perl_flavor(x) <- value
 \arguments{
 \item{x}{Object of class \code{\link{re}}.}
 
-\item{value}{Boolean value.}
+\item{value}{Logical.}
 }
 \value{
-A boolean value.
+A logical vector of length 1.
 }
 \description{
 These functions retrieve or set the \code{perl} property of an object of class \code{\link{re}}.

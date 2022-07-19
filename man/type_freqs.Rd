@@ -26,7 +26,7 @@ in the order in which these items appear in \code{types}.
 For all items in \code{types} that do not occur in \code{x},
 a frequency of zero is returned.}
 
-\item{with_names}{Boolean. Whether or not the items in the output should
+\item{with_names}{Logical. Whether or not the items in the output should
 be given names. If \code{with_names} is \code{TRUE}, then the names
 of the types in the frequency list are used as names.}
 

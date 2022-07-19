@@ -127,12 +127,12 @@ cooc_info <- function(target_freqlist,
 #'   'drop token' transformation.
 #' @param token_transf_out A 'replacement string'. This argument works together
 #'   with `re_token_transf_in` and is ignored if either argument is `NULL`.
-#' @param token_to_lower Boolean value. Whether tokens should be converted to
+#' @param token_to_lower Logical. Whether tokens should be converted to
 #'   lowercase before returning the results.
 #'   
 #'   The 'token to lower' operation is conducted immediately after the 'token
 #'   transformation' operation.
-#' @param perl Boolean value. Whether the PCRE flavor of regular expressions
+#' @param perl Logical. Whether the PCRE flavor of regular expressions
 #'   should be used in the arguments that contain regular expressions.
 #' @param blocksize Number indicating how many corpus files are read to memory
 #'   'at each individual step' during the steps in the procedure. Normally the
@@ -140,9 +140,9 @@ cooc_info <- function(target_freqlist,
 #'   exceptionally small corpus files, it may be worthwhile to use a higher
 #'   number, and when one works with exceptionally large corpus files, it may be
 #'   worthwhile to use a lower number.
-#' @param verbose Boolean value. If `TRUE`, messages are pritned to the
+#' @param verbose Logical. If `TRUE`, messages are pritned to the
 #'   console to indicate progress.
-#' @param dot_blocksize Boolean value. If `TRUE`, dots are printed to the
+#' @param dot_blocksize Logical. If `TRUE`, dots are printed to the
 #'   console to indicate progress.
 #' @param file_encoding Encoding of the input files.
 #'   
@@ -530,17 +530,17 @@ text_cooc <- function(x,
 #'   
 #'   If `measures` is `"ALL"`, all supported measures are calculated (but not
 #'   necessarily all the variants; see `with_variants`).
-#' @param with_variants Boolean. Whether, for the requested `measures`, all
+#' @param with_variants Logical. Whether, for the requested `measures`, all
 #'   variants should be included in the output (`TRUE`) or only the main
 #'   version (`FALSE`). See also `p_fisher_2`.
-#' @param show_dots Boolean. Whether a dot should be shown in console each time
+#' @param show_dots Logical. Whether a dot should be shown in console each time
 #'   calculations for a measure are finished.
-#' @param p_fisher_2 Boolean, only relevant if `"fisher"` is included in
+#' @param p_fisher_2 Logical. only relevant if `"fisher"` is included in
 #'   `measures`. If `TRUE`, the p-value for a two-sided test (testing
 #'   for either attraction or repulsion) is also calculated. By default, only
 #'   the (computationally less demanding) p-value for a one-sided test is
 #'   calculated. See `Value` for more details.
-#' @param haldane Boolean value. Should the Haldane-Anscombe correction be used?
+#' @param haldane Logical. Should the Haldane-Anscombe correction be used?
 #'   (See the Details section.)
 #'   
 #'   If `haldane` is `TRUE`, and there is at least one zero frequency

@@ -14,7 +14,7 @@
 #' @param x Character vector of length one. The value of this character vector 
 #'   is assumed to be a well-formed regular expression. In the current implementation
 #'   this is assumed, not checked.
-#' @param perl Boolean. If `TRUE`, `x` is assumed to use PCRE (i.e. Perl
+#' @param perl Logical. If `TRUE`, `x` is assumed to use PCRE (i.e. Perl
 #'   Compatible Regular Expressions) notation. If `FALSE`, `x` is assumed to use
 #'   base R's default regular expression notation.
 #'   Contrary to base R's regular expression functions, [re()] assumes that the
@@ -114,9 +114,9 @@ as.re <- function(x, perl = TRUE, ...) {
 #' any of the functions that support [`re`] objects.
 #'
 #' @param x Object of class [`re`].
-#' @param value Boolean value.
+#' @param value Logical.
 #'
-#' @return A boolean value.
+#' @return A logical vector of length 1.
 #' @export
 #'
 #' @examples
@@ -226,9 +226,87 @@ as_character.re <- function(x, ...) {
 
 # Public regex convenience functions ===========================================
 
+#' Convenience functions in support of regular expressions
+#'
+#' These functions are essentially simple wrappers around base R functions such as
+#' [regexpr()], [gregexpr()], [grepl()], [grep()], [sub()] and [gsub()].
+#' The most important differences between the functions documented here and the
+#' R base functions is the order of the arguments (`x` before `pattern`) and the
+#' fact that the argument `perl` is set to `TRUE` by default.
+#' 
+#' For some of the arguments (e.g. `perl`, `fixed`) the reader is directed to
+#' [base R's regex documentation][base::regex].
+#'
+#' @param x Character vector to be searched or modified.
+#' @param pattern Regular expression specifying what is to be searched.
+#' @param replacement Character vector of length one specifying the replacement
+#'   string. It is to be taken literally, except that the notation `\\1`, `\\2`, etc.
+#'   can be used to refer to groups in `pattern`.
+#' @param ignore.case Logical. Should the search be case insensitive?
+#' @param perl Logical. Whether the regular expressions use the PCRE flavor
+#'   of regular expression. Unlike in base R functions, the default is `TRUE`.
+#' @param fixed Logical. If `TRUE`, `pattern` is a string to be matched as is,
+#'   i.e. wildcards and special characters are not interpreted.
+#' @param useBytes Logical. If `TRUE` the matching is done byte-by-byte rather than
+#'   character-by-character. See 'Details' in [`grep()`].
+#' @param requested_group Numeric.
+#'   If `NULL` or `0`, the output will contain matches for `pattern` as a whole.
+#'   If another number `n` is provided, then the output will not contain matches
+#'   for `pattern` but instead will only contain the matches for the `n`th capturing
+#'   group in `pattern` (the first if `requested_group = 1`, the second if
+#'   `requested_group = 2`...).
+#' @param drop_NA Logical. If `FALSE`, the output always has the same length as
+#'   the input `x` and items that do not contain a match for `pattern` yield `NA`.
+#'   If `TRUE`, such `NA` values are removed and therefore the result might contain
+#'   fewer items than `x`.
+#' @param unlist Logical. If `FALSE`, the output always has the same length as
+#'   the input `x`. More specifically, the result will be a list in which input
+#'   items that do not contain a match for `pattern` yield an empty vector, whereas
+#'   input items that do match will yield a vector of at least length one (depending
+#'   on the number of matches). If `TRUE`, the output is a single vector the length
+#'   of which may be shorter or longer than `x`.
+#' @param ... Additional arguments.
+#'
+#' @return `re_retrieve_first()`, `re_retrieve_last()` and `re_retrieve_all()` return
+#'   either a single vector of character data or a list containing such vectors.
+#'   `re_replace_first()` and `re_replace_all()` return the same type of character
+#'   vector as `x`.
+#'   
+#'   `re_has_matches()` returns a logical vector indicating whether a match was
+#'   found in each of the elements in `x`; `re_which()` returns a numeric
+#'   vector indicating the indices of the elements of `x` for which a match was
+#'   found.
+#' 
+#' @name re_convenience
+#' @examples
+#' x <- tokenize("This is a sentence with a couple of words in it.")
+#' pattern <- "[oe].(.)"
+#' 
+#' re_retrieve_first(x, pattern)
+#' re_retrieve_first(x, pattern, drop_NA = TRUE)
+#' re_retrieve_first(x, pattern, requested_group = 1)
+#' re_retrieve_first(x, pattern, drop_NA = TRUE, requested_group = 1)
+#' 
+#' re_retrieve_last(x, pattern)
+#' re_retrieve_last(x, pattern, drop_NA = TRUE)
+#' re_retrieve_last(x, pattern, requested_group = 1)
+#' re_retrieve_last(x, pattern, drop_NA = TRUE, requested_group = 1)
+#' 
+#' re_retrieve_all(x, pattern)
+#' re_retrieve_all(x, pattern, unlist = FALSE)
+#' re_retrieve_all(x, pattern, requested_group = 1)
+#' re_retrieve_all(x, pattern, unlist = FALSE, requested_group = 1)
+#' 
+#' re_replace_first(x, "([oe].)", "{\\1}")
+#' re_replace_all(x, "([oe].)", "{\\1}")
+NULL
+
+#' @describeIn re_convenience Retrieve from each item in `x` the first match
+#'   of `pattern`.
+#' @export
 re_retrieve_first <- function(x, pattern, 
                               ignore.case = FALSE, perl = TRUE,
-                              fixed = FALSE, useBytes = FALSE, 
+                              fixed = FALSE, useBytes = FALSE,
                               requested_group = NULL,
                               drop_NA = FALSE,
                               ...) {
@@ -260,6 +338,9 @@ re_retrieve_first <- function(x, pattern,
   result
 }
 
+#' @describeIn re_convenience Retrieve from each item in `x`
+#'   the last match of `pattern`.
+#' @export
 re_retrieve_last <- function(x, pattern, 
                              ignore.case = FALSE, perl = TRUE,
                              fixed = FALSE, useBytes = FALSE, 
@@ -294,6 +375,9 @@ re_retrieve_last <- function(x, pattern,
   result
 }
 
+#' @describeIn re_convenience Retrieve from each item in `x`
+#'   all matches of `pattern`.
+#' @export
 re_retrieve_all <- function(x, pattern, 
                             ignore.case = FALSE, perl = TRUE,
                             fixed = FALSE, useBytes = FALSE,
@@ -325,6 +409,8 @@ re_retrieve_all <- function(x, pattern,
   result
 }
 
+#' @describeIn re_convenience Simple wrapper around [grepl()].
+#' @export
 re_has_matches <- function(x, pattern, 
                            ignore.case = FALSE, perl = TRUE,
                            fixed = FALSE, useBytes = FALSE, 
@@ -333,14 +419,18 @@ re_has_matches <- function(x, pattern,
         fixed = fixed, useBytes = useBytes)
 }
 
+#' @describeIn re_convenience Simple wrapper around [grep()].
+#' @export
 re_which <- function(x, pattern, 
                      ignore.case = FALSE, perl = TRUE,
                      fixed = FALSE, useBytes = FALSE, 
                      ...) {
-  grepl(pattern, x, ignore.case = ignore.case, perl = perl,
+  grep(pattern, x, ignore.case = ignore.case, perl = perl,
         fixed = fixed, useBytes = useBytes)
 }
 
+#' @describeIn re_convenience Simple wrapper around [sub()].
+#' @export
 re_replace_first <- function(x, pattern, replacement,
                              ignore.case = FALSE, perl = TRUE,
                              fixed = FALSE, useBytes = FALSE, 
@@ -349,6 +439,8 @@ re_replace_first <- function(x, pattern, replacement,
       perl = perl, fixed = fixed, useBytes = useBytes)
 }
 
+#' @describeIn re_convenience Simple wrapper around [gsub()].
+#' @export
 re_replace_all <- function(x, pattern, replacement,
                            ignore.case = FALSE, perl = TRUE,
                            fixed = FALSE, useBytes = FALSE, ...) {

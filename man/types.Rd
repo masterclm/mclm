@@ -96,12 +96,12 @@ The 'token transformation' operation is conducted immediately after the
 \code{re_token_transf_in} and is ignored if \code{re_token_transf_in}
 is \code{NULL} or \code{NA}.}
 
-\item{token_to_lower}{Boolean value. Whether tokens must be converted
+\item{token_to_lower}{Logical. Whether tokens must be converted
 to lowercase before returning the result.
 The 'token to lower' operation is conducted immediately after the
 'token transformation' operation.}
 
-\item{perl}{Boolean value. Whether the PCRE regular expression
+\item{perl}{Logical. Whether the PCRE regular expression
 flavor is being used in the arguments that contain regular expressions.}
 
 \item{blocksize}{Number that indicates how many corpus files are read to memory
@@ -157,8 +157,8 @@ As a second example, if \code{ngram_size} is \code{5} and
 \item{ngram_open}{Character string used to represent open slots in ngrams in the
 output of this function.}
 
-\item{as_text}{Boolean vector, assumed to be of length 1. Whether
-\code{x} is to be interpreted as a character vector containing the
+\item{as_text}{Logical.
+Whether \code{x} is to be interpreted as a character vector containing the
 actual contents of the corpus (if \code{as_text} is \code{TRUE})
 or as a character vector containing the names of the corpus files
 (if \code{as_text} is \code{FALSE}).

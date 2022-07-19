@@ -33,8 +33,8 @@ drop_types(x, types, ...)
 \item{types}{Either an object of the class \code{\link{types}}
 or a character vector.}
 
-\item{invert}{Boolean vector of length one, which indicates whether the matches
-or the non-matches should be selected.}
+\item{invert}{Logical. Whether the matches should be selected rather than the
+non-matches.}
 
 \item{...}{Additional arguments.}
 }

@@ -40,8 +40,8 @@ If the numbers are negative,
 then their absolute values point to the items that are not to be selected.
 Positive and negative numbers must not be mixed.}
 
-\item{invert}{Boolean vector of length one, which indicates whether the matches
-or the non-matches should be selected.}
+\item{invert}{Logical. Whether the matches should be selected rather than the
+non-matches.}
 
 \item{...}{Additional arguments.}
 }

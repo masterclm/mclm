@@ -43,7 +43,7 @@ explore(x, ...)
 \item{from_col}{Index of the first column to be displayed in the regular area
 (among all selected columns, including frozen columns). If \code{from_col} points}
 
-\item{perl}{Boolean value. Whether or not the regular expressions used in the
+\item{perl}{Logical. Whether or not the regular expressions used in the
 exploration session use the PERL flavour of regular expression.}
 
 \item{sort_order}{Order in which the items are to be printed. In general, possible values
@@ -52,7 +52,7 @@ and \code{"none"} (meaning that the items are not to be sorted).
 If \code{x} is an object of class \code{\link{assoc_scores}}, a column name
 or vector of column names may be provided instead.}
 
-\item{use_clear}{Boolean. If \code{TRUE}, and if the feature is supported by the R
+\item{use_clear}{Logical. If \code{TRUE}, and if the feature is supported by the R
 environment, the console will be cleared in between all interactive steps
 in the exploration session.}
 }

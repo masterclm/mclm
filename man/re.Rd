@@ -17,7 +17,7 @@ as.re(x, perl = TRUE, ...)
 is assumed to be a well-formed regular expression. In the current implementation
 this is assumed, not checked.}
 
-\item{perl}{Boolean. If \code{TRUE}, \code{x} is assumed to use PCRE (i.e. Perl
+\item{perl}{Logical. If \code{TRUE}, \code{x} is assumed to use PCRE (i.e. Perl
 Compatible Regular Expressions) notation. If \code{FALSE}, \code{x} is assumed to use
 base R's default regular expression notation.
 Contrary to base R's regular expression functions, \code{\link[=re]{re()}} assumes that the
