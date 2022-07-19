@@ -102,6 +102,34 @@ as.re <- function(x, perl = TRUE, ...) {
 
 # Public functions applied to the class ========================================
 
+#' Retrieve or set the flavour of a regular expression
+#' 
+#' These functions retrieve or set the `perl` property of an object of class [`re`].
+#' 
+#' The assignment function merely sets the `perl` property so that the `x`
+#' attribute is read as an expression using the PCRE flavor of regular expression
+#' (when `perl = TRUE`) or not (when `perl = FALSE`).
+#' The regular expression itself is not modified: if `perl` is set to an
+#' inappropriate value, the regular expression will no longer function properly in
+#' any of the functions that support [`re`] objects.
+#'
+#' @param x Object of class [`re`].
+#' @param value Boolean value.
+#'
+#' @return A boolean value.
+#' @export
+#'
+#' @examples
+#' (regex <- re("^.{3,}"))
+#' perl_flavor(regex)
+#' 
+#' perl_flavor(regex) <- FALSE
+#' perl_flavor(regex)
+#' regex
+#' 
+#' perl_flavor(regex) <- TRUE
+#' perl_flavor(regex)
+#' regex
 perl_flavor <- function(x) {
   if (!"re" %in% class(x)) {
     stop("x must be an object of the class 're'")
@@ -109,6 +137,8 @@ perl_flavor <- function(x) {
   x$perl
 }
 
+#' @rdname perl_flavor
+#' @export
 `perl_flavor<-` <- function(x, value) {
   if (!"re" %in% class(x)) {
     stop("x must be an object of the class 're'")
