@@ -1,5 +1,56 @@
 # Constructor ==================================================================
 
+#' Build a regular expression
+#' 
+#' Create an object of class `re` or coerce a character vector to an object of
+#' class `re`.
+#' 
+#' This class exists because some functions in the `r packageName()` package
+#' require their arguments to be marked as being regular expressions.
+#' For example, [keep_re()] does not need its `pattern` argument to be a [`re`]
+#' object, but if the user wants to subset items with [brackets] using
+#' a regular expression, they must use a [`re`] object.
+#'
+#' @param x Character vector of length one. The value of this character vector 
+#'   is assumed to be a well-formed regular expression. In the current implementation
+#'   this is assumed, not checked.
+#' @param perl Boolean. If `TRUE`, `x` is assumed to use PCRE (i.e. Perl
+#'   Compatible Regular Expressions) notation. If `FALSE`, `x` is assumed to use
+#'   base R's default regular expression notation.
+#'   Contrary to base R's regular expression functions, [re()] assumes that the
+#'   PCRE regular expression flavor is used by default.
+#' @param ... Additional arguments.
+#'
+#' @return An object of class `re`, which is a wrapper around a character vector
+#'   flagging it as containing a regular expression. In essence it is a named
+#'   list: the `x` item contains the `x` input and the `perl` item contains
+#'   the value of the `perl` argument (`TRUE` by default).
+#'   
+#'   It has basic methods such as [print()], [summary()] and [as.character()].
+#'   
+#' @export
+#' 
+#' @seealso [perl_flavor()], [scan_re()], [cat_re()]
+#'
+#' @examples
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#'   It consisted of three sentences. And it lived happily ever after."
+#' 
+#' (tks <- tokenize(toy_corpus))
+#' 
+#' # In `keep_re()`, the use of `re()` is optional
+#' keep_re(tks, re("^.{3,}"))
+#' keep_re(tks, "^.{3,}")
+#' 
+#' # When using brackets notation, `re()` is necessary
+#' tks[re("^.{3,}")]
+#' tks["^.{3,}"]
+#' 
+#' # build and print a `re` object
+#' re("^.{3,}")
+#' as_re("^.{3,}")
+#' as.re("^.{3,}")
+#' print(re("^.{3,}"))
 re <- function(x, perl = TRUE, ...) {
   # -- test x for errors
   if (!"character" %in% class(x)) {
@@ -35,12 +86,16 @@ re <- function(x, perl = TRUE, ...) {
   result
 }
 
+#' @rdname re
+#' @export
 as_re <- function(x, perl = TRUE, ...) {
   re(x, perl = perl, ...)
 }
 
 # not a big fan of the following notation, but supporting it anyway
 # IDEA remove?
+#' @rdname re
+#' @export
 as.re <- function(x, perl = TRUE, ...) {
   re(x, perl = perl, ...)
 }
@@ -63,6 +118,9 @@ perl_flavor <- function(x) {
 }
 
 # S3 Methods from other packages ===============================================
+
+#' @exportS3Method print re
+#' @export
 print.re <- function(x, ...) {
   if (!"re" %in% class(x)) {
     stop("x must be an object of the class 're'")
@@ -72,6 +130,9 @@ print.re <- function(x, ...) {
   cat(x$x, "\n")
 }
 
+#' @rdname stubs
+#' @exportS3Method plot re
+#' @export
 plot.re <- function(x, ...) {
   if (!"re" %in% class(x)) {
     stop("x must be an object of the class 're'")
@@ -80,6 +141,7 @@ plot.re <- function(x, ...) {
   invisible(NULL)
 }
 
+#' @exportS3Method as.character re
 as.character.re <- function(x, ...) {
   if (!"re" %in% class(x)) {
     stop("x must be an object of the class 're'")
@@ -87,14 +149,10 @@ as.character.re <- function(x, ...) {
   x$x
 }
 
-as_character.re <- function(x, ...) {
-  if (!"re" %in% class(x)) {
-    stop("x must be an object of the class 're'")
-  }
-  x$x
-}
-
 ## Summary ---------------------------------------------------------------------
+
+#' @exportS3Method summary re
+#' @export
 summary.re <- function(object, ...) {
   if (!"re" %in% class(object)) {
     stop("object must be an object of the class 're'")
@@ -104,6 +162,8 @@ summary.re <- function(object, ...) {
   result
 }
 
+#' @exportS3Method  print summary.re
+#' @export
 print.summary.re <- function(x, ...) {
   if (!"summary.re" %in% class(x)) {
     stop("x must be an object of the class 'summary.re'")
@@ -113,12 +173,25 @@ print.summary.re <- function(x, ...) {
   cat(x$x, "\n")
 }
 
+#' @rdname stubs
+#' @exportS3Method plot summary.re
 plot.summary.re <- function(x, ...) {
   if (!"summary.re" %in% class(x)) {
     stop("x must be an object of the class 'summary.re'")
   }
   warning("there is no plot method for 'summary.re' objects; doing nothing")
   invisible(NULL)
+}
+
+# S3 Methods from mclm =========================================================
+
+#' @rdname as_character
+#' @exportS3Method as_character re
+as_character.re <- function(x, ...) {
+  if (!"re" %in% class(x)) {
+    stop("x must be an object of the class 're'")
+  }
+  x$x
 }
 
 # Public regex convenience functions ===========================================

@@ -690,6 +690,8 @@ n_fnames <- function(x, ...) {
 #'   objects of class [`fnames`]. 
 #'
 #' @return An object of class [`fnames`].
+#' 
+#' @export
 #'
 #' @examples
 #' \dontrun{

@@ -692,15 +692,50 @@ as_numeric.default <- function(x, ...) as.numeric(x, ...)
 #' @name mclm_print
 NULL
 
-# Not implemented ==============================================================
+# Coercers =====================================================================
 
+#' Coerce object to character
+#' 
+#' This method turns its argument `x`, or at least part of the information in it,
+#' into a character vector.
+#' 
+#' @param x Object to coerce to character
+#' @param ... Additional arguments
+#' 
+#' @return Object of class character
+#' @export
+#' @order 1
+#' 
+#' @examples 
+#' (tks <- tokenize("The old man and the sea."))
+#' as_character(tks) # turn 'tokens' object into character vector
+#' as.character(tks) # alternative approach
+#' 
+#' as_character(1:10)
+#' as.character(1:10)
+#' 
+#' regex <- re("(?xi) ^ .*")
+#' as_character(regex) # turn 're' object into character vector
+#' as.character(regex) # alternative approach
 as_character <- function(x, ...) UseMethod("as_character")
 
+#' @rdname as_character
+#' @order 2 
 as_character.default <- function(x, ...) as.character(x, ...)
 
+#' Coerce object to a data frame
+#' 
+#' @param x Object to coerce to [data.frame()]
+#' @param ... Additional arguments
+#' 
+#' @return Object of class [`data.frame`]
+#' @export
+#' @order 1
 as_data_frame <- function(x, row.names = NULL,
                           optional = FALSE, ...) UseMethod("as_data_frame")
 
+#' @rdname as_data_frame
+#' @order 2
 as_data_frame.default <- function(x, row.names = NULL, optional = FALSE, ...) {
   as.data.frame(x, row.names = row.names, optional = optional, ...)
 }
