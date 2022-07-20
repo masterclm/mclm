@@ -1,3 +1,5 @@
+# TODO test groups other than 1
+# TODO test useBytes = TRUE
 x <- tokenize("This is a sentence with a couple of words in it.")
 pattern <- "[oe].(.)"
 
