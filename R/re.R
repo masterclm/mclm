@@ -316,7 +316,7 @@ re_retrieve_first <- function(x, pattern,
   m <- lapply(x, gregexpr, pattern = pattern,  
               ignore.case = ignore.case, perl = perl,
               fixed = fixed, useBytes = useBytes)
-  result <- re_trieve(x, m, requested_group)
+  result <- re_retrieve(x, m, requested_group)
   result <- unlist(lapply(result, h_get_first))
   if (drop_NA) {
     result <- result[!is.na(result)]
@@ -420,17 +420,15 @@ re_replace_all <- function(x, pattern, replacement,
 #' 
 #' @return list or vector of matches
 #' @noRd
-re_trieve <- function(x, m, requested_group) {
+re_retrieve <- function(x, m, requested_group) {
   if (is.null(requested_group) || requested_group == 0) {
     result <- Map(function(x, m) h_regmatches(x, m)[[1]], x, m)
   } else if (length(m) > 0 &&
              requested_group >= 1 &&
              requested_group <= length(attr(m[[1]][[1]], 'capture.start')[1,])) {
-    # in following line, changed m to m[[1]] on 2020-11-11
+    # NOTE in following line, changed m to m[[1]] on 2020-11-11
     # but switched back to m on 2021-07-29
-    result <- Map(function(x, m) h_regmatchesgroup(x, m,
-                                                   group = requested_group)[[1]], 
-                  x, m)
+    result <- Map(function(x, m) h_regmatches(x, m, group = requested_group)[[1]], x, m)
   } else {
     result <- rep(NA, length(x))
   }
@@ -464,22 +462,15 @@ re_trieve <- function(x, m, requested_group) {
 #'
 #' @return A list of captured groups (or everything but, if `invert = TRUE`).
 #' @noRd
-h_regmatches <- function(x, m, invert = FALSE) {
-  # Some checks - not strictly necessary for these private functions
-  # QUESTION would it be ok to use purrr::map()?
-  if (length(x) != length(m)) 
+h_regmatches <- function(x, m, invert = FALSE, group = 0) {
+  # CHANGED check for m as list removed because we always use output of gregexpr
+  # CHANGED merged with h_regmatchesgroup because the difference was minimal
+  
+  if (length(x) != length(m)) # QUESTION necessary for a private function with limited usage?
     stop(gettextf("%s and %s must have the same length", 
                   sQuote("x"), sQuote("m")), domain = NA)
   
-  ili <- is.list(m) # will always be the 
-  useBytes <- if (ili) { # check if any element is using useBytes
-    # with this private usage, it will be the same for all elements
-    any(unlist(lapply(m, attr, "useBytes")))
-  } else {
-    any(attr(m, "useBytes"))
-  }
-  
-  if (useBytes) {
+  if (any(unlist(lapply(m, attr, "useBytes")))) {# with this private usage, it will be the same for all elements
     # if we count bytes, we try to convert the Encoding to ASCII
     asc <- iconv(x, "latin1", "ASCII")
     # if the original text cannot be converted to ASCII (because it was not latin1)
@@ -489,141 +480,92 @@ h_regmatches <- function(x, m, invert = FALSE) {
       Encoding(x[ind]) <- "bytes"
   }
   
-  if (!ili && !invert) {
-    ind <- (!is.na(m) & (m > -1L)) # identifies elements with matches
-    so <- m[ind] # starting indices of matches
-    eo <- so + attr(m, "match.length")[ind] - 1L # end indices of matches
-    return(substring(x[ind], so, eo))
+  match_indices <- if (group == 0) {
+    m
+  } else {
+    capture_starts <- lapply(m, attr, "capture.start")
+    lapply(capture_starts, h_reg_group, group = group)
   }
   
-  y <- if (invert) { # NOTE if we will never call it with invert TRUE...
-    # CHANGED moved up and isolated for readability
-    # vector with the length of each match
-    length_matches <- if (ili) { # this could be retrieved within Map(), right?
-      lapply(m, attr, "match.length")
-    } else {
-      attr(m, "match.length")
-    }
-    
-    Map(function(u, so, ml) {
-      # u is the searched character vector
-      # so is starting indices of matches
-      # ml is match lengths
-      n <- length(so)
-      if (n == 1L) { # if there are no matches actually
-        if (is.na(so)) { # this will not happen if m is output from regexpr
-          return(character())
-        } else if (so == -1L) { # if there is no match
-          return(u)
-        }
-      }
-      
-      beg <- if (n > 1L) { # if there are multiple matches
-        eo <- so + ml - 1L # define end index of matches
-        if (any(eo[-n] >= so[-1L])) {# avoid overlap
-          stop(gettextf("need non-overlapping matches for %s", 
-                        sQuote("invert = TRUE")), domain = NA)
-        }
-        c(1L, eo + 1L) # beginning of non matches
-      } else {
-        c(1L, so + ml) # everything but only match?
-      }
-      
-      end <- c(so - 1L, nchar(u)) # before beginning of each match and end of string
-      
-      substring(u, beg, end)
-    }, x, m, length_matches,
-    USE.NAMES = FALSE)
+  match_lengths <- if (group == 0) {
+    lapply(m, attr, "match.length")
   } else {
-    Map(function(u, so, ml) {
-      if (length(so) == 1L) {
-        if (is.na(so) || (so == -1L)) 
-          return(character())
-      }
-      substring(u, so, so + ml - 1L)
-    }, x, m, lapply(m, attr, "match.length"), # it will be a list
-    USE.NAMES = FALSE)
+    capture_lengths <- lapply(m, attr, "capture.length")
+    lapply(capture_lengths, h_reg_group, group = group)
+  }
+    
+  y <- if (invert) {
+    Map(h_reg_invert, x, match_indices, match_lengths, USE.NAMES = FALSE)
+  } else {
+    Map(h_reg_retrieve, x, match_indices, match_lengths, USE.NAMES = FALSE)
   }
   names(y) <- names(x)
   y
 }
 
-#' @rdname h_regmatches
+# NOTE it made more sense to isolate h_reg_invert and h_reg_retrieve when the h_regmatches functions were separated
+# but I think it's still good to have them separated so they can have their documentation...?
+#' Obtain the (non) matches from a gregexpr output
+#' 
+#' For re_regmatches_ functions
+#' 
+#' @param u Searched character vector
+#' @param so Starting indices of the matches (from gregexpr output)
+#' @param ml Match length (From the attribute in gregexpr output)
+#' 
+#' @return Subsetted string with the match or, for `h_reg_invert()`, non-match
 #' @noRd
-h_regmatchesgroup <- function(x, m, invert = FALSE, group = 1) {
-  if (length(x) != length(m)) 
-    stop(gettextf("%s and %s must have the same length", 
-                  sQuote("x"), sQuote("m")), domain = NA)
+h_reg_invert <- function(u, so, ml) {
+  n <- length(so)
+  # CHANGED it considered that so could be NA, but that won't happen with gregexpr output
+  if (n == 1L) { # if there are no matches actually
+    if (so == -1L) { # if there is no match
+      return(u)
+    }
+  }
   
-  ili <- is.list(m)
-  
-  useBytes <- if (ili) {
-    any(unlist(lapply(m, attr, "useBytes")))
+  beg <- if (n > 1L) { # if there are multiple matches
+    eo <- so + ml - 1L # define end index of matches
+    if (any(eo[-n] >= so[-1L])) {# avoid overlap
+      stop(gettextf("need non-overlapping matches for %s", 
+                    sQuote("invert = TRUE")), domain = NA)
+    }
+    c(1L, eo + 1L) # beginning of non matches
   } else {
-    any(attr(m, "useBytes"))
+    c(1L, so + ml) # everything but only match?
   }
   
-  if (useBytes) {
-    asc <- iconv(x, "latin1", "ASCII")
-    ind <- is.na(asc) | (asc != x)
-    if (any(ind)) 
-      Encoding(x[ind]) <- "bytes"
-  }
+  end <- c(so - 1L, nchar(u)) # before beginning of each match and end of string
   
-  if (!ili && !invert) {
-    # Start and end of captures is based on `capture.start` and `capture.length` attrs
-    ind <- (!is.na(m) & (m > -1L))
-    so <- attr(m, "capture.start")[ind][group]      
-    eo <- so + attr(m, "capture.length")[ind][group] - 1L
-    return(substring(x[ind], so, eo))
+  substring(u, beg, end)
+}
+
+#' @rdname h_reg_invert
+#' @noRd
+h_reg_retrieve <- function(u, so, ml) {
+  if (length(so) == 1L) {
+    if (is.na(so) || (so == -1L)) 
+      return(character())
   }
-  y <- if (invert) {
-    Map(function(u, so, ml) {
-      # u is the character to search
-      # so and ml are matrices with as many columns as groups and as many rows
-      # as matches
-      so <- if (nrow(so) >= group) so[,group] else rep(NA,ncol(so))
-      ml <- if (nrow(ml) >= group) ml[,group] else rep(NA,ncol(ml))
-      if ((n <- length(so)) == 1L) {
-        if (is.na(so)) 
-          return(character())
-        else if (so == -1L) 
-          return(u)
-      }
-      beg <- if (n > 1L) {
-        eo <- so + ml - 1L
-        if (any(eo[-n] >= so[-1L])) 
-          stop(gettextf("need non-overlapping matches for %s", 
-                        sQuote("invert = TRUE")), domain = NA)
-        c(1L, eo + 1L)
-      }
-      else {
-        c(1L, so + ml)
-      }
-      end <- c(so - 1L, nchar(u))
-      substring(u, beg, end)
-    }, x,
-    if (ili) lapply(m, attr, "capture.start") else attr(m, "capture.start"),
-    if (ili) lapply(m, attr, "capture.length") else attr(m, "capture.length"),
-    USE.NAMES = FALSE)
+  substring(u, so, so + ml - 1L)
+}
+
+#' Extract group data from gregexpr output
+#'
+#' For h_regmatches_ functions
+#' 
+#' @param capture_data "capture.start" or "capture.length" attributes from a gregexpr
+#'   output.
+#' @param group Number of the group to extract
+#'
+#' @return Vector with start or length values for the requested group
+#' @noRd
+h_reg_group <- function(capture_data, group) {
+  if (nrow(capture_data) >= group) {
+    capture_data[,group]
+  } else {
+    rep(NA, ncol(capture_data))
   }
-  else {
-    Map(function(u, so, ml, group) {
-      so <- if (nrow(so) >= group) so[,group] else rep(NA,ncol(so))
-      ml <- if (nrow(ml) >= group) ml[,group] else rep(NA,ncol(ml))
-      if (length(so) == 1L) {
-        if (is.na(so) || (so == -1L)) 
-          return(character())
-      }
-      substring(u, so, so + ml - 1L)
-    }, x,
-    lapply(m, attr, "capture.start"),
-    lapply(m, attr, "capture.length"),
-    group,
-    USE.NAMES = FALSE)
-  }
-  names(y) <- names(x) 
-  y
 }
 
 #' Retrieve a specific match from a vector or list of matches
