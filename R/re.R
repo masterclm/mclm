@@ -316,26 +316,14 @@ re_retrieve_first <- function(x, pattern,
   m <- lapply(x, gregexpr, pattern = pattern,  
               ignore.case = ignore.case, perl = perl,
               fixed = fixed, useBytes = useBytes)
-  if (is.null(requested_group) || requested_group == 0) {
-    result <- Map(function(x, m) h_regmatches(x, m)[[1]], x, m)
-  } else if (length(m) > 0 &&
-             requested_group >= 1 &&
-             requested_group <= length(attr(m[[1]][[1]], 'capture.start')[1,])) {
-    # in following line, changed m to m[[1]] on 2020-11-11
-    # but switched back to m on 2021-07-29
-    result <- Map(function(x, m) h_regmatchesgroup(x, m,
-                                                   group = requested_group)[[1]], 
-                  x, m)
-  } else {
-    result <- rep(NA, length(x))
-  }
-  names(result) <- NULL
+  result <- re_trieve(x, m, requested_group)
   result <- unlist(lapply(result, h_get_first))
   if (drop_NA) {
     result <- result[!is.na(result)]
   }
   result
 }
+
 
 #' @describeIn re_convenience Retrieve from each item in `x`
 #'   the last match of `pattern`.
@@ -352,20 +340,7 @@ re_retrieve_last <- function(x, pattern,
   m <- lapply(x, gregexpr, pattern = pattern,  
               ignore.case = ignore.case, perl = perl,
               fixed = fixed, useBytes = useBytes)
-  if (is.null(requested_group) || requested_group == 0) {
-    result <- Map(function(x, m) h_regmatches(x, m)[[1]], x, m)
-  } else if (length(m) > 0 &&
-             requested_group >= 1 &&
-             requested_group <= length(attr(m[[1]][[1]], 'capture.start')[1,])) {
-    # in following line, changed m to m[[1]] on 2020-11-11
-    # but switched back to m on 2021-07-29
-    result <- Map(function(x, m) h_regmatchesgroup(x, m,
-                                                   group = requested_group)[[1]], 
-                  x, m)
-  } else {
-    result <- rep(NA, length(x))
-  }
-  names(result) <- NULL
+  result <- re_retrieve(x, m, requested_group)
   result <- unlist(lapply(result, h_get_last))
   if (drop_NA) {
     result <- result[!is.na(result)]
@@ -388,20 +363,7 @@ re_retrieve_all <- function(x, pattern,
   m <- lapply(x, gregexpr, pattern = pattern,  
               ignore.case = ignore.case, perl = perl,
               fixed = fixed, useBytes = useBytes)
-  if (is.null(requested_group) || requested_group == 0) {
-    result <- Map(function(x, m) h_regmatches(x, m)[[1]], x, m)
-  } else if (length(m) > 0 &&
-             requested_group >= 1 &&
-             requested_group <= length(attr(m[[1]][[1]], 'capture.start')[1,])) {
-    # in following line, changed m to m[[1]] on 2020-11-11
-    # but switched back to m on 2021-07-29
-    result <- Map(function(x, m) h_regmatchesgroup(x, m,
-                                                   group = requested_group)[[1]], 
-                  x, m)
-  } else {
-    result <- rep(NA, length(x))
-  }
-  names(result) <- NULL
+  result <- re_retrieve(x, m, requested_group)
   if (unlist) { result <- unlist(result) }
   result
 }
@@ -446,6 +408,35 @@ re_replace_all <- function(x, pattern, replacement,
 }
 
 # Private helper functions =====================================================
+
+#' Private function to retrieve matches
+#' 
+#' This function groups a sequence of steps common to [re_retrieve_first()],
+#' [re_retrieve_last()] and [re_retrieve_all()].
+#' 
+#' @param x Character string to find matches in
+#' @param m List, result from [gregexpr()]
+#' @inheritParams re_convenience
+#' 
+#' @return list or vector of matches
+#' @noRd
+re_trieve <- function(x, m, requested_group) {
+  if (is.null(requested_group) || requested_group == 0) {
+    result <- Map(function(x, m) h_regmatches(x, m)[[1]], x, m)
+  } else if (length(m) > 0 &&
+             requested_group >= 1 &&
+             requested_group <= length(attr(m[[1]][[1]], 'capture.start')[1,])) {
+    # in following line, changed m to m[[1]] on 2020-11-11
+    # but switched back to m on 2021-07-29
+    result <- Map(function(x, m) h_regmatchesgroup(x, m,
+                                                   group = requested_group)[[1]], 
+                  x, m)
+  } else {
+    result <- rep(NA, length(x))
+  }
+  names(result) <- NULL
+  result
+}
 
 # regcapturedmatches.R
 # https://gist.github.com/GegznaV/57b4ff13e6d7a8a8344e
