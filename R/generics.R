@@ -335,6 +335,7 @@ drop_bool.default <- function(x,
 #' @param invert Logical. Whether the matches should be selected rather than the
 #'   non-matches.
 #' @param i Selection criterion; depending on its class, it behaves differently.
+#' @param value Value to assign.
 #'
 #' @return Object of the same class as `x` with the selected elements only.
 #' @name brackets
@@ -725,7 +726,11 @@ as_character.default <- function(x, ...) as.character(x, ...)
 
 #' Coerce object to a data frame
 #' 
-#' @param x Object to coerce to [data.frame()]
+#' @param x Object to coerce to [data.frame]
+#' @param row.names `NULL` or a character vector giving the rownames for the
+#'   dataframe.
+#' @param optional Logical. If `TRUE`, setting rownames and converting column
+#'   names is optional (see [as.data.frame()]).
 #' @param ... Additional arguments
 #' 
 #' @return Object of class [`data.frame`]

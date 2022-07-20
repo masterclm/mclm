@@ -524,7 +524,7 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
 }
 
 
-#' @rdname stubs
+#' @rdname brackets
 #' @exportS3Method `[<-` types
 #' @export
 `[<-.types` <- function(x, i, invert = FALSE, value) {

@@ -1,8 +1,6 @@
 \name{stubs_original}
 \alias{stubs_original}
-\alias{plot.re}
 \alias{plot.tokens}
-\alias{plot.summary.re}
 \alias{plot.summary.tokens}
 \title{
 Stubs (Functions/Methods Not Implemented)
@@ -28,12 +26,7 @@ The \code{mclm} package contains a number of methods which don't do
 }
 \usage{
 
-
-\method{plot}{re}(x, \dots)
-
 \method{plot}{tokens}(x, \dots)
-
-\method{plot}{summary.re}(x, \dots)
 
 \method{plot}{summary.tokens}(x, \dots)
 

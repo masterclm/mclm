@@ -3,15 +3,21 @@
 \name{brackets}
 \alias{brackets}
 \alias{[.fnames}
+\alias{[<-.fnames}
 \alias{[.freqlist}
 \alias{[.types}
+\alias{[<-.types}
 \title{Subset an object by different criteria}
 \usage{
 \method{[}{fnames}(x, i, invert = FALSE, ...)
 
+\method{[}{fnames}(x, i, invert = FALSE) <- value
+
 \method{[}{freqlist}(x, i, invert = FALSE, ...)
 
 \method{[}{types}(x, i, invert = FALSE, ...)
+
+\method{[}{types}(x, i, invert = FALSE) <- value
 }
 \arguments{
 \item{x}{An object of any of the classes for which the method is implemented.}
@@ -22,6 +28,8 @@
 non-matches.}
 
 \item{...}{Additional arguments.}
+
+\item{value}{Value to assign.}
 }
 \value{
 Object of the same class as \code{x} with the selected elements only.

@@ -675,6 +675,26 @@ h_strip <- function (x, regex = "^\\s+|\\s+$", perl = TRUE) {
 # TO TEST ======================================================================
 # TODO everything below this point need thorough testing
 
+#' Scan a character string from console
+#' 
+#' The functions [scan_txt()] and [scan_txt2()], which take no arguments,
+#' can be used to scan a text string from the console.
+#' 
+#' After the function call, R will continue scanning your input until it
+#' encounters an empty input line, i.e. until it encounters two consecutive
+#' newline symbols (or until it encounters a line with nothing but whitespace
+#' characters). In other words, press ENTER twice in a row if you want to stop
+#' inputting characters. The function will then return your input as a character vector
+#' of length one.
+#' 
+#' These functions are designed to allow you to input complex text, in particular
+#' regular expressions, without dealing with the restrictions of string literals,
+#' such as having to use `\\` for `\`.
+#'
+#' @return A character vector of length one that contains the string that has
+#'   been scanned from the console.
+#' @export
+#' @seealso [scan_re()]
 scan_txt <- function() {
   result <- ""
   nlines <- 0
@@ -691,22 +711,100 @@ scan_txt <- function() {
   result
 }
 
+#' @rdname scan_txt
 scan_txt2 <- function() {
   x <- scan(what = "character", sep = "\n")
   paste(x, collapse = "\n")
 }
 
-
+#' Scan a regular expression from console
+#' 
+#' The functions [scan_re()] and [scan_re2()] can be used to scan a regular
+#' expression from the console.
+#' 
+#' @inherit scan_txt details
+#'
+#' @param perl Logical. If `TRUE`, the regular expression being scanned is assumed
+#'   to use PCRE (Perl Compatible Regular Expressions) notation. If `FALSE`, it
+#'   is assumed to use base R's defautl regular expression notation (see [base::regex]).
+#'   Contrary to base R's regular expression functions, the default is `TRUE`.
+#' @param ... Additional arguments.
+#'
+#' @return An object of class [`re`].
+#' @export
+#' @seealso [scan_txt()], [cat_re()]
 scan_re <- function(perl = TRUE, ...) {
   x <- scan_txt()
   re(x, perl = perl, ...)
 }
 
+#' @rdname scan_re
 scan_re2 <- function(perl = TRUE, ...) {
   x <- scan_txt2()
   re(x, perl = perl, ...)
 }
 
+#' Print a regular expression to the console
+#' 
+#' The function [cat_re()] prints a regular expression to the console.
+#' By default, the regular expression is not printed as an R string,
+#' but as a `plain regular expression'. More specifically, the regular expression
+#' is printed without surrounding quotation marks, and characters that are
+#' special characters in R strings (such as quotation marks and backslashes)
+#' are not escaped with a backslash. Also, by default, multi-line regular expressions are
+#' printed as single-line regular expressions with all regular expression comments removed.
+#' 
+#' WARNING: In the current implementation, the way the character `#` is handled is
+#' not guaranteed to be correct. More specifically, the code is not guaranteed
+#' to correctly distinguish between a `#` symbol that introduces a regular
+#' expression comment and a `#` symbol that doesn't do so. Firstly,
+#' there is no testing whether at the point of encountering `#` we're in
+#' free-spacing mode. Second, there is no thorough testing whether or not
+#' the `#` symbol is part of a character class. 
+#' However, `#` is processed correctly as long as any 'literal #' is 
+#' immediately preceded by either a backslash or an opening square bracked,
+#' and any `comment-introducing #' is not immediately preceded by
+#' a backslash or an opening square bracket.
+#' 
+#' @param x An object of class [`re`] or a character vector containing a regular
+#'   expression. If `x` is a character vector of length higher than 1, only its
+#'   first element will be used.
+#' @param format Character vector describing the requested format (as a `"plain"`
+#'   regular expression or as an `"R"` string). If its length is higher than 1,
+#'   only its first element will be used.
+#' @param as_single_line Logical. Whether `x` shoudl be converted to a single line
+#'   regular expression, therefore also removing all comments, prior to printing.
+#'   If the length of this vector is larger than 1, only its first item will be used.
+#'
+#' @return Invisibly, `x`.
+#' @seealso [scan_re()]
+#' @export
+#'
+#' @examples
+#' # single-line regular expression
+#' x <- "(?xi)  \\b \\w* willing \\w* \\b"
+#' cat_re(x)
+
+# multi-line regular expression
+#' y <- "(?xi)  
+#'        \\b        # word boundary 
+#'        \\w*       # optional prefix
+#'        willing   # stem
+#'        \\w*       # optional suffix
+#'        \\b        # word boundary"
+#' cat_re(y)
+#' cat_re(y, as_single_line = FALSE)
+#' cat_re(y, format = "R")
+#' cat_re(y, format = "R", as_single_line = FALSE)
+#' 
+#' regex <- re("(?xi)  
+#'                 \\b        # word boundary 
+#'                 \\w*       # optional prefix
+#'                 willing   # stem
+#'                 \\w*       # optional suffix
+#'                 \\b        # word boundary")
+#' cat_re(regex)
+#' cat_re(regex, as_single_line = FALSE)
 cat_re <- function(x,
                    format = c("plain", "R"),
                    as_single_line = TRUE) {

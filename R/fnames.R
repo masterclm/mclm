@@ -438,7 +438,7 @@ keep_re.fnames <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   result
 }
 
-#' @rdname stubs
+#' @rdname brackets
 #' @exportS3Method `[<-` fnames
 #' @export
 `[<-.fnames` <- function(x, i, invert = FALSE, value) {

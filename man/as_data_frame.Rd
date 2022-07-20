@@ -10,7 +10,13 @@ as_data_frame(x, row.names = NULL, optional = FALSE, ...)
 \method{as_data_frame}{default}(x, row.names = NULL, optional = FALSE, ...)
 }
 \arguments{
-\item{x}{Object to coerce to \code{\link[=data.frame]{data.frame()}}}
+\item{x}{Object to coerce to \link{data.frame}}
+
+\item{row.names}{\code{NULL} or a character vector giving the rownames for the
+dataframe.}
+
+\item{optional}{Logical. If \code{TRUE}, setting rownames and converting column
+names is optional (see \code{\link[=as.data.frame]{as.data.frame()}}).}
 
 \item{...}{Additional arguments}
 }
