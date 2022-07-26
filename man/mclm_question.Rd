@@ -8,7 +8,7 @@
 \usage{
 mclm_question(...)
 
-mclm_question_num(q, a)
+mclm_question_num(q, a, min = 5000, step = 100, tolerance = 0.001)
 
 mclm_question_text(...)
 }

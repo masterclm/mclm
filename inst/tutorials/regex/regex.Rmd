@@ -2,6 +2,8 @@
 title: "Starting with regular expressions"
 output: learnr::tutorial
 runtime: shiny_prerendered
+description: >
+   Learn how to work with regular expressions and the `mclm` package.
 ---
 
 ```{r setup, include=FALSE}
