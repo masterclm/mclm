@@ -33,7 +33,7 @@ characters, of the right co-text in the KWIC display.}
 
 \item{n}{Number of consecutive items in \code{x} to be displayed.}
 
-\item{drop_tags}{Boolean. Should tags be hidden?}
+\item{drop_tags}{Logical. Should tags be hidden?}
 }
 \value{
 Invisibly, \code{x}.

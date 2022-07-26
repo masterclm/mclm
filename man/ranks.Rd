@@ -14,7 +14,7 @@ ranks(x, ...)
 
 \item{...}{Additional arguments.}
 
-\item{with_names}{Boolean. Whether or not the items in the output should
+\item{with_names}{Logical. Whether or not the items in the output should
 be given names. If \code{TRUE}, then the names
 of the types in the frequency list are used as names.}
 }

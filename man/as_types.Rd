@@ -9,11 +9,11 @@ as_types(x, remove_duplicates = TRUE, sort = TRUE, ...)
 \arguments{
 \item{x}{Object to coerce}
 
-\item{remove_duplicates}{Length one boolean vector that determines whether or not
-duplicates are removed from \code{x} prior to coercing to a vector of types.}
+\item{remove_duplicates}{Logical. Should duplicates be removed from \code{x}
+prior to coercing to a vector of types.}
 
-\item{sort}{Length one boolean vector that determines whether or not
-\code{x} is alphabetically sorted prior to coercing to a vector of types;
+\item{sort}{Logical. Should \code{x} be
+alphabetically sorted prior to coercing to a vector of types;
 this argument is ignored if \code{remove_duplicates} is \code{TRUE},
 because the result of removing duplicates is always sorted.}
 

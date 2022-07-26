@@ -126,13 +126,13 @@ The 'token transformation' operation is conducted immediately after the
 \item{token_transf_out}{A 'replacement string'. This argument works together
 with \code{re_token_transf_in} and is ignored if either argument is \code{NULL}.}
 
-\item{token_to_lower}{Boolean value. Whether tokens should be converted to
+\item{token_to_lower}{Logical. Whether tokens should be converted to
 lowercase before returning the results.
 
 The 'token to lower' operation is conducted immediately after the 'token
 transformation' operation.}
 
-\item{perl}{Boolean value. Whether the PCRE flavor of regular expressions
+\item{perl}{Logical. Whether the PCRE flavor of regular expressions
 should be used in the arguments that contain regular expressions.}
 
 \item{blocksize}{Number indicating how many corpus files are read to memory
@@ -142,10 +142,10 @@ exceptionally small corpus files, it may be worthwhile to use a higher
 number, and when one works with exceptionally large corpus files, it may be
 worthwhile to use a lower number.}
 
-\item{verbose}{Boolean value. If \code{TRUE}, messages are pritned to the
+\item{verbose}{Logical. If \code{TRUE}, messages are pritned to the
 console to indicate progress.}
 
-\item{dot_blocksize}{Boolean value. If \code{TRUE}, dots are printed to the
+\item{dot_blocksize}{Logical. If \code{TRUE}, dots are printed to the
 console to indicate progress.}
 
 \item{file_encoding}{Encoding of the input files.

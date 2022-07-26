@@ -65,7 +65,7 @@ The 'cut area' operation is conducted immediately after the 'line glue' operatio
 (in which case the same encoding is used for all files) or with the same
 length as \code{x} (in which case each file can have a different encoding).}
 
-\item{as_text}{Boolean value.
+\item{as_text}{Logical.
 If \code{TRUE}, the content of \code{x} is treated
 as the actual text of the corpus (with each item within \code{x} treated as
 a separate 'document in RAM').

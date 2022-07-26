@@ -21,7 +21,7 @@ to have the name \code{"match"}.}
 of the concordance. Is \code{is.na(right)}, then this column is assumed
 to have the name \code{"right"}.}
 
-\item{keep_original}{Boolean value. If the values of
+\item{keep_original}{Logical. If the values of
 \code{left}, \code{match} or \code{right} are not \code{NA}, should
 the original names of those columns be kept in the \code{\link{conc}} object.}
 

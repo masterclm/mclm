@@ -62,20 +62,20 @@ i.e. \code{c("exp_a", "DP_rows", "RR_rows", "OR", "MS", "Dice", "PMI", "chi2_sig
 If \code{measures} is \code{"ALL"}, all supported measures are calculated (but not
 necessarily all the variants; see \code{with_variants}).}
 
-\item{with_variants}{Boolean. Whether, for the requested \code{measures}, all
+\item{with_variants}{Logical. Whether, for the requested \code{measures}, all
 variants should be included in the output (\code{TRUE}) or only the main
 version (\code{FALSE}). See also \code{p_fisher_2}.}
 
-\item{show_dots}{Boolean. Whether a dot should be shown in console each time
+\item{show_dots}{Logical. Whether a dot should be shown in console each time
 calculations for a measure are finished.}
 
-\item{p_fisher_2}{Boolean, only relevant if \code{"fisher"} is included in
+\item{p_fisher_2}{Logical. only relevant if \code{"fisher"} is included in
 \code{measures}. If \code{TRUE}, the p-value for a two-sided test (testing
 for either attraction or repulsion) is also calculated. By default, only
 the (computationally less demanding) p-value for a one-sided test is
 calculated. See \code{Value} for more details.}
 
-\item{haldane}{Boolean value. Should the Haldane-Anscombe correction be used?
+\item{haldane}{Logical. Should the Haldane-Anscombe correction be used?
 (See the Details section.)
 
 If \code{haldane} is \code{TRUE}, and there is at least one zero frequency

@@ -9,7 +9,7 @@ merge_conc(..., show_warnings = TRUE)
 \arguments{
 \item{...}{Two or more objects of class \code{\link{conc}}.}
 
-\item{show_warnings}{Boolean value. If \code{FALSE}, warnings are suppressed.}
+\item{show_warnings}{Logical. If \code{FALSE}, warnings are suppressed.}
 }
 \value{
 An object of class \code{\link{conc}}.

@@ -84,10 +84,10 @@ types <- function(x,
 #' class [`types`].
 #'
 #' @param x Object to coerce
-#' @param remove_duplicates Length one boolean vector that determines whether or not
-#'   duplicates are removed from `x` prior to coercing to a vector of types.
-#' @param sort Length one boolean vector that determines whether or not
-#'   `x` is alphabetically sorted prior to coercing to a vector of types;
+#' @param remove_duplicates Logical. Should duplicates be removed from `x`
+#'   prior to coercing to a vector of types.
+#' @param sort Logical. Should `x` be
+#'   alphabetically sorted prior to coercing to a vector of types;
 #'   this argument is ignored if `remove_duplicates` is `TRUE`,
 #'   because the result of removing duplicates is always sorted.
 #' @param ... Additional arguments (not implemented)
@@ -524,7 +524,7 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
 }
 
 
-#' @rdname stubs
+#' @rdname brackets
 #' @exportS3Method `[<-` types
 #' @export
 `[<-.types` <- function(x, i, invert = FALSE, value) {
@@ -713,7 +713,7 @@ plot.summary.types <- function(x, ...) {
 #'   
 #' @param x,y An object of class [`types`]. 
 #' @param ... Either objects of the class [`types`] or lists containing such objects.
-#' @param sort Boolean value that indicates whether the result should be sorted.
+#' @param sort Logical. Should the results be sorted.
 #'
 #' @return An object of the class [`types`].
 #' @name types_merge
@@ -787,7 +787,7 @@ types_merge_all <- function(..., sort = FALSE) {
 #'   The end of a line always indicated a separator between types (in other
 #'   words, types cannot cross lines).
 #' @param file_encoding The file encoding used in the input file.
-#' @param trim_types Boolean value that indicates whether or not leading and trailing
+#' @param trim_types Logical. Should leading and trailing
 #'   white space should be stripped from the types.
 #' @inheritParams as_types
 #' @param ... Additional arguments (not implemented).
@@ -817,6 +817,7 @@ read_types <- function(file,
   if (trim_types) {
     result <- stringr::str_trim(result) 
   }
+  # QUESTION: config files is not read?
   # to consider: not run following line if config file says
   #              txt_comment_char is "" and not "#"
   result <- gsub('#.*$', '', result, perl = TRUE) 
@@ -828,7 +829,6 @@ read_types <- function(file,
   result
 }
 
-
 #' Write a vector of types to a text file
 #' 
 #' This function writes an object of the class [`types`] to a text file. Each type
@@ -837,7 +837,7 @@ read_types <- function(file,
 #'
 #' @param x Object of class [`types`].
 #' @param file Name of the output file
-#' @param make_config_file Boolean value. Whether or not, next to the actual
+#' @param make_config_file Logical. Whether or not, next to the actual
 #'   types file, a second output file should be created containing a brief
 #'   description of the format of the types file.
 #' @param ... Additional arguments (not implemented).
@@ -885,7 +885,7 @@ types_merge_two <- function(x, y, sort = FALSE) {
 #' Subset types
 #'
 #' @param x Object of class [`types`].
-#' @param sel Numeric vector with positions or boolean vector.
+#' @param sel Numeric vector with positions or logical vector.
 #'
 #' @return Filtered object of class [`types`]
 #' @noRd

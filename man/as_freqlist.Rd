@@ -15,17 +15,17 @@ corpus from which the frequency list is derived. When \code{tot_n_tokens}
 is \code{NULL}, this total number of tokens will be taken to be the sum
 of the frequencies in \code{x}.}
 
-\item{sort_by_ranks}{Boolean value.
+\item{sort_by_ranks}{Logical.
 If \code{TRUE}, the items in the frequency list are sorted by frequency
 rank. If \code{FALSE}, the items in the frequency list, depending on the
 input type, either are sorted alphabetically or are not sorted at all.}
 }
 \value{
-Object of class \code{freqlist}, which is based on the class \code{table}.
+An object of class \code{freqlist}, which is based on the class \code{table}.
 It has additional attributes and methods such as:
 \itemize{
-\item base \code{\link[=print.freqlist]{print()}}, \code{\link[base:as.data.frame]{base::as.data.frame()}},
-\code{\link[base:summary]{base::summary()}} and \code{\link[=sort.freqlist]{sort}},
+\item base \code{\link[=print.freqlist]{print()}}, \code{\link[=as.data.frame]{as.data.frame()}},
+\code{\link[=summary]{summary()}} and \code{\link[=sort.freqlist]{sort}},
 \item \code{\link[tibble:as_tibble]{tibble::as_tibble()}},
 \item an interactive \code{\link[=explore]{explore()}} method,
 \item various getters, including \code{\link[=tot_n_tokens]{tot_n_tokens()}}, \code{\link[=n_types]{n_types()}}, \code{\link[=n_tokens]{n_tokens()}},

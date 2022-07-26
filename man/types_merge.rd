@@ -12,7 +12,7 @@ types_merge_all(..., sort = FALSE)
 \arguments{
 \item{x, y}{An object of class \code{\link{types}}.}
 
-\item{sort}{Boolean value that indicates whether the result should be sorted.}
+\item{sort}{Logical. Should the results be sorted.}
 
 \item{...}{Either objects of the class \code{\link{types}} or lists containing such objects.}
 }

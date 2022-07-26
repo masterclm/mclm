@@ -55,7 +55,7 @@
 #'   `as_text = TRUE`. Otherwise, it must be a character vector of length one
 #'   (in which case the same encoding is used for all files) or with the same
 #'   length as `x` (in which case each file can have a different encoding).
-#' @param as_text Boolean value.
+#' @param as_text Logical.
 #'   If `TRUE`, the content of `x` is treated
 #'   as the actual text of the corpus (with each item within `x` treated as
 #'   a separate 'document in RAM').
@@ -194,7 +194,7 @@ conc <-    function(x,
 #' @param right The name of the column in `x` that contains the right co-text
 #'   of the concordance. Is `is.na(right)`, then this column is assumed
 #'   to have the name `"right"`.
-#' @param keep_original Boolean value. If the values of
+#' @param keep_original Logical. If the values of
 #'   `left`, `match` or `right` are not `NA`, should
 #'   the original names of those columns be kept in the [`conc`] object.
 #' @param ... Additional arguments.
@@ -412,7 +412,7 @@ as_tibble.conc <- function(x, ...) {
 #'   characters, of the right co-text in the KWIC display.
 #' @param from Index of the first item of `x` to be displayed.
 #' @param n Number of consecutive items in `x` to be displayed.
-#' @param drop_tags Boolean. Should tags be hidden?
+#' @param drop_tags Logical. Should tags be hidden?
 #'
 #' @return Invisibly, `x`.
 #' @export
@@ -590,7 +590,7 @@ print_kwic <- function(x,
 #' @param file Name of the input file.
 #' @param sep Field separator used in the input file.
 #' @param file_encoding Encoding of the input file.
-#' @param stringsAsFactors Boolean. Whether character data should automatically
+#' @param stringsAsFactors Logical. Whether character data should automatically
 #'   be converted to factors. It applies to all columns except for `"source"`,
 #'   `"left"`, `"match"` and `"right"`, which are never converted.
 #' @param ... Additional arguments, not implemented.
@@ -703,7 +703,7 @@ import_conc <- function(x,
 #' This function merges multiple objects of class [`conc`] into one [`conc`] object.
 #'
 #' @param ... Two or more objects of class [`conc`].
-#' @param show_warnings Boolean value. If `FALSE`, warnings are suppressed.
+#' @param show_warnings Logical. If `FALSE`, warnings are suppressed.
 #'
 #' @return An object of class [`conc`].
 #' @export

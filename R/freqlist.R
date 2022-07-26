@@ -72,11 +72,11 @@
 #' @param token_transf_out Replacement string. This argument works together with
 #'   `re_token_transf_in` and is ignored if `re_token_transf_in`
 #'   is `NULL` or `NA`.
-#' @param token_to_lower Boolean value. Whether tokens must be converted
+#' @param token_to_lower Logical. Whether tokens must be converted
 #'   to lowercase before returning the result.
 #'   The 'token to lower' operation is conducted immediately after the
 #'   'token transformation' operation.
-#' @param perl Boolean value. Whether the PCRE regular expression
+#' @param perl Logical. Whether the PCRE regular expression
 #'   flavor is being used in the arguments that contain regular expressions.
 #' @param blocksize Number that indicates how many corpus files are read to memory
 #'   `at each individual step' during the steps in the procedure;
@@ -139,8 +139,8 @@
 #'   `"it_is_[]_[]_that"`. 
 #' @param ngram_open Character string used to represent open slots in ngrams in the
 #'   output of this function.
-#' @param as_text Boolean vector, assumed to be of length 1. Whether
-#'   `x` is to be interpreted as a character vector containing the
+#' @param as_text Logical.
+#'    Whether `x` is to be interpreted as a character vector containing the
 #'   actual contents of the corpus (if `as_text` is `TRUE`)
 #'   or as a character vector containing the names of the corpus files
 #'   (if `as_text` is `FALSE`).
@@ -148,10 +148,10 @@
 #'   `blocksize`, `verbose`, `show_dots`, `dot_blocksize`,
 #'   and `file_encoding` are ignored.
 #'
-#' @return Object of class `freqlist`, which is based on the class `table`.
+#' @return An object of class `freqlist`, which is based on the class `table`.
 #'   It has additional attributes and methods such as:
-#'   - base [`print()`][print.freqlist()], [base::as.data.frame()],
-#'   [base::summary()] and [`sort`][sort.freqlist()],
+#'   - base [`print()`][print.freqlist()], [as.data.frame()],
+#'   [summary()] and [`sort`][sort.freqlist()],
 #'   - [tibble::as_tibble()],
 #'   - an interactive [explore()] method,
 #'   - various getters, including [tot_n_tokens()], [n_types()], [n_tokens()],
@@ -285,7 +285,7 @@ freqlist <- function(x,
 #'   corpus from which the frequency list is derived. When `tot_n_tokens`
 #'   is `NULL`, this total number of tokens will be taken to be the sum
 #'   of the frequencies in `x`.
-#' @param sort_by_ranks Boolean value.
+#' @param sort_by_ranks Logical.
 #'   If `TRUE`, the items in the frequency list are sorted by frequency
 #'   rank. If `FALSE`, the items in the frequency list, depending on the
 #'   input type, either are sorted alphabetically or are not sorted at all.
@@ -876,7 +876,7 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
 #' that is used to sort the frequency list.
 #'
 #' @param x Object of class [`freqlist`].
-#' @param decreasing Boolean value. If `TRUE` items are sorted from large
+#' @param decreasing Logical. If `TRUE` items are sorted from large
 #'   to small; if `FALSE`, from small to large.
 #'   
 #'   Note, however, that ranking in frequency lists is such that lower ranks
@@ -902,7 +902,7 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
 #'   In other words, sorting by frequencies (`"freqs"`) with `decreasing` set
 #'   to its default value `FALSE` results in the lowest frequencies
 #'   ending up at the beginning of the sorted list.
-#' @param na_last Boolean value defining the behaviour of `NA` elements.
+#' @param na_last Logical defining the behaviour of `NA` elements.
 #'   
 #'   This argument is only relevant when `sort_crit` is `"orig_ranks"`
 #'    because currently names and frequencies are not allowed to be `NA`
@@ -1024,6 +1024,7 @@ as_tibble.freqlist <- function(x, ...) {
   result
 }
 
+# IDEA a rank/frequency plot could be an option, right?
 #' @rdname stubs
 #' @exportS3Method plot freqlist
 #' @export
@@ -1244,7 +1245,7 @@ plot.summary.freqlist <- function(x, ...) {
 #'   in the order in which these items appear in `types`.
 #'   For all items in `types` that do not occur in `x`,
 #'   a frequency of zero is returned.
-#' @param with_names Boolean. Whether or not the items in the output should
+#' @param with_names Logical. Whether or not the items in the output should
 #'   be given names. If `with_names` is `TRUE`, then the names
 #'   of the types in the frequency list are used as names.
 #' @param ... Additional arguments.
@@ -1294,7 +1295,7 @@ type_freq <- function(x, types = NULL, with_names = FALSE, ...) {
 
 #' Merge frequency lists
 #' 
-#' The functions merge two or more frequency lists, adding up the frequencies.
+#' These functions merge two or more frequency lists, adding up the frequencies.
 #' In the current implementation, original ranks are lost when merging.
 #'
 #' @param x,y An object of class [`freqlist`].
@@ -1302,7 +1303,6 @@ type_freq <- function(x, types = NULL, with_names = FALSE, ...) {
 #'   objects of class [`freqlist`]. 
 #'
 #' @return An object of class [`freqlist`].
-#' @name freqlist_merge
 #'
 #' @examples
 #' (flist1 <- freqlist("A first toy corpus.", as_text = TRUE))
@@ -1313,10 +1313,6 @@ type_freq <- function(x, types = NULL, with_names = FALSE, ...) {
 #' 
 #' freqlist_merge_all(flist1, flist2, flist3)
 #' freqlist_merge_all(list(flist1, flist2, flist3)) # same result
-NULL
-
-#' @describeIn freqlist_merge Merge two frequency lists
-#' @export
 freqlist_merge <- function(x, y) {
   if ((!"freqlist" %in% class(x)) || (!"freqlist" %in% class(y))) {
     stop("both x and y must be of the class 'freqlist'")
@@ -1324,7 +1320,7 @@ freqlist_merge <- function(x, y) {
   as_freqlist(freqlist_merge_two(x, y)) # as_freqlist sorts types by rank
 }  
 
-#' @describeIn freqlist_merge Merge multiple frequency lists
+#' @rdname freqlist_merge
 #' @export
 freqlist_merge_all <- function(...) {
   arg_list <- list(...)
@@ -1464,7 +1460,7 @@ read_freqlist <- function(file,
 #' @param x Object of class [`freqlist`].
 #' @param file Character vector of length 1. Path to the output file.
 #' @param sep Character vector of length 1. Column separator.
-#' @param make_config_file Boolean value. Whether or not a configuration file
+#' @param make_config_file Logical. Whether or not a configuration file
 #'   needs to be created. In most circumstances, this should be set to `TRUE`.
 #' @param ... Additional arguments (not implemented).
 #'
@@ -1645,7 +1641,7 @@ freqlist_corp <- function(x,
 #' Subset freqlist
 #'
 #' @param x Object of class [`freqlist`].
-#' @param sel Numeric vector with positions or boolean vector.
+#' @param sel Numeric vector with positions or logical vector.
 #'
 #' @return Filtered object of class [`freqlist`]
 #' @noRd
