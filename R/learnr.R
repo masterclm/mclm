@@ -23,15 +23,16 @@ mclm_question <- function(...){
 
 #' @rdname mclm_question
 #' @export
-mclm_question_num <- function(q, a) {
+mclm_question_num <- function(q, a, min = 5000, step = 100, tolerance = 0.001) {
   learnr::question_numeric(q,
                            learnr::answer(a, correct = TRUE),
                            allow_retry = TRUE,
                            correct = learnr::random_praise(),
                            incorrect = learnr::random_encouragement(),
-                           min = 5000,
+                           min = min,
                            max = 900000,
-                           step = 100)
+                           step = step,
+                           tolerance = tolerance)
 }
 
 #' @rdname mclm_question
