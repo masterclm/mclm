@@ -1078,22 +1078,14 @@ How would you recalculate the normalized frequencies (per 10,000 items) of the i
 ```
 
 ```{r nrmfreq-solution}
-# order 1 ----
-10000 * as_numeric(sel_flist) / tot_n_tokens(sel_flist)
-
-# order 2 ----
-as_numeric(sel_flist) * 10000 / tot_n_tokens(sel_flist)
-
-# order 3 ----
-10000 / tot_n_tokens(sel_flist) * as_numeric(sel_flist)
-
-# order 4 ----
 as_numeric(sel_flist) / tot_n_tokens(sel_flist) * 10000
-
 ```
 
 ```{r nrmfreq-check}
-grade_this_code()
+grade_this({
+  pass_if_equal()
+  fail()
+})
 ```
 
 > Congratulations! You are now a master of frequency lists!
