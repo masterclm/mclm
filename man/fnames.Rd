@@ -52,6 +52,8 @@ the names.
 
 Objects of class \code{fnames} can be saved to file with \code{\link[=write_fnames]{write_fnames()}};
 these files can be read with \code{\link[=read_fnames]{read_fnames()}}.
+
+It is possible to coerce a character vector into an \code{fnames} object with \code{\link[=as_fnames]{as_fnames()}}.
 }
 \description{
 Build an object of class \code{fnames}.

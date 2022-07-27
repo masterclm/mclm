@@ -21,6 +21,7 @@ Imports: crayon,
          yaml
 LinkingTo: Rcpp         
 Suggests: 
+    gradethis,
     learnr,
     MASS
 License: GPL-2
