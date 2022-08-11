@@ -8,21 +8,8 @@
 \alias{plot.freqlist}
 \alias{plot.summary.freqlist}
 \alias{explore.default}
-\alias{keep_pos.default}
-\alias{drop_pos.default}
-\alias{keep_re.default}
-\alias{drop_re.default}
-\alias{keep_types.default}
-\alias{drop_types.default}
-\alias{keep_bool.default}
-\alias{drop_bool.default}
 \alias{n_tokens.default}
 \alias{n_types.default}
-\alias{type_names.default}
-\alias{tot_n_tokens.default}
-\alias{tot_n_tokens<-.default}
-\alias{orig_ranks.default}
-\alias{ranks.default}
 \alias{plot.re}
 \alias{plot.summary.re}
 \alias{stubs}
@@ -42,35 +29,9 @@
 
 \method{explore}{default}(x, ...)
 
-\method{keep_pos}{default}(x, pos, invert = FALSE, ...)
-
-\method{drop_pos}{default}(x, pos, ...)
-
-\method{keep_re}{default}(x, pattern, perl = TRUE, invert = FALSE, ...)
-
-\method{drop_re}{default}(x, pattern, perl = TRUE, ...)
-
-\method{keep_types}{default}(x, types, invert = FALSE, ...)
-
-\method{drop_types}{default}(x, types, ...)
-
-\method{keep_bool}{default}(x, bool, invert = FALSE, ...)
-
-\method{drop_bool}{default}(x, bool, ...)
-
 \method{n_tokens}{default}(x, ...)
 
 \method{n_types}{default}(x, ...)
-
-\method{type_names}{default}(x, ...)
-
-\method{tot_n_tokens}{default}(x)
-
-\method{tot_n_tokens}{default}(x) <- value
-
-\method{orig_ranks}{default}(x, ...)
-
-\method{ranks}{default}(x, ...)
 
 \method{plot}{re}(x, ...)
 
@@ -88,8 +49,6 @@
 \item{i}{Index}
 
 \item{value}{Value to change}
-
-\item{invert}{Boolean value.}
 }
 \value{
 Invisibly, \code{NULL}. The default \code{n_tokens}, \code{n_types} and
@@ -113,19 +72,4 @@ and warn the user about this.
 The methods listed on this page are implemented in order to prevent
 cryptic error messages or warning from being show when the user
 (accidentally) calls any of these methods.
-}
-\examples{
-plot(re("^.{3,}"))
-
-plot(summary(re("^.{3,}")))
-
-n_tokens(1:10)
-
-n_tokens(as_types(c("the", "a", "it")))
-
-n_types(1:10)
-
-n_types(as_tokens(c("a", "tiny", "example")))
-
-type_names(1:10)
 }

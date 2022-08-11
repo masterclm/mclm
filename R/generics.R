@@ -104,7 +104,7 @@ keep_pos <- function(x,
                      invert = FALSE,
                      ...) UseMethod("keep_pos")
 
-#' @rdname stubs 
+#' @noRd 
 keep_pos.default <- function(x,
                              pos,
                              invert = FALSE,
@@ -119,7 +119,7 @@ drop_pos <- function(x,
                      pos,
                      ...) UseMethod("drop_pos")
 
-#' @rdname stubs 
+#' @noRd 
 drop_pos.default <- function(x,
                              pos,
                              ...) {
@@ -167,7 +167,7 @@ keep_re <- function(x,
                     invert = FALSE,
                     ...) UseMethod("keep_re")
 
-#' @rdname stubs
+#' @noRd 
 keep_re.default <- function(x,
                             pattern,
                             perl = TRUE,
@@ -185,7 +185,7 @@ drop_re <- function(x,
                     perl = TRUE,
                     ...) UseMethod("drop_re")
 
-#' @rdname stubs 
+#' @noRd 
 drop_re.default <- function(x,
                             pattern,
                             perl = TRUE,
@@ -225,7 +225,7 @@ keep_types <- function(x,
                        invert = FALSE,
                        ...) UseMethod("keep_types")
 
-#' @rdname stubs 
+#' @noRd 
 keep_types.default <- function(x,
                                types,
                                invert = FALSE,
@@ -241,7 +241,7 @@ drop_types <- function(x,
                        types,
                        ...) UseMethod("drop_types")
 
-#' @rdname stubs
+#' @noRd 
 drop_types.default <- function(x,
                                types,
                                ...) {
@@ -287,7 +287,7 @@ keep_bool <- function(x,
                       invert = FALSE,
                       ...) UseMethod("keep_bool")
 
-#' @rdname stubs 
+#' @noRd 
 keep_bool.default <- function(x,
                               bool,
                               invert = FALSE,
@@ -303,7 +303,7 @@ drop_bool <- function(x,
                       bool,
                       ...) UseMethod("drop_bool")
 
-#' @rdname stubs
+#' @noRd 
 drop_bool.default <- function(x,
                               bool,
                               ...) {
@@ -475,7 +475,7 @@ n_types.default <- function(x, ...) {
 #' type_names(scores)
 type_names <- function(x, ...) UseMethod("type_names")
 
-#' @rdname stubs
+#' @noRd
 type_names.default <- function(x, ...) {
   warning("unsupported type of x; returning NA")
   as.character(NA)
@@ -512,7 +512,7 @@ type_names.default <- function(x, ...) {
 #' tot_n_tokens(y)
 tot_n_tokens <- function(x) UseMethod("tot_n_tokens")
 
-#' @rdname stubs
+#' @noRd
 tot_n_tokens.default <- function(x) NULL
 
 #' @rdname tot_n_tokens
@@ -520,7 +520,7 @@ tot_n_tokens.default <- function(x) NULL
 #' @exportMethod 
 "tot_n_tokens<-" <- function(x, value) UseMethod("tot_n_tokens<-")
 
-#' @rdname stubs
+#' @noRd
 "tot_n_tokens<-.default" <- function(x, value) x
 
 #' Retrieve or set original ranks
@@ -562,7 +562,7 @@ tot_n_tokens.default <- function(x) NULL
 #' y
 orig_ranks <- function(x, ...) UseMethod("orig_ranks")
 
-#' @rdname stubs
+#' @noRd
 orig_ranks.default <- function(x, ...) NULL
 
 #' @rdname orig_ranks
@@ -629,15 +629,35 @@ orig_ranks.default <- function(x, ...) NULL
 #' ranks(flist2)
 ranks <- function(x, ...) UseMethod("ranks")
 
-#' @rdname stubs
+#' @noRd
 ranks.default <- function(x, ...) NULL
 
 trunc_at <- function(x, pattern, ...) UseMethod("trunc_at")
 
 trunc_at.default <- function(x, pattern, ...) invisible(x)
 
+#' Coerce object to a numeric vector
+#' 
+#' This generic method turns its first argument `x` or at least part of the information
+#' in it into a numeric object. It is an alternative notation for [base::as.numeric()].
+#'
+#' @param x An object to coerce.
+#' @param ... Additional arguments.
+#'   
+#' @return A numeric vector.
+#' @exportMethod 
+#' @examples 
+#' (flist <- freqlist(tokenize("The old story of the old man and the sea.")))
+#' 
+#' # extract frequency counts from a frequency list
+#' as_numeric(flist)
+#' as.numeric(flist)
+#' 
+#' # preferable alternative
+#' type_freqs(flist)
 as_numeric <- function(x, ...) UseMethod("as_numeric")
 
+#' @rdname as_numeric
 as_numeric.default <- function(x, ...) as.numeric(x, ...)
 
 # From base ====================================================================

@@ -22,23 +22,8 @@
 #' @param ... Additional arguments
 #' @param i Index
 #' @param value Value to change
-#' @param invert Boolean value.
 #' 
 #' @return Invisibly, \code{NULL}. The default \code{n_tokens}, \code{n_types} and
 #'   \code{type_names} methods returns \code{NA}.
 #' @name stubs
-#' @examples
-#' plot(re("^.{3,}"))
-#' 
-#' plot(summary(re("^.{3,}")))
-#' 
-#' n_tokens(1:10)
-#' 
-#' n_tokens(as_types(c("the", "a", "it")))
-#' 
-#' n_types(1:10)
-#' 
-#' n_types(as_tokens(c("a", "tiny", "example")))
-#' 
-#' type_names(1:10)
 NULL
