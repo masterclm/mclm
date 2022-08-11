@@ -3,9 +3,14 @@ Type: Package
 Title: Mastering Corpus Linguistics Methods
 Version: 0.2.5
 Date: 2021-10-08
-Authors@R: person("Dirk", "Speelman",
-                  email = "dirk.speelman@kuleuven.be",
-                  role = c("aut", "cre"))
+Authors@R: c(
+  person("Dirk", "Speelman",
+        email = "dirk.speelman@kuleuven.be",
+        role = c("aut", "cre")),
+  person("Mariana", "Montes",
+        email = "mariana.montes@kuleuven.be",
+        role = c("aut"))
+  )
 Description: Various functions in support of quantitative corpus linguistics.
 Encoding: UTF-8
 Depends: ca,
@@ -23,5 +28,5 @@ LinkingTo: Rcpp
 Suggests: MASS
 License: GPL-2
 LazyData: TRUE
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.1
 Roxygen: list(markdown = TRUE)
