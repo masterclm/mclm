@@ -1,6 +1,7 @@
 ---
 title: "Encodings"
 output: learnr::tutorial
+description: "Short tutorial about file encodings"
 runtime: shiny_prerendered
 ---
 
