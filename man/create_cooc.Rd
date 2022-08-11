@@ -187,8 +187,8 @@ also apply to tokens a they are identified by the token identification procedure
 }
 \section{Functions}{
 \itemize{
-\item \code{surf_cooc}: Build surface collocation frequencies
+\item \code{surf_cooc()}: Build surface collocation frequencies
 
-\item \code{text_cooc}: Build textual collocation frequencies
+\item \code{text_cooc()}: Build textual collocation frequencies
+
 }}
-

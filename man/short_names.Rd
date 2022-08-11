@@ -25,13 +25,13 @@ Helper functions that make the paths to a file shorter.
 }
 \section{Functions}{
 \itemize{
-\item \code{drop_path}: Extract the base name of a path, removing the paths leading to it.
+\item \code{drop_path()}: Extract the base name of a path, removing the paths leading to it.
 
-\item \code{drop_extension}: Remove extension from a filename.
+\item \code{drop_extension()}: Remove extension from a filename.
 
-\item \code{short_names}: Remove both paths leading to a file and its extension.
+\item \code{short_names()}: Remove both paths leading to a file and its extension.
+
 }}
-
 \examples{
 cwd_fnames <- "some/path/to/a/file.txt"
 drop_path(cwd_fnames)

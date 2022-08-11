@@ -24,11 +24,11 @@ These methods merge two or more objects of class \code{\link{types}}.
 }
 \section{Functions}{
 \itemize{
-\item \code{types_merge}: Merge two types
+\item \code{types_merge()}: Merge two types
 
-\item \code{types_merge_all}: Merge multiple types
+\item \code{types_merge_all()}: Merge multiple types
+
 }}
-
 \examples{
 (tps1 <- as_types(c("a", "simple", "simple", "example")))
 (tps2 <- as_types(c("with", "a", "few", "words")))
