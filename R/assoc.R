@@ -399,12 +399,12 @@ text_cooc <- function(x,
     t1 <- table(blocktokens1)
     blockfreqlist1 <- as.vector(t1)
     names(blockfreqlist1) <- names(t1)
-    globfreqlist1 <- addfreqlists(globfreqlist1, blockfreqlist1)
+    globfreqlist1 <- freqlist_merge_two(globfreqlist1, blockfreqlist1)
     
     t2 <- table(blocktokens2)
     blockfreqlist2 <- as.vector(t2)
     names(blockfreqlist2) <- names(t2)
-    globfreqlist2 <- addfreqlists(globfreqlist2, blockfreqlist2)
+    globfreqlist2 <- freqlist_merge_two(globfreqlist2, blockfreqlist2)
     
     # --
     prev_pt <- new_pt; new_pt <- proc.time()

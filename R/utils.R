@@ -170,6 +170,15 @@ cat_if_verbose <- function(x, verbose = TRUE) {
   }
 }
 
+# Print a dot while computing a measure in assoc_abcd()
+show_dot <- function(show_dots = FALSE) {
+  if (show_dots) {
+    cat(".")
+    utils::flush.console()
+  }
+  invisible(show_dots)
+}
+
 # ngram related functions ======================================================
 
 # TODO: Some of the functions below either (i) will have to be 'translated'...
