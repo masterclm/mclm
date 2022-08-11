@@ -1,44 +1,73 @@
-# =============================================================================
-# correspondence analysis related functions
-# =============================================================================
+#' Helpers for plotting `ca` objects
+#'
+#' The functions `row_pcoord()` and `col_pcoord()` retrieve the coordinates of
+#' the rows and columns of a [`ca`][ca::ca()] object across all dimensions.
+#' The functions `xlim4ca()` and `ylim4ca()` return the range of values for the
+#' first and second dimensions.
+#' 
+#' In the output of `row_pcoord()`, each row corresponds to a row from the dataframe
+#' that [ca::ca()] was applied to, and each column corresponds to a principal component.
+#' In the output of `col_pcoord()`, each row corresponds to a colum from the dataframe
+#' that [ca::ca()] was applied to, and each column corresponds to a principal component.
+#' 
+#' @param x An object of class [`ca`][ca::ca()].
+#' @param ... Additional arguments (not implemented).
+#'
+#' @return A matrix (for `row_pcoord()` and `col_pcoord()`) or a numeric vector
+#'   (for `xlim4ca()` and `ylim4ca()`).
+#' @export
+#' @name ca_help
+#'
+#' @examples
+#' 
+#' # traditional biplot from {ca}
+#' 
+#' library(ca)
+#' data("author")
+#' author_ca <- ca(author)
+#' plot(author_ca)
+#' 
+#' # alternative plot with {mclm} tools
+#' r_pc <- row_pcoord(author_ca)
+#' c_pc <- col_pcoord(author_ca)
+#' xlim <- xlim4ca(author_ca)
+#' ylim <- ylim4ca(author_ca)
+#' author_names <- as.factor(gsub(
+#'                               "^.*?\\((.*?)\\)$", "\\1",
+#'                              rownames(author), perl = TRUE))
+#' plot(r_pc[,1], r_pc[,2], pch = 18,
+#'     xlim = xlim, ylim = ylim, xlab = "", ylab = "",
+#'     main = "authors and their alphabet",
+#'     col = as.numeric(author_names))
+#' abline(h = 0, col = "gray", lty = 3)
+#' abline(v = 0, col = "gray", lty = 3)
+#' text(c_pc[,1], c_pc[,2], colnames(author), col = "gray")
+#' legend("topright",
+#'        legend = levels(author_names),
+#'        pch = rep(18, length(levels(author_names))),
+#'        col = 1:length(levels(author_names)),
+#'        title = "authors")
+NULL
 
-# -----------------------------------------------------------------------------
-# "ca" related methods
-# -----------------------------------------------------------------------------
-
+#' @describeIn ca_help Retrieve row principal coordiantes for all dimensions
 row_pcoord <- function(x, ...) {
-# ------------------------------------------------------------------------------
-# Retrieves row principal coordinates for all dimensions of the
-# ca solution object
-# ------------------------------------------------------------------------------
   x$rowcoord %*% diag(x$sv)
 }
 
+#' @describeIn ca_help Retrieve column principal coordiantes for all dimensions
 col_pcoord <- function(x, ...) {
-# -----------------------------------------------------------------------------
-# Retrieves column principal coordinates for all dimensions of the
-# ca solution object
-# ------------------------------------------------------------------------------
   x$colcoord %*% diag(x$sv)
 }
 
+#' @describeIn ca_help Return range of first dimension for plotting
 xlim4ca <- function(x, ...) {
-# ------------------------------------------------------------------------------
-# Assumes object is the output of a ca analysis.
-# Returns the xlim value that should be used to reproduce a plot.ca(...)
-# plot with the generic plot(...)
-# ------------------------------------------------------------------------------
   r_pc <- row_pcoord(x, ...)
   c_pc <- col_pcoord(x, ...)
   range(r_pc[,1], c_pc[,1])
 }
 
+#' @describeIn ca_help Return range of second dimension for plotting
 ylim4ca <- function(x, ...) {
-# ------------------------------------------------------------------------------
-# Assumes object is the output of a ca analysis.
-# Returns the ylim value that should be used to reproduce a plot.ca(...)
-# plot with the generic plot(...)
-# ------------------------------------------------------------------------------
   r_pc <- row_pcoord(x, ...)
   c_pc <- col_pcoord(x, ...)
   xlim <- range(r_pc[,1], c_pc[,1])
