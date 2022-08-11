@@ -27,3 +27,6 @@
 #'   \code{type_names} methods returns \code{NA}.
 #' @name stubs
 NULL
+
+# TODO which functions should be in this doc? How necessary is it? How much should...
+# they be document, if the whole point is that they are NOT supported?

@@ -34,6 +34,8 @@
 #'   
 #'   Objects of class `fnames` can be saved to file with [write_fnames()];
 #'   these files can be read with [read_fnames()].
+#'   
+#'   It is possible to coerce a character vector into an `fnames` object with [as_fnames()].
 #' @export
 #' @name fnames
 #'
@@ -63,6 +65,45 @@ get_fnames <- function(path = ".",
     x <- keep_re(x, pattern = re_pattern, invert = invert, perl = perl)
   }
   x
+}
+
+#' Coerce object to 'fnames'
+#' 
+#' This function coerces a character vector into an object of class [`fnames`].
+#'
+#' @param x A character vector (or a [`freqlist`] object!)
+#' @param remove_duplicates Boolean. Whether duplicates should be removed.
+#' @param sort Boolean. Whether the output should be sorted.
+#' @param ... Additional arguments.
+#'
+#' @return An object of class [`fnames`].
+#' @export
+#' 
+#' @examples
+#' as_fnames("path/to/my/corpus_file")
+as_fnames <- function(x,
+                      remove_duplicates = TRUE,
+                      sort = TRUE,
+                      ...) {
+  result <- x
+  if ("freqlist" %in% class(result)) {
+    result <- type_names(result)
+  }
+  if (is.null(result)) {
+    result <- vector(mode = "character", length = 0)
+  } else if (!"character" %in% class(result)) {
+    result <- as.character(result)
+  }
+  result <- result[!is.na(result)] # remove NAs
+  if (remove_duplicates && (length(result) > 0)) {
+    result <- names(table(result))
+  }
+  if (sort) {
+    result <- stringr::str_sort(result)
+  }
+  class(result) <- c("fnames",
+                     setdiff(class(result), c("types", "tokens")))
+  result
 }
 
 # S3 methods from mclm =========================================================
@@ -907,41 +948,6 @@ fnames_merge_two <- function(x, y, sort = FALSE) {
   as_fnames(dplyr::union(x, y),
             remove_duplicates = FALSE, # done by union
             sort = sort)
-}
-
-# IDEA If this function is made public, it can be used in examples :)
-#' Coerce object to 'fnames'
-#'
-#' @param x A character vector (or a [freqlist()] object!)
-#' @param remove_duplicates Boolean. Whether duplicates should be removed.
-#' @param sort Boolean. Whether the output should be sorted.
-#' @param ... Additional arguments.
-#'
-#' @return An object of class [freqlist()].
-#' @noRd
-as_fnames <- function(x,
-                      remove_duplicates = TRUE,
-                      sort = TRUE,
-                      ...) {
-  result <- x
-  if ("freqlist" %in% class(result)) {
-    result <- type_names(result)
-  }
-  if (is.null(result)) {
-    result <- vector(mode = "character", length = 0)
-  } else if (!"character" %in% class(result)) {
-    result <- as.character(result)
-  }
-  result <- result[!is.na(result)] # remove NAs
-  if (remove_duplicates && (length(result) > 0)) {
-    result <- names(table(result))
-  }
-  if (sort) {
-    result <- stringr::str_sort(result)
-  }
-  class(result) <- c("fnames",
-                     setdiff(class(result), c("types", "tokens")))
-  result
 }
 
 #' Subset an 'fnames' object

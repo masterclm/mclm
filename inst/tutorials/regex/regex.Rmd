@@ -1,0 +1,768 @@
+---
+title: "Starting with regular expressions"
+output: learnr::tutorial
+runtime: shiny_prerendered
+description: >
+   Learn how to work with regular expressions and the `mclm` package.
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+library(mclm)
+library(htmltools)
+knitr::opts_chunk$set(echo = FALSE, comment = "")
+
+txt1 <- 'I second the proposal to make the second second of every minute the most important second of all sixty seconds.'
+
+txt2 <- 'this
+is
+not
+our
+first
+tiny
+text
+'
+
+txt3 <- "This is a short text that costs less than $5.55.
+Actually, it costs no $$ at all.
+But it has a few sentences.
+At least more  than  one.
+Each sentence ends in a period; 
+but... clauses can end on something other than a period
+(and be surrounded by parenthesis, for example)."
+```
+
+## Searching text with `conc()`
+
+In this tutorial we will learn the basics of regular expressions. You can dig a bit deeper with [the regular-expressions.info tutorial](https://www.regular-expressions.info/tutorial.html) and rely on the [PCRE cheatsheet](https://www.debuggex.com/cheatsheet/regex/pcre) to remember some key codes.
+
+Here we will mostly work with `conc()`, but what you learn will also help you to work with the `explore()` and `keep_re()` methods.
+
+For this tutorial we will mostly work with two tiny corpora called `txt1` and `txt2`:
+
+```{r txts, echo = TRUE}
+txt1 <- 'I second the proposal to make the second second of every minute the most important second of all sixty seconds.'
+
+txt2 <- 'this
+is
+not
+our
+first
+tiny
+text
+'
+```
+
+We can create concordances out of these corpora with `conc()`. For example, the code below shows the instances of *t* in the second tiny corpus, `txt2`.
+
+```{r conc1, echo = TRUE}
+conc(txt2, "t") %>% print_kwic()
+```
+
+However, because `txt1` does not have any internal lines, `conc()` will interpret it as a filename unless we explicitly ask it to treat it as text by adding the argument `as_text = TRUE`. Fix the following line to create a concordance of `"second"` in the first tiny corpus.
+
+```{r conc2, exercise = TRUE, exercise.eval = TRUE, error=TRUE}
+conc(txt1, "second") %>% print_kwic()
+```
+
+```{r conc2-solution}
+conc(txt1, "second", as_text = TRUE) %>% print_kwic()
+```
+
+> NOTE: On the console, you don't *need* to use `print()` or `print_kwic()`, but in these tutorials (or if you want to show the output in an R markdown file) you will. The console also allows you to use `View()` and `mclm::explore()`.
+
+## Anchors
+
+A first category of special symbols in regular expressions are the *anchors*, such as `^`, `$` and `\b`:
+
+- `^` refers to the beginning of a line or a complete text;
+- `$` refers to the end of a line or of a complete text;
+- `\b` refers to word boundaries.
+
+### Lines and text
+
+The first two anchors work differently depending on whether "multiline mode" is switched on or off (in R, by default, it's switched off). When multiline mode is **on**, `^` and `$` rely on EOL (end of line) markers[^eol] to indicate the beginning and end of each line; when it is **off**, they only indicate the beginning and end of a full text.
+
+- In `txt1` we have only one line, so the end and beginning of a line are also the end and beginning of the text; multiline mode makes no difference.
+- `txt2` has `r length(strsplit(txt2, "\n")[[1]])` lines; multiline mode decides whether `^` refers to the beginning of the text or the beginning of each line.
+- Since `conc()` does not tokenize, the search will look at the full text given to it. In contrast, `explore()` and `keep_pos()` use tokenized data and look at *one item at a time*. In this case, multiline is never relevant and `^` and `$` indicate the beginning and end of *each item*.
+
+As you can see in the exercise below, by default R will have multiline mode switched off. It is possible to switch it on by adding the `m` flag at the beginning of your regular expression (`(?m) ^t`). Fix the exercise below to find all the matches of *t* at the beginning of a line.
+
+```{r anchor1, exercise = TRUE, exercise.eval = TRUE}
+conc(txt2, "^t") %>% print_kwic()
+```
+
+```{r anchor1-solution}
+conc(txt2, "(?m)^t") %>% print_kwic()
+```
+
+```{r anchor1-check}
+grade_this_code()
+```
+
+You can also select all lines that end in *t*! How would you do that?
+
+```{r anchor2, exercise = TRUE}
+
+```
+
+```{r anchor2-solution}
+conc(txt2, "(?m)t$") %>% print_kwic()
+```
+
+```{r anchor2-check}
+grade_this_code()
+```
+
+[^eol]: EOL markers are not the same thing in every text or file; normally, when text is written to file in Linux and macOS, the newline character, sometimes also called line feed character (LF; ASCII character 10) is used as EOL marker, and in MS-Windows the sequence carriage return (CR; ASCII character 13) followed by the line feed (LF; ASCII character 10), i.e. CR+LF, is used as EOL marker; in R Studio's console, however, EOL markers in string literals (such as the value assigned to the object `txt2`) are always a single newline character.
+R will recognize EOL-markers irrespective of whether the look like LF or CR+LF.
+
+### Word boundaries
+
+`\b` is matched by any position in a text for which it is true that to the one side of the position there is a 'word character' and to the other side there isn't.
+Traditionally, the 'word characters' were taken to be the lowercase characters *a* to *z*, the uppercase characters *A* to *Z*, the digits 0 to 9, and the underscore character `_`.
+In most modern computer systems and tools, Roman alphabet letters with accents such as *á* or *à* are also treated as word characters. Letters from other alphabets, such as Cyrillic, are not treated as word characters.
+
+We can search for the an *s* at the beginning of a word in `txt1` with `\bs`, and at the end of a word with `s\b`. However, because we are using **string literals in R**, we need to escape the backslash with another backslash. Change the following code to find occurrences of *s* at the end of a word.
+
+```{r wb, exercise = TRUE, exercise.eval = TRUE}
+conc(txt1, "\\bs", as_text = TRUE) %>% print_kwic()
+```
+
+```{r wb-solution}
+conc(txt1, "s\\b", as_text = TRUE) %>% print_kwic()
+```
+
+```{r wb-check}
+grade_this_code()
+```
+
+> NOTE: If you enter a regular expression with the `f` command in interactive mode (with `explore()`), you don't surround your regex with quotation marks, i.e. you don't use an R string literal, and therefore you don't need to escape the backslash.
+
+## Flags
+
+A regular expression can be preceded by a flag, consisting of `(?{flag})`, where `{flag}` indicates one or more predefined characters.
+A flag gives an instruction on how to interpret or use the different regular expression keys used. For example, in the previous section we used the `m` flag to switch on multilinear mode.
+
+Other useful flags are `x`, for [free-spacing regular expressions](https://www.regular-expressions.info/freespacing.html), and `i` for case-insensitive searches. A free-spacing regex means that spaces and comments within the regular expression are not interpreted as spaces or characters but simply ignored. Therefore, complex regular expressions can be typed in a more (human-)readable way.
+
+As a very simple example, the `"\\bs"` example can be confusing for human readers because, visually, `b` and `s` seem to form one unit. But if we write `"\\b s"`, the regex matches a word boundary followed by a space and then an `"s"`. In contrast, `"(?x) \\b  s"` has the same meaning as `"\\bs"` but makes it more clear for a human reader that the `b` and the `s` are not one unit.
+
+What is more, it is even possible to add new lines and comments, to help the reader follow the logic of the regular expression.
+
+> Think of other people reading your code, including yourself in a few months!
+
+You can play around with the following code, increasing and reducing spaces, removing or adding comments, to see how the result stays the same.
+
+```{r wb-2, exercise = TRUE, exercise.eval = TRUE, exercise.cap = "Free-spacing regex sandbox"}
+txt1 %>% 
+  conc("(?x)    \\b  # word boundary
+       s",
+       as_text = TRUE) %>% 
+  print_kwic()
+```
+
+Flags can be combined. Whereas `(?x)` activates free-spacing, `(?xi)` both activates free-spacing and case insensitivity, and `(?mxi)` additional switches multilinear expressions on.
+For the rest of the tutorial, we will always adopt the `(?xi)` flag as standard practice (as long as we don't care about lowercase or uppercase).
+
+## String literals and raw strings
+
+When working with regex in `mclm`, you will encounter three ways of inputting a regular expression:
+
+- in an interactive session with `explore()`,
+- as a string literal, as done up to now in the tutorial, or
+- as a raw string.
+
+In an interactive session, you don't surround your regex with quotation marks, and all the codes and flags are read as is: `\b` matches a word boundary.
+
+A string literal, on the other hand, is surrounded by `"` or by `'` and needs you to escape backslashes as well as whatever kind of quotation mark used to surround the string.
+
+Let's look at it with an example. You can use the sandbox below to try out different things and see what works and what throws an error.
+
+Suppose you have a very small corpus made of one word, `\string`. First, if we introduce it with a string literal, `my_string <- "\string"` will throw an error, so we have to define it as `my_string <- "\\string"`. If you just print it with `my_string` or `print(my_string)`, R will return the string literal, but `cat(my_string)` will show you its real self, `\string`.
+
+Now... what do we have to do to obtain a concordance that matches the backslash followed by the *s*? Replace the `____` below to find the right answer!
+
+```{r str-lit, exercise = TRUE, exercise.cap = "String literal sandbox"}
+my_string <- "\\string"
+conc(my_string, ____, as_text = TRUE) %>% print_kwic()
+```
+
+```{r str-lit-solution}
+my_string <- "\\string"
+conc(my_string, "\\\\s", as_text = TRUE) %>% print_kwic()
+```
+
+```{r str-lit-check}
+grade_this_code()
+```
+
+We encounter a similar problem if we have quotation marks within our string:
+
+```{r quote-ex, echo = TRUE}
+cat("She said: \"Well done!\"")
+```
+
+Since R 4.0.0, there is a way to insert regular expressions as we would in the interactive console, but inside a function such as `conc()` or `keep_re()`: **raw strings**. These are signalled by an `r` *before* the quotation marks and brackets or parentheses *within*. The opening brackets/parentheses can additionally be preceded by any number of hyphens, as long as the same number is added after the closing brackets/parentheses. The combination of brackets and hyphens removes the need to escape parentheses within the regular expression. Therefore:
+
+- `r"(regex)"`, `r"[regex]"` and `r"{regex}"` are valid raw strings, but `)"`, `]"` and `}"` would have to be escaped inside.
+- `r"-(regex)-"`, - `r"-[regex]-"` and - `r"-{regex}-"` are also valid raw strings.
+- `r"--(regex)--"`, `r"--[regex]--"` and `r"--{regex}--"` are also valid raw strings. Any number of hyphens can be added, as long as they are the same on each side of the brackets.
+
+Turn the following string literal to a raw string.
+
+```{r raw, exercise = TRUE, exercise.cap = "Raw string sandbox", exercise.eval = TRUE}
+conc(txt1, "(?xi) \\b s", as_text = TRUE) %>% print_kwic()
+```
+
+```{r raw-hint}
+conc(txt1, r"--[(?xi) \b s ]--", as_text = TRUE) %>% print_kwic()
+```
+
+
+> It is entirely valid to alternate between string literals and raw strings when asking for regular expressions, depending on their complexity.
+
+## Individual characters
+
+In this section we will work with a different small corpus, `txt3`:
+
+```{r txt3}
+cat(txt3)
+```
+
+In regular expressions, some characters take a special meaning.
+
+First, a dot (`.`) can be used to represent any character except for newline characters. In the sandbox below, check what happens if you ask for two dots, three dots, four dots...
+
+```{r dot, exercise = TRUE, exercise.eval = TRUE, exercise.cap = "Dot sandbox"}
+txt3 %>% 
+  conc("(?xi) .") %>% 
+  print_kwic()
+```
+
+### The backslash
+
+The backslash is a particular character that can either combine with non-special characters to make them special, or with special characters to make them literal (escaping them). When you escape a special character to make it literal (e.g. `\.` to match a dot, `\$` to match a dollar sign, `\\` to match a backslash...), there should be **no space** between the backslash and the character,e ven in free-spacing mode.
+
+Some combinations of `\` and a letter indicate different types of spaces:
+
+- `\n`: the newline character (i.e. character 10 in the ASCII table);
+- `\t`: the tab character (i.e. character 9 in the ASCII table);
+- `\c`: the carriage return character (i.e. character 13 in the ASCII table);
+- `\f`: the form feed character (i.e. character 12 in the ASCII table);
+- `\s`: any white space, i.e. any of the four spaces above or a simple space; `\S`, in contrast, matches *anything but* a whitespace.
+
+In the following sandbox, try finding occurrences of single spaces, sequences of single spaces, newlines, (sequences of) periods and the dollar sign. The example uses a raw string, but feel free to practice using literal strings (remember that you need to duplicate backslashes!).
+
+```{r bs, exercise = TRUE, exercise.eval = TRUE, exercise.cap = "Backslash sandbox I"}
+txt3 %>% 
+  conc(r"-((?xi)  \.   )-") %>% 
+  print_kwic()
+```
+
+Other combinations are short cuts for character classes: `\w` matches any "word character" (Roman alphabet characters, usually even with diacritics, as well as 0 through 9), whereas `\W` matches anything but "word characters". `\d` matches digits from 0 to 9, whereas `\D` matches anything but them.
+
+In the following exercise, how can you capture the full *$5.55* in `txt3`?
+
+```{r bs2, exercise = TRUE, exercise.eval = TRUE}
+txt3 %>% 
+  conc(r"-((?xi)   \d    )-") %>% 
+  print_kwic()
+```
+
+```{r bs2-solution}
+txt3 %>% 
+  conc(r"-((?xi)   \$5\.55    )-") %>% 
+  print_kwic()
+```
+
+```{r bs2-check}
+grade_this({
+  pass_if_equal()
+  fail()
+  })
+```
+
+Finally, since the advent of Unicode, PCRE-style regular expressions support a notation that allows us to identify types of characters in the Unicode table:
+
+- `\p{L}` matches any 'letter'; i.e. any alphabetic character in any alphabet. For instance, Cyrillic characters are not matched by `\w`, but they are matched by `\p{L}`.
+- `\p{N}` matches any 'number', irrespective of the alphabet.
+- `\p{M}` any accent or diacritic that is added to the previous character (in Unicode, letters with accents can either be encoded as a single (composite) character as a sequence of characters, the first of which represents the 'main character', with subsequent characters representing the accents or diacritics that are to be added to the 'main character').
+
+In the following exercise, we look up a tiny corpus that reads, in Japanese, "I like chocolate, and you?". 私 *watashi* means "I" and 君 *kimi* means "you"; in this example, both are followed by the particle は *wa*, which signals the theme of a sentence (in this case matching the subject). How can you get a concordance matching one "letter" followed by は *wa*?
+
+```{r nh-setup, echo = TRUE}
+nh <- "私はチョコレートがすきです。
+君は？"
+nh
+```
+
+```{r nh, exercise = TRUE}
+nh %>% 
+  conc(r"-[(?xi)  は   ]-") %>% 
+  print_kwic()
+```
+
+```{r nh-solution}
+nh %>% 
+  conc(r"-[(?xi)  \p{L} は   ]-") %>% 
+  print_kwic()
+```
+
+```{r nh-check}
+grade_this({
+  pass_if_equal()
+  fail()
+})
+```
+
+### Character classes
+
+Square brackets `[]` indicate a so-called character class, i.e. a series of alternatives. For example, `[aeiou]` matches *one* vowel, but any lowercase vowel. The order is not important; `[aiueo]` matches the same.
+
+Within a character class, special symbols lose their meaning and, mostly, are interpreted literally: `[$]` is a literal dollar sign; `[.]` is a literal dot. Whitespace characters within a character class are not ignored in free-spacing mode, so `(?x) [ ]` will match a space, as well as `(?x) \s`.
+
+In the following exercise, find any match in `txt3` of period, comma or semicolon.
+
+```{r cc, exercise = TRUE}
+txt3 %>% conc(____) %>% print_kwic()
+```
+
+```{r cc-solution}
+txt3 %>% conc("[.,;]") %>% print_kwic()
+```
+
+```{r cc-check}
+grade_this({
+  pass_if_equal()
+  fail()
+})
+```
+
+The caret (`^`) and the hyphen (`-`) do not immediately become literal if included in a character class.
+
+If `^` is at the beginning of a character class, it indicates that the rest of the characters in it should be *excluded*: `[^aiueo]` matches with *anything but* a lowercase vowel. It can be used literally if it's in any other position of the character class (e.g. `[a^iueo]`).
+
+The hyphen, on the other hand, represents ranges if it is between two other characters: `[a-z]` represents any lowercase letter of the Roman Alphabet, whereas `[a-]` matches an occurrence of `a` or an occurrence of `-`. Other frequent shortcuts with ranges are `[A-Z]` for uppercase and `[0-9]` for digits.
+
+In the following exercise, find the matches of one `"s"` that is followed by something other than an `"e"`
+
+```{r cc2, exercise = TRUE}
+txt3 %>% conc(____) %>% print_kwic()
+```
+
+```{r cc2-solution}
+txt3 %>% conc("s[^e]") %>% print_kwic()
+```
+
+```{r cc2-check}
+grade_this({
+  pass_if_equal()
+  fail()
+})
+```
+Finally, the backslash is the only special symbol that has the same special meaning(s) inside and outside the character class;
+so `\n`, `\c`, `\t`, `\f` also work inside a character class, as do `\\` and `\^`; also, `\$`, `\.`, `\[` etc. also work inside a character class, even if you don't really need them.
+
+### Exercises
+
+You can use this sandbox to find the answers to the quiz below. You can write whatever string you want to test matches on as the first argument of `conc()` and your regular expression as the second argument.
+
+```{r regex-practice, exercise = TRUE}
+conc(
+  "Test corpus for matches",
+  "regex",
+  as_text = TRUE
+) %>% 
+  print_kwic()
+```
+
+
+```{r regex-quiz1}
+quiz(
+  mclm_question_text(
+    "Write a regular expression such that it captures a *k* followed by an *m* or a *g* but not when it is followed by an *o* or a *W*, working both for uppercase and lowercase.",
+    answer_fn(function(value) {
+      lc <- c("km", "kg")
+      lowercase <- grepl(value, lc, perl = TRUE)
+      uc <- c("KM", "KG")
+      uppercase <- grepl(value, uc, perl = TRUE)
+      bc <- c( "Km", "Kg", "Kg.")
+      bothcase <- grepl(value, bc, perl = TRUE)
+      no <- c("ko", "KO", "Ko", "kW", "KW", "kw", "k g", "k m")
+      nogo <- grepl(value, no, perl = TRUE)
+      
+      
+      if (any(nogo)) {
+        incorrect(sprintf("Try again! Your regex is capturing patterns it should not, such as %s.",
+                        paste0("'", no[nogo], "'", collapse = ", ")))
+      } else if (any(lowercase) | any(uppercase) | any(bothcase)) {
+        almost <- "Almost there!"
+        if (!all(lowercase)) {
+          incorrect(sprintf("%s You're missing some patterns, e.g. %s.", almost,
+                            paste0("'", lc[!lowercase], "'", collapse = ", ")))  
+        } else if (!all(uppercase)) {
+          incorrect(sprintf("%s You're missing some patterns, e.g. %s.", almost,
+                            paste0("'", uc[!uppercase], "'", collapse = ", ")))
+        } else if (!all(bothcase)) {
+          incorrect(sprintf("%s You're missing some patterns, e.g. %s.", almost,
+                            paste0("'", bc[!bothcase], "'", collapse = ", ")))
+        } else {
+          mark_as(TRUE)
+        }
+      } else {
+        mark_as(FALSE)
+      }
+    })
+  ),
+  mclm_question_text(
+    "Write a regular expression that can capture a line with exactly five characters.",
+    answer_fn(function(value) {
+      fl <- c("brain",
+      "hello
+      something",
+      "ab cd")
+      five_line <- grepl(value, fl, perl = TRUE)
+      sl <- c("rain", "bye",
+              "this
+              has
+              more
+              than
+              one
+              line")
+      shorter_lines <- grepl(value, sl, perl = TRUE)
+      ll <- c(
+        "something",
+        "another letter"
+      )
+      long_lines <- grepl(value, ll, perl = TRUE)
+      
+      if (any(shorter_lines)) {
+        if (shorter_lines[[3]]) {
+          incorrect(sprintf("Your regex matches a string with multiple lines,
+                            none of which has five characters or more."))
+        } else {
+          incorrect(sprintf("Your regex is capturing shorter strings, such as %s.",
+                          paste0("'", sl[shorter_lines], "'", collapse = ", ")))  
+        }
+      } else if (any(long_lines)) {
+        incorrect(sprintf("Your regex is capturing longer strings, such as %s.",
+                          paste0("'", ll[long_lines], "'", collapse = ", ")))
+      } else if (!any(five_line)) {
+        mark_as(FALSE)
+      } else if (!all(five_line)) {
+        incorrect(sprintf(
+          "Almost there! Your regex is missing some possible patterns, such as %s. Maybe you have not switched multilines on?",
+          paste0("'", fl[!five_line], "'", collapse = ", ")))
+      } else {
+        mark_as(TRUE)
+      }
+    })
+  ),
+  mclm_question_text(
+    "Write a regular expression that matches the first two characters of a line,
+    the second of which must be a lowercase vowel.",
+    answer_fn(function(value) {
+      lc <- c("wine", "beer", "cat", "boar", "dull", "air", "ion", "ouch", "me", "you", "yu")
+      lowercase <- grepl(value, lc, perl = TRUE)
+      uc <- c("WINE", "BEER", "CAT", "BOAR", "DULL",
+              "wA", "wE", "wI", "wO", "wU")
+      uppercase <- grepl(value, uc, perl = TRUE)
+      iv <- c("arise", "img", "Orval", "unique", "Eryn")
+      initial_value <- grepl(value, iv, perl = TRUE)
+      
+      if (any(initial_value)) {
+        incorrect(sprintf(
+          "Your pattern matches words that do not have a vowel in the second place, such as %s.",
+          paste0("'", iv[initial_value], "'", collapse = ", ")
+        ))
+      } else if (any(uppercase)) {
+        incorrect(sprintf(
+          "Your pattern matches words with an uppercase vowel in second place, such as %s.",
+          paste0("'", uc[uppercase], "'", collapse = ", ")
+        ))
+      } else if (all(lowercase)) {
+        lengths <- re_retrieve_first(lc, value) %>% nchar()
+        if (min(lengths) < 2) {
+          incorrect("Your pattern matches text that it should match but doesn't capture enough characters.")
+        } else if (max(lengths) > 2) {
+          incorrect("Your pattern matches text that it should match but captures too many characters.")
+        } else {
+          mark_as(TRUE)
+        }
+      } else if (any(lowercase)) {
+        incorrect(sprintf(
+          "Your pattern matches some words that it should but misses others, such as %s.",
+          paste0("'", lc[!lowercase], "'", collapse = ", ")
+        ))
+      } else {
+        mark_as(FALSE)
+      }
+    })
+  ),
+  caption = "Regex practice!"
+)
+```
+
+## Iterations
+
+Some special symbols in regular expressions allow us to describe [repetitions](https://www.regular-expressions.info/repeat.html) or iterations.
+They indicate that the character before it must or can be repeated a number of times.
+
+- The question mark (`?`) indicates that a character should occur zero or one times for it to match. For example, `tow?n` matches both *ton* and *town*. In short, it makes a character optional.
+
+- The asterisk (`*`) indicates that a character can occur zero or more times for it to match. For example, `1*` matches *1*, *11*, *111*... any number of 1s, as well as void (zero 1s).
+
+- The plus sign (`+`) indicates that a character can occur one or more times for it to match. Therefore, `1+` matches the same as `1*` **except** for an absent *1*.
+
+- With curly braces (`{m[(,n)}`) you can specify both a minimum and a maximum number of iterations.
+
+   + `[0-9]{3}` will match any group of three consecutive digits, such as *123* or *555*.
+   
+   + `[0-9]{3,}` will match any group of **at least** three consecutive digits. In other words, `*` is a shortcut for `{0,}` and `+` is a shortcut for `{1,}`.
+   
+   + `[0-9]{3,5}` will match any group of at least three but at most five consecutive digits. In other words, `?` is a shortcut for `{0,1}`.
+   
+Two points are particularly important here. First, the symbol refers to the previous character or group. That is: `a+` indicates a sequence of lowercase *a*s; `[a-z]+` indicates a sequence of lowercase letters; `(ma)+` indicates a sequence of lowercase *ma*s, e.g. *mama*. Second, these symbols (except for the curly braces with two numbers) are *greedy*, and they will consume as many items as match the pattern.
+
+For example, while searching for a match of the word *second* in `txt1`, you might want to write it a bit shorter and just say `s.+d`: an *s*, followed by at least one character, followed by a *d*. As you can see in the exercise below, the result is so greedy that it captures one match, starting from the first *s* in the text up to the last *d* in the corpus. Instead, you wouldn't want to capture spaces. Ignoring the fact that the use of these wildcards is not ideal when you want an exact match, how would you fix it to capture entire words that start with *s* and end in *d*?
+
+```{r greedy, exercise = TRUE, exercise.eval = TRUE}
+txt1 %>% 
+  conc(r"--[(?xi)  s .+ d   ]--", as_text = TRUE) %>% 
+  print_kwic()
+```
+
+```{r greedy-solution}
+txt1 %>% 
+  conc(r"--[(?xi) \b   s [^\s]+ d   \b  ]--", as_text = TRUE) %>% 
+  print_kwic()
+```
+
+```{r greedy-check}
+grade_this({
+  pass_if_equal()
+  fail()
+})
+```
+
+While the greediness of these symbols can prove tricky when searching in a text like `txt1`, it is not so much of a problem in texts with one word per line, such as `txt2`, or in objects such as frequency lists.
+
+```{r greedyfreqlist}
+txt1 %>% 
+  freqlist(as_text = TRUE) %>% 
+  keep_re("(?xi) s.+d")
+```
+
+In a corpus such as `txt2`, where a the multiline flag allows `^` and `$` to indicate the beginning and end of a line (and therefore the beginning and end of a token), we can use the template below to request different patterns.
+
+```{r itersandbox, exercise = TRUE, exercise.cap = "Iterations sandbox"}
+txt2 %>% 
+  conc(r"--[(?mxi)  ^    regex   $  ]--") %>% 
+  print_kwic()
+```
+
+1. Write a regular expression such that it matches all tokens with at least one character.
+
+```{r iter1, exercise = TRUE}
+txt2 %>% 
+  conc(r"--[(?mxi)  ^    ___   $  ]--") %>% 
+  print_kwic()
+```
+
+```{r iter1-solution}
+txt2 %>% 
+  conc(r"--[(?mxi)  ^    .+   $  ]--") %>% 
+  print_kwic()
+```
+
+```{r iter1-check}
+grade_this({
+  pass_if_equal()
+  fail()
+})
+```
+
+2. Write a regular expression that matches all tokens with exactly four characters.
+
+```{r iter2, exercise = TRUE}
+txt2 %>% 
+  conc(r"--[(?mxi)  ^    ___   $  ]--") %>% 
+  print_kwic()
+```
+
+```{r iter2-solution}
+txt2 %>% 
+  conc(r"--[(?mxi)  ^    .{4}   $  ]--") %>% 
+  print_kwic()
+```
+
+```{r iter2-check}
+grade_this({
+  pass_if_equal()
+  fail()
+})
+```
+
+3. Write a regular expression that matches all tokens with *at least* four characters.
+
+```{r iter3, exercise = TRUE}
+txt2 %>% 
+  conc(r"--[(?mxi)  ^    ___   $  ]--") %>% 
+  print_kwic()
+```
+
+```{r iter3-solution}
+txt2 %>% 
+  conc(r"--[(?mxi)  ^    .{4,}   $  ]--") %>% 
+  print_kwic()
+```
+
+```{r iter3-check}
+grade_this({
+  pass_if_equal()
+  fail()
+})
+```
+
+4. Write a regular expression that matches all tokens with *at most* three characters.
+
+```{r iter4, exercise = TRUE}
+txt2 %>% 
+  conc(r"--[(?mxi)  ^    ___   $  ]--") %>% 
+  print_kwic()
+```
+
+```{r iter4-solution}
+txt2 %>% 
+  conc(r"--[(?mxi)  ^    .{1,4}   $  ]--") %>% 
+  print_kwic()
+```
+
+```{r iter4-check}
+grade_this({
+  pass_if_equal()
+  fail()
+})
+```
+
+5. Write a regular expression that matches all tokens with at least one *i*.
+
+```{r iter5, exercise = TRUE}
+txt2 %>% 
+  conc(r"--[(?mxi)  ^    ___   $  ]--") %>% 
+  print_kwic()
+```
+
+```{r iter5-solution}
+txt2 %>% 
+  conc(r"--[(?mxi)  ^    .* i .*   $  ]--") %>% 
+  print_kwic()
+```
+
+```{r iter5-check}
+grade_this({
+  pass_if_equal()
+  fail_if_equal(print_kwic(conc(txt2, r"--[(?mxi) i ]--")),
+                message = "You have captured the *i*s, not the tokens that contain an *i*!")
+  fail()
+})
+```
+
+## Groups and alternatives
+
+As mentioned before, regular expressions also allow us to treat (potentially)
+larger chunks as units. This is done by means of round parentheses (`()`).
+
+While `[dog]` matches one instance of *d*, *o* or *g*, `dog` and `(dog)` match a *d* followed by an *o* followed by a *g*. But if, for example, we wanted to make the occurrence of *dog* optional, the `?` in `dog?` would only affect the *g*, matching either *do* or *dog*. In contrast, `(dog)?` matches *dog* and the absence of *dog*.
+
+In addition, these groups can include different alternatives, separated by a pipe (`|`). For example, `(dog|cat|cow)` matches **either** *dog*, *cat* or *cow*; `dog(gy|s)?` matches *dog* (because of the question mark), *doggy* and *dogs*.
+
+For example, going back to `txt3`, we can use `\.` to search for a period (and `\.\s` to search for a period followed by a space), but what if we wanted to search for either a period or the word *period*? Try adjusting the following code to obtain that result!
+
+```{r period, exercise = TRUE, exercise.eval = TRUE}
+txt3 %>% 
+  conc(r"--[(?mxi)   \.\s   ]--") %>% 
+  print_kwic()
+```
+
+```{r period-solution}
+txt3 %>% 
+  conc(r"--[(?mxi)   ( \.  |  \b period \b )   ]--") %>% 
+  print_kwic()
+```
+
+```{r period-check}
+grade_this({
+  pass_if_equal()
+  fail()
+})
+```
+
+Note that, inside a character class, parentheses become literal.
+
+<!-- TODO add exercises -->
+
+## Review quiz
+
+```{r sandbox, exercise = TRUE, exercise.cap = "Sandbox"}
+# You may use this box to practice before answering
+grepl(
+  "regex", # write here the regex expression
+  "text", # write here a test string
+  perl = TRUE
+) # if the output is TRUE, it's a match!
+```
+
+```{r regex-quiz4}
+quiz(
+  mclm_question(
+    "Which regex can be used to find a sequence of one or more consonants in the Latin alphabet?",
+    answer(code("[aeiou]+")),
+    answer(code("[^aeiou]+"), correct = TRUE),
+    answer(code("[aeiou^]+")),
+    answer(code("^[aeiou]+"))
+  ),
+  mclm_question(
+    "Which regular expression(s) can be used to find a sequence of one or two digits preceded by either a dollar or a euro sign and followed by either a comma and a period and then two more digits? E.g. $5.55, €10,23, €2.04...",
+    answer(code(r"--{(?xi) [$€]   \d?\d   [.,]  \d{2}   }--"), correct = TRUE),
+    answer(code(r"--{(?xi) ($|€)  [0-9]?[0-9]  [.,]   [0-9]{2}   }--"), correct = TRUE),
+    answer(code(r"--{(?xi) ($|€)  \d\d   (.|,)  \d\d   }--"), message = "Note that `\\d\\d` at the beginning requires a string with two numbers before the period/comma."),
+    answer(code(r"--{(?xi) [$|€]  (\d\d)?   [.|,]  \d\d   }--"), message = "The pipe `|` is used literally between `[]`! Also, `(\\d\\d)?` makes both numbers optional.")
+  ),
+  mclm_question(
+    "What is the meaning of the `x` flag in a regular expression?",
+    answer("It allows you to insert spaces and comments that are ignored when parsing the regular expression.", correct = TRUE),
+    answer("It only allows you to insert spaces in the regular expression."),
+    answer("It switches off multilinear mode."),
+    answer("It makes the regular expression case insensitive.")
+  ),
+  mclm_question(
+    "Which characters are matched by the `.`?",
+    answer("Any character except for newline characters.", correct = TRUE),
+    answer("Any character except for spaces, such as newline characters."),
+    answer("Any character."),
+    answer("Only periods.")
+  ),
+  mclm_question(
+    "What matches the regex `^li[fv]*es?$`?",
+    answer("*life*, *lives*, *lies*, *live*, *lie*, *liffes*..., but not *liess*", correct = TRUE),
+    answer("*life*, *lives*, *liess*..., but not *lies* or *lie*"),
+    answer("*lives*, *lies*, *lifes*..., but not *life* or *lie* or *liess*"),
+    answer("*life*, *lives*, *lies*, *live*, *lie*, *lifes*..., but not *lifves* or *lifes* or *liess*")
+  ),
+  caption = "Let's review *everything*!"
+)
+```
+
+## Backreferences
+
+<!-- TODO explain backreferences -->
+
+<!-- TODO add exercise with repetition inside search string and illustrating `re_replace_all()`. -->
+
+<!-- TODO talk about non-capturing groups and, within them, lookarounds -->
+
+<!-- TODO write exercises -->

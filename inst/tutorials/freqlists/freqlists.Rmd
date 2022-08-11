@@ -1,0 +1,1091 @@
+---
+title: "All about frequency lists"
+output: learnr::tutorial
+runtime: shiny_prerendered
+description: >
+   Learn how to work with frequency lists in the `mclm` package.
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(gradethis)
+library(mclm)
+library(dplyr)
+knitr::opts_chunk$set(echo = FALSE, comment = "")
+
+flist <- freqlist("data/ca01")
+flist1 <- freqlist("data/ca01",
+         re_token_splitter = r"--[(?xi)   \s+   ]--")
+```
+
+## About frequency lists
+
+Several techniques in corpus linguistics are based on frequency lists. For instance, the function `assoc_scores()`, which we use for keyword analysis and collocation analysis, essentially always draws its information from two frequency lists, viz. a frequency list for the target context and a frequency for the reference context.
+This is most clearly the case in keywords analysis, but even in collocation analysis and collostruction analysis, we essentially work with two frequency lists, viz. the frequency list for the target co-text or the target slot versus the frequency list for other contexts than the target co-text or the target slot.
+
+Therefore, frequency lists are an important tool in corpus linguistics and it pays off to have a good understanding of how one can build and manipulate frequency lists in flexible ways.
+
+In this tutorial, we explore the basics of working with frequency lists using the {mclm} package. The example corpus we use is the first file (and sometimes the second) of the Brown corpus (embedded tags; no XML), which in this case is stored in the "data" folder to be accessed from this tutorial.
+
+We will first load and attach the {tidyverse} and {mclm} packages.
+
+```{r, eval = FALSE, echo = TRUE}
+library(tidyverse)
+library(mclm)
+```
+
+## Building a frequency list
+
+In this section, we will build a frequency list for the file "data/ca01". Before we do this, let's inspect what this file looks like. Inspecting the file is a step that can be skipped if you already know what your corpus data look like, but here we will briefly inspect the file. If you have your own version of the file, in RStudio, choose `File | Open file ...` and select the file "ca01" wherever you have stored it.
+In the upper-left panel of RStudio, a new tab appears, containing the contents of the file. You'll notice it contains lines such as:
+
+```{r}
+cat(readLines("data/ca01", n = 3)[[3]])
+```
+  
+Next, we build a frequency list. The function `freqlist()` reads the file from disk regardless of whether we have opened it by other means before.
+
+```{r freqlist, echo = TRUE}
+freqlist("data/ca01")
+```
+
+### The `re_token_splitter` argument
+
+The output of the previous instruction indicates that in the file "data/ca01", there are `r n_types(flist)` types and `r n_tokens(flist)` tokens. If we look at the actual types, we see that it's a mixed bag of POS codes such as *nn* (which stands for 'singular or mass noun') and word forms such as *the*.
+What happened? In order to understand this, let's run the following instruction:
+
+```{r help, exercise = TRUE}
+?freqlist
+```
+
+This instruction calls up the documentation for the function `freqlist()`.
+In this documentation, we see that the default value for the argument `re_token_splitter` is `re("[^_\\p{L}\\p{N}\\p{M}'-]+")`.^[In "strings literals" in R, any backslash needs to be doubled. See the regular expressions tutorial (`learnr::run_tutorial("regex", package = "mclm")`) for more information.]
+Therefore, the above actually states that the default value of `re_token_splitter` is a regular expression, created with `re()`, the value of which is `[^_\p{L}\p{N}\p{M}'-]+`.
+ 
+An alternative notation in R, using a so-called "raw string", would be `re(r"--[(?xi)   [^_\p{L}\p{N}\p{M}'-]+   ]--")` or, since it is not mandatory to embed the string in `re()`, also `r"--[(?xi)   [^_\p{L}\p{N}\p{M}'-]+   ]--"`.
+Let's break this regular expression down into its components:
+
+- `[^...]+` &#129094; a sequence of one or more characters which can be any character except the one that are listed in the `...` area. The `+` means "one or more repetitions" and the `[^...]` means: "any character that is not listed in `...`".
+
+- `_` &#129094; the character *_* (underscore).
+
+- `\p{L}` &#129094; any alphabetic character (in any language).
+
+- `\p{N}` &#129094; any numerical character (in any language).
+
+- `\p{M}` &#129094; any diacritic/accent that is added to another character.
+
+- `'` &#129094; the character *'* (apostrophe).
+
+- `-` &#129094; the character *-* (hyphen).
+
+In sum, the whole regular expression can be paraphrased as:
+
+> An uninterrupted sequence of characters which are neither alphanumerical symbols nor diacritics nor any of the characters _, - and '.
+
+The default mechanism for token identification used by the `freqlist()` function is to treat all matches for the regular expression `[^_\p{L}\p{N}\p{M}'-]+` as the areas between the tokens, and therefore to treat anything outside those areas as the actual tokens. This default behaviour works rather well in corpus files without annotation. However, it is not appropriate for our Brown corpus, since it separates the word forms from the POS-codes.
+
+As an alternative, run the following code --- but before you run it, try to think of what `re_token_splitter` will do here.
+
+```{r rets, exercise = TRUE}
+freqlist("data/ca01",
+         re_token_splitter = r"--[(?xi)   \s+   ]--")
+```
+
+Now we see that the types in the resulting frequency list have the format `wordform/POS`. We also see that now `r n_types(flist1)` types and only `r n_tokens(flist1)` tokens were found. How did this happen?
+
+The new regular expression we use is: `\s+`. This can be paraphrased as:
+
+> Any sequence of one or more whitespace characters.
+
+The regular expression notation `\s` stands for a whitespace character, such a the space, the tab, the carriage return and the newline character. Now any sequence of non-whitespace characters is treated as a token, which *in this corpus* is a good approach to token identification.
+
+## Reading a frequency list
+
+So how do we read the output we just created?
+
+By default, the items of a recently created frequency list are sorted by (decreasing) frequency. This absolute frequency can be found in the column `abs_freq`. The frequency rank of the items can be found in the column `rank`. The column `type` contains the actual items. The column `nrm_freq` finally contains a normalized frequency, i.e. the number of occurrences per 10,000 tokens.
+For instance, for *the/at*, the normalized frequency is calculated as:
+$$(`r flist1[["the/at"]]` / `r tot_n_tokens(flist1)`) * 10000 \approx `r round(flist1[["the/at"]]/tot_n_tokens(flist1)*10000, 3)`$$
+
+In other words, roughly 7% of the tokens are instances of *the/at*. The reason why in corpus linguistics we typically (but not exclusively) work with 'number of occurrences per 10,000 tokens' is because working with proportions, e.g. (`r flist1[["the/at"]]` / `r tot_n_tokens(flist1)`), would often have us working with really small numbers.
+
+Looking at the following frequency list, try to answer the questions below:
+
+```{r, echo = TRUE}
+freqlist("data/ca01",
+         re_token_splitter = r"--[(?xi)   \s+   ]--")
+```
+
+```{r read-quiz}
+quiz(
+  mclm_question_num("How many tokens are in this frequency list?", n_tokens(flist1)),
+  mclm_question_num("How many types are in this frequency list?", n_types(flist1)),
+  mclm_question_num("What is the absolute frequency of *and/cc* in this frequency list?",
+                    flist1[["and/cc"]]),
+  mclm_question_num("What is the normalized frequency (per 10,000 tokens) of *and/cc* in this frequency list?", flist1[["and/cc"]]/n_tokens(flist1)*10000, min = 30),
+  caption = "Let's inspect a frequency list!"
+)
+```
+
+You can also *view* the frequency list by typing, on the console, `View(flist)`, `flist` being the name of your frequency list, i.e. the variable in which it was stored. In addition, you can save your frequency list to file with `write_freqlist(flist, "my_first_freqlist.tab")` (with whatever path you want to store it to) and then read it back, in a different R session for example, with `flist <- write_freqlist("my_first_freqlist.tab")`.
+
+It is also possible open the frequency list with e.g. LibreOffice Calc, since the frequency list is just a simple 'tab separated values' file. In LibreOffice Calc, just choose `File | Open...`, select the file
+"my_first_freqlist.tab", and in the `Text import` window just click `OK`.
+
+Next, we will explore some alternative ways to build frequency lists for the same corpus and thus how to work with the `freqlist()` function.
+
+## Token transformation
+
+Suppose, for instance, that we want to ignore the POS-information. How can we do this? The following is a possible approach:
+
+```{r transf0, echo = TRUE}
+freqlist("data/ca01",
+    re_token_splitter = r"--[(?xi)   \s+   ]--",
+    re_token_transf_in = r"--[(?xi)   ([^/]+) / ([^/]+)   ]--",
+    token_transf_out = r"--[\1]--") %>% 
+  print()
+```
+
+In the new frequency list the POS tags have disappeared. The arguments `re_token_transf_in` and `token_transf_out` work together to transform tokens after they have been identified. By default, the value of `re_token_transf_in` is `NULL`, in which case the token transformation mechanism is disabled. If the value of the argument `re_token_transf_in` is a regular expression instead, then the value of `token_transf_out` must be a replacement string. The token transformation mechanism then modifies all tokens by replacing all matches of `re_token_transf_in` (in the tokens) with `token_transf_out`. Here, the regular expression in `re_token_transf_in` is `([^/]+)/([^/]+)`:
+
+- `[^/]+` &#129094; a sequence of one or more characters that are not slash characters.
+
+- `/` &#129094; the character / (slash).
+
+- `(...)` &#129094; ..., interpreted as a 'group'.
+
+So our regular expression looks for:
+
+> A group containing a first sequence of non-slashes, followed by a slash, followed by a second group containing a sequence of non-slashes.
+
+In this version of the Brown corpus, any token will match that pattern as a whole. The parentheses in the regular expression don't match anything by themselves: they only indicate that whatever matches their content must be trated as a "group". This is particularly handy when writing replacement strings, since we can use `\1` to refer to the match for the first group, `\2` to refer to the match for the second group, etc. (Note that these are **not** regular expressions!)
+
+Therefore, for this corpus and this value of `re_token_transf_in`, any mention of `\1` in `token_transf_out` will reproduce the contents of the first group, i.e. the wordform, and any mention of `\2` will reproduce the contents of the second group, i.e. the POS tag.
+Other terms will be reproduced as is. Below are some transformations of *the/at* given the `re_token_transf_in` value of before:
+
+- `r"--[\1-\1]--"` &#129154; the-the
+
+- `r"--[\2\1]--"` &#129154; atthe
+
+- `r"--["\1"]--"` &#129154; "the"
+
+- `r"--[wordform is \1 and pos is \2]--"` &#129154; wordform is the and pos is at
+
+### Exercises
+
+```{r transf_func, include = FALSE}
+change_transf <- function(regex){
+  freqlist("data/ca01",
+    re_token_splitter = r"--[(?xi)   \s+   ]--",
+    re_token_transf_in = r"--[(?xi)   ([^/]+) / ([^/]+)   ]--",
+    token_transf_out = regex) %>% 
+ summary()   
+}
+a <- change_transf(r"--[\2]--")
+b <- change_transf(r"--[\1_\2 ]--")
+c <- change_transf(r"--[<w pos="\2">\1</w>]--")
+```
+
+In the following exercises you can run the code as many times as you want by clicking on `Run Code`, and then submit your solution when you're ready by clicking on `Submit Answer`.
+
+1. In the following code box, adapt the regular expression in `token_transf_out` so that you only capture POS-tags instead of wordforms.
+
+```{r transf1, exercise = TRUE}
+freqlist("data/ca01",
+    re_token_splitter =  r"--[(?xi)          \s+          ]--",
+    re_token_transf_in = r"--[(?xi)   ([^/]+) / ([^/]+)   ]--",
+    token_transf_out =   r"--[\1]--")
+```
+
+```{r transf1-solution}
+freqlist("data/ca01",
+    re_token_splitter =  r"--[(?xi)          \s+          ]--",
+    re_token_transf_in = r"--[(?xi)   ([^/]+) / ([^/]+)   ]--",
+    token_transf_out =   r"--[\2]--")
+```
+
+```{r transf1-check}
+grade_this_code()
+```
+
+```{r transf1-quiz1}
+mclm_question_num("How many types are in such frequency list?", a$n_types, min = 10000)
+```
+
+```{r transf1-quiz2}
+mclm_question_num("How many tokens are in such frequency list?", a$n_tokens, min = 10000)
+```
+
+2. In the following code box, adapt the regular expression in `token_transf_out` so that the tokens are represented with their wordform and part-of-speech separated by an underscore, e.g. *the_at* instead of *the/at*.
+
+```{r transf2, exercise = TRUE}
+freqlist("data/ca01",
+    re_token_splitter =  r"--[(?xi)          \s+          ]--",
+    re_token_transf_in = r"--[(?xi)   ([^/]+) / ([^/]+)   ]--",
+    token_transf_out =   r"--[\1]--")
+```
+
+```{r transf2-solution}
+freqlist("data/ca01",
+    re_token_splitter =  r"--[(?xi)          \s+          ]--",
+    re_token_transf_in = r"--[(?xi)   ([^/]+) / ([^/]+)   ]--",
+    token_transf_out =   r"--[\1_\2]--")
+```
+
+```{r transf2-check}
+grade_this_code()
+```
+
+```{r transf2-quiz1}
+mclm_question_num("How many types are in such frequency list?", b$n_types, min = 20000)
+```
+
+```{r transf2-quiz2}
+mclm_question_num("How many tokens are in such frequency list?", b$n_tokens, min = 20000)
+```
+
+3. In the following code box, adapt the regular expression in `token_transf_out` so that the tokens are represented as XML tags, with the POS-tag as a "pos" attribute, surrounding the wordform, e.g. `<w pos="at">the</w>` for *the/at*.
+
+```{r transf3, exercise = TRUE}
+freqlist("data/ca01",
+    re_token_splitter =  r"--[(?xi)          \s+          ]--",
+    re_token_transf_in = r"--[(?xi)   ([^/]+) / ([^/]+)   ]--",
+    token_transf_out =   r"--[\1]--")
+```
+
+```{r transf3-solution}
+freqlist("data/ca01",
+    re_token_splitter =  r"--[(?xi)          \s+          ]--",
+    re_token_transf_in = r"--[(?xi)   ([^/]+) / ([^/]+)   ]--",
+    token_transf_out =   r"--[<w pos="\2">\1</w>]--")
+```
+
+```{r transf3-check}
+grade_this_code()
+```
+
+```{r transf3-quiz1}
+mclm_question_num("How many types are in such frequency list?", c$n_types, min = 30000)
+```
+
+```{r transf3-quiz2}
+mclm_question_num("How many tokens are in such frequency list?", c$n_tokens, min = 30000)
+```
+
+As you may have gathered from these answers, the token transformation procedure does not affect the number of tokens. It may affect the number of types when, by selecting specific parts of the tokens, the number of unique strings is different.
+
+## Dropping tokens
+
+Suppose now that we want to get rid of the tokens that are not really words, but that instead are punctuation characters. There's two ways to do this. The choice between the two methods is not without consequences.
+
+### The `re_drop_token` argument
+
+The first choice is to treat the punctuation characters as if they were never there. This can be accomplished
+by the appropriate regular expression in the `re_drop_token` argument of `freqlist()`.
+
+```{r drop1, echo = TRUE}
+flist_a <- freqlist("data/ca01", 
+    re_token_splitter = r"--[\s+]--",
+    re_drop_token = r"--[(?xi)   / [^\p{L}]   ]--")
+print(flist_a)
+```
+
+The argument `re_drop_token` allows the `freqlist()` function to test any token it has just detected, and to drop it if it matches a specific regular expression. Here, we drop all tokens that contain at least one match for: `/[^\p{L}]`, which can be parapharsed as:
+
+> a slash character, followed by a character that is not an alphabetic character.
+
+Since in our Brown corpus the tokens which are punctuation characters have POS codes such as `.`, `,`, etc., this regular expression removes all punctuation characters.
+
+If we look at the number of tokens we have in this frequency list, viz. `r n_tokens(flist_a)`, we notice that we now have fewer tokens than the `r n_tokens(flist1)` tokens we previously had when we did not remove the punctuation character tokens.
+
+### The `keep_re()` method
+
+In the alternative approach we first build the complete list, including the punctuation mark tokens, and we then remove the latter in a second step.
+
+```{r drop2, echo = TRUE}
+flist_b <- freqlist("data/ca01", 
+  re_token_splitter = r"--[(?xi)   \s+   ]--") %>%
+  keep_re(r"--[(?x)  / [\p{L}]  ]--")
+print(flist_b)
+```
+
+With the `keep_re()` method we can make a filtered copy of a frequency list, only retaining the items that contain matches for the regular expression provided to it.
+In this case, we only keep the items the name of which contain a match for the regular expression: `/[\p{L}]`, i.e:
+
+> a slash, immediately followed by an alphabetic character.
+
+### Comparison
+
+We can see that the output is very similar to the output in the first approach: in both cases we end up having `r n_types(flist_b)` types in the list and `r n_tokens(flist_b)` tokens. The only difference is that in the second approach the list has remembered that originally there were `r tot_n_tokens(flist_b)` tokens. This is indicated on the second line of the output, preceded by `total number of tokens: `.
+In other words, the number following `tokens in list` in the output refers to the number of remaining tokens after filtering, whereas the number following `total number of tokens` refers to the original number of tokens in the list.^[Note that we also obtain a new column, `orig_ranks`, which reports the ranks of the types in the original frequency list, before filtering.]
+Notice that the two approaches lead to different calculations in the `nrm_freq` column. For example, below we see the computation for *the/at* with each approach:
+
+1. $\mathrm{nrm\_freq}(the/at) = (`r flist_a[["the/at"]]` / `r tot_n_tokens(flist_a)`) * 10000 \approx `r round(flist_a[["the/at"]]/tot_n_tokens(flist_a)*10000, 3)`$
+
+2. $\mathrm{nrm\_freq}(the/at) = (`r flist_b[["the/at"]]` / `r tot_n_tokens(flist_b)`) * 10000 \approx `r round(flist_b[["the/at"]]/tot_n_tokens(flist_b)*10000, 3)`$
+
+This difference leads to slightly different results when calculating association scores. Let's look at an example. We'll use both strategies to first build separate frequency lists for "data/ca01" and "data/ca02" and subsequently perform a distinctive keywords analysis for both frequency lists.
+
+Instead of looking at a substantial number or keywords, we zoom in on the keyness measures for the article *the*, which in our corpus looks like *the/at*.
+<!-- In order to look at the keyness measures for *the/at*, we make a copy of the association scores dataframe `scores` in which only the row for *the/at* is retained. This can be done with the command `scores %>% filter(type_names(.) == "the/at")`, which can be paraphrased as: -->
+
+<!-- > Give me a copy of scores in which you only keep the rows with the type name *the/at*. -->
+
+First we use the `re_drop_token` argument. Run the following code to obtain the keyness measure for *the/at* according to this first approach.
+
+```{r key1, echo = TRUE}
+flist_ca01 <- freqlist("data/ca01", 
+  re_token_splitter = r"--[(?xi)   \s+          ]--",
+  re_drop_token     = r"--[(?xi)   / [^\p{L}]   ]--")
+
+flist_ca02 <- freqlist("data/ca02", 
+  re_token_splitter = r"--[(?xi)   \s+          ]--",
+  re_drop_token     = r"--[(?xi)   / [^\p{L}]   ]--")
+
+scores_a <- assoc_scores(flist_ca01, flist_ca02) %>% 
+  filter(type_names(.) == "the/at") %>% 
+  print()
+```
+
+In the output returned by the previous instruction, we see that for *the/at*, $a$ is `r scores_a$a`, $b$ is `r scores_a$b`, $c$ is `r scores_a$c`, and $d$ is `r scores_a$d`. Now let's do the same thing using the other strategy, i.e. using the `keep_re()` method.
+
+```{r key2, echo = TRUE}
+flist_ca01 <- freqlist("data/ca01", 
+  re_token_splitter = r"--[(?xi)   \s+          ]--") %>%
+  keep_re(r"--[(?xi)   / [\p{L}]   ]--")
+
+flist_ca02 <- freqlist("data/ca02", 
+  re_token_splitter = r"--[(?xi)   \s+          ]--") %>%
+  keep_re(r"--[(?xi)   / [\p{L}]   ]--")
+
+scores_b <- assoc_scores(flist_ca01, flist_ca02) %>% 
+  filter(type_names(.) == "the/at") %>% 
+  print()
+```
+
+So this time $a$ is `r scores_b$a`, $b$ is `r scores_b$b`, $c$ is `r scores_b$c`, and $d$ is `r scores_b$d`.
+In other words, for the calculation of $b$ and $d$ the original size of the frequency list was used this time, not its size after filtering.
+
+## N-grams
+
+The `freqlist()` function also supports building n-grams. For instance, the following instruction builds a frequency list of wordform trigrams.
+
+```{r ngrams-wf, echo = TRUE}
+ngram3_wf <- freqlist("data/ca01", 
+         re_token_splitter =  r"--[(?xi)   \s+   ]--",
+         re_token_transf_in = r"--[(?xi)   ([^/]+) / ([^/]+)     ]--", 
+         token_transf_out = r"--[\1]--",
+         ngram_size = 3) %>%
+  print()
+```
+
+And the following instruction builds a frequency list of POS code trigrams.
+
+```{r ngrams-pos, echo = TRUE}
+ngram3_pos <- freqlist("data/ca01", 
+         re_token_splitter =  r"--[(?xi)   \s+   ]--",
+         re_token_transf_in = r"--[(?xi)   ([^/]+) / ([^/]+)     ]--", 
+         token_transf_out = r"--[\2]--",
+         ngram_size = 3) %>%
+  print()
+```
+
+You can find the meaning of the POS tags in the [documentation of the Brown corpus tagset](https://korpus.uib.no/icame/brown/bcm.html#bc5) and of the [CLAWS tagsets](https://ucrel.lancs.ac.uk/claws/).
+
+```{r ngrams-quiz}
+quiz(
+  mclm_question_num("How many tokens are in the frequency list of wordform trigrams?", n_tokens(ngram3_wf), min = 1),
+  mclm_question_num("How many times does the combination \"the jury said\" occur in the corpus?", ngram3_wf[["the_jury_said"]], min = 1),
+  mclm_question_num("How many types are in the frequency list of part-of-speech trigrams?", n_types(ngram3_pos), min = 1),
+  mclm_question_num("How many times does the combination of a common noun (`nn`), followed by a preposition (`in`), followed by an article (`at`), occur in the corpus?",
+                    ngram3_pos[["nn_in_at"]], min = 1),
+  mclm_question_num("What is the normalized frequency, over 10.000 tokens, of the combination of a verb (`vb`), followed by an article, followed by a common noun?", ngram3_pos[["vb_at_nn"]]/tot_n_tokens(ngram3_pos)*10000, min = 1),
+  caption = "Quiz! Look at the frequency lists above to answer these questions."
+)
+```
+
+In the following code box, adapt the code (filling in the `___`) to extract wordform bigrams and then answer the questions.
+
+```{r bigrams, exercise = TRUE}
+freqlist("data/ca01", 
+         re_token_splitter =  r"--[(?xi)   \s+   ]--",
+         re_token_transf_in = r"--[(?xi)   ([^/]+) / ([^/]+)     ]--", 
+         token_transf_out = ___,
+         ngram_size = ___) %>%
+  print()
+```
+
+```{r bigrams-solution}
+freqlist("data/ca01", 
+         re_token_splitter =  r"--[(?xi)   \s+   ]--",
+         re_token_transf_in = r"--[(?xi)   ([^/]+) / ([^/]+)     ]--", 
+         token_transf_out = r"--[\1]--",
+         ngram_size = 2) %>%
+  print()
+```
+
+```{r bigrams-check}
+grade_this_code()
+```
+
+```{r bigrams-quiz}
+ngram2_wf <- freqlist("data/ca01", 
+         re_token_splitter =  r"--[(?xi)   \s+   ]--",
+         re_token_transf_in = r"--[(?xi)   ([^/]+) / ([^/]+)     ]--", 
+         token_transf_out = r"--[\1]--",
+         ngram_size = 2)
+quiz(
+  caption = "Mini quiz about bigrams!",
+  mclm_question_num("How many tokens are in a frequency list of wordform *bigrams*, i.e. n-grams of two wordforms?", n_tokens(ngram2_wf), min = 1),
+  mclm_question_text("What is the *third* most frequent wordform bigram in this corpus?", answer(type_names(ngram2_wf)[[3]], correct = TRUE)),
+  mclm_question_num("How many times does the bigram \"the_state\" occur in the corpus?", ngram2_wf[["the_state"]], min = 1)
+)
+```
+
+## Merging
+
+In the tutorial "First steps with MCLM" we have seen how to create `fnames` objects and merge them with `fnames_merge()` to obtain one longer `fnames` object. For example, if we didn't have both corpus files in the same directory, or if we wanted a very specific selection of corpus files, we could convert the paths to our files to `fnames` objects with `as_fnames()` and then merge them with `fnames_merge()`.
+
+```{r fnames-merge, exercise = TRUE, exercise.eval = TRUE}
+file_1 <- as_fnames("data/ca01")
+file_2 <- as_fnames("data/ca02")
+fnames_merge(file_1, file_2)
+```
+
+It might also be the case that you have already collected and maybe even processed frequency lists from different subcorpora and you want to merge the frequency lists *post hoc*. You may do this with the `freqlist_merge()` function (or `freqlist_merge_all()` to merge more than two frequency lists).
+In the following sandbox, add a second frequency list based on "data/ca02" and merge it with the first frequency list.
+
+```{r freqlist-merge, echo = TRUE}
+flist1 <- freqlist("data/ca01", re_token_splitter = r"--[(?xi)  \s+  ]--")
+flist1
+
+flist2 <- freqlist("data/ca02", re_token_splitter = r"--[(?xi)  \s+  ]--")
+flist2
+
+flist_merged <- freqlist_merge(flist1, flist2)
+flist_merged
+```
+
+```{r flist-merge-quiz}
+quiz(
+  caption = "Look at the frequency lists above to answer the following questions.",
+  mclm_question_num(
+    "What is the frequency of *the/at* in \"ca01\"?",
+    flist1[["the/at"]]
+  ),
+  mclm_question_num(
+    "What is the frequency of *the/at* in \"ca02\"?",
+    flist2[["the/at"]]
+  ),
+  mclm_question_num(
+    "What is the frequency of *the/at* in the merged frequency list?",
+    flist_merged[["the/at"]]
+  ),
+  mclm_question(
+    "How many tokens are in the merged frequency list?",
+    answer("As many as in the first frequency list.", correct = n_tokens(flist1) == n_tokens(flist_merged)),
+    answer("As many as in the second frequency list.", correct = n_tokens(flist2) == n_tokens(flist_merged)),
+    answer("The sum of the tokens in each of the frequency lists.", correct = n_tokens(flist1) + n_tokens(flist2) == n_tokens(flist_merged))
+  ),
+  mclm_question(
+    "How many types are in the merged frequency list?",
+    answer("As many as in the first frequency list.", correct = n_types(flist1) == n_types(flist_merged)),
+    answer("As many as in the second frequency list.", correct = n_types(flist2) == n_types(flist_merged)),
+    answer("The sum of the types in each of the frequency lists.", correct = n_types(flist1) + n_types(flist2) == n_types(flist_merged)),
+    answer("The average between the types in each frequency list.", correct = (n_types(flist1) + n_types(flist2))/2 == n_types(flist_merged)),
+    answer("The sum of the types in each of the frequency lists minus the number of types that occur in both lists.", correct = TRUE)
+  )
+)
+```
+
+## Subsetting
+
+Frequency lists can be subset in different ways. In the introductory tutorial, two of these ways were shown: `keep_types()` and `keep_pos()`. As their documentation illustrates (run `?keep_types` or `?keep_pos`), each of these `keep_` functions have a `drop_` counterpart that *excludes* (or drops) the matching items instead.
+
+In this section we will also look at two other methods of the `keep_` family as well as how to obtain the same results with the `[]` notation.
+
+### Filtering by position
+
+The method `keep_pos()`, when applied to a `freqlist` object, returns another `freqlist` object with only the items in the requested positions. These are provided as a numeric vector, such as `1`, `c(2, 5, 10)` or `2:5`.
+
+Using the `[]` notation with such a numeric vector returns exactly the same as `keep_pos()`.
+
+```{r keep-pos, echo = TRUE}
+flist_merged %>%
+  keep_pos(1:6)
+
+flist_merged[1:6]
+```
+
+The `keep_` methods have an additional argument, `invert`; when it is `TRUE`, it excludes the requested items instead of only returning those. The same goes for the `[]` notation. An alternative is to use the `drop_` method.
+
+```{r drop-pos, echo = TRUE}
+flist_merged %>% keep_pos(1:6, invert = TRUE)
+
+flist_merged %>% drop_pos(1:6)
+
+flist_merged[1:6, invert = TRUE]
+```
+
+#### Let's practice!
+
+In the following exercises you can run the code as many times as you want by clicking on `Run Code`, and then submit your solution when you're ready by clicking on `Submit Answer`.
+
+1. In the following code box, select the 20 most frequent tokens in `flist_merged`.
+
+```{r pos1, exercise = TRUE}
+flist_merged
+```
+
+```{r pos1-solution}
+# brackets ----
+flist_merged[1:20]
+
+# keep_pos ----
+keep_pos(flist_merged, 1:20)
+```
+
+```{r pos1-check}
+grade_this_code()
+```
+
+```{r pos1-quiz}
+mclm_question_num("How many tokens are covered by the 20 most frequent tokens in `flist_merged`?",
+                  n_tokens(keep_pos(flist_merged, 1:20)))
+```
+
+2. In the following code box, exclude the 50 most frequent tokens in `flist_merged`.
+
+```{r pos2, exercise = TRUE}
+flist_merged
+```
+
+```{r pos2-solution}
+# keep_pos ----
+keep_pos(flist_merged, 1:50, invert = TRUE)
+
+# brackets ----
+flist_merged[1:50, invert = TRUE]
+
+# drop_pos ----
+drop_pos(flist_merged, 1:50)
+```
+
+```{r pos2-check}
+grade_this_code()
+```
+
+```{r pos2-quiz}
+mclm_question_num("How many tokens are left after excluding the 50 most frequent tokens in `flist_merged`?",
+                  n_tokens(drop_pos(flist_merged, 1:50)))
+```
+
+3. In the following code box, find the 30th most frequent token in `flist_merged`.
+
+```{r pos3, exercise = TRUE}
+flist_merged
+```
+
+```{r pos3-solution}
+# keep_pos ----
+keep_pos(flist_merged, 30)
+
+# brackets ----
+flist_merged[30]
+```
+
+```{r pos3-check}
+grade_this_code()
+```
+
+```{r pos3-quiz}
+mclm_question_text("Which type is the 30th most frequent in `flist_merged`?",
+                     answer(type_names(flist_merged[30]), correct = TRUE))
+```
+
+### Filtering by type
+
+The methods `keep_types()` and `drop_types()` take a `types` object or character vector, such as `c("the/at", "a/at")`, instead of a numeric vector, and select the items that match those types.
+Using the `[]` notation with such a `types` object or character vector returns exactly the same as `keep_types()`. Like with the previous method, `drop_types()` excludes the selected types, behaving like `keep_types()` and the `[]` notation when `invert = TRUE`.
+
+```{r keep-types, echo = TRUE}
+flist_merged %>%
+  keep_types(c("the/at", "a/at"))
+
+flist_merged[c("the/at", "a/at")]
+
+flist_merged[c("the/at", "a/at"), invert = TRUE]
+```
+
+Work on the previous exercises to answer the following questions:
+
+#### Let's practice!
+
+In the following exercises you can run the code as many times as you want by clicking on `Run Code`, and then submit your solution when you're ready by clicking on `Submit Answer`.
+
+1. In the following code box, subset `flist_merged` to only see the *a/at* type.
+
+```{r types1, exercise = TRUE}
+flist_merged
+```
+
+```{r types1-solution}
+# brackets ----
+flist_merged["a/at"]
+
+# keep_types ----
+keep_types(flist_merged, "a/at")
+```
+
+```{r types1-check}
+grade_this_code()
+```
+
+```{r types1-quiz}
+mclm_question_num("How many occurrences of *a/at* are there in `flist_merged`?",
+                    flist_merged[["a/at"]])
+```
+
+2. In the following code box, remove the following types from `flist_merged`: *of/in*, *to/to*, *in/in*.
+
+```{r types2, exercise = TRUE}
+c("of/in", "to/to", "in/in")
+```
+
+```{r types2-solution}
+# brackets ----
+flist_merged[c("of/in", "to/to", "in/in"), invert = TRUE]
+
+# keep_types ----
+keep_types(flist_merged, c("of/in", "to/to", "in/in"), invert = TRUE)
+
+# drop_types ----
+drop_types(flist_merged, c("of/in", "to/to", "in/in"))
+```
+
+```{r types2-check}
+grade_this_code()
+```
+
+```{r types2-quiz}
+mclm_question_num("How many tokens remain in `flist_merged` after removing *of/in*, *to/to* and *in/in*?",
+                  n_tokens(drop_types(flist_merged, c("of/in", "to/to", "in/in"))))
+```
+
+3. In the following code box, select the following types from `flist_merged`: *jury/nn*, *state/nn*, *bill/nn*, *election/nn*.
+
+```{r types3, exercise = TRUE}
+c("jury/nn", "state/nn", "bill/nn", "election/nn")
+```
+
+```{r types3-solution}
+# brackets ----
+flist_merged[c("jury/nn", "state/nn", "bill/nn", "election/nn")]
+
+# keep_types ----
+keep_types(flist_merged, c("jury/nn", "state/nn", "bill/nn", "election/nn"))
+```
+
+```{r types3-check}
+grade_this_code()
+```
+
+```{r types3-quiz}
+quiz(
+  caption = "A few questions based on your subset frequency list:",
+  mclm_question_num(
+    "What is the absolute frequency of *jury/nn*?",
+    flist_merged[["jury/nn"]]),
+  mclm_question(
+    "Which is the default order of the types in this frequency list?",
+    answer("By frequency, with the most frequent type first."),
+    answer("By frequency, with the least frequent type first"),
+    answer("The order in which the types were requested.", correct = TRUE),
+    answer("Alphabetical order")),
+  mclm_question_num(
+    "What is the frequency rank of *jury/nn* in new frequency list?", 2),
+  mclm_question_num(
+    "What is the frequency rank of *jury/nn* in the original `flist_merged`?",
+    orig_ranks(flist_merged["jury/nn"]))
+)
+```
+
+### Filtering with regex
+
+Instead of matching precise types, you might want to exploit the regular expression skills that you learned in the regex tutorial^[`learnr::run_tutorial("regex", package = "mclm")`] for more complex character-based searches. The methods to use for that purpose are `keep_re()` and `drop_re()` (which, of course, works like `keep_re()` when `invert = TRUE`). Using the brackets notation with a `re` object^[`keep_re()` and `drop_re()` also accept `re` objects, but don't need them.] returns the same result. For example, we could try to extract all the articles in the corpus by searching filtering types that contain the sequence */at*.
+
+```{r keep-re, echo = TRUE}
+flist_merged %>% 
+  keep_re("/at")
+
+flist_merged[re("/at")]
+
+flist_merged %>%
+  drop_re("/at")
+```
+
+We might want to refine the search, for example by limiting words whose part-of-speech tag is *at* but not *at-tl* or *at-hl* (with `/at$`) or trying to expand the search to words that also have a POS tag ending in *-at* (with `(-at|/at)`).
+
+#### Let's practice!
+
+In the following exercises you can run the code as many times as you want by clicking on `Run Code`, and then submit your solution when you're ready by clicking on `Submit Answer`.
+
+1. In the following code box, select the items from `flist_merged` whose part of speech is exactly *nn*.
+
+```{r re1, exercise = TRUE}
+flist_merged
+```
+
+```{r re1-solution}
+# brackets ----
+flist_merged[re("/nn$")]
+
+# keep_re ----
+keep_re(flist_merged, "/nn$")
+```
+
+```{r re1-check}
+grade_this_code()
+```
+
+```{r re1-quiz1}
+mclm_question_num(
+    "How many types in `flist_merged` have the POS tag *nn*, with no additional elements?",
+    n_types(keep_re(flist_merged, "/nn$"))
+  )
+```
+
+```{r re1-quiz2}
+mclm_question_num(
+    "How many tokens in `flist_merged` have the POS tag *nn*, with no additional elements?",
+    n_tokens(keep_re(flist_merged, "/nn$"))
+  )
+```
+
+2. In the following code box, remove the items from `flist_merged` whose part of speech starts with *nn*.
+
+```{r re2, exercise = TRUE}
+flist_merged
+```
+
+```{r re2-solution}
+# brackets ----
+flist_merged[re("/nn"), invert = TRUE]
+
+# keep_re ----
+keep_re(flist_merged, "/nn", invert = TRUE)
+
+# drop_re ----
+drop_re(flist_merged, "/nn")
+```
+
+```{r re2-check}
+grade_this_code()
+```
+
+```{r re2-quiz1}
+mclm_question_num(
+    "How many types in `flist_merged` do **not** have a POS tag beginning with *nn*?",
+    n_types(drop_re(flist_merged, "/nn"))
+  )
+```
+
+```{r re2-quiz2}
+mclm_question_num(
+    "How many tokens in `flist_merged` do **not** have a POS tag beginning with *nn*?",
+    n_tokens(drop_re(flist_merged, "/nn"))
+  )
+```
+
+### Filtering with boolean statements
+
+Finally, it is possible to use a boolean condition to filter a frequency list. The methods `keep_bool()` and `drop_bool()` take logical vectors; if such a logical vector is provided between `[]`, it works like `keep_bool()`.
+
+An example of a logical vector is `c(TRUE, TRUE, FALSE, TRUE)`. For these methods, we need to provide a logical vector of the same length as the frequency list so that each item in the frequency list is assigned an item of the logical vector. `keep_bool()` will return the items that are assigned a `TRUE`, whereas `drop_bool()` (or `keep_bool()` with `invert = TRUE`) will return those that are assigned a `FALSE`.
+
+Let's first look at an example with a normal numeric vector.
+
+```{r bool, exercise = TRUE, exercise.eval = TRUE}
+x <- c(1, 2, 3, 1, 5, 2, 1, 3)
+x
+```
+
+The vector has `r length(x)` items, so we want a logical vector of the same length to filter it. (Actually, it could also be a smaller logical vector, but we'll get into that later.)
+
+The following exercise defines three logical vectors of the same length as `x`: `a` is completely `TRUE`, `b` is completely `FALSE`, and `c` has some `TRUE` and some `FALSE` items. Try using the different logical vectors to subset `x` and see what happens (e.g. `x[a]`).
+
+```{r bool2, exercise = TRUE, exercise.setup = "bool"}
+a <- rep(TRUE, length(x))
+b <- rep(FALSE, length(x))
+c <- c(FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, TRUE, FALSE)
+
+x[a]
+```
+
+A more "logical" way of using this approach is by creating a logical vector with a boolean statement. For example, `x == 1` or `x > 1`.
+
+```{r bool3, exercise = TRUE, exercise.setup = "bool", exercise.eval = TRUE}
+x == 1; x[x==1]
+```
+
+Since `freqlist` objects are basically named numeric vectors, it is also possible to create a logical vector with a boolean statement that refers to the frequencies it represents. For example, `flist_merged > 50` returns a logical vector with `TRUE` in the position of each type with a frequency larger than 50 and `FALSE` otherwise. As such, it can be used to filter the frequency list with frequency thresholds.
+
+```{r bool4, eval=TRUE, echo = TRUE}
+at_flist <- flist_merged %>% keep_re("/at") # subset to articles
+
+at_flist > 50
+
+at_flist %>% keep_bool(at_flist > 50) # also at_flist %>% keep_bool(. > 50)
+
+at_flist[at_flist > 50]
+```
+
+If the logical vector does not have the same length of the frequency list, it is recycled. For example, `x[a]` returns the same as `x[TRUE]`. `x[c(TRUE, FALSE)]` will return every other element. Look at the original ranks in the frequency list below: here we have selected types with odd ranks.
+
+```{r bool5, eval=TRUE, echo = TRUE}
+flist_merged %>% keep_bool(c(TRUE, FALSE))
+```
+
+<!-- TODO add exercise? -->
+
+## Sorting
+
+A `freqlist` object can be sorted by different criteria. As we've seen before, by default, a fresh frequency list will be sorted by increasing rank, that is, by decreasing frequency. A frequency list that has just been filtered in some way will adjust the order to the sorting criterion.
+
+```{r sort, echo = TRUE}
+flist_merged %>% print(n = 5)
+
+flist_merged %>%
+  keep_types(c("jury/nn", "state/nn", "bill/nn", "election/nn"))
+
+flist_merged %>%
+  keep_pos(c(7, 3, 5, 1, 2))
+```
+
+However, this default order is not the only option. The `sort()` method allows us to rearrange the order of a frequency list based on different criteria, in decreasing or increasing order. To select the criterion, we must run `sort(my_freqlist, sort_crit = "my_criterion")`. The possible criteria are:
+
+- `ranks`: The frequency rank of the items in the current frequency list, i.e. the first column in the printed frequency lists below. If `decreasing = TRUE`, the higher ranks (i.e. lowest frequencies) will come first.
+
+- `names`: The alphabetic order of the types. If `decreasing = TRUE`, *A* will come after *Z*.
+
+- `orig_ranks`: The original frequency ranks of the items, i.e. in the frequency list before subsetting. This is the second column in the two last frequency lists above. Like with `ranks`, `decreasing = TRUE` brings higher ranks, i.e. lowest frequencies, to the top.
+
+- `freqs`: The absolute frequency of the items. If `decreasing = TRUE`, which is *not* the default value, the highest frequencies will be on top.
+
+### Some practice!
+
+In the following exercises you can run the code as many times as you want by clicking on `Run Code`, and then submit your solution when you're ready by clicking on `Submit Answer`.
+
+1. In the following code box, select the 10 most frequent items in `flist_merged` and sort them alphabetically (*A* before *Z*).
+
+```{r sort1, exercise = TRUE}
+flist_merged
+```
+
+```{r sort1-solution}
+# brackets ----
+sort(flist_merged[1:10], sort_crit = "names")
+
+# keep_pos ----
+sort(keep_pos(flist_merged, 1:10), sort_crit = "names")
+```
+
+```{r sort1-check}
+grade_this_code()
+```
+
+```{r sort1-quiz1}
+res <- sort(keep_pos(flist_merged, 1:10), sort_crit = "names")
+mclm_question_text(
+    "Which is the first type in this filtered and sorted frequency list?",
+    answer(type_names(res)[[1]], correct = TRUE)
+  )
+```
+
+2. In the following code box, sort the frequency list `small_list` so that the highest frequency is on top.
+
+```{r sort2-setup}
+small_list <- flist_merged[c("jury/nn", "state/nn", "bill/nn", "election/nn")]
+```
+
+
+```{r sort2, exercise = TRUE, exercise.eval = TRUE}
+small_list
+```
+
+```{r sort2-solution}
+# freqs ----
+sort(small_list, decreasing = TRUE, sort_crit = "freqs")
+
+# orig_ranks ----
+sort(small_list, sort_crit = "orig_ranks")
+
+# ranks ----
+sort(small_list, sort_crit = "ranks")
+```
+
+```{r sort2-check}
+grade_this_code()
+```
+
+```{r sort2-quiz}
+mclm_question_num(
+    "What is the original rank of the item at the bottom of the sorted `small_list`?",
+    max(orig_ranks(small_list))
+  )
+```
+
+## Other methods
+
+Finally, the `freqlist` object has some methods and functions that can be used to extract specific information:
+
+- `n_types()` returns the number of types;
+
+- `n_tokens()` returns the number of tokens;
+
+- `tot_n_tokens()` returns the *original* number of tokens: if the frequency list has been filtered, this is a different number from `n_tokens()`;
+
+- `as_types()` and `type_names()` extract the names of the types, as a `types` object and a character vector, respectively;
+
+- `as_numeric()` returns the absolute frequencies;
+
+- `ranks()` returns the frequency ranks;
+
+- `orig_ranks()` returns the original frequency ranks: if the frequency list has been filtered, these are different from those returned by `ranks()`.
+
+Let's bring this to practice. In some cases, we will use a small frequency list call `sel_flist`:
+
+```{r selflist, echo = TRUE}
+sel_flist <- flist_merged %>%
+  keep_types(c("a/at", 
+               "the/at",
+               "xxx/at"))
+```
+
+How do you obtain the number of types in `sel_flist`?
+
+```{r ntypes, exercise = TRUE, exercise.setup = "selflist"}
+```
+
+```{r ntypes-solution}
+n_types(sel_flist)
+```
+
+```{r ntypes-check}
+grade_this_code()
+```
+
+How do you obtain the number of tokens remaining in `sel_flist`?
+
+```{r ntokens, exercise = TRUE, exercise.setup = "selflist"}
+```
+
+```{r ntokens-solution}
+n_tokens(sel_flist)
+```
+
+```{r ntokens-check}
+grade_this_code()
+```
+
+How do you obtain the number of tokens from the frequency list that `sel_flist` comes from?
+
+```{r totntokens, exercise = TRUE, exercise.setup = "selflist"}
+```
+
+```{r totntokens-solution}
+tot_n_tokens(sel_flist)
+```
+
+```{r totntokens-check}
+grade_this_code()
+```
+
+How could you calculate the number of tokens lost by the filtering if you lost the original frequency list and only have `sel_flist` left?
+
+```{r tokdiff, exercise = TRUE, exercise.setup = "selflist"}
+```
+
+```{r tokdiff-solution}
+tot_n_tokens(sel_flist)-n_tokens(sel_flist)
+```
+
+```{r tokdiff-check}
+grade_this_code()
+```
+
+How do you extract the types from `flist_merged` as a character vector?
+
+```{r typenames, exercise = TRUE}
+```
+
+```{r typenames-solution}
+type_names(flist_merged)
+```
+
+```{r typenames-check}
+grade_this_code()
+```
+
+Extract the frequencies of the five most frequent items in `flist_merged`.
+
+```{r asnum, exercise = TRUE}
+```
+
+```{r asnum-solution}
+# brackets ----
+as_numeric(flist_merged[1:5])
+
+# keep_pos ----
+as_numeric(keep_pos(flist_merged, 1:5))
+```
+
+```{r asnum-check}
+grade_this_code()
+```
+
+How do you extract the ranks of the items in `sel_flist`?
+
+```{r ranks, exercise = TRUE, exercise.setup = "selflist"}
+```
+
+```{r ranks-solution}
+ranks(sel_flist)
+```
+
+```{r ranks-check}
+grade_this_code()
+```
+
+How do you extract the original ranks of the items in `sel_flist`?
+
+```{r origranks, exercise = TRUE, exercise.setup = "selflist"}
+```
+
+```{r origranks-solution}
+orig_ranks(sel_flist)
+```
+
+```{r origranks-check}
+grade_this_code()
+```
+
+How would you recalculate the normalized frequencies (per 10,000 items) of the items in `sel_flist`?
+
+```{r nrmfreq, exercise = TRUE, exercise.setup = "selflist"}
+# absolute_frequencies / total_number_of_tokens * 10000
+```
+
+```{r nrmfreq-solution}
+as_numeric(sel_flist) / tot_n_tokens(sel_flist) * 10000
+```
+
+```{r nrmfreq-check}
+grade_this({
+  pass_if_equal()
+  fail()
+})
+```
+
+> Congratulations! You are now a master of frequency lists!
