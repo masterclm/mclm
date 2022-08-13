@@ -632,8 +632,44 @@ ranks <- function(x, ...) UseMethod("ranks")
 #' @noRd
 ranks.default <- function(x, ...) NULL
 
+#' Truncate a sequence of character data
+#' 
+#' This method takes as its argument `x` an object that represents a sequence of
+#' character data, such as an object of class [`tokens`], and truncates it at the
+#' position where a match for the argument `pattern` is found. Currently it is
+#' only implemented for [`tokens`] objects.
+#' 
+#' @param x An object that represents a sequence of character data.
+#' @param pattern A regular expression.
+#' @param keep_this Logical. Whether the matching token itself should be kept.
+#'   If `TRUE`, the truncating happens right after the matching token; if `FALSE`,
+#'   right before.
+#' @param last_match Logical. In case there are several matching tokens, if
+#'   `last_match` is `TRUE`, the last match will be used as truncating point;
+#'   otherwise, the first match will.
+#' @param from_end Logical. If `FALSE`, the match starts from the first token progressing
+#'   forward; if `TRUE`, it starts from the last token progressing backward.
+#'   
+#'   If `from_end` is `FALSE`, the part of `x` that is kept after truncation is
+#'   the head of `x`. If it is `TRUE` instead, the part that is kept after truncation
+#'   is the tail of `x`.
+#' @param ... Additional arguments.
+#' 
+#' @return A truncated version of `x`.
+#' @exportMethod 
+#' 
+#' @examples
+#' (toks <- tokenize('This is a first sentence . This is a second sentence .',
+#' re_token_splitter = '\\s+'))
+#' 
+#' trunc_at(toks, re("[.]"))
+#' 
+#' trunc_at(toks, re("[.]"), last_match = TRUE)
+#' 
+#' trunc_at(toks, re("[.]"), last_match = TRUE, from_end = TRUE)
 trunc_at <- function(x, pattern, ...) UseMethod("trunc_at")
-
+ 
+#' @noRd
 trunc_at.default <- function(x, pattern, ...) invisible(x)
 
 #' Coerce object to a numeric vector

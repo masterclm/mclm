@@ -284,6 +284,10 @@ as_tokens <- function(x, ...) {
 }
 
 # S3 methods from mclm =========================================================
+
+#' @rdname n_tokens
+#' @exportS3Method n_tokens tokens
+#' @export
 n_tokens.tokens <- function(x, ...) {
   if (! "tokens" %in% class(x)) {
     stop("argument 'x' must be of the class 'tokens'")
@@ -291,6 +295,9 @@ n_tokens.tokens <- function(x, ...) {
   length(x)
 }  
 
+#' @rdname n_types
+#' @exportS3Method n_types tokens
+#' @export
 n_types.tokens <- function(x, ...) {
   if (! "tokens" %in% class(x)) {
     stop("argument 'x' must be of the class 'tokens'")
@@ -298,6 +305,9 @@ n_types.tokens <- function(x, ...) {
   length(table(x))
 }  
 
+#' @rdname as_character
+#' @exportS3Method as_character tokens
+#' @export
 as_character.tokens <- function(x, ...) {
   if (!"tokens" %in% class(x)) {
     stop("x must be of the class 'tokens'")
@@ -307,6 +317,9 @@ as_character.tokens <- function(x, ...) {
   result
 }
 
+#' @rdname explore
+#' @exportS3Method explore tokens
+#' @export
 explore.tokens <- function(x,
                            n = 20,
                            from = 1,
@@ -410,7 +423,9 @@ explore.tokens <- function(x,
   invisible(x)
 }
 
-# public S3 function trunc_at()
+#' @rdname trunc_at
+#' @exportS3Method trunc_at tokens
+#' @export
 trunc_at.tokens <- function(x, pattern, 
                             keep_this = FALSE, 
                             last_match = FALSE, 
