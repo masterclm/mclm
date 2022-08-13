@@ -466,7 +466,10 @@ trunc_at.tokens <- function(x, pattern,
 
 
 ## Subsetting ------------------------------------------------------------------
-# public S3 function drop_pos()
+
+#' @rdname keep_pos
+#' @exportS3Method drop_pos tokens
+#' @export
 drop_pos.tokens <- function(x, pos, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -475,7 +478,9 @@ drop_pos.tokens <- function(x, pos, ...) {
   keep_pos.tokens(x, pos, invert = TRUE, ...)
 }
 
-# public S3 function keep_pos()
+#' @rdname keep_pos
+#' @exportS3Method keep_pos tokens
+#' @export
 keep_pos.tokens <- function(x, pos, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"tokens" %in% class(x)) {
@@ -521,7 +526,9 @@ keep_pos.tokens <- function(x, pos, invert = FALSE, ...) {
   result
 }
 
-# public S3 function drop_types()
+#' @rdname keep_types
+#' @exportS3Method drop_types tokens
+#' @export
 drop_types.tokens <- function(x, types, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -530,7 +537,9 @@ drop_types.tokens <- function(x, types, ...) {
   keep_types.tokens(x, types, invert = TRUE, ...)
 }
 
-# public S3 function keep_types()
+#' @rdname keep_types
+#' @exportS3Method keep_types tokens
+#' @export
 keep_types.tokens <- function(x, types, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"tokens" %in% class(x)) {
@@ -562,7 +571,9 @@ keep_types.tokens <- function(x, types, invert = FALSE, ...) {
   result
 }
 
-# public S3 function drop_re()
+#' @rdname keep_re
+#' @exportS3Method drop_re tokens
+#' @export
 drop_re.tokens <- function(x, pattern, perl = TRUE, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -571,9 +582,9 @@ drop_re.tokens <- function(x, pattern, perl = TRUE, ...) {
   keep_re.tokens(x, pattern, perl = perl, invert = TRUE, ...)
 }
 
-
-
-# public S3 function keep_re()
+#' @rdname keep_re
+#' @exportS3Method keep_re tokens
+#' @export
 keep_re.tokens <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"tokens" %in% class(x)) {
@@ -632,7 +643,9 @@ keep_re.tokens <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   result
 }
 
-# public S3 function drop_bool()
+#' @rdname keep_bool
+#' @exportS3Method drop_bool tokens
+#' @export
 drop_bool.tokens <- function(x, bool, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -641,7 +654,9 @@ drop_bool.tokens <- function(x, bool, ...) {
   keep_bool.tokens(x, !bool, ...)
 }
 
-# public S3 function select_bool()
+#' @rdname keep_bool
+#' @exportS3Method keep_bool tokens
+#' @export
 keep_bool.tokens <- function(x, bool, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"tokens" %in% class(x)) {
@@ -673,7 +688,9 @@ keep_bool.tokens <- function(x, bool, invert = FALSE, ...) {
   result
 }
 
-
+#' @rdname brackets
+#' @exportS3Method `[` tokens
+#' @export
 `[.tokens` <- function(x, i, invert = FALSE, ...) {
   if (!"tokens" %in% class(x)) {
     stop("subsetted object must be of class 'tokens'")
@@ -714,12 +731,9 @@ keep_bool.tokens <- function(x, bool, invert = FALSE, ...) {
   result
 }
 
-# subset assignment for 'tokens' objects
-# cases that need special treatment are:
-#        x[i] <- NULL
-#        x[] <- value
-#        NAs in i # needs more testing and decisions; for the moment NAs
-#                 #   lead to an error being returned
+#' @rdname brackets
+#' @exportS3Method `[<-` tokens
+#' @export
 `[<-.tokens` <- function(x, i, invert = FALSE, ..., value) {
   # -- test argument 'x'
   if (!"tokens" %in% class(x)) {

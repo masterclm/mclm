@@ -470,7 +470,7 @@ ranks.freqlist <- function(x, with_names = FALSE, ...) {
 ## Subsetting ------------------------------------------------------------------
 
 #' @rdname keep_types
-#' @exportS3Method drop_pos freqlist
+#' @exportS3Method drop_types freqlist
 #' @export
 drop_types.freqlist <- function(x, types, ...) {
   dot_args <- names(list(...))

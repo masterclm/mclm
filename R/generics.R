@@ -99,6 +99,12 @@ explore.default <- function(x, ...) invisible(x)
 #' 
 #' keep_pos(tps, c(1, 3, 5, 7, 9))
 #' drop_pos(tps, c(1, 3, 5, 7, 9))
+#' 
+#' # For a 'tokens' object ----------------------
+#' (tks <- as_tokens(letters[1:10]))
+#' 
+#' keep_pos(tks, c(1, 3, 5, 7, 9))
+#' drop_pos(tks, c(1, 3, 5, 7, 9))
 keep_pos <- function(x,
                      pos,
                      invert = FALSE,
@@ -161,6 +167,12 @@ drop_pos.default <- function(x,
 #' 
 #' keep_re(tps, "[acegi]")
 #' drop_re(tps, "[acegi]")
+#' 
+#' # For a 'tokens' object ----------------------
+#' (tks <- as_tokens(letters[1:10]))
+#' 
+#' keep_re(tks, "[acegi]")
+#' drop_re(tks, "[acegi]")
 keep_re <- function(x,
                     pattern,
                     perl = TRUE,
@@ -220,6 +232,12 @@ drop_re.default <- function(x,
 #' 
 #' keep_types(tps, c("a", "c", "e", "g", "i"))
 #' drop_types(tps,  c("a", "c", "e", "g", "i"))
+#' 
+#' # For a 'tokens' object --------------------------
+#' (tks <- as_tokens(letters[1:10]))
+#' 
+#' keep_types(tks, c("a", "c", "e", "g", "i"))
+#' drop_types(tks,  c("a", "c", "e", "g", "i"))
 keep_types <- function(x,
                        types,
                        invert = FALSE,
@@ -279,9 +297,15 @@ drop_types.default <- function(x,
 #' 
 #' # For a 'types' object ----------------------
 #' (tps <- as_types(letters[1:10]))
-
+#' 
 #' keep_bool(tps, c(TRUE, FALSE))
 #' drop_bool(tps, c(TRUE, FALSE))
+#' 
+#' # For a 'tokens' object ----------------------
+#' (tks <- as_tokens(letters[1:10]))
+#' 
+#' keep_bool(tks, c(TRUE, FALSE))
+#' drop_bool(tks, c(TRUE, FALSE))
 keep_bool <- function(x,
                       bool,
                       invert = FALSE,
@@ -374,6 +398,14 @@ drop_bool.default <- function(x,
 #' tps[c(1, 3, 5, 7, 9), invert = TRUE]
 #' tps[c(TRUE, FALSE), invert = TRUE]
 #' tps[c("a", "c", "e", "g", "i"), invert = TRUE]
+#' 
+#' # For a 'tokens' object ----------------------
+#' (tks <- as_tokens(letters[1:10]))
+#' 
+#' tks[re("[acegi]"), invert = TRUE]
+#' tks[c(1, 3, 5, 7, 9), invert = TRUE]
+#' tks[c(TRUE, FALSE), invert = TRUE]
+#' tks[c("a", "c", "e", "g", "i"), invert = TRUE]
 NULL
 
 # Getters ======================================================================
