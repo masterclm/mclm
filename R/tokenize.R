@@ -820,22 +820,32 @@ keep_bool.tokens <- function(x, bool, invert = FALSE, ...) {
 }
 
 # S3 methods from other packages ===============================================
+
+#' @rdname as_data_frame
+#' @exportS3Method as.data.frame tokens
+#' @export
 as.data.frame.tokens <- function(x, ...) {
   class(x) <- "character"
   data.frame(token = x, ...)
 }
 
-
+#' @exportS3Method tibble::as_tibble tokens
+#' @export
 as_tibble.tokens <- function(x, ...) {
   tibble(token = x, ...)
 }
 
+#' @exportS3Method sort tokens
+#' @export
 sort.tokens <- function(x, decreasing = FALSE, ...) {
   as_tokens(sort(as_character(x),
                  decreasing = decreasing,
                  na.last = NA,
                  ...))
 }
+
+#' @exportS3Method as.character tokens
+#' @export
 as.character.tokens <- function(x, ...) {
   if (!"tokens" %in% class(x)) {
     stop("x must be of the class 'tokens'")
@@ -845,10 +855,15 @@ as.character.tokens <- function(x, ...) {
   result
 }
 
+#' @rdname stubs
+#' @export
 plot.tokens <- function(x, ...) {
   warning("'tokens' objects have no plotting function; doing nothing")
   invisible(NULL)
 }
+
+#' @exportS3Method print tokens
+#' @export
 print.tokens <- function(x,
                          n = 20, from = 1,
                          extra = NULL,
@@ -931,7 +946,8 @@ print.tokens <- function(x,
   invisible(x)
 }
 
-# public S3 method rev() for 'tokens' objects
+#' @exportS3Method rev tokens
+#' @export
 rev.tokens <- function(x) {
   if (! "tokens" %in% class(x)) {
     stop("argument 'x' must be of the class 'tokens'")
@@ -940,7 +956,8 @@ rev.tokens <- function(x) {
 }
 ## Summary ---------------------------------------------------------------------
 
-# public S3 function summary()
+#' @exportS3Method summary tokens
+#' @export
 summary.tokens <- function(object, ...) {
   if (! "tokens" %in% class(object)) {
     stop("argument 'object' must be of the class 'tokens'")
@@ -951,7 +968,8 @@ summary.tokens <- function(object, ...) {
   result
 }
 
-# public S3 function summary()
+#' @exportS3Method print summary.tokens
+#' @export
 print.summary.tokens <- function(x, ...) {
   if (!"summary.tokens" %in% class(x)) {
     stop("argument 'x' must be of the class 'summary.tokens'")
@@ -963,7 +981,8 @@ print.summary.tokens <- function(x, ...) {
   invisible(x)
 }
 
-# public S3 function plot()
+#' @rdname stubs
+#' @export
 plot.summary.tokens <- function(x, ...) {
   warning("'summary.tokens' objects have no plotting function; doing nothing")
   invisible(NULL)

@@ -488,6 +488,7 @@ keep_re.fnames <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
 
 # S3 methods from other packages ===============================================
 
+#' @rdname as_data_frame
 #' @exportS3Method as.data.frame fnames
 #' @export
 as.data.frame.fnames <- function(x, ...) {

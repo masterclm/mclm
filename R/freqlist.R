@@ -871,6 +871,7 @@ sort.freqlist <- function(x,
   result
 }
 
+#' @rdname as_data_frame
 #' @exportS3Method as.data.frame freqlist
 #' @export
 as.data.frame.freqlist <- function(x,

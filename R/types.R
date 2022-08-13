@@ -535,6 +535,7 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
 # S3 methods from other packages ===============================================
 # (Including not supported functions)
 
+#' @rdname as_data_frame
 #' @exportS3Method as.data.frame types
 #' @export
 as.data.frame.types <- function(x, ...) {

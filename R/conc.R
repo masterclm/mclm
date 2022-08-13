@@ -377,6 +377,7 @@ print.conc <- function(x, n = 30, ...) {
   invisible(x)
 }
 
+#' @rdname as_data_frame
 #' @export
 #' @exportS3Method as.data.frame conc
 as.data.frame.conc <- function(x, ...) {

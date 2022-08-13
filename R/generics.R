@@ -814,16 +814,55 @@ as_character.default <- function(x, ...) as.character(x, ...)
 
 #' Coerce object to a data frame
 #' 
-#' @param x Object to coerce to [data.frame]
+#' `as_data_frame()` is an alternative to [as.data.frame()]. A number of objects
+#' in `r packageName()` can be turned into dataframes with one of these functions.
+#' 
+#' @param x Object to coerce to [data.frame].
 #' @param row.names `NULL` or a character vector giving the rownames for the
 #'   dataframe.
 #' @param optional Logical. If `TRUE`, setting rownames and converting column
 #'   names is optional (see [as.data.frame()]).
 #' @param ... Additional arguments
 #' 
+#' 
 #' @return Object of class [`data.frame`]
 #' @export
 #' @order 1
+#' 
+#' @examples 
+#' # for an assoc_scores object ---------------------
+#' a <- c(10,    30,    15,    1)
+#' b <- c(200, 1000,  5000,  300)
+#' c <- c(100,   14,    16,    4)
+#' d <- c(300, 5000, 10000, 6000)
+#' types <- c("four", "fictitious", "toy", "examples")
+#' (scores <- assoc_abcd(a, b, c, d, types = types))
+#' 
+#' as.data.frame(scores)
+#' as_data_frame(scores)
+#' 
+#' # for a conc object ------------------------------
+#' (conc_data <- conc('A very small corpus.', '\\w+', as_text = TRUE))
+#' as.data.frame(conc_data)
+#' 
+#' # for an fnames object ---------------------------
+#' cwd_fnames <- as_fnames(c('file1', 'file2'))
+#' as.data.frame(cwd_fnames)
+#' 
+#' # for a freqlist, types or tokens object ---------
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#'   It consisted of three sentences. And it lived happily ever after."
+#' (flist <- freqlist(toy_corpus, as_text = TRUE))
+#' as.data.frame(flist)
+#' 
+#' (flist2 <- keep_re(flist, "^..?$"))
+#' as.data.frame
+#' 
+#' (toks <- tokenize(toy_corpus))
+#' as.data.frame(toks)
+#' 
+#' (toks <- tokenize(toy_corpus))
+#' as.data.frame(toks)
 as_data_frame <- function(x, row.names = NULL,
                           optional = FALSE, ...) UseMethod("as_data_frame")
 

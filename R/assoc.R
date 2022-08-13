@@ -1316,6 +1316,7 @@ explore.assoc_scores <- function(
 
 # S3 methods from other packages ==============================
 
+#' @rdname as_data_frame
 #' @exportS3Method as.data.frame assoc_scores
 #' @export
 as.data.frame.assoc_scores <- function(x, ...) {
