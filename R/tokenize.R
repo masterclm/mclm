@@ -1055,8 +1055,27 @@ write_tokens <- function(x,
   invisible(x)
 }
 
-# public function tokens_merge()
-# merge two types objects
+#' Merge `tokens` objects
+#' 
+#' `tokens_merge()` merges two [`tokens`] objects `x` and `y` into a larger
+#' [`tokens`] object. `tokens_merge_all()` merge all the arguments into one
+#' [`tokens`] object. The result is a concatenation of the tokens, in which the
+#' order of the items in the input is preserved.
+#'
+#' @param x,y An object of class [`tokens`]
+#' @param ... Objects of class [`tokens`] or a list with objects of class [`tokens`]. 
+#'
+#' @return An object of class [`tokens`].
+#' @export
+#'
+#' @examples
+#' (tks1 <- tokenize(c("This is a first sentence.")))
+#' (tks2 <- tokenize(c("It is followed by a second one.")))
+#' (tks3 <- tokenize(c("Then a third one follows.")))
+#' 
+#' tokens_merge(tks1, tks2)
+#' tokens_merge_all(tks1, tks2, tks3)
+#' tokens_merge_all(list(tks1, tks2, tks3))
 tokens_merge <- function(x, y) {
   if ((!"tokens" %in% class(x)) || (!"tokens" %in% class(y))) {
     stop("both x and y must be of the class 'tokens'")
@@ -1064,8 +1083,7 @@ tokens_merge <- function(x, y) {
   tokens_merge_two(x, y)
 }  
 
-# public function tokens_merge_all()
-# merge two or more tokens objects
+#' @rdname tokens_merge
 tokens_merge_all <- function(...) {
   arg_list <- list(...)
   result_car <- NULL  # result for car of arg_list
