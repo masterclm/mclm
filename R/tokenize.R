@@ -123,8 +123,8 @@
 #'
 #' @return An object of class [`tokens`], i.e. a sequence of tokens.
 #'   It has a number of attributes and method such as:
-#'   - base [`print()`][print.tokens()], [as.data.frame()], [summary()],
-#'   [sort()] and [rev()],
+#'   - base [`print`][print.types()], [as_data_frame()], [summary()]
+#'   (which returns the number of items), [sort()] and [rev()],
 #'   - [tibble::as_tibble()],
 #'   - an interactive [explore()] method,
 #'   - some getters, namely [n_tokens()] and [n_types()],
@@ -150,6 +150,8 @@
 #' 
 #' tks <- tokenize(toy_corpus, re_token_splitter = "\\W+")
 #' print(tks, n = 1000)
+#' sort(tks)
+#' summary(tks)
 #' 
 #' tokenize(toy_corpus, ngram_size = 3)
 #' 
@@ -266,8 +268,8 @@ tokenize <- function(
 #' print(tks, n = 1000)
 #' 
 #' tks[3:12]
-#' print(as_tokens(tokens[3:12]), n = 1000)
-#' as_tokens(tail(tokens))
+#' print(as_tokens(tks[3:12]), n = 1000)
+#' as_tokens(tail(tks))
 as_tokens <- function(x, ...) {
   result <- x
   if (is.null(result)) {
@@ -862,6 +864,7 @@ plot.tokens <- function(x, ...) {
   invisible(NULL)
 }
 
+#' @rdname mclm_print
 #' @exportS3Method print tokens
 #' @export
 print.tokens <- function(x,
@@ -1114,11 +1117,26 @@ tokens_merge_all <- function(...) {
 }
 # Private functions applied to the class =======================================
 
-# private subset selection function
-# x is assumed to be a tokens object (not tested)
-# sel can be:
-#  - numeric vector with positions
-#  - boolean vector
+
+#' Merge two frequency lists
+#'
+#' @param x,y Object of class [`tokens`]. 
+#'
+#' @return Object of class [`tokens`].
+#' @noRd
+tokens_merge_two <- function(x, y) {
+  as_tokens(c(x, y))
+}
+
+#' Subset tokens
+#'
+#' @param x Object of class [`tokens`] (assumed, not tested)
+#' @param sel Numeric vector with positions or logical vector.
+#' @param value Value to assign to the subsetted items. Character or something
+#'   that can be coerced to one.
+#'
+#' @return Object of class [`tokens`]
+#' @noRd
 subset_tokens <- function(x, sel) {
   result <- as.character(x)[sel]
   class(result) <- c("tokens",
@@ -1127,17 +1145,8 @@ subset_tokens <- function(x, sel) {
   result
 }
 
-# private function tokens_merge_two()
-# both x and y are assumed to be of class "tokens"
-tokens_merge_two <- function(x, y) {
-  as_tokens(c(x, y))
-}
-
-# private subset selection function
-# x is assumed to be a tokens object (not tested)
-# sel can be:
-#  - numeric vector with positions (positive values)
-#  - boolean vector
+#' @rdname subset_tokens
+#' @noRd
 subset_tokens_assign <- function(x, sel, value) {
   if (!"character" %in% class(value)) {
     value <- as.character(value)
@@ -1160,4 +1169,3 @@ subset_tokens_assign <- function(x, sel, value) {
                         c("tokens", "types")))
   x
 }
-
