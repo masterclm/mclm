@@ -1,79 +1,4 @@
-# =============================================================================
-# tokenization and the "tokens" class
-# =============================================================================
-
-# to be exported:
-#     tokenize()
-#     tokens_merge()
-#     tokens_merge_all()
-#     as_tokens()
-#     rev.tokens()
-#     `[.tokens`() [S3method]
-#     `[<-.tokens`() [S3method]
-#     as_character.tokens() [S3method]
-#     as.character.tokens() [S3method]
-#     as.data.frame.tokens() [S3method]
-#     as_tibble.tokens() [S3method]
-#     print.tokens() [S3method]
-#     plot.tokens() [S3method]
-#     keep_pos.tokens() [S3method]
-#     keep_types.tokens() [S3method]
-#     keep_re.tokens() [S3method]
-#     keep_bool.tokens() [S3method]
-#     drop_pos.tokens() [S3method]
-#     drop_types.tokens() [S3method]
-#     drop_re.tokens() [S3method]
-#     drop_bool.tokens() [S3method]
-#     trunc_at.tokens() [S3method]
-#     read_tokens()
-#     write_tokens()
-#     n_tokens.tokens() [S3method]
-#     n_types.tokens() [S3method]
-#     sort.tokens() [S3method]
-#     summary.tokens()
-#     print.summary.tokens()
-#     plot.summary.tokens()
-
-# dependencies:
-#     readr::locale()
-#     readr::read_lines()
-#     readr::write_lines()
-
-
-# S3 method as.data.frame() for objects of the class 'tokens'
-as.data.frame.tokens <- function(x, ...) {
-  class(x) <- "character"
-  data.frame(token = x, ...)
-}
-
-# S3 method as.tibble() for objects of the class 'tokens'
-as_tibble.tokens <- function(x, ...) {
-  tibble(token = x, ...)
-}
-
-
-# S3 method sort() for objects of the class 'tokens'
-sort.tokens <- function(x, decreasing = FALSE, ...) {
-  as_tokens(sort(as_character(x),
-                 decreasing = decreasing,
-                 na.last = NA,
-                 ...))
-}
-
-n_tokens.tokens <- function(x, ...) {
-  if (! "tokens" %in% class(x)) {
-    stop("argument 'x' must be of the class 'tokens'")
-  }
-  length(x)
-}  
-
-n_types.tokens <- function(x, ...) {
-  if (! "tokens" %in% class(x)) {
-    stop("argument 'x' must be of the class 'tokens'")
-  }
-  length(table(x))
-}  
-
+# Create and coerce to class ===================================================
 as_tokens <- function(x, ...) {
   result <- x
   if (is.null(result)) {
@@ -88,60 +13,123 @@ as_tokens <- function(x, ...) {
                              c("tokens", "types")))
   result
 }
+# regular expression based tokenization
+#  x must be a character vector or an object of the class
+#   "TextDocument"
+tokenize <- function(
+    x, 
+    re_drop_line = NULL,
+    line_glue = NULL, 
+    re_cut_area = NULL,
+    re_token_splitter = re("[^_\\p{L}\\p{N}\\p{M}'-]+"),
+    re_token_extractor = re("[_\\p{L}\\p{N}\\p{M}'-]+"),
+    re_drop_token = NULL,
+    re_token_transf_in = NULL,
+    token_transf_out = NULL,
+    token_to_lower = TRUE,
+    perl = TRUE,
+    ngram_size = NULL,
+    max_skip = 0,
+    ngram_sep = "_",
+    ngram_n_open = 0,
+    ngram_open = "[]") {
+  # ---------------------------------------------------------------
+  if (is.null(x) || length(x) == 0) {
+    tokens <- vector(mode = "character", length = 0)
+  } else {
+    # ---------------------------------------------------------------
+    if ("TextDocument" %in% class(x)) {
+      x <- as.character(x)
+    } else  if (!is.character(x)) {
+      x <- as.character(x)
+    }
+    x <- x[complete.cases(x)]
+    if (length(x) == 0) {
+      tokens <- vector(mode = "character", length = 0)
+    }
+  }
+  if (!is.null(x) && length(x) > 0) {
+    # -- process ngram_size and ngram_sep --
+    if (!is.null(ngram_size) && !is.na(ngram_size[[1]])) {
+      if (!is.numeric(ngram_size)) {
+        stop("ngram_size must be either NA or a numeric value")
+      }
+      if (is.null(ngram_sep) || !is.character(ngram_sep[[1]])) {
+        stop("ngram_sep must be a length one character vector")
+      }    
+    }
+    # (further) split into lines --
+    x <- unlist(strsplit(x, split = "\n"))
+    # drop lines if needed --
+    if (!is.null(re_drop_line) && !is.na(re_drop_line[[1]])) {
+      x <- x[grep(re_drop_line[[1]], x, perl = perl, invert = TRUE)]
+    }
+    # paste lines in long line if needed --
+    if (!is.null(line_glue) && !is.na(line_glue[[1]])) {
+      x <- paste(x, collapse = line_glue[[1]])
+    }
+    # drop uninterestion regions if needed --
+    if (!is.null(re_cut_area) && !is.na(re_cut_area[[1]])) {
+      x <- gsub(re_cut_area[[1]], "", x, perl = perl)
+    }
+    # identify tokens --
+    if (!is.null(re_token_splitter) && !is.na(re_token_splitter[[1]])) {
+      tokens <- unlist(strsplit(x, re_token_splitter[[1]], perl = perl))
+    } else {
+      m <- gregexpr(re_token_extractor[[1]], x, perl = perl)
+      tokens <- unlist(regmatches(x, m))
+    }
+    # -- drop tokens if needed --
+    if (!is.null(re_drop_token) && !is.na(re_drop_token[[1]])) {
+      tokens <- tokens[grep(re_drop_token[[1]], tokens,
+                            perl = perl, invert = TRUE)]
+    }
+    # transform tokens if needed --
+    if (!is.null(re_token_transf_in) && !is.na(re_token_transf_in[[1]])) {
+      tokens <- gsub(re_token_transf_in[[1]], token_transf_out[[1]],
+                     tokens, perl = perl)
+    }
+    # tokens to lower if needed --
+    if (token_to_lower) {
+      tokens <- tolower(tokens)
+    }
+    # drop length zero tokens --
+    tokens <- tokens[nchar(tokens) > 0]
+    # -- handle ngram_size --
+    if (!is.null(ngram_size) && !is.na(ngram_size[[1]])) {
+      tokens <- build_ngrams(tokens,
+                             ngram_size = ngram_size[[1]],
+                             max_skip = max_skip,
+                             sep = ngram_sep,
+                             n_open = ngram_n_open,
+                             open = ngram_open)
+    }
+  }
+  
+  as_tokens(tokens)
+}
+# S3 methods from mclm =========================================================
+n_tokens.tokens <- function(x, ...) {
+  if (! "tokens" %in% class(x)) {
+    stop("argument 'x' must be of the class 'tokens'")
+  }
+  length(x)
+}  
 
-# public S3 function as_character
+n_types.tokens <- function(x, ...) {
+  if (! "tokens" %in% class(x)) {
+    stop("argument 'x' must be of the class 'tokens'")
+  }
+  length(table(x))
+}  
+
 as_character.tokens <- function(x, ...) {
   if (!"tokens" %in% class(x)) {
-   stop("x must be of the class 'tokens'")
+    stop("x must be of the class 'tokens'")
   }
   result <- x
   class(result) <- "character"
   result
-}
-
-# public S3 function as.character
-as.character.tokens <- function(x, ...) {
-  if (!"tokens" %in% class(x)) {
-   stop("x must be of the class 'tokens'")
-  }
-  result <- x
-  class(result) <- "character"
-  result
-}
-
-# public S3 function plot()
-plot.tokens <- function(x, ...) {
-  warning("'tokens' objects have no plotting function; doing nothing")
-  invisible(NULL)
-}
-
-# public S3 function summary()
-summary.tokens <- function(object, ...) {
-  if (! "tokens" %in% class(object)) {
-    stop("argument 'object' must be of the class 'tokens'")
-  }
-  result <- list()
-  result$n_tokens <- n_tokens(object)
-  class(result) <- "summary.tokens"
-  result
-}
-
-# public S3 function summary()
-print.summary.tokens <- function(x, ...) {
-  if (!"summary.tokens" %in% class(x)) {
-    stop("argument 'x' must be of the class 'summary.tokens'")
-  }
-  cat("Token sequence of length ",
-      x$n_tokens,
-      "\n",
-      sep = "")
-  invisible(x)
-}
-
-# public S3 function plot()
-plot.summary.tokens <- function(x, ...) {
-  warning("'summary.tokens' objects have no plotting function; doing nothing")
-  invisible(NULL)
 }
 
 explore.tokens <- function(x,
@@ -196,19 +184,19 @@ explore.tokens <- function(x,
           old_regex <- cur_regex
           old_hits <- cur_hits
           tryCatch({
-               f_arg <- cleanup_spaces(
-                  substr(cur_command, 2, nchar(cur_command)))
-               if (nchar(f_arg) == 0) {
-                 cur_regex <- old_regex
-               } else {
-                 cur_regex <- f_arg
-               }
-               cur_hits <- grep(cur_regex, x, perl = perl)
-             },
-             error = function(e) {
-               cur_regex <- old_regex
-               cur_hits <- old_hits
-             })
+            f_arg <- cleanup_spaces(
+              substr(cur_command, 2, nchar(cur_command)))
+            if (nchar(f_arg) == 0) {
+              cur_regex <- old_regex
+            } else {
+              cur_regex <- f_arg
+            }
+            cur_hits <- grep(cur_regex, x, perl = perl)
+          },
+          error = function(e) {
+            cur_regex <- old_regex
+            cur_hits <- old_hits
+          })
           tot_n_hits <- length(cur_hits)
           if (nchar(f_arg) == 0) {
             cur_hits <- cur_hits[cur_hits > from]
@@ -217,8 +205,8 @@ explore.tokens <- function(x,
           }
           pos_cur_hit <- tot_n_hits - length(cur_hits) + 1 
           if (length(cur_hits) > 0) {
-             from <- cur_hits[1]
-             assign("token_regex", cur_regex, envir = print_extra)
+            from <- cur_hits[1]
+            assign("token_regex", cur_regex, envir = print_extra)
           } 
         } else if (cur_com_verb == "g") { ## g stands for '[g]o to item'
           old_from <- from
@@ -232,7 +220,7 @@ explore.tokens <- function(x,
       if (!is.null(print_extra$token_regex)) {
         cat(mclm_style_dim(paste0("search pattern: ", print_extra$token_regex, "\n")))
         cat(mclm_style_dim(paste0("<looking at matching item ", pos_cur_hit,
-                            " out of ", tot_n_hits, " matching items>\n"))) 
+                                  " out of ", tot_n_hits, " matching items>\n"))) 
       }
       cat(mclm_style_dim(char_line())); cat("\n")
       cat(mclm_style_dim("Enter command (? for help; q to quit explore mode) "))
@@ -247,225 +235,47 @@ explore.tokens <- function(x,
   invisible(x)
 }
 
-
-# public S3 function print()
-print.tokens <- function(x,
-                         n = 20, from = 1,
-                         extra = NULL,
-                         ...) {
-  # testing and processing argument 'x'
-  if (! "tokens" %in% class(x)) {
-    stop("argument 'x' must be of the class 'tokens'")
+# public S3 function trunc_at()
+trunc_at.tokens <- function(x, pattern, 
+                            keep_this = FALSE, 
+                            last_match = FALSE, 
+                            from_end = FALSE,
+                            ...) {
+  # -- test and process argument 'x'
+  if (!"tokens" %in% class(x)) {
+    stop("x must be of class 'tokens'")
   }
-  n_tokens <- length(x)
-  # testing and processing argument 'n'
-  if (length(n) == 0) {
-    stop("n must be a numeric vector of length one")
-  } else if (length(n) > 1) {
-    n <- n[1]
-    warning("only using n[1] instead of the whole of n")
-  } 
-  if (is.na(n) || !is.numeric(n)) {
-    stop("inappropriate value for n")
+  # -- test and process argument 'pattern'
+  if (missing(pattern) || is.null(pattern)) {
+    stop("pattern must not be unspecified")
   }
-  n <- max(0, round(n))
-  # testing and processing argument 'from'
-  if (length(from) == 0) {
-    stop("from must be a numeric vector of length one")
-  } else if (length(from) > 1) {
-    from <- from[1]
-    warning("only using from[1] instead of the whole of from")
-  } 
-  if (is.na(from) || !is.numeric(from)) {
-    stop("inappropriate value for from")
+  if (!"re" %in% class(pattern)) {
+    stop("pattern must be of class 're'")
   }
-  from <- max(1, round(from))
-  # adjusting 'n' to 'from'
-  n <- max(0, min(n, n_tokens - from + 1))
-  # testing argument 'extra'
-  if (!is.null(extra) && !is.environment(extra)) {
-    stop("incorrect use of the argument 'extra'")
-  }  
-  # printing 'x'
-  cat(mclm_style_dim(paste0(
-    "Token sequence of length ",
-    n_tokens,
-    "\n")))
-  if (n > 0) {
-    idx <- from:(from + n - 1)
-    tokens <- x[idx]
-    format_idx <- format(c("idx", 
-                           format(idx,
-                                  scientify = FALSE, 
-                                  justify = "right")), 
-                           justify = "right")
-    # we don't use format() [problems with unicode !]
-    # nor do we use stringi::stri_pad_left [hickups with greek and Set.locale]
-    nchar_tokens <- nchar(tokens)
-    if (!is.null(extra$token_regex)) {
-      tokens <- show_matches(tokens, extra$token_regex)
-    }    
-    format_tokens <- mclm_pad_left(
-                      c("token", tokens),
-                      max(nchar("token"), nchar_tokens),
-                      nchar_x = c(nchar("token"), nchar_tokens))
-    # -- print titles
-    cat(format_idx[1], " ", format_tokens[1], sep = "")
-    cat("\n")
-    # -- print horizontal lines
-    cat(paste0(rep_len("-", nchar(format_idx[1])), collapse = ""),
-        " ",
-        paste0(rep_len("-", nchar(format_tokens[1])), collapse = ""),
-        sep = "")
-    cat("\n")
-    # -- optionally print dots
-    if (from > 1) cat(mclm_style_very_dim("...\n"))
-    # -- print items  
-    for (j in seq_along(idx)) {
-      cat(mclm_style_very_dim(format_idx[j + 1]), " ",
-          format_tokens[j + 1], "\n", sep = "")
-    }
-    # -- optionally print dots
-    if ((from + n - 1) < n_tokens) cat(mclm_style_very_dim("...\n"))
-  }
-  invisible(x)
-}
-
-
-# regular expression based tokenization
-#  x must be a character vector or an object of the class
-#   "TextDocument"
-tokenize <- function(
-      x, 
-      re_drop_line = NULL,
-      line_glue = NULL, 
-      re_cut_area = NULL,
-      re_token_splitter = re("[^_\\p{L}\\p{N}\\p{M}'-]+"),
-      re_token_extractor = re("[_\\p{L}\\p{N}\\p{M}'-]+"),
-      re_drop_token = NULL,
-      re_token_transf_in = NULL,
-      token_transf_out = NULL,
-      token_to_lower = TRUE,
-      perl = TRUE,
-      ngram_size = NULL,
-      max_skip = 0,
-      ngram_sep = "_",
-      ngram_n_open = 0,
-      ngram_open = "[]") {
-  # ---------------------------------------------------------------
-  if (is.null(x) || length(x) == 0) {
-    tokens <- vector(mode = "character", length = 0)
+  # -- build result
+  if ((length(x) == 0) || 
+      (length(as_character(pattern)) == 0)) {
+    result <- x
   } else {
-    # ---------------------------------------------------------------
-    if ("TextDocument" %in% class(x)) {
-      x <- as.character(x)
-    } else  if (!is.character(x)) {
-      x <- as.character(x)
+    if (from_end) { x <- rev(x) }
+    matches <- grep(as_character(pattern), 
+                    x, 
+                    perl_flavor(pattern))
+    if (length(matches) > 0) {
+      pos <- matches[1]
+      if (last_match) {pos <- matches[length(matches)]}
+      if (!keep_this) {pos <- pos - 1}
+      x <- keep_pos(x, pmin(1, pos):pos)
     }
-    x <- x[complete.cases(x)]
-    if (length(x) == 0) {
-      tokens <- vector(mode = "character", length = 0)
-    }
+    if (from_end) { x <- rev(x) }
+    result <- x
   }
-  if (!is.null(x) && length(x) > 0) {
-    # -- process ngram_size and ngram_sep ---------------------------
-    if (!is.null(ngram_size) && !is.na(ngram_size[[1]])) {
-      if (!is.numeric(ngram_size)) {
-        stop("ngram_size must be either NA or a numeric value")
-      }
-      if (is.null(ngram_sep) || !is.character(ngram_sep[[1]])) {
-        stop("ngram_sep must be a length one character vector")
-      }    
-    }
-    # (further) split into lines -----------------------------------
-    x <- unlist(strsplit(x, split = "\n"))
-    # drop lines if needed -----------------------------------------
-    if (!is.null(re_drop_line) && !is.na(re_drop_line[[1]])) {
-      x <- x[grep(re_drop_line[[1]], x, perl = perl, invert = TRUE)]
-    }
-    # paste lines in long line if needed ---------------------------
-    if (!is.null(line_glue) && !is.na(line_glue[[1]])) {
-      x <- paste(x, collapse = line_glue[[1]])
-    }
-    # drop uninterestion regions if needed -------------------------
-    if (!is.null(re_cut_area) && !is.na(re_cut_area[[1]])) {
-      x <- gsub(re_cut_area[[1]], "", x, perl = perl)
-    }
-    # identify tokens ----------------------------------------------
-    if (!is.null(re_token_splitter) && !is.na(re_token_splitter[[1]])) {
-      tokens <- unlist(strsplit(x, re_token_splitter[[1]], perl = perl))
-    } else {
-      m <- gregexpr(re_token_extractor[[1]], x, perl = perl)
-      tokens <- unlist(regmatches(x, m))
-    }
-    # -- drop tokens if needed -------------------------------------
-    if (!is.null(re_drop_token) && !is.na(re_drop_token[[1]])) {
-      tokens <- tokens[grep(re_drop_token[[1]], tokens,
-                            perl = perl, invert = TRUE)]
-    }
-    # transform tokens if needed -----------------------------------
-    if (!is.null(re_token_transf_in) && !is.na(re_token_transf_in[[1]])) {
-      tokens <- gsub(re_token_transf_in[[1]], token_transf_out[[1]],
-                     tokens, perl = perl)
-    }
-    # tokens to lower if needed ------------------------------------
-    if (token_to_lower) {
-      tokens <- tolower(tokens)
-    }
-    # drop length zero tokens --------------------------------------
-    tokens <- tokens[nchar(tokens) > 0]
-    # -- handle ngram_size -----------------------------------------
-    if (!is.null(ngram_size) && !is.na(ngram_size[[1]])) {
-      tokens <- build_ngrams(tokens,
-                             ngram_size = ngram_size[[1]],
-                             max_skip = max_skip,
-                             sep = ngram_sep,
-                             n_open = ngram_n_open,
-                             open = ngram_open)
-    }
-  }
-  # set correct class --------------------------------------------
-  tokens <- as_tokens(tokens) # a.o. sets correct class
-  # return result ------------------------------------------------  
-  tokens
-}
-
-# public function read_tokens()
-#  - reads a 'tokens' object from a txt file
-#  - assumes each line contains one token
-read_tokens <- function(file,
-                        file_encoding = "UTF-8",
-                        ...) {
-  lines <- readr::read_lines(
-             file,
-             locale = readr::locale(encoding = file_encoding))
-  lines <- lines[nchar(lines) > 0]          # drop empty lines
-  result <- as_tokens(lines)
+  # return result
   result
 }
 
-# public function write_tokens()
-#  - writes a 'tokens' object to a txt file
-#  - by default does not create an associated config file
-# ------------------------------------------------------
-write_tokens <- function(x,
-                         file,
-                         make_config_file = FALSE,
-                         ...) {
-  if (! "tokens" %in% class(x)) {
-    stop("argument 'x' must be of the class 'tokens'")
-  }
-  readr::write_lines(x, file)
-  if (make_config_file) {
-    config <- list(data_class = "tokens",
-                   txt_header = "FALSE",
-                   txt_quote = "",
-                   txt_comment_char = "")
-    write_config(config, file)
-  }
-  invisible(x)
-}
 
+## Subsetting ------------------------------------------------------------------
 # public S3 function drop_pos()
 drop_pos.tokens <- function(x, pos, ...) {
   dot_args <- names(list(...))
@@ -571,44 +381,6 @@ drop_re.tokens <- function(x, pattern, perl = TRUE, ...) {
   keep_re.tokens(x, pattern, perl = perl, invert = TRUE, ...)
 }
 
-# public S3 function trunc_at()
-trunc_at.tokens <- function(x, pattern, 
-                            keep_this = FALSE, 
-                            last_match = FALSE, 
-                            from_end = FALSE,
-                            ...) {
-  # -- test and process argument 'x'
-  if (!"tokens" %in% class(x)) {
-    stop("x must be of class 'tokens'")
-  }
-  # -- test and process argument 'pattern'
-  if (missing(pattern) || is.null(pattern)) {
-    stop("pattern must not be unspecified")
-  }
-  if (!"re" %in% class(pattern)) {
-    stop("pattern must be of class 're'")
-  }
-  # -- build result
-  if ((length(x) == 0) || 
-      (length(as_character(pattern)) == 0)) {
-    result <- x
-  } else {
-    if (from_end) { x <- rev(x) }
-    matches <- grep(as_character(pattern), 
-                    x, 
-                    perl_flavor(pattern))
-    if (length(matches) > 0) {
-      pos <- matches[1]
-      if (last_match) {pos <- matches[length(matches)]}
-      if (!keep_this) {pos <- pos - 1}
-      x <- keep_pos(x, pmin(1, pos):pos)
-    }
-    if (from_end) { x <- rev(x) }
-    result <- x
-  }
-  # return result
-  result
-}
 
 
 # public S3 function keep_re()
@@ -709,76 +481,6 @@ keep_bool.tokens <- function(x, bool, invert = FALSE, ...) {
   }
   # return result
   result
-}
-
-# private subset selection function
-# x is assumed to be a tokens object (not tested)
-# sel can be:
-#  - numeric vector with positions
-#  - boolean vector
-subset_tokens <- function(x, sel) {
-  result <- as.character(x)[sel]
-  class(result) <- c("tokens",
-                     setdiff(class(x),
-                             c("tokens", "types")))
-  result
-}
-
-
-# public function tokens_merge()
-# merge two types objects
-tokens_merge <- function(x, y) {
-  if ((!"tokens" %in% class(x)) || (!"tokens" %in% class(y))) {
-    stop("both x and y must be of the class 'tokens'")
-  }
-  tokens_merge_two(x, y)
-}  
-
-# public function tokens_merge_all()
-# merge two or more tokens objects
-# ---------------------------------------------------------------------------
-tokens_merge_all <- function(...) {
-  arg_list <- list(...)
-  result_car <- NULL  # result for car of arg_list
-  result_cdr <- NULL  # result for cdr of arg_list
-  # -- processing car ----------------------------
-  if (length(arg_list) > 0) {
-    car <- arg_list[[1]]
-    if ("tokens" %in% class(car)) {
-      result_car <- car
-    } else if (is.list(car) && length(car) > 0) {
-      result_car <- do.call("tokens_merge_all", car)
-    }
-  }   
-  # -- processing cdr ----------------------------
-  if (length(arg_list) > 1) {
-    cdr <- arg_list[-1]
-    result_cdr <- do.call("tokens_merge_all", cdr)
-  }
-  # -- merge results if needed -------------------
-  result <- result_car
-  if (is.null(result_car)) {
-    result <- result_cdr
-  } else if (!is.null(result_cdr)) {
-    result <- tokens_merge_two(result_car, result_cdr)
-  }
-  # -- result ------------------------------------
-  result
-}
-
-# private function tokens_merge_two()
-# both x and y are assumed to be of class "tokens"
-# ---------------------------------------------------------------------------
-tokens_merge_two <- function(x, y) {
-  as_tokens(c(x, y))
-}
-
-# public S3 method rev() for 'tokens' objects
-rev.tokens <- function(x) {
-  if (! "tokens" %in% class(x)) {
-    stop("argument 'x' must be of the class 'tokens'")
-  }
-  as_tokens(rev(as_character(x)))
 }
 
 
@@ -911,6 +613,254 @@ rev.tokens <- function(x) {
   }
   # return result
   x
+}
+
+# S3 methods from other packages ===============================================
+as.data.frame.tokens <- function(x, ...) {
+  class(x) <- "character"
+  data.frame(token = x, ...)
+}
+
+
+as_tibble.tokens <- function(x, ...) {
+  tibble(token = x, ...)
+}
+
+sort.tokens <- function(x, decreasing = FALSE, ...) {
+  as_tokens(sort(as_character(x),
+                 decreasing = decreasing,
+                 na.last = NA,
+                 ...))
+}
+as.character.tokens <- function(x, ...) {
+  if (!"tokens" %in% class(x)) {
+    stop("x must be of the class 'tokens'")
+  }
+  result <- x
+  class(result) <- "character"
+  result
+}
+
+plot.tokens <- function(x, ...) {
+  warning("'tokens' objects have no plotting function; doing nothing")
+  invisible(NULL)
+}
+print.tokens <- function(x,
+                         n = 20, from = 1,
+                         extra = NULL,
+                         ...) {
+  # testing and processing argument 'x'
+  if (! "tokens" %in% class(x)) {
+    stop("argument 'x' must be of the class 'tokens'")
+  }
+  n_tokens <- length(x)
+  # testing and processing argument 'n'
+  if (length(n) == 0) {
+    stop("n must be a numeric vector of length one")
+  } else if (length(n) > 1) {
+    n <- n[1]
+    warning("only using n[1] instead of the whole of n")
+  } 
+  if (is.na(n) || !is.numeric(n)) {
+    stop("inappropriate value for n")
+  }
+  n <- max(0, round(n))
+  # testing and processing argument 'from'
+  if (length(from) == 0) {
+    stop("from must be a numeric vector of length one")
+  } else if (length(from) > 1) {
+    from <- from[1]
+    warning("only using from[1] instead of the whole of from")
+  } 
+  if (is.na(from) || !is.numeric(from)) {
+    stop("inappropriate value for from")
+  }
+  from <- max(1, round(from))
+  # adjusting 'n' to 'from'
+  n <- max(0, min(n, n_tokens - from + 1))
+  # testing argument 'extra'
+  if (!is.null(extra) && !is.environment(extra)) {
+    stop("incorrect use of the argument 'extra'")
+  }  
+  # printing 'x'
+  cat(mclm_style_dim(paste0(
+    "Token sequence of length ",
+    n_tokens,
+    "\n")))
+  if (n > 0) {
+    idx <- from:(from + n - 1)
+    tokens <- x[idx]
+    format_idx <- format(c("idx", 
+                           format(idx,
+                                  scientify = FALSE, 
+                                  justify = "right")), 
+                         justify = "right")
+    # we don't use format() [problems with unicode !]
+    # nor do we use stringi::stri_pad_left [hickups with greek and Set.locale]
+    nchar_tokens <- nchar(tokens)
+    if (!is.null(extra$token_regex)) {
+      tokens <- show_matches(tokens, extra$token_regex)
+    }    
+    format_tokens <- mclm_pad_left(
+      c("token", tokens),
+      max(nchar("token"), nchar_tokens),
+      nchar_x = c(nchar("token"), nchar_tokens))
+    # -- print titles
+    cat(format_idx[1], " ", format_tokens[1], sep = "")
+    cat("\n")
+    # -- print horizontal lines
+    cat(paste0(rep_len("-", nchar(format_idx[1])), collapse = ""),
+        " ",
+        paste0(rep_len("-", nchar(format_tokens[1])), collapse = ""),
+        sep = "")
+    cat("\n")
+    # -- optionally print dots
+    if (from > 1) cat(mclm_style_very_dim("...\n"))
+    # -- print items  
+    for (j in seq_along(idx)) {
+      cat(mclm_style_very_dim(format_idx[j + 1]), " ",
+          format_tokens[j + 1], "\n", sep = "")
+    }
+    # -- optionally print dots
+    if ((from + n - 1) < n_tokens) cat(mclm_style_very_dim("...\n"))
+  }
+  invisible(x)
+}
+
+# public S3 method rev() for 'tokens' objects
+rev.tokens <- function(x) {
+  if (! "tokens" %in% class(x)) {
+    stop("argument 'x' must be of the class 'tokens'")
+  }
+  as_tokens(rev(as_character(x)))
+}
+## Summary ---------------------------------------------------------------------
+
+# public S3 function summary()
+summary.tokens <- function(object, ...) {
+  if (! "tokens" %in% class(object)) {
+    stop("argument 'object' must be of the class 'tokens'")
+  }
+  result <- list()
+  result$n_tokens <- n_tokens(object)
+  class(result) <- "summary.tokens"
+  result
+}
+
+# public S3 function summary()
+print.summary.tokens <- function(x, ...) {
+  if (!"summary.tokens" %in% class(x)) {
+    stop("argument 'x' must be of the class 'summary.tokens'")
+  }
+  cat("Token sequence of length ",
+      x$n_tokens,
+      "\n",
+      sep = "")
+  invisible(x)
+}
+
+# public S3 function plot()
+plot.summary.tokens <- function(x, ...) {
+  warning("'summary.tokens' objects have no plotting function; doing nothing")
+  invisible(NULL)
+}
+
+# Public functions applied to the class ========================================
+
+# public function read_tokens()
+#  - reads a 'tokens' object from a txt file
+#  - assumes each line contains one token
+read_tokens <- function(file,
+                        file_encoding = "UTF-8",
+                        ...) {
+  lines <- readr::read_lines(
+    file,
+    locale = readr::locale(encoding = file_encoding))
+  lines <- lines[nchar(lines) > 0]          # drop empty lines
+  result <- as_tokens(lines)
+  result
+}
+
+# public function write_tokens()
+#  - writes a 'tokens' object to a txt file
+#  - by default does not create an associated config file
+# ------------------------------------------------------
+write_tokens <- function(x,
+                         file,
+                         make_config_file = FALSE,
+                         ...) {
+  if (! "tokens" %in% class(x)) {
+    stop("argument 'x' must be of the class 'tokens'")
+  }
+  readr::write_lines(x, file)
+  if (make_config_file) {
+    config <- list(data_class = "tokens",
+                   txt_header = "FALSE",
+                   txt_quote = "",
+                   txt_comment_char = "")
+    write_config(config, file)
+  }
+  invisible(x)
+}
+
+# public function tokens_merge()
+# merge two types objects
+tokens_merge <- function(x, y) {
+  if ((!"tokens" %in% class(x)) || (!"tokens" %in% class(y))) {
+    stop("both x and y must be of the class 'tokens'")
+  }
+  tokens_merge_two(x, y)
+}  
+
+# public function tokens_merge_all()
+# merge two or more tokens objects
+tokens_merge_all <- function(...) {
+  arg_list <- list(...)
+  result_car <- NULL  # result for car of arg_list
+  result_cdr <- NULL  # result for cdr of arg_list
+  # -- processing car --
+  if (length(arg_list) > 0) {
+    car <- arg_list[[1]]
+    if ("tokens" %in% class(car)) {
+      result_car <- car
+    } else if (is.list(car) && length(car) > 0) {
+      result_car <- do.call("tokens_merge_all", car)
+    }
+  }   
+  # -- processing cdr --
+  if (length(arg_list) > 1) {
+    cdr <- arg_list[-1]
+    result_cdr <- do.call("tokens_merge_all", cdr)
+  }
+  # -- merge results if needed --
+  result <- result_car
+  if (is.null(result_car)) {
+    result <- result_cdr
+  } else if (!is.null(result_cdr)) {
+    result <- tokens_merge_two(result_car, result_cdr)
+  }
+  # -- result --
+  result
+}
+# Private functions applied to the class =======================================
+
+# private subset selection function
+# x is assumed to be a tokens object (not tested)
+# sel can be:
+#  - numeric vector with positions
+#  - boolean vector
+subset_tokens <- function(x, sel) {
+  result <- as.character(x)[sel]
+  class(result) <- c("tokens",
+                     setdiff(class(x),
+                             c("tokens", "types")))
+  result
+}
+
+# private function tokens_merge_two()
+# both x and y are assumed to be of class "tokens"
+tokens_merge_two <- function(x, y) {
+  as_tokens(c(x, y))
 }
 
 # private subset selection function
