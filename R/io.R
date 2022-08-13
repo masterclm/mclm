@@ -1,24 +1,33 @@
-# --
-# reads a text file into a character vector
-# - if line_glue is NA, each input line is a separate item in
-#   the character vector
-# - if line_glue is "\n", then the character vector contains
-#   a single item, in which all input lines are concatenated,
-#   using "\n" as line terminator.
-# --
-read_txt_old <- function(file,
-                     file_encoding = "UTF-8",
-                     line_glue = NA,
-                     ...) {
-  con <- file(file, encoding = file_encoding)
-  lines <- readLines(con, warn = FALSE)
-  close(con)
-  if (! is.na(line_glue)) {
-    lines <- paste0(paste(lines, collapse = line_glue), line_glue)
-  }
-  lines
-}
-
+#' Read a text file into a character vector
+#' 
+#' This function reads a text file and returns a character vector containing
+#' the lines in the text file.
+#'
+#' @param file Name of the input file.
+#' @param file_encoding Encoding of the input file.
+#' @param line_glue A character vector or `NA`. If `NA`, the output is a character
+#' vector in which each input line is a separate item, as in [readr::read_lines()].
+#' Otherwise, the output is a character vector of length 1 in which all input lines
+#' are concatenated, using the value of `line_glue[1]` as line separator and as
+#' end-of-last-line marker.
+#' @param ... Additional arguments (not implemented).
+#'
+#' @return A character vector.
+#' @seealso [write_txt()]
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' x <- "This is
+#' a small
+#' text."
+#' 
+#' # write the text to a text file
+#' write_txt(x, "example-text-file.txt")
+#' # read a text from file
+#' y <- read_txt("example-text-file.txt")
+#' y
+#' }
 read_txt <- function(file,
                      file_encoding = "UTF-8",
                      line_glue = NA,
@@ -32,16 +41,26 @@ read_txt <- function(file,
   lines
 }
 
+#' Write a character vector to a text file
+#' 
+#' This function writes a character vector to a text file. By default, each
+#' item in the character vector becomes a line in the text file.
+#'
+#' @param x A character vector.
+#' @param file Name of the output file.
+#' @param file_encoding Encoding to be used in the output file.
+#' @param line_glue Character string to be used as end-of-line marker on disk
+#'   or `NA` for no end-of-line marker (so that `x` becomes a single line).
+#'
+#' @return Invisibly, `x`.
+#' @export
+#' @seealso [read_txt()]
+#'
+#' @inherit read_txt examples
 write_txt <- function(x,
                       file = "",
                       file_encoding = "UTF-8",
                       line_glue = "\n") {
-  # --
-  # writes a character vector to a text file, using line_glue
-  # as line terminator.
-  # - if line_glue is NA, x is assumed to be a single line
-  #   that is written to file as is 
-  # --
   if (! is.character(x) || length(x) == 0) {
     stop("argument 'x' must be a character vector of at least length one")
   }
@@ -53,6 +72,8 @@ write_txt <- function(x,
   invisible(x)
 }
 
+#' Write text to file with UTF encoding??
+#' @noRd
 write_txt_utf8 <- function(x,
                            file = "") {
   if (! is.character(x) || length(x) != 1) {
