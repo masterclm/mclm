@@ -14,7 +14,7 @@
 #' must be considered arbitrary.
 #'
 #' @param x Either a character vector or an object of class
-#'   `TextDocument` that contains the text to be tokenized.
+#'   [NLP::TextDocument] that contains the text to be tokenized.
 #' @param re_drop_line `NULL` or character vector. If `NULL`, it is ignored.
 #'   Otherwise, a character vector (assumed to be of length 1)
 #'   containing a regular expression. Lines in `x`
@@ -990,9 +990,26 @@ plot.summary.tokens <- function(x, ...) {
 
 # Public functions applied to the class ========================================
 
-# public function read_tokens()
-#  - reads a 'tokens' object from a txt file
-#  - assumes each line contains one token
+#' Read a `tokens` object from a text file
+#' 
+#' This function reads an object of the class [`tokens`] from a text file, typically
+#' stored with [write_tokens()]. The text file is assumed to contain one token on
+#' each line and not to have a header.
+#'
+#' @param file Name of the input file.
+#' @param file_encoding Encoding to read the input file.
+#' @param ... Additional arguments (not implemented).
+#'
+#' @return An object of class [`tokens`].
+#' @seealso [`write_tokens()`]
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' (tks <- tokenize("The old man and the sea."))
+#' write_tokens(tks, "file_with_tokens.txt")
+#' (tks2 <- read_tokens("file_with_tokens.txt"))
+#' }
 read_tokens <- function(file,
                         file_encoding = "UTF-8",
                         ...) {
@@ -1004,9 +1021,22 @@ read_tokens <- function(file,
   result
 }
 
-# public function write_tokens()
-#  - writes a 'tokens' object to a txt file
-#  - by default does not create an associated config file
+#' Write a `tokens` object to a text file
+#' 
+#' This function writes an object of the class [`tokens`] to a text file. Each
+#' token is written to a separate line. The file encoding is always "UTF-8".
+#' This file can later be read with [read_tokens()].
+#'
+#' @param x An object of class [`tokens`].
+#' @param file Name of the output file.
+#' @param make_config_file Logical. Whether, next to the actual tokens files,
+#'   a second output file should be created containing a brief description of the
+#'   format of the tokens file.
+#' @param ... Additional arguments (not implemented).
+#'
+#' @return Invisibly, `x`.
+#' @seealso [read_tokens()]
+#' @inherit read_tokens examples
 write_tokens <- function(x,
                          file,
                          make_config_file = FALSE,

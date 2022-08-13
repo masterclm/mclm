@@ -26,7 +26,7 @@ tokenize(
 }
 \arguments{
 \item{x}{Either a character vector or an object of class
-\code{TextDocument} that contains the text to be tokenized.}
+\link[NLP:TextDocument]{NLP::TextDocument} that contains the text to be tokenized.}
 
 \item{re_drop_line}{\code{NULL} or character vector. If \code{NULL}, it is ignored.
 Otherwise, a character vector (assumed to be of length 1)
