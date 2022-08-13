@@ -29,14 +29,13 @@ of characters, either including them (with \code{keep_fnames(invert = FALSE)}) o
 excluding them (with \code{keep_fnames(invert = FALSE)} or \code{drop_fnames()}).
 }
 \examples{
-\dontrun{
-all_fnames <- get_fnames(recursive = TRUE)
+all_fnames <- as_fnames(c("file1", "file2", "file3",
+                          "file4", "file5", "file6"))
 
-unwanted_fnames <- get_fnames("some_subdirectory")
+unwanted_fnames <- as_fnames(c("file1", "file4"))
 keep_fnames(all_fnames, unwanted_fnames, invert = TRUE)
 drop_fnames(all_fnames, unwanted_fnames)
 
-wanted_fnames <- get_fnames("another_subdirectory")
+wanted_fnames <- as_fnames(c("file3", "file5"))
 keep_fnames(all_fnames, wanted_fnames)
-}
 }

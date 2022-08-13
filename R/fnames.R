@@ -19,7 +19,7 @@
 #' @return An object of class `fnames`, which is a special kind of character
 #'   vector storing the absolute paths of the corpus files.
 #'   It has additional attributes and methods such as:
-#'   - base [`print()`][print.freqlist()], [as.data.frame()],
+#'   - base [`print()`][print.freqlist()], [as_data_frame()],
 #'   [sort()] and [summary()] (which returns the number of items and of unique items),
 #'   - [tibble::as_tibble()],
 #'   - an interactive [explore()] method,
@@ -42,15 +42,16 @@
 #' @examples
 #' \dontrun{
 #' cwd_fnames <- get_fnames(recursive = FALSE)
+#' }
+#' cwd_fnames <- as_fnames(c("file1", "file2", "file3"))
 #' cwd_fnames
 #' print(cwd_fnames)
-#' as.data.frame(cwd_fnames)
+#' as_data_frame(cwd_fnames)
 #' as_tibble(cwd_fnames)
 #' 
 #' sort(cwd_fnames)
 #' 
 #' summary(cwd_fnames)
-#' }
 get_fnames <- function(path = ".",
                   re_pattern = NULL,
                   recursive = TRUE,
@@ -671,7 +672,7 @@ plot.summary.fnames <- function(x, ...) {
 #' @name short_names
 #'
 #' @examples
-#' cwd_fnames <- "some/path/to/a/file.txt"
+#' cwd_fnames <- as_fnames(c("folder/file1.txt", "folder/file2.txt", "folder/file3.txt"))
 #' drop_path(cwd_fnames)
 #' drop_extension(cwd_fnames)
 #' short_names(cwd_fnames) # same as drop_path(drop_extension(cwd_fnames))
@@ -704,10 +705,8 @@ short_names <- function(x, ...) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' cwd_fnames <- get_fnames()
+#' cwd_fnames <- as_fnames(c("folder/file1.txt", "folder/file2.txt", "folder/file3.txt"))
 #' n_fnames(cwd_fnames)
-#' }
 n_fnames <- function(x, ...) {
   if (! "fnames" %in% class(x)) {
     stop("argument 'x' must be of the class 'fnames'")
@@ -736,13 +735,11 @@ n_fnames <- function(x, ...) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' cwd_fnames <- get_fnames(recursive = FALSE)
-#' cwd_fnames2 <- get_fnames("some_subdirectory")
-#' cwd_fnames3 <- get_fnames("another_subdirectory")
+#' cwd_fnames <- as_fnames(c("file1.txt", "file2.txt"))
+#' cwd_fnames2 <- as_fnames(c("dir1/file3.txt", "dir1/file4.txt"))
+#' cwd_fnames3 <- as_fnames(c("dir2/file5.txt", "dir2/file6.txt"))
 #' fnames_merge(cwd_fnames, cwd_fnames2)
 #' fnames_merge_all(cwd_fnames, cwd_fnames2, cwd_fnames3)
-#' }
 fnames_merge <- function(x, y, sort = FALSE) {
   if ((!"fnames" %in% class(x)) || (!"fnames" %in% class(y))) {
     stop("both x and y must be of the class 'fnames'")
@@ -804,16 +801,15 @@ fnames_merge_all <- function(..., sort = FALSE) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' all_fnames <- get_fnames(recursive = TRUE)
+#' all_fnames <- as_fnames(c("file1", "file2", "file3",
+#'                           "file4", "file5", "file6"))
 #' 
-#' unwanted_fnames <- get_fnames("some_subdirectory")
+#' unwanted_fnames <- as_fnames(c("file1", "file4"))
 #' keep_fnames(all_fnames, unwanted_fnames, invert = TRUE)
 #' drop_fnames(all_fnames, unwanted_fnames)
 #' 
-#' wanted_fnames <- get_fnames("another_subdirectory")
+#' wanted_fnames <- as_fnames(c("file3", "file5"))
 #' keep_fnames(all_fnames, wanted_fnames)
-#' }
 keep_fnames <- function(x, y, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"fnames" %in% class(x)) {

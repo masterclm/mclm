@@ -26,6 +26,6 @@ tks <- tokenize(toy_corpus)
 print(tks, n = 1000)
 
 tks[3:12]
-print(as_tokens(tokens[3:12]), n = 1000)
-as_tokens(tail(tokens))
+print(as_tokens(tks[3:12]), n = 1000)
+as_tokens(tail(tks))
 }

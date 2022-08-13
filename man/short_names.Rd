@@ -33,7 +33,7 @@ Helper functions that make the paths to a file shorter.
 
 }}
 \examples{
-cwd_fnames <- "some/path/to/a/file.txt"
+cwd_fnames <- as_fnames(c("folder/file1.txt", "folder/file2.txt", "folder/file3.txt"))
 drop_path(cwd_fnames)
 drop_extension(cwd_fnames)
 short_names(cwd_fnames) # same as drop_path(drop_extension(cwd_fnames))

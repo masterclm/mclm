@@ -77,7 +77,7 @@
 #'   - `right`: The right-hand side co-text of each match.
 #'   
 #'   It also has additional attributes and methods such as:
-#'   - base [as.data.frame()] and [`print()`][print.types()] methods, as well as
+#'   - base [as_data_frame()] and [`print()`][print.types()] methods, as well as
 #'   a [print_kwic()] function,
 #'   - an [explore()] method.
 #'   

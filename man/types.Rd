@@ -170,7 +170,7 @@ and \code{file_encoding} are ignored.}
 An object of the class \code{types}, which is based on a character vector.
 It has additional attributes and methods such as:
 \itemize{
-\item base \code{\link[=print.types]{print()}}, \code{\link[=as.data.frame]{as.data.frame()}}, \code{\link[=sort]{sort()}} and
+\item base \code{\link[=print.types]{print()}}, \code{\link[=as_data_frame]{as_data_frame()}}, \code{\link[=sort]{sort()}} and
 \code{\link[base:summary]{base::summary()}} (which returns the number of items and of unique items),
 \item \code{\link[tibble:as_tibble]{tibble::as_tibble()}},
 \item the \code{\link[=n_types]{n_types()}} getter and the \code{\link[=explore]{explore()}} method,

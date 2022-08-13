@@ -805,7 +805,7 @@ text_cooc <- function(x,
 #'  ## Properties of the class
 #'  
 #'  An object of class `assoc_scores` has:
-#'  - associated [as.data.frame()], [print()][print.assoc_scores()] and [tibble::as_tibble()]
+#'  - associated [as_data_frame()], [print()][print.assoc_scores()] and [tibble::as_tibble()]
 #'  methods,
 #'  - an interactive [explore()] method and useful getters, viz. [n_types()] and
 #'  [type_names()].
@@ -827,6 +827,9 @@ text_cooc <- function(x,
 #' d <- c(300, 5000, 10000, 6000)
 #' types <- c("four", "fictitious", "toy", "examples")
 #' (scores <- assoc_abcd(a, b, c, d, types = types))
+#' 
+#' as_data_frame(scores)
+#' as_tibble(scores)
 #' 
 #' print(scores, sort_order = "PMI")
 #' print(scores, sort_order = "alpha")

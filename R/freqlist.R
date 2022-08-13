@@ -46,12 +46,12 @@
 #'
 #' @return An object of class `freqlist`, which is based on the class `table`.
 #'   It has additional attributes and methods such as:
-#'   - base [`print()`][print.freqlist()], [as.data.frame()],
+#'   - base [`print()`][print.freqlist()], [as_data_frame()],
 #'   [summary()] and [`sort`][sort.freqlist()],
 #'   - [tibble::as_tibble()],
 #'   - an interactive [explore()] method,
 #'   - various getters, including [tot_n_tokens()], [n_types()], [n_tokens()],
-#'   values that are also returned by `summary()`, and more,
+#'   values that are also returned by [summary()], and more,
 #'   - subsetting methods such as [keep_types()], [keep_pos()], etc. including `[]`
 #'   subsetting (see [brackets]).
 #'   

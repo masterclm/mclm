@@ -26,11 +26,9 @@ object, removing duplicates (keeping only the first appearance) and only
 resorting the items if \code{sort = TRUE}.
 }
 \examples{
-\dontrun{
-cwd_fnames <- get_fnames(recursive = FALSE)
-cwd_fnames2 <- get_fnames("some_subdirectory")
-cwd_fnames3 <- get_fnames("another_subdirectory")
+cwd_fnames <- as_fnames(c("file1.txt", "file2.txt"))
+cwd_fnames2 <- as_fnames(c("dir1/file3.txt", "dir1/file4.txt"))
+cwd_fnames3 <- as_fnames(c("dir2/file5.txt", "dir2/file6.txt"))
 fnames_merge(cwd_fnames, cwd_fnames2)
 fnames_merge_all(cwd_fnames, cwd_fnames2, cwd_fnames3)
-}
 }

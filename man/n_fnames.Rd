@@ -19,8 +19,6 @@ This function counts the number of items, duplicated or not, in an \code{\link{f
 object. If there are duplicated items, it will return a warning.
 }
 \examples{
-\dontrun{
-cwd_fnames <- get_fnames()
+cwd_fnames <- as_fnames(c("folder/file1.txt", "folder/file2.txt", "folder/file3.txt"))
 n_fnames(cwd_fnames)
-}
 }

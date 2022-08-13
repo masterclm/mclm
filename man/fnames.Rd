@@ -36,7 +36,7 @@ An object of class \code{fnames}, which is a special kind of character
 vector storing the absolute paths of the corpus files.
 It has additional attributes and methods such as:
 \itemize{
-\item base \code{\link[=print.freqlist]{print()}}, \code{\link[=as.data.frame]{as.data.frame()}},
+\item base \code{\link[=print.freqlist]{print()}}, \code{\link[=as_data_frame]{as_data_frame()}},
 \code{\link[=sort]{sort()}} and \code{\link[=summary]{summary()}} (which returns the number of items and of unique items),
 \item \code{\link[tibble:as_tibble]{tibble::as_tibble()}},
 \item an interactive \code{\link[=explore]{explore()}} method,
@@ -61,13 +61,14 @@ Build an object of class \code{fnames}.
 \examples{
 \dontrun{
 cwd_fnames <- get_fnames(recursive = FALSE)
+}
+cwd_fnames <- as_fnames(c("file1", "file2", "file3"))
 cwd_fnames
 print(cwd_fnames)
-as.data.frame(cwd_fnames)
+as_data_frame(cwd_fnames)
 as_tibble(cwd_fnames)
 
 sort(cwd_fnames)
 
 summary(cwd_fnames)
-}
 }

@@ -8,7 +8,7 @@
 #' @inherit freqlist details
 #' @return An object of the class `types`, which is based on a character vector.
 #'   It has additional attributes and methods such as:
-#'   - base [`print()`][print.types()], [as.data.frame()], [sort()] and
+#'   - base [`print()`][print.types()], [as_data_frame()], [sort()] and
 #'   [base::summary()] (which returns the number of items and of unique items),
 #'   - [tibble::as_tibble()],
 #'   - the [n_types()] getter and the [explore()] method,

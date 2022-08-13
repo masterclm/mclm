@@ -394,7 +394,7 @@ additionally, \code{with_variants} is \code{TRUE}.
 
 An object of class \code{assoc_scores} has:
 \itemize{
-\item associated \code{\link[=as.data.frame]{as.data.frame()}}, \link[=print.assoc_scores]{print()} and \code{\link[tibble:as_tibble]{tibble::as_tibble()}}
+\item associated \code{\link[=as_data_frame]{as_data_frame()}}, \link[=print.assoc_scores]{print()} and \code{\link[tibble:as_tibble]{tibble::as_tibble()}}
 methods,
 \item an interactive \code{\link[=explore]{explore()}} method and useful getters, viz. \code{\link[=n_types]{n_types()}} and
 \code{\link[=type_names]{type_names()}}.
@@ -475,6 +475,9 @@ c <- c(100,   14,    16,    4)
 d <- c(300, 5000, 10000, 6000)
 types <- c("four", "fictitious", "toy", "examples")
 (scores <- assoc_abcd(a, b, c, d, types = types))
+
+as_data_frame(scores)
+as_tibble(scores)
 
 print(scores, sort_order = "PMI")
 print(scores, sort_order = "alpha")

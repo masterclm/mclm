@@ -24,12 +24,12 @@ input type, either are sorted alphabetically or are not sorted at all.}
 An object of class \code{freqlist}, which is based on the class \code{table}.
 It has additional attributes and methods such as:
 \itemize{
-\item base \code{\link[=print.freqlist]{print()}}, \code{\link[=as.data.frame]{as.data.frame()}},
+\item base \code{\link[=print.freqlist]{print()}}, \code{\link[=as_data_frame]{as_data_frame()}},
 \code{\link[=summary]{summary()}} and \code{\link[=sort.freqlist]{sort}},
 \item \code{\link[tibble:as_tibble]{tibble::as_tibble()}},
 \item an interactive \code{\link[=explore]{explore()}} method,
 \item various getters, including \code{\link[=tot_n_tokens]{tot_n_tokens()}}, \code{\link[=n_types]{n_types()}}, \code{\link[=n_tokens]{n_tokens()}},
-values that are also returned by \code{summary()}, and more,
+values that are also returned by \code{\link[=summary]{summary()}}, and more,
 \item subsetting methods such as \code{\link[=keep_types]{keep_types()}}, \code{\link[=keep_pos]{keep_pos()}}, etc. including \verb{[]}
 subsetting (see \link{brackets}).
 }

@@ -45,7 +45,7 @@ for one specific query.
 
 It also has additional attributes and methods such as:
 \itemize{
-\item base \code{\link[=as.data.frame]{as.data.frame()}} and \code{\link[=print.types]{print()}} methods, as well as
+\item base \code{\link[=as_data_frame]{as_data_frame()}} and \code{\link[=print.types]{print()}} methods, as well as
 a \code{\link[=print_kwic]{print_kwic()}} function,
 \item an \code{\link[=explore]{explore()}} method.
 }

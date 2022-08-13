@@ -152,8 +152,8 @@ output of this function.}
 An object of class \code{\link{tokens}}, i.e. a sequence of tokens.
 It has a number of attributes and method such as:
 \itemize{
-\item base \code{\link[=print.tokens]{print()}}, \code{\link[=as.data.frame]{as.data.frame()}}, \code{\link[=summary]{summary()}},
-\code{\link[=sort]{sort()}} and \code{\link[=rev]{rev()}},
+\item base \code{\link[=print.types]{print}}, \code{\link[=as_data_frame]{as_data_frame()}}, \code{\link[=summary]{summary()}}
+(which returns the number of items), \code{\link[=sort]{sort()}} and \code{\link[=rev]{rev()}},
 \item \code{\link[tibble:as_tibble]{tibble::as_tibble()}},
 \item an interactive \code{\link[=explore]{explore()}} method,
 \item some getters, namely \code{\link[=n_tokens]{n_tokens()}} and \code{\link[=n_types]{n_types()}},
@@ -190,6 +190,8 @@ print(tks, n = 1000)
 
 tks <- tokenize(toy_corpus, re_token_splitter = "\\\\W+")
 print(tks, n = 1000)
+sort(tks)
+summary(tks)
 
 tokenize(toy_corpus, ngram_size = 3)
 
