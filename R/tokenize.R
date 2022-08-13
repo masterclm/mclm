@@ -1,21 +1,161 @@
 # Create and coerce to class ===================================================
-as_tokens <- function(x, ...) {
-  result <- x
-  if (is.null(result)) {
-    result <- character(0)
-  }
-  if (! "character" %in% class(result)) {
-    result <- as.character(result)
-  }
-  result <- result[!is.na(result)] # silently drop NAs
-  class(result) <- c("tokens",
-                     setdiff(class(result),
-                             c("tokens", "types")))
-  result
-}
-# regular expression based tokenization
-#  x must be a character vector or an object of the class
-#   "TextDocument"
+
+#' Create or coerce an object into class `tokens`
+#' 
+#' `tokenize()` splits a text into a sequence of tokens, using regular expressions
+#' to identify them, and returns an object of the class [`tokens`].
+#' 
+#' If the output contains ngrams with open slots, then the order
+#' of the items in the output is no longermeaningful. For instance, let's imagine
+#' a case where `ngram_size` is `5` and `ngram_n_open` is `2`.
+#' If the input contains an 5-fgram `"it_is_widely_accepted_that"`, then the output
+#' will contain `"it_[]_[]_accepted_that"`, `"it_[]_widely_[]_that"` and
+#' `"it_is_[]_[]_that"`. The relative order of these three items in the output
+#' must be considered arbitrary.
+#'
+#' @param x Either a character vector or an object of class
+#'   `TextDocument` that contains the text to be tokenized.
+#' @param re_drop_line `NULL` or character vector. If `NULL`, it is ignored.
+#'   Otherwise, a character vector (assumed to be of length 1)
+#'   containing a regular expression. Lines in `x`
+#'   that contain a match for `re_drop_line` are
+#'   treated as not belonging to the corpus and are excluded from the results.
+#' @param line_glue `NULL` or character vector. If `NULL`, it is ignored.
+#'   Otherwise, all lines in a corpus file (or in `x`, if
+#'   `as_text` is `TRUE`), are glued together in one
+#'   character vector of length 1, with the string `line_glue`
+#'   pasted in between consecutive lines.
+#'   The value of `line_glue` can also be equal to the empty string `""`.
+#'   The 'line glue' operation is conducted immediately after the 'drop line' operation.
+#' @param re_cut_area `NULL` or character vector. If `NULL`, it is ignored.
+#'   Otherwise, all matches in a corpus file (or in `x`,
+#'   if `as_text` is `TRUE`), are 'cut out' of the text prior
+#'   to the identification of the tokens in the text (and are therefore
+#'   not taken into account when identifying the tokens).
+#'   The 'cut area' operation is conducted immediately after the 'line glue' operation.
+#' @param re_token_splitter Regular expression or `NULL`.
+#'   Regular expression that identifies the locations where lines in the corpus
+#'   files are split into tokens. (See Details.)
+#'   
+#'   The 'token identification' operation is conducted immediately after the
+#'   'cut area' operation.
+#' @param re_token_extractor Regular expression that identifies the locations of the
+#'   actual tokens. This argument is only used if `re_token_splitter` is `NULL`.
+#'   (See Details.)
+#'   
+#'   The 'token identification' operation is conducted immediately after the
+#'   'cut area' operation.
+#' @param re_drop_token Regular expression or `NULL`. If `NULL`, it is ignored.
+#'   Otherwise, it identifies tokens that are to
+#'   be excluded from the results. Any token that contains a match for
+#'   `re_drop_token` is removed from the results.
+#'   The 'drop token' operation is conducted immediately after the 'token identification' operation.
+#' @param re_token_transf_in Regular expression that identifies areas in the
+#'   tokens that are to be transformed. This argument works together with the argument
+#'   `token_transf_out`.
+#'   
+#'   If both `re_token_transf_in` and `token_transf_out` differ
+#'   from `NA`, then all matches, in the tokens, for the
+#'   regular expression  `re_token_transf_in` are replaced with
+#'   the replacement string `token_transf_out`.
+#'   
+#'   The 'token transformation' operation is conducted immediately after the
+#'   'drop token' operation.
+#' @param token_transf_out Replacement string. This argument works together with
+#'   `re_token_transf_in` and is ignored if `re_token_transf_in`
+#'   is `NULL` or `NA`.
+#' @param token_to_lower Logical. Whether tokens must be converted
+#'   to lowercase before returning the result.
+#'   The 'token to lower' operation is conducted immediately after the
+#'   'token transformation' operation.
+#' @param perl Logical. Whether the PCRE regular expression
+#'   flavor is being used in the arguments that contain regular expressions.
+#' @param ngram_size Argument in support of ngrams/skipgrams (see also `max_skip`).
+#'   
+#'   If one wants to identify individual tokens, the value of `ngram_size`
+#'   should be `NULL` or `1`. If one wants to retrieve
+#'   token ngrams/skipgrams, `ngram_size` should be an integer indicating
+#'   the size of the ngrams/skipgrams. E.g. `2` for bigrams, or `3` for
+#'   trigrams, etc.
+#' @param max_skip Argument in support of skipgrams. This argument is ignored if
+#'   `ngram_size` is `NULL` or is `1`.
+#'   
+#'   If `ngram_size` is `2` or higher, and `max_skip`
+#'   is `0`, then regular ngrams are being retrieved (albeit that they
+#'   may contain open slots; see `ngram_n_open`).
+#'   
+#'   If `ngram_size` is `2` or higher, and `max_skip`
+#'   is `1` or higher, then skipgrams are being retrieved (which in the
+#'   current implementation cannot contain open slots; see `ngram_n_open`).
+#'   
+#'   For instance, if `ngram_size` is `3` and `max_skip` is
+#'   `2`, then 2-skip trigrams are being retrieved.
+#'   Or if `ngram_size` is `5` and `max_skip` is
+#'   `3`, then 3-skip 5-grams are being retrieved.
+#' @param ngram_sep Character vector of length 1 containing the string that is used to
+#'   separate/link tokens in the representation of ngrams/skipgrams
+#'   in the output of this function.
+#' @param ngram_n_open If `ngram_size` is `2` or higher, and moreover
+#'   `ngram_n_open` is a number higher than `0`, then
+#'   ngrams with 'open slots' in them are retrieved. These
+#'   ngrams with 'open slots' are generalisations of fully lexically specific
+#'   ngrams (with the generalisation being that one or more of the items
+#'   in the ngram are replaced by a notation that stands for 'any arbitrary token').
+#'   
+#'   For instance, if `ngram_size` is `4` and `ngram_n_open` is
+#'   `1`, and if moreover the input contains a
+#'   4-gram `"it_is_widely_accepted"`, then the output will contain
+#'   all modifications of `"it_is_widely_accepted"` in which one (since
+#'   `ngram_n_open` is `1`) of the items in this n-gram is
+#'   replaced by an open slot. The first and the last item inside
+#'   an ngram are never turned into an open slot; only the items in between
+#'   are candidates for being turned into open slots. Therefore, in the
+#'   example, the output will contain `"it_[]_widely_accepted"` and
+#'   `"it_is_[]_accepted"`.
+#'   
+#'   As a second example, if `ngram_size` is `5` and
+#'   `ngram_n_open` is `2`, and if moreover the input contains a
+#'   5-gram `"it_is_widely_accepted_that"`, then the output will contain
+#'   `"it_[]_[]_accepted_that"`, `"it_[]_widely_[]_that"`, and
+#'   `"it_is_[]_[]_that"`. 
+#' @param ngram_open Character string used to represent open slots in ngrams in the
+#'   output of this function.
+#'
+#' @return An object of class [`tokens`], i.e. a sequence of tokens.
+#'   It has a number of attributes and method such as:
+#'   - base [`print()`][print.tokens()], [as.data.frame()], [summary()],
+#'   [sort()] and [rev()],
+#'   - [tibble::as_tibble()],
+#'   - an interactive [explore()] method,
+#'   - some getters, namely [n_tokens()] and [n_types()],
+#'   - subsetting methods such as [keep_types()], [keep_pos()], etc. including `[]`
+#'   subsetting (see [brackets]).
+#'   
+#'   Additional manipulation functions include the [trunc_at()] method to ??,
+#'   [tokens_merge()] and [tokens_merge_all()] to combine token lists and an
+#'   [as_character()] method to convert to a character vector.
+#'   
+#'   Objects of class `tokens` can be saved to file with [write_tokens()];
+#'   these files can be read with [read_freqlist()].
+#' @name tokens
+#' @seealso [as_tokens()]
+#' @export
+#'
+#' @examples
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#' It consisted of three sentences. And it lived happily ever after."
+#' 
+#' tks <- tokenize(toy_corpus)
+#' print(tks, n = 1000)
+#' 
+#' tks <- tokenize(toy_corpus, re_token_splitter = "\\W+")
+#' print(tks, n = 1000)
+#' 
+#' tokenize(toy_corpus, ngram_size = 3)
+#' 
+#' tokenize(toy_corpus, ngram_size = 3, max_skip = 2)
+#' 
+#' tokenize(toy_corpus, ngram_size = 3, ngram_n_open = 1)
 tokenize <- function(
     x, 
     re_drop_line = NULL,
@@ -33,11 +173,9 @@ tokenize <- function(
     ngram_sep = "_",
     ngram_n_open = 0,
     ngram_open = "[]") {
-  # ---------------------------------------------------------------
   if (is.null(x) || length(x) == 0) {
     tokens <- vector(mode = "character", length = 0)
   } else {
-    # ---------------------------------------------------------------
     if ("TextDocument" %in% class(x)) {
       x <- as.character(x)
     } else  if (!is.character(x)) {
@@ -108,6 +246,43 @@ tokenize <- function(
   
   as_tokens(tokens)
 }
+
+#' Coerce object to class `tokens`
+#' 
+#' This function coerces a character object or another object that can be coerced
+#' to a character into an object of class [`tokens`].
+#'
+#' @param x Object to coerce.
+#' @param ... Additional arguments (not implemented).
+#'
+#' @return An object of class [`tokens`].
+#' @export
+#'
+#' @examples
+#' toy_corpus <- "Once upon a time there was a tiny toy corpus.
+#' It consisted of three sentences. And it lived happily ever after."
+#' 
+#' tks <- tokenize(toy_corpus)
+#' print(tks, n = 1000)
+#' 
+#' tks[3:12]
+#' print(as_tokens(tokens[3:12]), n = 1000)
+#' as_tokens(tail(tokens))
+as_tokens <- function(x, ...) {
+  result <- x
+  if (is.null(result)) {
+    result <- character(0)
+  }
+  if (! "character" %in% class(result)) {
+    result <- as.character(result)
+  }
+  result <- result[!is.na(result)] # silently drop NAs
+  class(result) <- c("tokens",
+                     setdiff(class(result),
+                             c("tokens", "types")))
+  result
+}
+
 # S3 methods from mclm =========================================================
 n_tokens.tokens <- function(x, ...) {
   if (! "tokens" %in% class(x)) {
@@ -784,7 +959,6 @@ read_tokens <- function(file,
 # public function write_tokens()
 #  - writes a 'tokens' object to a txt file
 #  - by default does not create an associated config file
-# ------------------------------------------------------
 write_tokens <- function(x,
                          file,
                          make_config_file = FALSE,

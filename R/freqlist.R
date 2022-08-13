@@ -23,61 +23,6 @@
 #'   line (or a separate series of lines) in the corpus text. Within each
 #'   item of `x`, the character `"\\n"` is also treated as
 #'   a line separator.
-#' @param re_drop_line `NULL` or character vector. If `NULL`, it is ignored.
-#'   Otherwise, a character vector (assumed to be of length 1)
-#'   containing a regular expression. Lines in `x`
-#'   that contain a match for `re_drop_line` are
-#'   treated as not belonging to the corpus and are excluded from the results.
-#' @param line_glue `NULL` or character vector. If `NULL`, it is ignored.
-#'   Otherwise, all lines in a corpus file (or in `x`, if
-#'   `as_text` is `TRUE`), are glued together in one
-#'   character vector of length 1, with the string `line_glue`
-#'   pasted in between consecutive lines.
-#'   The value of `line_glue` can also be equal to the empty string `""`.
-#'   The 'line glue' operation is conducted immediately after the 'drop line' operation.
-#' @param re_cut_area `NULL` or character vector. If `NULL`, it is ignored.
-#'   Otherwise, all matches in a corpus file (or in `x`,
-#'   if `as_text` is `TRUE`), are 'cut out' of the text prior
-#'   to the identification of the tokens in the text (and are therefore
-#'   not taken into account when identifying the tokens).
-#'   The 'cut area' operation is conducted immediately after the 'line glue' operation.
-#' @param re_token_splitter Regular expression or `NULL`.
-#'   Regular expression that identifies the locations where lines in the corpus
-#'   files are split into tokens. (See Details.)
-#'   
-#'   The 'token identification' operation is conducted immediately after the
-#'   'cut area' operation.
-#' @param re_token_extractor Regular expression that identifies the locations of the
-#'   actual tokens. This argument is only used if `re_token_splitter` is `NULL`.
-#'   (See Details.)
-#'   
-#'   The 'token identification' operation is conducted immediately after the
-#'   'cut area' operation.
-#' @param re_drop_token Regular expression or `NULL`. If `NULL`, it is ignored.
-#'   Otherwise, it identifies tokens that are to
-#'   be excluded from the results. Any token that contains a match for
-#'   `re_drop_token` is removed from the results.
-#'   The 'drop token' operation is conducted immediately after the 'token identification' operation.
-#' @param re_token_transf_in Regular expression that identifies areas in the
-#'   tokens that are to be transformed. This argument works together with the argument
-#'   `token_transf_out`.
-#'   
-#'   If both `re_token_transf_in` and `token_transf_out` differ
-#'   from `NA`, then all matches, in the tokens, for the
-#'   regular expression  `re_token_transf_in` are replaced with
-#'   the replacement string `token_transf_out`.
-#'   
-#'   The 'token transformation' operation is conducted immediately after the
-#'   'drop token' operation.
-#' @param token_transf_out Replacement string. This argument works together with
-#'   `re_token_transf_in` and is ignored if `re_token_transf_in`
-#'   is `NULL` or `NA`.
-#' @param token_to_lower Logical. Whether tokens must be converted
-#'   to lowercase before returning the result.
-#'   The 'token to lower' operation is conducted immediately after the
-#'   'token transformation' operation.
-#' @param perl Logical. Whether the PCRE regular expression
-#'   flavor is being used in the arguments that contain regular expressions.
 #' @param blocksize Number that indicates how many corpus files are read to memory
 #'   `at each individual step' during the steps in the procedure;
 #'   normally the default value of `300` should not
@@ -89,56 +34,6 @@
 #' @param show_dots,dot_blocksize If `TRUE`, dots are printed to the console to
 #'   indicate progress.
 #' @param file_encoding File encoding that is assumed in the corpus files.
-#' @param ngram_size Argument in support of ngrams/skipgrams (see also `max_skip`).
-#'   
-#'   If one wants to identify individual tokens, the value of `ngram_size`
-#'   should be `NULL` or `1`. If one wants to retrieve
-#'   token ngrams/skipgrams, `ngram_size` should be an integer indicating
-#'   the size of the ngrams/skipgrams. E.g. `2` for bigrams, or `3` for
-#'   trigrams, etc.
-#' @param max_skip Argument in support of skipgrams. This argument is ignored if
-#'   `ngram_size` is `NULL` or is `1`.
-#'   
-#'   If `ngram_size` is `2` or higher, and `max_skip`
-#'   is `0`, then regular ngrams are being retrieved (albeit that they
-#'   may contain open slots; see `ngram_n_open`).
-#'   
-#'   If `ngram_size` is `2` or higher, and `max_skip`
-#'   is `1` or higher, then skipgrams are being retrieved (which in the
-#'   current implementation cannot contain open slots; see `ngram_n_open`).
-#'   
-#'   For instance, if `ngram_size` is `3` and `max_skip` is
-#'   `2`, then 2-skip trigrams are being retrieved.
-#'   Or if `ngram_size` is `5` and `max_skip` is
-#'   `3`, then 3-skip 5-grams are being retrieved.
-#' @param ngram_sep Character vector of length 1 containing the string that is used to
-#'   separate/link tokens in the representation of ngrams/skipgrams
-#'   in the output of this function.
-#' @param ngram_n_open If `ngram_size` is `2` or higher, and moreover
-#'   `ngram_n_open` is a number higher than `0`, then
-#'   ngrams with 'open slots' in them are retrieved. These
-#'   ngrams with 'open slots' are generalisations of fully lexically specific
-#'   ngrams (with the generalisation being that one or more of the items
-#'   in the ngram are replaced by a notation that stands for 'any arbitrary token').
-#'   
-#'   For instance, if `ngram_size` is `4` and `ngram_n_open` is
-#'   `1`, and if moreover the input contains a
-#'   4-gram `"it_is_widely_accepted"`, then the output will contain
-#'   all modifications of `"it_is_widely_accepted"` in which one (since
-#'   `ngram_n_open` is `1`) of the items in this n-gram is
-#'   replaced by an open slot. The first and the last item inside
-#'   an ngram are never turned into an open slot; only the items in between
-#'   are candidates for being turned into open slots. Therefore, in the
-#'   example, the output will contain `"it_[]_widely_accepted"` and
-#'   `"it_is_[]_accepted"`.
-#'   
-#'   As a second example, if `ngram_size` is `5` and
-#'   `ngram_n_open` is `2`, and if moreover the input contains a
-#'   5-gram `"it_is_widely_accepted_that"`, then the output will contain
-#'   `"it_[]_[]_accepted_that"`, `"it_[]_widely_[]_that"`, and
-#'   `"it_is_[]_[]_that"`. 
-#' @param ngram_open Character string used to represent open slots in ngrams in the
-#'   output of this function.
 #' @param as_text Logical.
 #'    Whether `x` is to be interpreted as a character vector containing the
 #'   actual contents of the corpus (if `as_text` is `TRUE`)
@@ -147,6 +42,7 @@
 #'   If if `as_text` is `TRUE`, then the arguments
 #'   `blocksize`, `verbose`, `show_dots`, `dot_blocksize`,
 #'   and `file_encoding` are ignored.
+#' @inheritParams tokens
 #'
 #' @return An object of class `freqlist`, which is based on the class `table`.
 #'   It has additional attributes and methods such as:
@@ -1499,7 +1395,7 @@ write_freqlist <- function(x,
 #' Called by [freqlist()] when `x` contains the actual textual data.
 #'
 #' @param x Corpus text.
-#' @inheritParams tokenize
+#' @inheritParams tokens
 #'
 #' @return Object of class [`freqlist`].
 #' @noRd
@@ -1549,7 +1445,7 @@ freqlist_char <- function(x,
 #' Called by [freqlist()] when `x` contains filenames.
 #'
 #' @param x Filenames of the corpus files
-#' @inheritParams tokenize
+#' @inheritParams tokens
 #'
 #' @return Object of class [`freqlist`].
 #' @noRd
