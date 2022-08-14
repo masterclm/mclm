@@ -28,7 +28,8 @@ LinkingTo: Rcpp
 Suggests: 
     gradethis,
     learnr,
-    MASS
+    MASS,
+    tidyr
 License: GPL-2
 LazyData: TRUE
 RoxygenNote: 7.2.1

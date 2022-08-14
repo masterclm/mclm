@@ -728,6 +728,50 @@ as_numeric <- function(x, ...) UseMethod("as_numeric")
 #' @rdname as_numeric
 as_numeric.default <- function(x, ...) as.numeric(x, ...)
 
+#' Details on a specific item
+#' 
+#' This method zooms in on details of an object `x` based on an item `y`.
+#' When `x` is of class [`slma`] (currently the only supported class),
+#' `y` must be one of the lexical markers described in it.
+#'
+#' @param x An object containing global statistics for a collection of linguistic units,
+#'   such as an object of class [`slma`].
+#' @param y A character vector of length one representing one linguistic item.
+#'
+#' @return An object with details. When `x` is of class [`slma`],
+#'  the class of the output is `details.slma`, namely a list with the following items:
+#'   
+#'   - `summary`: The row of `x$scores` corresponding to `y`.
+#'   - `scores` (what is printed by default), a dataframe with one row per
+#'   pair of documents in the [`slma`] and the frequencies and association scores of
+#'   the chosen item as columns.
+#'   - `item`: the value of `y`.
+#'   - `sig_cutoff` and `small_pos`, as defined in [`slma`].
+#'   
+#' @export
+#'
+#' @examples
+#' a_corp <- get_fnames(system.file("extdata", "cleveland", package = "mclm"))
+#' b_corp <- get_fnames(system.file("extdata", "roosevelt", package = "mclm"))
+#' slma_ex <- slma(a_corp, b_corp, keep_intermediate = TRUE)
+#' 
+#' gov <- details(slma_ex, "government")
+#' gov$summary
+#' 
+#' # A bit of tidy manipulation to shorten filenames
+#' if (require("dplyr") && require("tidyr")) {
+#'   as_tibble(gov, rownames = "files") %>% 
+#'      tidyr::separate(files, into = c("file_A", "file_B"), sep = "--") %>% 
+#'      dplyr::mutate(dplyr::across(dplyr::starts_with("file"), short_names))
+#' } 
+details <- function(x, y) UseMethod("details")
+
+#' @exportS3Method
+#' @export
+#' @noRd
+details.default <- function(x, y) NULL
+
+
 # From base ====================================================================
 
 #' Print an object
