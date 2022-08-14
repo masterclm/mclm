@@ -10,9 +10,6 @@
   library.dynam.unload("mclm", libpath)
 }
 
-details <- function(x, y) UseMethod("details")
-
-details.default <- function(x, y) NULL
 
 # ---
 #  FROM CONCORDANCES TO DATASETS

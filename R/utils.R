@@ -245,6 +245,17 @@ build_open_pos <- function(ngram_size, n_open) {
   result
 }
 
+#' Build an n-gram
+#'
+#' @param x An object of class [`tokens`]
+#' @param ngram_size Number of items in the ngram.
+#' @param max_skip If larger than 1, [skipgrams()] wil be called.
+#' @param sep Character vector to join the elements in the ngram/skipgram.
+#' @param n_open Number of open slots.
+#' @param open Character vector used to represent open slots.
+#'
+#' @return Character vector
+#' @noRd
 build_ngrams <- function(x,
                          ngram_size = 3,
                          max_skip = 0,
@@ -253,11 +264,11 @@ build_ngrams <- function(x,
                          open = "[]") {
   result <- character(0)
   if (length(x) >= ngram_size) {
-    # -- skipgrams ------------------------------------------------------------
+    # -- skipgrams --
     if (max_skip > 0) {
       result <- skipgrams(x, ngram_size = ngram_size,
                           max_skip = max_skip, sep = sep) 
-    # -- regular ngrams -------------------------------------------------------
+    # -- regular ngrams --
     } else {
       parts <- vector(mode = "list", length = ngram_size)
       for (i in 1:ngram_size) {
