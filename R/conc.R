@@ -645,7 +645,6 @@ read_conc <- function(file,
 #' @param x Object of class [`conc`].
 #' @param file Path to output file.
 #' @param sep Field separator for the columns in the output file.
-#' @param file_encoding Encoding to be used in the output file.
 #'
 #' @return Invisibly, `x`.
 #' @export
@@ -655,8 +654,8 @@ read_conc <- function(file,
 #' @inherit read_conc examples
 write_conc <- function(x,
                        file = "",
-                       sep = "\t",
-                       file_encoding = "UTF-8") {
+                       sep = "\t") {
+  # TODO add encoding options
   if (nrow(x) > 0 && ncol(x) > 0) {
     lines <- as.character(x[[1]])
     if (ncol(x) > 1) {

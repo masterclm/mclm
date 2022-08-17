@@ -1033,9 +1033,6 @@ read_tokens <- function(file,
 #'
 #' @param x An object of class [`tokens`].
 #' @param file Name of the output file.
-#' @param make_config_file Logical. Whether, next to the actual tokens files,
-#'   a second output file should be created containing a brief description of the
-#'   format of the tokens file.
 #' @param ... Additional arguments (not implemented).
 #'
 #' @return Invisibly, `x`.
@@ -1044,19 +1041,13 @@ read_tokens <- function(file,
 #' @inherit read_tokens examples
 write_tokens <- function(x,
                          file,
-                         make_config_file = FALSE,
                          ...) {
+  # TODO reinstate make_config_file and use with read_tokens()
+  # TODO add encoding options?
   if (! "tokens" %in% class(x)) {
     stop("argument 'x' must be of the class 'tokens'")
   }
   readr::write_lines(x, file)
-  if (make_config_file) {
-    config <- list(data_class = "tokens",
-                   txt_header = "FALSE",
-                   txt_quote = "",
-                   txt_comment_char = "")
-    write_config(config, file)
-  }
   invisible(x)
 }
 

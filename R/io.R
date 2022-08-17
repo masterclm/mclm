@@ -49,7 +49,6 @@ read_txt <- function(file,
 #'
 #' @param x A character vector.
 #' @param file Name of the output file.
-#' @param file_encoding Encoding to be used in the output file.
 #' @param line_glue Character string to be used as end-of-line marker on disk
 #'   or `NA` for no end-of-line marker (so that `x` becomes a single line).
 #'
@@ -61,8 +60,8 @@ read_txt <- function(file,
 #' @inherit read_txt examples
 write_txt <- function(x,
                       file = "",
-                      file_encoding = "UTF-8",
                       line_glue = "\n") {
+  # TODO add encoding options
   if (! is.character(x) || length(x) == 0) {
     stop("argument 'x' must be a character vector of at least length one")
   }

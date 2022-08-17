@@ -905,7 +905,6 @@ read_fnames <- function(file,
 #'
 #' @param x Object of class [`fnames`].
 #' @param file Path to output file.
-#' @param make_config_file Boolean. Should a configuration file be created?
 #' @param ... Additional arguments (not implemented).
 #'
 #' @return Invisibly, `x`.
@@ -916,21 +915,15 @@ read_fnames <- function(file,
 #' @inherit read_fnames examples
 write_fnames <- function(x,
                          file,
-                         make_config_file = TRUE,
                          ...) {
+  # TODO reinstate make_config file and use with read_fnames
+  # TODO add encoding options?
   if (! "fnames" %in% class(x)) {
     stop("argument 'x' must be of the class 'fnames'")
   }
   # hide any real '#' that is actually part of a type
   x <- gsub('#', '<U+0023>', x, perl = TRUE) 
   readr::write_lines(x, file)
-  if (make_config_file) {
-    config <- list(data_class = "fnames",
-                   txt_header = "FALSE",
-                   txt_quote = "",
-                   txt_comment_char = "#")
-    write_config(config, file)
-  }
   invisible(x)
 }
 

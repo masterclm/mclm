@@ -4,7 +4,7 @@
 \alias{write_conc}
 \title{Write a concordance to file.}
 \usage{
-write_conc(x, file = "", sep = "\\t", file_encoding = "UTF-8")
+write_conc(x, file = "", sep = "\\t")
 }
 \arguments{
 \item{x}{Object of class \code{\link{conc}}.}
@@ -12,8 +12,6 @@ write_conc(x, file = "", sep = "\\t", file_encoding = "UTF-8")
 \item{file}{Path to output file.}
 
 \item{sep}{Field separator for the columns in the output file.}
-
-\item{file_encoding}{Encoding to be used in the output file.}
 }
 \value{
 Invisibly, \code{x}.

@@ -1617,7 +1617,6 @@ chisq1_to_p <- function(x) {
 #' @param x An object of class [`assoc_scores`].
 #' @param file Name of the output file.
 #' @param sep Field separator for the output file.
-#' @param file_encoding Encoding for the output file.
 #'
 #' @return Invisibly, `x`.
 #' @family writing functions
@@ -1642,8 +1641,8 @@ chisq1_to_p <- function(x) {
 #' }
 write_assoc <- function(x,
                         file = "",
-                        sep = "\t",
-                        file_encoding = "UTF-8") {
+                        sep = "\t") {
+  # TODO add encoding options
   if (nrow(x) > 0) {
     lines <- rownames(x)
     for (i in 1:ncol(x)) {

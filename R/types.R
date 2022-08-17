@@ -839,9 +839,6 @@ read_types <- function(file,
 #'
 #' @param x Object of class [`types`].
 #' @param file Name of the output file
-#' @param make_config_file Logical. Whether or not, next to the actual
-#'   types file, a second output file should be created containing a brief
-#'   description of the format of the types file.
 #' @param ... Additional arguments (not implemented).
 #'
 #' @return Invisibly, `x`.
@@ -852,21 +849,15 @@ read_types <- function(file,
 #' @inherit read_types examples
 write_types <- function(x,
                         file,
-                        make_config_file = TRUE,
                         ...) {
+  # TODO reinstate make_config file and use with read_types
+  # TODO add encoding options?
   if (! "types" %in% class(x)) {
     stop("argument 'x' must be of the class 'types'")
   }
   # hide any real '#' that is actually part of a type
   x <- gsub('#', '<U+0023>', x, perl = TRUE) 
   readr::write_lines(x, file)
-  if (make_config_file) {
-    config <- list(data_class = "types",
-                   txt_header = "FALSE",
-                   txt_quote = "",
-                   txt_comment_char = "#")
-    write_config(config, file)
-  }
   invisible(x)
 }
 

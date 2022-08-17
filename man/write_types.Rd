@@ -4,16 +4,12 @@
 \alias{write_types}
 \title{Write a vector of types to a text file}
 \usage{
-write_types(x, file, make_config_file = TRUE, ...)
+write_types(x, file, ...)
 }
 \arguments{
 \item{x}{Object of class \code{\link{types}}.}
 
 \item{file}{Name of the output file}
-
-\item{make_config_file}{Logical. Whether or not, next to the actual
-types file, a second output file should be created containing a brief
-description of the format of the types file.}
 
 \item{...}{Additional arguments (not implemented).}
 }

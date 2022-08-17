@@ -4,14 +4,12 @@
 \alias{write_fnames}
 \title{Write a collection of filenames to a text file}
 \usage{
-write_fnames(x, file, make_config_file = TRUE, ...)
+write_fnames(x, file, ...)
 }
 \arguments{
 \item{x}{Object of class \code{\link{fnames}}.}
 
 \item{file}{Path to output file.}
-
-\item{make_config_file}{Boolean. Should a configuration file be created?}
 
 \item{...}{Additional arguments (not implemented).}
 }

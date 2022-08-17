@@ -4,14 +4,12 @@
 \alias{write_txt}
 \title{Write a character vector to a text file}
 \usage{
-write_txt(x, file = "", file_encoding = "UTF-8", line_glue = "\\n")
+write_txt(x, file = "", line_glue = "\\n")
 }
 \arguments{
 \item{x}{A character vector.}
 
 \item{file}{Name of the output file.}
-
-\item{file_encoding}{Encoding to be used in the output file.}
 
 \item{line_glue}{Character string to be used as end-of-line marker on disk
 or \code{NA} for no end-of-line marker (so that \code{x} becomes a single line).}

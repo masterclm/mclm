@@ -4,7 +4,7 @@
 \alias{write_assoc}
 \title{Write association scores to file}
 \usage{
-write_assoc(x, file = "", sep = "\\t", file_encoding = "UTF-8")
+write_assoc(x, file = "", sep = "\\t")
 }
 \arguments{
 \item{x}{An object of class \code{\link{assoc_scores}}.}
@@ -12,8 +12,6 @@ write_assoc(x, file = "", sep = "\\t", file_encoding = "UTF-8")
 \item{file}{Name of the output file.}
 
 \item{sep}{Field separator for the output file.}
-
-\item{file_encoding}{Encoding for the output file.}
 }
 \value{
 Invisibly, \code{x}.

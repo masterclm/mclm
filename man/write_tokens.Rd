@@ -4,16 +4,12 @@
 \alias{write_tokens}
 \title{Write a \code{tokens} object to a text file}
 \usage{
-write_tokens(x, file, make_config_file = FALSE, ...)
+write_tokens(x, file, ...)
 }
 \arguments{
 \item{x}{An object of class \code{\link{tokens}}.}
 
 \item{file}{Name of the output file.}
-
-\item{make_config_file}{Logical. Whether, next to the actual tokens files,
-a second output file should be created containing a brief description of the
-format of the tokens file.}
 
 \item{...}{Additional arguments (not implemented).}
 }
