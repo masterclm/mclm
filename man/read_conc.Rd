@@ -41,4 +41,13 @@ write_conc(d, "example_data.tab")
 }
 \seealso{
 \code{\link[=import_conc]{import_conc()}} for reading files not generated with \code{\link[=write_conc]{write_conc()}}.
+
+Other reading functions: 
+\code{\link{read_assoc}()},
+\code{\link{read_fnames}()},
+\code{\link{read_freqlist}()},
+\code{\link{read_tokens}()},
+\code{\link{read_txt}()},
+\code{\link{read_types}()}
 }
+\concept{reading functions}

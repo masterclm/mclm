@@ -1620,6 +1620,7 @@ chisq1_to_p <- function(x) {
 #' @param file_encoding Encoding for the output file.
 #'
 #' @return Invisibly, `x`.
+#' @family writing functions
 #' @seealso [read_assoc()]
 #' @export
 #'
@@ -1669,6 +1670,7 @@ write_assoc <- function(x,
 #'
 #' @return An object of class [`assoc_scores`].
 #' @export
+#' @family reading functions
 #' @seealso [write_assoc()]
 #'
 #' @inherit write_assoc examples

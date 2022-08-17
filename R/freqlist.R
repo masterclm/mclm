@@ -1307,6 +1307,7 @@ freqlist_diff <- function(x, y) {
 #'
 #' @return Object of class [`freqlist`].
 #' @export
+#' @family reading functions
 #' @seealso [write_freqlist()]
 #'
 #' @examples
@@ -1363,6 +1364,7 @@ read_freqlist <- function(file,
 #'
 #' @return Invisibly, `x`.
 #' @export
+#' @family writing functions
 #' @seealso [read_freqlist()]
 #'
 #' @inherit read_freqlist examples

@@ -32,4 +32,13 @@ cwd_fnames_2 <- read_fnames("file_with_filenames.txt")
 }
 \seealso{
 \code{\link[=read_fnames]{read_fnames()}}
+
+Other writing functions: 
+\code{\link{write_assoc}()},
+\code{\link{write_conc}()},
+\code{\link{write_freqlist}()},
+\code{\link{write_tokens}()},
+\code{\link{write_txt}()},
+\code{\link{write_types}()}
 }
+\concept{writing functions}

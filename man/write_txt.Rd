@@ -38,4 +38,13 @@ y
 }
 \seealso{
 \code{\link[=read_txt]{read_txt()}}
+
+Other writing functions: 
+\code{\link{write_assoc}()},
+\code{\link{write_conc}()},
+\code{\link{write_fnames}()},
+\code{\link{write_freqlist}()},
+\code{\link{write_tokens}()},
+\code{\link{write_types}()}
 }
+\concept{writing functions}

@@ -1004,7 +1004,8 @@ plot.summary.tokens <- function(x, ...) {
 #' @param ... Additional arguments (not implemented).
 #'
 #' @return An object of class [`tokens`].
-#' @seealso [`write_tokens()`]
+#' @family reading functions
+#' @seealso [write_tokens()]
 #' @export
 #'
 #' @examples
@@ -1038,6 +1039,7 @@ read_tokens <- function(file,
 #' @param ... Additional arguments (not implemented).
 #'
 #' @return Invisibly, `x`.
+#' @family writing functions
 #' @seealso [read_tokens()]
 #' @inherit read_tokens examples
 write_tokens <- function(x,

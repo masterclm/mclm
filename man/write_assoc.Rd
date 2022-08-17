@@ -40,4 +40,13 @@ write_assoc(scores, "example_scores.tab")
 }
 \seealso{
 \code{\link[=read_assoc]{read_assoc()}}
+
+Other writing functions: 
+\code{\link{write_conc}()},
+\code{\link{write_fnames}()},
+\code{\link{write_freqlist}()},
+\code{\link{write_tokens}()},
+\code{\link{write_txt}()},
+\code{\link{write_types}()}
 }
+\concept{writing functions}

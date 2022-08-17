@@ -597,6 +597,7 @@ print_kwic <- function(x,
 #' @param ... Additional arguments, not implemented.
 #'
 #' @return Object of class [`conc`].
+#' @family reading functions
 #' @seealso [import_conc()] for reading files not generated with [write_conc()].
 #' @export
 #'
@@ -648,6 +649,7 @@ read_conc <- function(file,
 #'
 #' @return Invisibly, `x`.
 #' @export
+#' @family writing functions
 #' @seealso [read_conc()]
 #'
 #' @inherit read_conc examples

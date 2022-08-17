@@ -34,4 +34,13 @@ is written to a separate line. The file encoding that is used is
 }
 \seealso{
 \code{\link[=read_types]{read_types()}}
+
+Other writing functions: 
+\code{\link{write_assoc}()},
+\code{\link{write_conc}()},
+\code{\link{write_fnames}()},
+\code{\link{write_freqlist}()},
+\code{\link{write_tokens}()},
+\code{\link{write_txt}()}
 }
+\concept{writing functions}

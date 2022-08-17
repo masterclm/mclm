@@ -794,6 +794,7 @@ types_merge_all <- function(..., sort = FALSE) {
 #' @param ... Additional arguments (not implemented).
 #'
 #' @return Object of class [`types`].
+#' @family reading functions
 #' @seealso [write_types()]
 #' @export
 #'
@@ -844,6 +845,7 @@ read_types <- function(file,
 #' @param ... Additional arguments (not implemented).
 #'
 #' @return Invisibly, `x`.
+#' @family writing functions
 #' @seealso [read_types()]
 #' @export
 #'

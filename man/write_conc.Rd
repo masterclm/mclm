@@ -30,4 +30,13 @@ write_conc(d, "example_data.tab")
 }
 \seealso{
 \code{\link[=read_conc]{read_conc()}}
+
+Other writing functions: 
+\code{\link{write_assoc}()},
+\code{\link{write_fnames}()},
+\code{\link{write_freqlist}()},
+\code{\link{write_tokens}()},
+\code{\link{write_txt}()},
+\code{\link{write_types}()}
 }
+\concept{writing functions}

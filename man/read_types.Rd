@@ -55,4 +55,13 @@ the text file is assumed to contain one type on each line.
 }
 \seealso{
 \code{\link[=write_types]{write_types()}}
+
+Other reading functions: 
+\code{\link{read_assoc}()},
+\code{\link{read_conc}()},
+\code{\link{read_fnames}()},
+\code{\link{read_freqlist}()},
+\code{\link{read_tokens}()},
+\code{\link{read_txt}()}
 }
+\concept{reading functions}

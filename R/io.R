@@ -13,6 +13,7 @@
 #' @param ... Additional arguments (not implemented).
 #'
 #' @return A character vector.
+#' @family reading functions
 #' @seealso [write_txt()]
 #' @export
 #'
@@ -54,6 +55,7 @@ read_txt <- function(file,
 #'
 #' @return Invisibly, `x`.
 #' @export
+#' @family writing functions
 #' @seealso [read_txt()]
 #'
 #' @inherit read_txt examples

@@ -865,6 +865,7 @@ drop_fnames <- function(x, y, ...) {
 #'
 #' @return An object of class [`fnames`].
 #' @export
+#' @family reading functions
 #' @seealso [write_fnames()]
 #'
 #' @examples
@@ -909,6 +910,7 @@ read_fnames <- function(file,
 #'
 #' @return Invisibly, `x`.
 #' @export
+#' @family writing functions
 #' @seealso [read_fnames()]
 #'
 #' @inherit read_fnames examples

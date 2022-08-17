@@ -30,4 +30,13 @@ write_tokens(tks, "file_with_tokens.txt")
 }
 \seealso{
 \code{\link[=write_tokens]{write_tokens()}}
+
+Other reading functions: 
+\code{\link{read_assoc}()},
+\code{\link{read_conc}()},
+\code{\link{read_fnames}()},
+\code{\link{read_freqlist}()},
+\code{\link{read_txt}()},
+\code{\link{read_types}()}
 }
+\concept{reading functions}
