@@ -20,7 +20,7 @@ test_that("re_retrieve_first with group capture works", {
   expect_length(res, length(x))
   expect_equal(res[[1]], NA_character_)
   expect_equal(res[[4]], "n")
-  
+
   res_drop_na <- re_retrieve_first(x, pattern, drop_NA = TRUE,
                                    requested_group = 1)
   expect_length(res_drop_na, length(res[!is.na(res)]))
@@ -84,7 +84,7 @@ test_that("re_retrieve_all with group capture works", {
   res <- re_retrieve_all(x, pattern, requested_group = 1)
   expect_length(res, 4)
   expect_match(res[[1]], "n")
-  
+
   res_list <- re_retrieve_all(x, pattern, unlist = FALSE,
                               requested_group = 1)
   expect_length(res_list, length(x))
@@ -94,8 +94,6 @@ test_that("re_retrieve_all with group capture works", {
   
   purrr::walk2(unlist(res_list), res, expect_equal)
 })
-
-
 
 test_that("re_replace_ functions work", {
   res_first <- re_replace_first(x, "([oe].)", "{\\1}")
