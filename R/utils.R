@@ -1,14 +1,5 @@
 # Distance measures ============================================================
 
-#' Compute cosine distances
-#'
-#' @param x A matrix?
-#'
-#' @return Distances between row items of `x`.
-#' @noRd
-cosine_dist <- function(x) {
-  (1 - x %*% t(x) / (sqrt(rowSums(x^2) %*% t(rowSums(x^2)))))
-}
 
 # For slma() ===================================================================
 
