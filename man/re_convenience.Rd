@@ -174,22 +174,25 @@ all matches of \code{pattern}.
 }}
 \examples{
 x <- tokenize("This is a sentence with a couple of words in it.")
-pattern <- "[oe].(.)"
+pattern <- "[oe](.)(.)"
 
 re_retrieve_first(x, pattern)
 re_retrieve_first(x, pattern, drop_NA = TRUE)
 re_retrieve_first(x, pattern, requested_group = 1)
 re_retrieve_first(x, pattern, drop_NA = TRUE, requested_group = 1)
+re_retrieve_first(x, pattern, requested_group = 2)
 
 re_retrieve_last(x, pattern)
 re_retrieve_last(x, pattern, drop_NA = TRUE)
 re_retrieve_last(x, pattern, requested_group = 1)
 re_retrieve_last(x, pattern, drop_NA = TRUE, requested_group = 1)
+re_retrieve_last(x, pattern, requested_group = 2)
 
 re_retrieve_all(x, pattern)
 re_retrieve_all(x, pattern, unlist = FALSE)
 re_retrieve_all(x, pattern, requested_group = 1)
 re_retrieve_all(x, pattern, unlist = FALSE, requested_group = 1)
+re_retrieve_all(x, pattern, requested_group = 2)
 
 re_replace_first(x, "([oe].)", "{\\\\1}")
 re_replace_all(x, "([oe].)", "{\\\\1}")
