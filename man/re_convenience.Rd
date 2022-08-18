@@ -154,42 +154,45 @@ For some of the arguments (e.g. \code{perl}, \code{fixed}) the reader is directe
 }
 \section{Functions}{
 \itemize{
-\item \code{re_retrieve_first}: Retrieve from each item in \code{x} the first match
+\item \code{re_retrieve_first()}: Retrieve from each item in \code{x} the first match
 of \code{pattern}.
 
-\item \code{re_retrieve_last}: Retrieve from each item in \code{x}
+\item \code{re_retrieve_last()}: Retrieve from each item in \code{x}
 the last match of \code{pattern}.
 
-\item \code{re_retrieve_all}: Retrieve from each item in \code{x}
+\item \code{re_retrieve_all()}: Retrieve from each item in \code{x}
 all matches of \code{pattern}.
 
-\item \code{re_has_matches}: Simple wrapper around \code{\link[=grepl]{grepl()}}.
+\item \code{re_has_matches()}: Simple wrapper around \code{\link[=grepl]{grepl()}}.
 
-\item \code{re_which}: Simple wrapper around \code{\link[=grep]{grep()}}.
+\item \code{re_which()}: Simple wrapper around \code{\link[=grep]{grep()}}.
 
-\item \code{re_replace_first}: Simple wrapper around \code{\link[=sub]{sub()}}.
+\item \code{re_replace_first()}: Simple wrapper around \code{\link[=sub]{sub()}}.
 
-\item \code{re_replace_all}: Simple wrapper around \code{\link[=gsub]{gsub()}}.
+\item \code{re_replace_all()}: Simple wrapper around \code{\link[=gsub]{gsub()}}.
+
 }}
-
 \examples{
 x <- tokenize("This is a sentence with a couple of words in it.")
-pattern <- "[oe].(.)"
+pattern <- "[oe](.)(.)"
 
 re_retrieve_first(x, pattern)
 re_retrieve_first(x, pattern, drop_NA = TRUE)
 re_retrieve_first(x, pattern, requested_group = 1)
 re_retrieve_first(x, pattern, drop_NA = TRUE, requested_group = 1)
+re_retrieve_first(x, pattern, requested_group = 2)
 
 re_retrieve_last(x, pattern)
 re_retrieve_last(x, pattern, drop_NA = TRUE)
 re_retrieve_last(x, pattern, requested_group = 1)
 re_retrieve_last(x, pattern, drop_NA = TRUE, requested_group = 1)
+re_retrieve_last(x, pattern, requested_group = 2)
 
 re_retrieve_all(x, pattern)
 re_retrieve_all(x, pattern, unlist = FALSE)
 re_retrieve_all(x, pattern, requested_group = 1)
 re_retrieve_all(x, pattern, unlist = FALSE, requested_group = 1)
+re_retrieve_all(x, pattern, requested_group = 2)
 
 re_replace_first(x, "([oe].)", "{\\\\1}")
 re_replace_all(x, "([oe].)", "{\\\\1}")
