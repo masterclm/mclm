@@ -901,6 +901,7 @@ assoc_abcd <- function(a, b, c, d,
                        p_fisher_2 = FALSE,
                        haldane = TRUE,
                        small_pos = 0.00001) {
+  # TODO improve speed
   if (is.null(types) && length(a) > 0) {
     types <- as.character(seq_along(a))
     types <- paste0("t", stringi::stri_pad_left(types,

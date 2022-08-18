@@ -195,6 +195,7 @@ slma <- function(x,                                        # A corpus files
       b <- tnt_list[[i]] - a
       c <- freqs_list[[j]]
       d <- tnt_list[[j]] - c
+      # TODO adapt strategies to deal with zeros as assoc_abcd does
       ascores <- assoc_abcd(a, b, c, d,
                             small_pos = small_pos)
       mx_gsig[, mx_col_idx] <- ifelse(abs(ascores[["G_signed"]]) > sig_cutoff,

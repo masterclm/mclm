@@ -38,16 +38,7 @@ find_xpath <- function(pattern,
                        final_fun = NULL,
                        namespaces = NULL,
                        ...) {
-   # - x can be any of the following:
-   #      - a vector of filenames
-   #      - a character vector of XML source
-   #      - a list of parsed XML documents  
-   #  - asText, trim, ignoreBlanks=TRUE
-   #       - passed on the xmlParse
-   #       if x contains parsed XML documents,
-   #       then these arguments are ignored.
-   #  - ...
-   #       passed on to sapply
+   # TODO use xml2 instead of XML
    if (!is.vector(x)) {
       x <- list(x)
    }
