@@ -1,7 +1,7 @@
 # TODO test groups other than 1
 # TODO test useBytes = TRUE
 x <- tokenize("This is a sentence with a couple of words in it.")
-pattern <- "[oe].(.)"
+pattern <- "[oe](.)(.)"
 
 test_that("re_retrieve_first works", {
   res <- re_retrieve_first(x, pattern)
@@ -19,7 +19,7 @@ test_that("re_retrieve_first with group capture works", {
   res <- re_retrieve_first(x, pattern, requested_group = 1)
   expect_length(res, length(x))
   expect_equal(res[[1]], NA_character_)
-  expect_equal(res[[4]], "t")
+  expect_equal(res[[4]], "n")
   
   res_drop_na <- re_retrieve_first(x, pattern, drop_NA = TRUE,
                                    requested_group = 1)
@@ -44,10 +44,23 @@ test_that("re_retrieve_last with group capture works", {
   res <- re_retrieve_last(x, pattern, requested_group = 1)
   expect_length(res, length(x))
   expect_equal(res[[1]], NA_character_)
-  expect_equal(res[[4]], "c")
+  expect_equal(res[[4]], "n")
   
   res_drop_na <- re_retrieve_last(x, pattern, drop_NA = TRUE,
                                    requested_group = 1)
+  expect_length(res_drop_na, length(res[!is.na(res)]))
+  
+  purrr::walk2(res_drop_na, res[!is.na(res)], expect_equal)
+})
+
+test_that("re_retrieve_last with different group capture works", {
+  res <- re_retrieve_last(x, pattern, requested_group = 2)
+  expect_length(res, length(x))
+  expect_equal(res[[1]], NA_character_)
+  expect_equal(res[[4]], "c")
+  
+  res_drop_na <- re_retrieve_last(x, pattern, drop_NA = TRUE,
+                                  requested_group = 2)
   expect_length(res_drop_na, length(res[!is.na(res)]))
   
   purrr::walk2(res_drop_na, res[!is.na(res)], expect_equal)
@@ -70,7 +83,7 @@ test_that("re_retrieve_all works", {
 test_that("re_retrieve_all with group capture works", {
   res <- re_retrieve_all(x, pattern, requested_group = 1)
   expect_length(res, 4)
-  expect_match(res[[1]], "t")
+  expect_match(res[[1]], "n")
   
   res_list <- re_retrieve_all(x, pattern, unlist = FALSE,
                               requested_group = 1)
@@ -81,6 +94,8 @@ test_that("re_retrieve_all with group capture works", {
   
   purrr::walk2(unlist(res_list), res, expect_equal)
 })
+
+
 
 test_that("re_replace_ functions work", {
   res_first <- re_replace_first(x, "([oe].)", "{\\1}")
