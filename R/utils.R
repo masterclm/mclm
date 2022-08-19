@@ -24,74 +24,7 @@ adhoc_sum <- function(x) {
   }
 }
 
-# string manipulation functions ================================================
-
-#' Remove spaces from character string
-#'
-#' @param x Character string.
-#' @param remove_leading Whether to remove leading spaces.
-#' @param remove_trailing Wheather to remove trailing spaces.
-#'
-#' @return Character string
-#' @noRd
-cleanup_spaces <- function(x,
-                           remove_leading = TRUE,
-                           remove_trailing = TRUE) {
-  x <- gsub("\\s+", " ", x, perl = TRUE)
-  if (remove_leading) {
-    x <- gsub("^[ ]", "", x, perl = TRUE)
-  }
-  if (remove_trailing) {
-    x <- gsub("[ ]$", "", x, perl = TRUE)
-  }
-  x
-}
-
-#' Drop XML tags from character string
-#' 
-#' Called by print_kwic()
-#' @param x String with xml tag
-#' @param half_tags_too Logical. Whether tags with only opening/closing
-#'   bracket should also be removed.
-#' @return Character string
-#' @noRd
-drop_tags <- function(x, half_tags_too = TRUE) {
-   if (half_tags_too) {
-      x <- gsub("^[^<]*>|<[^>]*>|<[^>]*$", "", x, perl = TRUE)
-   } else {
-      x <- gsub("<[^>]*>", "", x, perl = TRUE)
-   }
-   x
-}
-
-# Repeat a string and paste
-rep_str <- function(x, n) {
-  paste(rep(x, n), collapse = "")
-}
-
-#' Add left padding
-#' 
-#' Motivation: stringr::str_pad and string::stri_pad_left appear to mess up in
-#' certain contexts, e.g.
-#'   `Sys.setlocale(category = "LC_ALL", locale = "Greek")`
-#'   `stringr::str_pad(c("Λορεμ", "ιπσθμ", "δολορ", "σιτ", "αμετ"), 20)`
-#'
-#' @param x Character string
-#' @param width Desired width of complete text
-#' @param pad Character to use for padding
-#' @param nchar_x Number of characters of text. If `NULL`, `nchar(x)`.
-#'
-#' @return Character string with left padding.
-#' @noRd
-mclm_pad_left <- function(x, width, pad = " ", nchar_x = NULL) {
-  if (is.null(nchar_x)) {
-    nchar_x <- nchar(x)
-  }
-  len_needed <- pmax(0, width - nchar_x)
-  paste0(unlist(Map(rep_str, rep(pad, length(x)), len_needed)), x)
-}
-
-# unicode related issues =======================================================
+# Unicode related issues =======================================================
 
 # Called by read_fnames() and read_types()
 restore_unicode <- function(x) {
@@ -99,11 +32,7 @@ restore_unicode <- function(x) {
   stringi::stri_unescape_unicode(x)
 }
 
-to_utf8 <- function(x) {
-  stringi::stri_encode(x, "UTF-8")
-}
-
-# matrix manipulation functions ================================================
+# Matrix manipulation functions ================================================
 
 #' Drop empty rows and columns from a matrix
 #' 
@@ -157,7 +86,7 @@ drop_empty_rc <- function(x) {
   x[rowSums(x) > 0, colSums(x) > 0, drop = FALSE]
 }
 
-# console related functions ====================================================
+# Verbose functions ============================================================
 
 # Print to console to indicate progress in slma()
 cat_if_verbose <- function(x, verbose = TRUE) {
@@ -176,43 +105,7 @@ show_dot <- function(show_dots = FALSE) {
   invisible(show_dots)
 }
 
-## adapted from http://conjugateprior.org/2015/06/identifying-the-os-from-r/
-##
-## Different sources of information:
-##     .Platform["OS.type"]   ## e.g. "windows"
-##                            ##      "unix" (ook op mac)
-##                            ##      "unix" (ook in Ubuntu terminal)
-##                            ##      "unix" (ook in ssh terminal naar r2d2)
-##     .Platform["GUI"]       ## e.g. "RStudio" (op alle OSen)
-##                            ##      "Rgui"  (default R GUI on Windows)
-##                            ##      "AQUA" (R.app on macOS)
-##                            ##      "X11" (Terminal op Mac)
-##                            ##      "X11" (Terminal op Ubuntu)
-##                            ##      "X11" (ssh terminal naar r2d2)
-##     R.version["os"]        ## e.g. "mingw32"
-##                            ##      "os darwin13.4.0"
-##                            ##      "os linux-gnu" 
-##     Sys.info()["sysname"]  ## e.g. "Windows"
-##                            ##      "Darwin"
-##                            ##      "Linux"
-
-## system("clear") works in macOS Terminal and in Ubuntu Terminal
-
-get_os <- function(){
-  sysinf <- Sys.info()
-  if (!is.null(sysinf)){
-    os <- sysinf['sysname']
-    if (os == 'Darwin')
-      os <- "macOS"
-  } else { 
-    os <- .Platform$OS.type
-    if (grepl("^darwin", R.version$os))
-      os <- "macOS"
-    if (grepl("linux-gnu", R.version$os))
-      os <- "linux"
-  }
-  tolower(os)
-}
+## Functions for explore() methods =============================================
 
 char_line <- function(char = "_", width = NULL, EOL = TRUE) {
   if (is.null(width)) {
@@ -225,7 +118,6 @@ char_line <- function(char = "_", width = NULL, EOL = TRUE) {
   line
 }
 
-# Called by explore() methods
 clear_console <- function() {
   if (Sys.getenv("RSTUDIO_USER_IDENTITY") != "") {
     cat('\f')       ## OK in RStudio on Windows, macOS en Ubuntu
@@ -236,21 +128,6 @@ clear_console <- function() {
   invisible(NULL)
 }
 
-# Called by print() methods
-mclm_style_very_dim <- function(x) {
-  crayon::style(x, as = grDevices::rgb(0.7, 0.7, 0.7), bg = NULL)
-}
-
-# Called by print() and explore() methods
-mclm_style_dim <- function(x) {
-  crayon::silver(x)
-}
-
-mclm_style_inverse <- function(x) {
-  crayon::inverse(x)
-}
-
-# Called by explore() methods
 settings <- function(...) {
   result <- new.env(parent = emptyenv())
   args <- list(...)
@@ -262,57 +139,95 @@ settings <- function(...) {
   result
 }
 
-apply_styles <- function(x, styles) {
-  ## - x must be a character vector
-  ## - styles must be a data frame with four columns,
-  ##   viz. styles$from, styles$to, styles$as, and styles$bg. The values in
-  ##   styles$from and styles$to identify non-empty areas in x. It must
-  ##   always be the case that styles$from is smaller than styles$to.
-  ##   The values in styles$as and styles$bg can either be the name of a
-  ##   style or the value NA. These values will be used as argument for
-  ##   crayon::style(string, as = NULL, bg = NULL). NA values will be turned
-  ##   into NULL before handing them over to crayon::style().
-  ## - There are two additional assumptions related to the rows in styles:
-  ##   (i)   be sorted by list(styles$from, styles$to)
-  ##   (ii)  describe areas that never overlap partially; i.e. two areas
-  ##         either do not overlap at all, or, if they do overlap, then one
-  ##         of the two areas must be completely nested in the other one.
-  if (nrow(styles) == 0) {
-    return(x)
-  } else {
-    ## -- analyse current style, i.e. styles[1, ], and remove it from styles
-    cur_from   <- styles$from[1]
-    cur_to     <- styles$to[1]
-    cur_as     <- styles$as[1]; if (is.na(cur_as)) cur_as <- NULL 
-    cur_bg     <- styles$bg[1]; if (is.na(cur_bg)) cur_bg <- NULL  
-    styles     <- styles[-1, , drop = FALSE]
-    ## -- process area before current style area
-    x_before   <- substr(x, 1, cur_from - 1)
-    ## -- process area to which current style applies
-    x_inside   <- substr(x, cur_from, cur_to)
-    styles_inside_bool <- styles$from <= cur_to 
-    styles_inside  <- styles[styles_inside_bool, , drop = FALSE]
-    if (nrow(styles_inside) > 0) {
-      styles_inside$from <- styles_inside$from - cur_from + 1
-      styles_inside$to   <- styles_inside$to - cur_from + 1
-      x_inside <- apply_styles(x_inside, styles_inside)
-    }
-    x_inside <- crayon::style(x_inside, as = cur_as, bg = cur_bg)
-    ## -- process area after current style area
-    x_after <- substr(x, cur_to + 1, nchar(x))    
-    styles_after_bool <- styles$from > cur_to 
-    styles_after  <- styles[styles_after_bool, , drop = FALSE]
-    if (nrow(styles_after) > 0) {
-      styles_after$from  <- styles_after$from - cur_to
-      styles_after$to    <- styles_after$to - cur_to
-      x_after <- apply_styles(x_after, styles_after)
-    }
-    ## -- return result
-    return(paste0(x_before, x_inside, x_after))
-  }
+## Functions for (also) print() methods ========================================
+
+mclm_style_very_dim <- function(x) {
+  crayon::style(x, as = grDevices::rgb(0.7, 0.7, 0.7), bg = NULL)
 }
 
-# Used by print methods
+mclm_style_dim <- function(x) {
+  crayon::silver(x)
+}
+
+#' Add left padding
+#' 
+#' Motivation: stringr::str_pad and string::stri_pad_left appear to mess up in
+#' certain contexts, e.g.
+#'   `Sys.setlocale(category = "LC_ALL", locale = "Greek")`
+#'   `stringr::str_pad(c("Λορεμ", "ιπσθμ", "δολορ", "σιτ", "αμετ"), 20)`
+#'
+#' @param x Character string
+#' @param width Desired width of complete text
+#' @param pad Character to use for padding
+#' @param nchar_x Number of characters of text. If `NULL`, `nchar(x)`.
+#'
+#' @return Character string with left padding.
+#' @noRd
+mclm_pad_left <- function(x, width, pad = " ", nchar_x = NULL) {
+  if (is.null(nchar_x)) {
+    nchar_x <- nchar(x)
+  }
+  len_needed <- pmax(0, width - nchar_x)
+  paste0(unlist(Map(rep_str, rep(pad, length(x)), len_needed)), x)
+}
+
+#' Apply styles to string
+#' 
+#' This function is called by [show_matches()].
+#'
+#' @param x Character vector
+#' @param styles Dataframe with four columns: `from`, `to`, `as` and `bg`.
+#'   The values in `from` and `to` identify non-empty areas in `x`: `from` must
+#'   always be smaller than `to`.
+#'   The values in `as` and `bg` can either be the name of a style or `NA` - in
+#'   the former case they will be used as argument for [crayon::style()]; `NA`
+#'   values will be turned to `NULL` before providing them to [crayon::style()].
+#'   
+#'   In addition, the rows should be sorted by `list(styles$from, styles$to)` and
+#'   describe areas that never overlap partially: either they don't overlap at
+#'   all or they are completely nested.
+#'
+#' @return Styled character vector
+#' @noRd
+apply_styles <- function(x, styles) {
+  if (nrow(styles) == 0) {
+    return(x)
+  }
+  ## -- analyse current style, i.e. styles[1, ], and remove it from styles
+  cur_from   <- styles$from[1]
+  cur_to     <- styles$to[1]
+  cur_as     <- styles$as[1]; if (is.na(cur_as)) cur_as <- NULL 
+  cur_bg     <- styles$bg[1]; if (is.na(cur_bg)) cur_bg <- NULL  
+  styles     <- styles[-1, , drop = FALSE]
+  
+  ## -- process area before current style area
+  x_before   <- substr(x, 1, cur_from - 1)
+  
+  ## -- process area to which current style applies
+  x_inside   <- substr(x, cur_from, cur_to)
+  styles_inside_bool <- styles$from <= cur_to 
+  styles_inside  <- styles[styles_inside_bool, , drop = FALSE]
+  
+  if (nrow(styles_inside) > 0) {
+    styles_inside$from <- styles_inside$from - cur_from + 1
+    styles_inside$to   <- styles_inside$to - cur_from + 1
+    x_inside <- apply_styles(x_inside, styles_inside)
+  }
+  x_inside <- crayon::style(x_inside, as = cur_as, bg = cur_bg)
+  
+  ## -- process area after current style area
+  x_after <- substr(x, cur_to + 1, nchar(x))    
+  styles_after_bool <- styles$from > cur_to 
+  styles_after  <- styles[styles_after_bool, , drop = FALSE]
+  if (nrow(styles_after) > 0) {
+    styles_after$from  <- styles_after$from - cur_to
+    styles_after$to    <- styles_after$to - cur_to
+    x_after <- apply_styles(x_after, styles_after)
+  }
+  ## -- return result
+  paste0(x_before, x_inside, x_after)
+}
+
 show_matches <- function(x, pattern, ...) {
   matches <- stringr::str_locate_all(x, pattern)
   styles <- lapply(matches, function(x) {
@@ -323,4 +238,54 @@ show_matches <- function(x, pattern, ...) {
                                               length = nrow(x)),
                                      bg = rep(NA, length = nrow(x))) })
   unlist(Map(apply_styles, x, styles))
+}
+
+#' Remove spaces from character string
+#'
+#' @param x Character string.
+#' @param remove_leading Whether to remove leading spaces.
+#' @param remove_trailing Wheather to remove trailing spaces.
+#'
+#' @return Character string
+#' @noRd
+cleanup_spaces <- function(x,
+                           remove_leading = TRUE,
+                           remove_trailing = TRUE) {
+  x <- gsub("\\s+", " ", x, perl = TRUE)
+  if (remove_leading) {
+    x <- gsub("^[ ]", "", x, perl = TRUE)
+  }
+  if (remove_trailing) {
+    x <- gsub("[ ]$", "", x, perl = TRUE)
+  }
+  x
+}
+
+#' Drop XML tags from character string
+#' 
+#' Called by print_kwic()
+#' @param x String with xml tag
+#' @param half_tags_too Logical. Whether tags with only opening/closing
+#'   bracket should also be removed.
+#' @return Character string
+#' @noRd
+drop_tags <- function(x, half_tags_too = TRUE) {
+  if (half_tags_too) {
+    x <- gsub("^[^<]*>|<[^>]*>|<[^>]*$", "", x, perl = TRUE)
+  } else {
+    x <- gsub("<[^>]*>", "", x, perl = TRUE)
+  }
+  x
+}
+
+#' Repeat a string and paste
+#' 
+#' Used by [mclm_pad_left()].
+#' 
+#' @param x Character string
+#' @param n Times to repeat
+#' @return Character string
+#' @noRd
+rep_str <- function(x, n) {
+  paste(rep(x, n), collapse = "")
 }
