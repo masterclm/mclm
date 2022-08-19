@@ -969,7 +969,6 @@ write_tokens <- function(x,
 #' @param ... Objects of class [`tokens`] or a list with objects of class [`tokens`]. 
 #'
 #' @return An object of class [`tokens`].
-#' @export
 #' @name merge_tokens
 #'
 #' @examples
@@ -980,6 +979,9 @@ write_tokens <- function(x,
 #' tokens_merge(tks1, tks2)
 #' tokens_merge_all(tks1, tks2, tks3)
 #' tokens_merge_all(list(tks1, tks2, tks3))
+
+#' @rdname merge_tokens
+#' @export
 tokens_merge <- function(x, y) {
   if ((!"tokens" %in% class(x)) || (!"tokens" %in% class(y))) {
     stop("both x and y must be of the class 'tokens'")

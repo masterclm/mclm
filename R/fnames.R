@@ -680,14 +680,15 @@ n_fnames <- function(x, ...) {
 #' @return An object of class [`fnames`].
 #' @name merge_fnames
 #' 
-#' @export
-#'
 #' @examples
 #' cwd_fnames <- as_fnames(c("file1.txt", "file2.txt"))
 #' cwd_fnames2 <- as_fnames(c("dir1/file3.txt", "dir1/file4.txt"))
 #' cwd_fnames3 <- as_fnames(c("dir2/file5.txt", "dir2/file6.txt"))
 #' fnames_merge(cwd_fnames, cwd_fnames2)
 #' fnames_merge_all(cwd_fnames, cwd_fnames2, cwd_fnames3)
+
+#' @rdname merge_fnames
+#' @export
 fnames_merge <- function(x, y, sort = FALSE) {
   if ((!"fnames" %in% class(x)) || (!"fnames" %in% class(y))) {
     stop("both x and y must be of the class 'fnames'")
