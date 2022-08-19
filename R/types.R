@@ -717,7 +717,7 @@ plot.summary.types <- function(x, ...) {
 #' @param sort Logical. Should the results be sorted.
 #'
 #' @return An object of the class [`types`].
-#' @name types_merge
+#' @name merge_types
 #'
 #' @examples
 #' (tps1 <- as_types(c("a", "simple", "simple", "example")))
@@ -729,7 +729,7 @@ plot.summary.types <- function(x, ...) {
 #' types_merge_all(list(tps1, tps2, tps3))
 NULL
 
-#' @describeIn types_merge Merge two types
+#' @describeIn merge_types Merge two types
 #' @export
 types_merge <- function(x, y, sort = FALSE) {
   if ((!"types" %in% class(x)) || (!"types" %in% class(y))) {
@@ -738,7 +738,7 @@ types_merge <- function(x, y, sort = FALSE) {
   types_merge_two(x, y, sort = sort)
 }  
 
-#' @describeIn types_merge Merge multiple types
+#' @describeIn merge_types Merge multiple types
 #' @export
 types_merge_all <- function(..., sort = FALSE) {
   arg_list <- list(...)
