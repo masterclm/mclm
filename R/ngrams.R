@@ -1,7 +1,3 @@
-# TODO: Some of the functions below either (i) will have to be 'translated'...
-#    from a 'for-loop' approach to an 'lapply' approach or (ii) will have to be
-#    adapted so that they use mutable objects (e.g. environments).
-
 list_paste <- function(x, sep = "_") {
   if (length(x) == 0) {
     character(0)
@@ -18,44 +14,50 @@ list_paste_open <- function(x,
                             open_pos = numeric(0),
                             open = "[]") {
   if (length(x) == 0) {
-    character(0)
-  } else {
-    if (first_pos %in% open_pos) {
-      car <- rep(open, length(x[[1]]))
-    } else {
-      car <- x[[1]]
-    }
-    if (length(x) == 1) {
-      car
-    } else {
-      paste(car,
-            list_paste_open(x[-1], first_pos = first_pos + 1, sep = sep,
-                            open_pos = open_pos, open = open),
-            sep = sep)
-      
-    }
+    return(character(0))
   }
+  if (first_pos %in% open_pos) {
+    car <- rep(open, length(x[[1]]))
+  } else {
+    car <- x[[1]]
+  }
+  
+  if (length(x) == 1) {
+    return(car)
+  }
+  
+  paste(car,
+        list_paste_open(x[-1], first_pos = first_pos + 1, sep = sep,
+                        open_pos = open_pos, open = open),
+        sep = sep)
 }
 
+#' Get indices of open positions
+#' 
+#' @param ngram_size Size of the n-gram
+#' @param n_open Number of open slots
+#' 
+#' @return List of numeric vectors with open slot positions
+#' @noRd
 build_open_pos <- function(ngram_size, n_open) {
   result <- list()
   if ((n_open > 0) && (ngram_size - n_open > 1)) {
-    result <- as.list(2:(ngram_size - n_open))
+    result <- as.list(2:(ngram_size - n_open)) # get possible first slots
     n_open <- n_open - 1
   }
-  if (length(result) > 0) {
-    while (n_open > 0) {
-      old_result <- result
-      result <- list()
-      for (item in old_result) {
-        last <- item[length(item)]
-        for (i in (last + 1):(ngram_size - n_open)) {
-          result[[length(result) + 1]] <- c(item, i)
-        }
-      }
-      n_open <- n_open - 1
-    }
+  if (length(result) == 0) {
+    return(result)
   }
+  
+  while (n_open > 0) {
+    result <- lapply(result, function(item) {
+      last <- item[length(item)]
+      lapply((last+1):(ngram_size-n_open), function(x) c(item, x))
+    })
+    result <- unlist(result, recursive = FALSE)
+    n_open <- n_open - 1
+  }
+  
   result
 }
 
@@ -76,35 +78,33 @@ build_ngrams <- function(x,
                          sep = "_",
                          n_open = 0,
                          open = "[]") {
-  result <- character(0)
-  if (length(x) >= ngram_size) {
-    # -- skipgrams --
-    if (max_skip > 0) {
-      result <- skipgrams(x, ngram_size = ngram_size,
-                          max_skip = max_skip, sep = sep) 
-      # -- regular ngrams --
-    } else {
-      parts <- vector(mode = "list", length = ngram_size)
-      for (i in 1:ngram_size) {
-        parts[[i]] <- x[i:(i + length(x) - ngram_size)]
-      }
-      # -- without open slots --
-      if (n_open == 0) {
-        result <- list_paste(parts, sep = sep)
-        # -- with open slots --
-      } else {
-        open_pos_list <- build_open_pos(ngram_size, n_open)
-        for (open_pos in open_pos_list) {
-          result <- c(result,
-                      list_paste_open(parts,
-                                      open_pos = open_pos,
-                                      sep = sep,
-                                      open = open))
-        }
-      }
-    }
+  if (length(x) < ngram_size) {
+    return(character(0))
   }
-  result
+  
+  if (max_skip > 0) {
+    result <- skipgrams(x, ngram_size = ngram_size, max_skip = max_skip, sep = sep)
+    return(result)
+  }
+  
+  get_parts <- function(x, i, ngram_size) {
+    x[i:(i + length(x) - ngram_size)]
+  }
+  parts <- lapply(seq(ngram_size), get_parts, x = x, ngram_size = ngram_size)
+  
+  if (n_open == 0) {
+    return(list_paste(parts, sep = sep))
+  }
+  
+  open_pos_list <- build_open_pos(ngram_size, n_open)
+  if (length(open_pos_list) == 0) {
+    return(character(0))
+  }
+  
+  result <- lapply(open_pos_list, function(open_pos) {
+    list_paste_open(parts, open_pos = open_pos, sep = sep, open = open)
+  })
+  unlist(result)
 }
 
 #' Build skipgrams
