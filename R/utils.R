@@ -240,14 +240,23 @@ show_matches <- function(x, pattern, ...) {
   unlist(Map(apply_styles, x, styles))
 }
 
-#' Remove spaces from character string
+#' Clean up the use of whitespace in a character vector
+#' 
+#' The function [cleanup_spaces()] takes a character vector and input and turns
+#' any uninterrupted stretch of whitespace characters into one single space character.
+#' Moreover, it can also *remove* leading whitespace and trailing whitespace.
 #'
-#' @param x Character string.
-#' @param remove_leading Whether to remove leading spaces.
-#' @param remove_trailing Wheather to remove trailing spaces.
+#' @param x Character vector.
+#' @param remove_leading Logical. If `TRUE`, leading whitespace will be removed.
+#' @param remove_trailing Logical. If `TRUE`, trailing whitespace will be removed.
 #'
-#' @return Character string
-#' @noRd
+#' @return A character vector.
+#' @export
+#'
+#' @examples
+#' txt <- "  A \\t  small      example \\n with redundant whitespace    "
+#' cleanup_spaces(txt)
+#' cleanup_spaces(txt, remove_leading = FALSE, remove_trailing = FALSE)
 cleanup_spaces <- function(x,
                            remove_leading = TRUE,
                            remove_trailing = TRUE) {
