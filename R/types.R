@@ -141,9 +141,6 @@ as_types <- function(x,
 #' @exportS3Method n_types types
 #' @export
 n_types.types <- function(x, ...) {
-  if (! "types" %in% class(x)) {
-    stop("argument 'x' must be of the class 'types'")
-  }
   without_duplicates <- length(table(x))
   with_duplicates <- length(x)
   if (without_duplicates < with_duplicates) {
@@ -276,10 +273,6 @@ drop_pos.types <- function(x, pos, ...) {
 #' @exportS3Method keep_pos types
 #' @export
 keep_pos.types <- function(x, pos, invert = FALSE, ...) {
-  # -- test and process argument 'x'
-  if (!"types" %in% class(x)) {
-    stop("x must be of class 'types'")
-  }
   # -- test and process argument 'pos'
   if (missing(pos) || is.null(pos)) {
     pos <- vector(mode = "numeric", length = 0)
@@ -296,28 +289,24 @@ keep_pos.types <- function(x, pos, invert = FALSE, ...) {
   }
   # -- build result
   if (length(x) == 0) {
-    result <- x
-  } else {
-    pos <- trunc(pos)
-    any_pos <- any(pos >= 1)
-    any_neg <- any(pos <= -1)
-    if (any_pos && any_neg) {
-      stop("values in pos must be either all positive or all negative")          
-    }
-    if (any_neg) {
-      invert <- !invert
-      pos <- abs(pos)
-    }
-    mtch <- pos[pos >= 1 & pos <= length(x)]
-    mtch <- mtch[!is.na(mtch)] # remove NAs
-    if (invert) {
-      mtch <- setdiff(1:length(x), mtch)
-    }
-    # create result  
-    result <- subset_types(x, mtch)
+    return(x)
   }
-  # return result
-  result
+  pos <- trunc(pos)
+  any_pos <- any(pos >= 1)
+  any_neg <- any(pos <= -1)
+  if (any_pos && any_neg) {
+    stop("values in pos must be either all positive or all negative")          
+  }
+  if (any_neg) {
+    invert <- !invert
+    pos <- abs(pos)
+  }
+  mtch <- pos[pos >= 1 & pos <= length(x)]
+  mtch <- mtch[!is.na(mtch)] # remove NAs
+  if (invert) {
+    mtch <- setdiff(1:length(x), mtch)
+  }
+  subset_types(x, mtch)
 }
 
 #' @rdname keep_types
@@ -335,10 +324,6 @@ drop_types.types <- function(x, types, ...) {
 #' @exportS3Method keep_types types
 #' @export
 keep_types.types <- function(x, types, invert = FALSE, ...) {
-  # -- test and process argument 'x'
-  if (!"types" %in% class(x)) {
-    stop("x must be of class 'types'")
-  }
   # -- test and process argument 'types'
   types <- as.character(types) # turns NULL into character(0)
   types <- types[!is.na(types)]
@@ -378,10 +363,6 @@ drop_re.types <- function(x, pattern, perl = TRUE, ...) {
 #' @exportS3Method keep_re types
 #' @export
 keep_re.types <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
-  # -- test and process argument 'x'
-  if (!"types" %in% class(x)) {
-    stop("x must be of class 'types'")
-  }
   # -- test pattern for errors (and process pattern if it's an 're' object)
   if ("re" %in% class(pattern)) {
     perl <- perl_flavor(pattern)  # perl_flavor(pattern) overrules perl
@@ -450,10 +431,6 @@ drop_bool.types <- function(x, bool, ...) {
 #' @exportS3Method keep_bool types
 #' @export
 keep_bool.types <- function(x, bool, invert = FALSE, ...) {
-  # -- test and process argument 'x'
-  if (!"types" %in% class(x)) {
-    stop("x must be of class 'types'")
-  }
   # -- test and process argument 'bool'
   if (is.null(bool)) stop("bool must not be NULL")
   if (!is.logical(bool)) stop("bool must be a logical vector")
@@ -484,9 +461,6 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
 #' @exportS3Method `[` types
 #' @export
 `[.types` <- function(x, i, invert = FALSE, ...) {
-  if (!"types" %in% class(x)) {
-    stop("subsetted object must be of class 'types'")
-  }
   result <- x
   if (!missing(i) && !is.null(i)) {
     if (any(is.na(i))) {
@@ -576,10 +550,6 @@ print.types <- function(x,
                         sort_order = c("none", "alpha"),
                         extra = NULL,
                         ...) {
-  # testing and processing argument 'x'
-  if (!"types" %in% class(x)) {
-    stop("x must be of the class 'types'")
-  }
   n_types <- length(x)
   # testing and processing argument 'n'
   if (length(n) == 0) {
@@ -672,9 +642,6 @@ print.types <- function(x,
 #' @exportS3Method summary types
 #' @export
 summary.types <- function(object, ...) {
-  if (! "types" %in% class(object)) {
-    stop("argument 'object' must be of the class 'types'")
-  }
   result <- list()
   result$n_items <- length(object)
   result$n_unique_items <- length(table(object))
@@ -685,9 +652,6 @@ summary.types <- function(object, ...) {
 #' @exportS3Method print summary.types
 #' @export
 print.summary.types <- function(x, ...) {
-  if (!"summary.types" %in% class(x)) {
-    stop("argument 'x' must be of the class 'summary.types'")
-  }
   cat("Type collection of length ",
       x$n_items,
       "\n",
