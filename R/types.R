@@ -336,16 +336,13 @@ keep_types.types <- function(x, types, invert = FALSE, ...) {
   }  
   # build result
   if (length(x) == 0) {
-    result <- x
-  } else {
-    mtch <- !is.na(match(x, types)) # we avoid x_ranks[types] and x[types]
-    if (invert) {
-      mtch <- !mtch
-    }
-    result <- subset_types(x, mtch)
+    return(x)
   }
-  # return result
-  result
+  mtch <- !is.na(match(x, types)) # we avoid x_ranks[types] and x[types]
+  if (invert) {
+    mtch <- !mtch
+  }
+  return(subset_types(x, mtch))
 }
 
 #' @rdname keep_re
@@ -400,20 +397,16 @@ keep_re.types <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   if (length(invert) > 1) {
     warning("invert contains multiple items; only invert[1] is used")
   }
-  # -- build result
+  
   if (length(x) == 0) {
-    result <- x
-  } else {
-    sel <- grep(pattern[1], x, perl = perl[1], invert = invert[1])
-    # create result
-    if (length(sel) == 0) {
-      result <- as_types(character(0))
-    } else {
-      result <- subset_types(x, sel)
-    }
+    return(x)
   }
-  # return result
-  result
+  sel <- grep(pattern[1], x, perl = perl[1], invert = invert[1])
+  
+  if (length(sel) == 0) {
+      return(as_types(character(0)))
+  }
+  subset_types(x, sel)
 }
 
 #' @rdname keep_bool
@@ -449,50 +442,44 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
   if (invert[1]) bool <- !bool
   # create result
   if (length(x) == 0) {
-    result <- x
-  } else {  
-    result <- subset_types(x, bool)
+    return(x)
   }
-  # return result
-  result
+  return(subset_types(x, bool))
 }
 
 #' @rdname brackets
 #' @exportS3Method `[` types
 #' @export
 `[.types` <- function(x, i, invert = FALSE, ...) {
-  result <- x
-  if (!missing(i) && !is.null(i)) {
-    if (any(is.na(i))) {
-      stop("subset criterion must not contain any NAs")
-    }    
-    if (is.numeric(i) || is.integer(i)) {
-      i <- i[!is.na(i)]
-      if (length(i) > 0) {
-        i <- trunc(i)
-        any_pos <- any(i >= 1)
-        any_neg <- any(i <= -1)
-        if (any_pos && any_neg) {
-          stop("subsetting indices must be either all positive or all negative")          
-        }
-        if (any_neg) {
-          invert <- !invert
-          i <- abs(i)
-        }
-        result <- keep_pos(x, i, invert = invert, ...)
-      } 
-    } else if ("types" %in% class(i)) {
-      result <- keep_types(x, i, invert = invert, ...)
-    } else if ("character" %in% class(i)) {
-      result <- keep_types(x, i, invert = invert, ...)
-    } else if ("re" %in% class(i)) {
-      result <- keep_re(x, i, invert = invert, ...)
-    } else if (is.logical(i)) {
-      i <- i[!is.na(i)]
-      result <- keep_bool(x, i, invert = invert, ...) 
-    } else {
-      stop("unsupported type of subset criterion")
-    }
+  if (missing(i) || is.null(i)) {
+    return(x)
+  }
+  if (is.numeric(i) || is.integer(i)) {
+    i <- i[!is.na(i)]
+    if (length(i) > 0) {
+      i <- trunc(i)
+      any_pos <- any(i >= 1)
+      any_neg <- any(i <= -1)
+      if (any_pos && any_neg) {
+        stop("subsetting indices must be either all positive or all negative")          
+      }
+      if (any_neg) {
+        invert <- !invert
+        i <- abs(i)
+      }
+      result <- keep_pos(x, i, invert = invert, ...)
+    } 
+  } else if ("types" %in% class(i)) {
+    result <- keep_types(x, i, invert = invert, ...)
+  } else if ("character" %in% class(i)) {
+    result <- keep_types(x, i, invert = invert, ...)
+  } else if ("re" %in% class(i)) {
+    result <- keep_re(x, i, invert = invert, ...)
+  } else if (is.logical(i)) {
+    i <- i[!is.na(i)]
+    result <- keep_bool(x, i, invert = invert, ...) 
+  } else {
+    stop("unsupported type of subset criterion")
   }
   result
 }
@@ -562,6 +549,7 @@ print.types <- function(x,
     stop("inappropriate value for n")
   }
   n <- max(0, round(n))
+  
   # testing and processing argument 'from'
   if (length(from) == 0) {
     stop("from must be a numeric vector of length one")
@@ -575,6 +563,7 @@ print.types <- function(x,
   from <- max(1, round(from))
   # adjusting 'n' to 'from'
   n <- max(0, min(n, n_types - from + 1))
+  
   # testing and processing argument 'sort_order'
   if (is.null(sort_order)  ||
       is.na(sort_order[1]) ||
@@ -593,6 +582,7 @@ print.types <- function(x,
   if (!is.null(extra) && !is.environment(extra)) {
     stop("incorrect use of the argument 'extra'")
   }  
+  
   # printing 'x'
   cat(mclm_style_dim(paste0(
     "Type collection of length ",
@@ -604,7 +594,7 @@ print.types <- function(x,
                            format(idx, scientify = FALSE, 
                                   justify = "right")), 
                          justify = "right")    
-    # we don't use format() [problems with unicode !]
+    # NOTE we don't use format() [problems with unicode !]
     # nor do we use stringi::stri_pad_left [hickups with greek and Set.locale]
     nchar_types <- nchar(types)
     if (!is.null(extra$type_regex)) {
@@ -642,9 +632,10 @@ print.types <- function(x,
 #' @exportS3Method summary types
 #' @export
 summary.types <- function(object, ...) {
-  result <- list()
-  result$n_items <- length(object)
-  result$n_unique_items <- length(table(object))
+  result <- list(
+    n_items = length(object),
+    n_unique_items = length(table(object))
+  )
   class(result) <- "summary.types"
   result
 }
