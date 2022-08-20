@@ -210,6 +210,11 @@ test_that("subsetting methods throw errors", {
   
   expect_error(tps[c(1, -1)])
   expect_error(tps[list('a', 'b')])
+  
+  expect_error(drop_pos(tps, invert = TRUE))
+  expect_error(drop_types(tps, invert = TRUE))
+  expect_error(drop_re(tps, invert = TRUE))
+  expect_error(drop_bool(tps, invert = TRUE))
 })
 
 # Merging ====
@@ -228,4 +233,6 @@ test_that("merging works", {
   
   expect_error(types_merge(tps, chr))
   expect_error(types_merge(tps, as_types(chr), as_types(c("another", "word"))))
+  expect_error(types_merge_all(tps, chr))
+  
 })

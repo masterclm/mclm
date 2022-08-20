@@ -258,36 +258,6 @@ as_freqlist <- function(x, tot_n_tokens = NULL, sort_by_ranks = TRUE) {
 
 # S3 methods from mclm =========================================================
 
-#' @rdname n_tokens
-#' @exportS3Method n_tokens freqlist
-#' @export
-n_tokens.freqlist <- function(x, ...) {
-  if (! "freqlist" %in% class(x)) {
-    stop("argument 'x' must be of the class 'freqlist'")
-  }
-  sum(x)
-}  
-
-#' @rdname n_types
-#' @exportS3Method n_types freqlist
-#' @export
-n_types.freqlist <- function(x, ...) {
-  if (! "freqlist" %in% class(x)) {
-    stop("argument 'x' must be of the class 'freqlist'")
-  }
-  length(x)
-}
-
-#' @rdname type_names
-#' @exportS3Method type_names freqlist
-#' @export
-type_names.freqlist <- function(x, ...) {
-  if (! "freqlist" %in% class(x)) {
-    stop("argument 'x' must be of the class 'freqlist'")
-  }
-  names(x)
-}
-
 #' @rdname explore
 #' @exportS3Method explore freqlist
 #' @export
@@ -396,11 +366,31 @@ explore.freqlist <- function(x,
 
 ## Setters and getters ---------------------------------------------------------
 
+#' @rdname n_tokens
+#' @exportS3Method n_tokens freqlist
+#' @export
+n_tokens.freqlist <- function(x, ...) {
+  sum(x)
+}  
+
+#' @rdname n_types
+#' @exportS3Method n_types freqlist
+#' @export
+n_types.freqlist <- function(x, ...) {
+  length(x)
+}
+
+#' @rdname type_names
+#' @exportS3Method type_names freqlist
+#' @export
+type_names.freqlist <- function(x, ...) {
+  names(x)
+}
+
 #' @rdname tot_n_tokens
 #' @exportS3Method `tot_n_tokens<-` freqlist
 #' @export
 `tot_n_tokens<-.freqlist` <- function(x, value) {
-  if (!"freqlist" %in% class(x)) stop("x must be of class 'freqlist'")
   if (is.null(value)) stop("value must not be NULL")
   if (length(value) == 0) stop("length of value must not be zero")
   if (length(value) > 1) warning("value too long; only value[1] is used")
@@ -408,6 +398,8 @@ explore.freqlist <- function(x,
   if (!is.numeric(value[1])) stop("value must be numeric")
   value <- round(value[1])
   if (value < 0) stop("value must not be negative")
+  if (value < n_tokens(x)) stop("value must be at least as high as the total number of tokens")
+  # QUESTION shouldn't there be a check that it's not lower than the current n_tokens?
   attr(x, 'tot_n_tokens') <- value
   x
 }
@@ -416,7 +408,6 @@ explore.freqlist <- function(x,
 #' @exportS3Method tot_n_tokens freqlist
 #' @export
 tot_n_tokens.freqlist <- function(x) {
-  if (!"freqlist" %in% class(x)) stop("x must be of class 'freqlist'")
   attr(x, 'tot_n_tokens')
 }
 
@@ -424,7 +415,6 @@ tot_n_tokens.freqlist <- function(x) {
 #' @exportS3Method `orig_ranks<-` freqlist
 #' @export
 `orig_ranks<-.freqlist` <- function(x, value) {
-  if (!"freqlist" %in% class(x)) stop("x must be of class 'freqlist'")  
   if (!is.null(value)) stop("value must be NULL")
   attr(x, 'orig_ranks') <- value
   x
@@ -434,7 +424,6 @@ tot_n_tokens.freqlist <- function(x) {
 #' @exportS3Method orig_ranks freqlist
 #' @export
 orig_ranks.freqlist <- function(x, with_names = FALSE, ...) {
-  if (!"freqlist" %in% class(x)) stop("x must be of class 'freqlist'")
   result <- attr(x, 'orig_ranks')
   if (!is.null(result) && with_names) {
     names(result) <- type_names(x)
@@ -446,7 +435,6 @@ orig_ranks.freqlist <- function(x, with_names = FALSE, ...) {
 #' @exportS3Method ranks freqlist
 #' @export
 ranks.freqlist <- function(x, with_names = FALSE, ...) {
-  if (!"freqlist" %in% class(x)) stop("x must be of class 'freqlist'")
   # ranks are by decreasing frequency first, and by alphabetic order
   # for the frequency ties
   freqs <- type_freqs(x)
@@ -484,10 +472,6 @@ drop_types.freqlist <- function(x, types, ...) {
 #' @exportS3Method keep_pos freqlist
 #' @export
 keep_types.freqlist <- function(x, types, invert = FALSE, ...) {
-  # -- test and process argument 'x'
-  if (!"freqlist" %in% class(x)) {
-    stop("x must be of class 'freqlist'")
-  }
   # -- test and process argument 'types'
   types <- as.character(types) # turns NULL into character(0)
   types <- types[!is.na(types)]
@@ -500,33 +484,32 @@ keep_types.freqlist <- function(x, types, invert = FALSE, ...) {
   }  
   # -- build result  
   if (length(x) == 0) {
-    result <- x
-  } else {  
-    # prepare creation of result
-    mtch <- match(types, names(x)) # we avoid x_ranks[types] and x[types]
-    if (invert) {
-      mtch <- setdiff(1:length(x), mtch)
-    }
-    if (length(mtch) == 0) {
-      result <- freqlist("", as_text = TRUE)
-      attr(result, "tot_n_tokens") <- attr(x, "tot_n_tokens")
-    } else if (invert) { # simple case, no doubles or missing cases
-      result <- subset_freqlist(x, mtch)
-    } else { # more complicated case, can contain doubles or missing cases
-      tot_n_tokens <- attr(x, "tot_n_tokens")
-      x_ranks <- attr(x, "orig_ranks")
-      if (is.null(x_ranks)) x_ranks <- ranks(x)
-      result_orig_ranks <- x_ranks[mtch]
-      # create result
-      result <- type_freqs(x)[mtch]
-      result[is.na(result)] <- 0
-      names(result) <- types # assigns clean names (cf. missing/double cases)
-      class(result) <- c("freqlist", "table")  
-      attr(result, "tot_n_tokens") <- tot_n_tokens
-      attr(result, "orig_ranks") <- result_orig_ranks
-    }
+    return(x)
   }
-  # return result
+   
+  mtch <- match(types, names(x)) # we avoid x_ranks[types] and x[types]
+  if (invert) {
+    mtch <- setdiff(1:length(x), mtch)
+  }
+  
+  if (length(mtch) == 0) {
+    result <- freqlist("", as_text = TRUE)
+    attr(result, "tot_n_tokens") <- attr(x, "tot_n_tokens")
+  } else if (invert) { # simple case, no doubles or missing cases
+    result <- subset_freqlist(x, mtch)
+  } else { # more complicated case, can contain doubles or missing cases
+    tot_n_tokens <- attr(x, "tot_n_tokens")
+    x_ranks <- attr(x, "orig_ranks")
+    if (is.null(x_ranks)) x_ranks <- ranks(x)
+    result_orig_ranks <- x_ranks[mtch]
+    # create result
+    result <- type_freqs(x)[mtch]
+    result[is.na(result)] <- 0
+    names(result) <- types # assigns clean names (cf. missing/double cases)
+    class(result) <- c("freqlist", "table")  
+    attr(result, "tot_n_tokens") <- tot_n_tokens
+    attr(result, "orig_ranks") <- result_orig_ranks
+  }
   result
 }
 
@@ -545,10 +528,6 @@ drop_re.freqlist <- function(x, pattern, perl = TRUE, ...) {
 #' @exportS3Method keep_re freqlist
 #' @export
 keep_re.freqlist <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
-  # -- test x for errors
-  if (!"freqlist" %in% class(x)) {
-    stop("x must be of class 'freqlist'")
-  }
   # -- test pattern for errors (and process pattern if it's an 're' object)
   if ("re" %in% class(pattern)) {
     perl <- perl_flavor(pattern)  # perl_flavor(pattern) overrules perl
@@ -588,17 +567,17 @@ keep_re.freqlist <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   }
   # build result
   if (n_types(x) == 0) {
-    result <- x
-  } else {  
-    # prepare creation of result
-    sel <- grep(pattern[1], type_names(x), perl = perl[1], invert = invert[1])
-    if (length(sel) == 0) {
-      result <- freqlist("", as_text = TRUE)
-      attr(result, "tot_n_tokens") <- attr(x, "tot_n_tokens")
-    } else {
-      result <- subset_freqlist(x, sel)
-    }
+    return(x)
   }
+  # prepare creation of result
+  sel <- grep(pattern[1], type_names(x), perl = perl[1], invert = invert[1])
+  if (length(sel) == 0) {
+    result <- freqlist("", as_text = TRUE)
+    attr(result, "tot_n_tokens") <- attr(x, "tot_n_tokens")
+  } else {
+    result <- subset_freqlist(x, sel)
+  }
+  
   # return result
   result
 }
@@ -826,8 +805,6 @@ sort.freqlist <- function(x,
                                         "orig_ranks", "freqs"),
                           na_last = TRUE,
                           ...) {
-  # testing x argument
-  if (!"freqlist" %in% class(x)) stop("x must be of class 'freqlist'")  
   # testing decreasing argument
   if (is.null(decreasing)) stop("decreasing must not be NULL")
   if (is.na(decreasing[1])) stop("decreasing[1] must not be NA")
@@ -878,9 +855,6 @@ as.data.frame.freqlist <- function(x,
                                    row.names = NULL,
                                    optional = FALSE,
                                    ...) {
-  if (!"freqlist" %in% class(x)) {
-    stop("x must be of class 'freqlist'")
-  }
   ranks <- ranks(x)
   result <- list(rank = as.numeric(ranks))
   if (!is.null(attr(x, "orig_ranks"))) {
@@ -901,9 +875,6 @@ as.data.frame.freqlist <- function(x,
 #' @exportS3Method tibble::as_tibble freqlist
 #' @export
 as_tibble.freqlist <- function(x, ...) {
-  if (!"freqlist" %in% class(x)) {
-    stop("x must be of class 'freqlist'")
-  }
   ranks <- ranks(x)
   result <- tibble(rank = as.numeric(ranks))
   if (!is.null(attr(x, "orig_ranks"))) {
@@ -937,10 +908,6 @@ print.freqlist <- function(x,
                            n = 20, from = 1,
                            extra = NULL,
                            ...) {
-  # testing and processing argument 'x'
-  if (!"freqlist" %in% class(x)) {
-    stop("x must be of the class 'freqlist'")
-  }
   n_types <- length(x)
   n_tokens <- sum(x)
   tot_n_tokens <- tot_n_tokens(x)
@@ -1081,13 +1048,11 @@ print.freqlist <- function(x,
 #' @export
 #' @exportS3Method summary freqlist
 summary.freqlist <- function(object, ...) {
-  if (! "freqlist" %in% class(object)) {
-    stop("argument 'object' must be of the class 'freqlist'")
-  }
-  result <- list()
-  result$n_types <- n_types(object)
-  result$n_tokens <- n_tokens(object)
-  result$tot_n_tokens <- tot_n_tokens(object)
+  result <- list(
+    n_types = n_types(object),
+    n_tokens = n_tokens(object),
+    tot_n_tokens = tot_n_tokens(object)
+  )
   class(result) <- "summary.freqlist"
   result
 }
@@ -1149,6 +1114,7 @@ plot.summary.freqlist <- function(x, ...) {
 #'
 #' @return Numeric vector representing the frequencies of the items.
 #' @export
+#' @seealso type_names
 #'
 #' @examples
 #' (flist <- freqlist("The man and the mouse.", as_text = TRUE))
@@ -1253,7 +1219,6 @@ freqlist_merge_all <- function(...) {
 #' This function merges information from two frequency lists, subtracting the frequencies found
 #' in the second frequency lists from the frequencies found in the first list.
 #'
-#'
 #' @param x,y Objects of class [`freqlist`].
 #'
 #' @return An object of class [`freqlist`].
@@ -1265,17 +1230,28 @@ freqlist_merge_all <- function(...) {
 #' 
 #' freqlist_diff(flist1, flist2)
 freqlist_diff <- function(x, y) {
+  if ((!"freqlist" %in% class(x)) || (!"freqlist" %in% class(y))) {
+    stop("both x and y must be of the class 'freqlist'")
+  }
   names <- dplyr::union(names(x), names(y))
   tot_n_tokens_x <- attr(x, "tot_n_tokens")
   tot_n_tokens_y <- attr(y, "tot_n_tokens")
   # we avoid x[names] (and y[names]) because it is painfully slow
   # so we use the far more efficient x[match(names, names(x))] etc.
-  x_new <- as.numeric(x)[match(names, names(x))]; x_new[is.na(x_new)] <- 0
-  y_new <- as.numeric(y)[match(names, names(y))]; y_new[is.na(y_new)] <- 0
+  x_new <- as.numeric(x)[match(names, names(x))]
+  x_new[is.na(x_new)] <- 0
+  
+  y_new <- as.numeric(y)[match(names, names(y))]
+  y_new[is.na(y_new)] <- 0
+  
   result <- pmax(x_new - y_new, 0)
   names(result) <- names
   class(result) <- class(x) <- c("freqlist", "table")
-  attr(result, "tot_n_tokens") <- max(tot_n_tokens_x - tot_n_tokens_y, 0)
+  # CHANGED way of computing new tot_n_tokens in case y is a subset
+  attr(result, "tot_n_tokens") <- max(c(
+    tot_n_tokens_x - tot_n_tokens_y,
+    tot_n_tokens_x - n_tokens(y),
+    0))
   attr(result, "orig_ranks") <- NULL  
   as_freqlist(result)
 }

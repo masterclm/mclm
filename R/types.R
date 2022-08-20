@@ -706,6 +706,8 @@ types_merge_all <- function(..., sort = FALSE) {
       result_car <- car
     } else if (is.list(car) && length(car) > 0) {
       result_car <- do.call("types_merge_all", car)
+    } else {
+      stop("Items must be of class 'types' or list of 'types'.")
     }
   }   
   # -- processing cdr --

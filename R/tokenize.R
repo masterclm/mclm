@@ -176,74 +176,68 @@ tokenize <- function(
     ngram_n_open = 0,
     ngram_open = "[]") {
   if (is.null(x) || length(x) == 0) {
-    tokens <- vector(mode = "character", length = 0)
-  } else {
-    if ("TextDocument" %in% class(x)) {
-      x <- as.character(x)
-    } else  if (!is.character(x)) {
-      x <- as.character(x)
-    }
-    x <- x[complete.cases(x)]
-    if (length(x) == 0) {
-      tokens <- vector(mode = "character", length = 0)
-    }
+    return(as_tokens(vector(mode = "character", length = 0)))
   }
-  if (!is.null(x) && length(x) > 0) {
-    # -- process ngram_size and ngram_sep --
-    if (!is.null(ngram_size) && !is.na(ngram_size[[1]])) {
-      if (!is.numeric(ngram_size)) {
-        stop("ngram_size must be either NA or a numeric value")
-      }
-      if (is.null(ngram_sep) || !is.character(ngram_sep[[1]])) {
-        stop("ngram_sep must be a length one character vector")
-      }    
+  if ("TextDocument" %in% class(x) || (!is.character(x))) {
+    x <- as.character(x)
+  }
+  x <- x[complete.cases(x)]
+  
+  
+  # -- process ngram_size and ngram_sep --
+  if (!is.null(ngram_size) && !is.na(ngram_size[[1]])) {
+    if (!is.numeric(ngram_size)) {
+      stop("ngram_size must be either NA or a numeric value")
     }
-    # (further) split into lines --
-    x <- unlist(strsplit(x, split = "\n"))
-    # drop lines if needed --
-    if (!is.null(re_drop_line) && !is.na(re_drop_line[[1]])) {
-      x <- x[grep(re_drop_line[[1]], x, perl = perl, invert = TRUE)]
-    }
-    # paste lines in long line if needed --
-    if (!is.null(line_glue) && !is.na(line_glue[[1]])) {
-      x <- paste(x, collapse = line_glue[[1]])
-    }
-    # drop uninterestion regions if needed --
-    if (!is.null(re_cut_area) && !is.na(re_cut_area[[1]])) {
-      x <- gsub(re_cut_area[[1]], "", x, perl = perl)
-    }
-    # identify tokens --
-    if (!is.null(re_token_splitter) && !is.na(re_token_splitter[[1]])) {
-      tokens <- unlist(strsplit(x, re_token_splitter[[1]], perl = perl))
-    } else {
-      m <- gregexpr(re_token_extractor[[1]], x, perl = perl)
-      tokens <- unlist(regmatches(x, m))
-    }
-    # -- drop tokens if needed --
-    if (!is.null(re_drop_token) && !is.na(re_drop_token[[1]])) {
-      tokens <- tokens[grep(re_drop_token[[1]], tokens,
-                            perl = perl, invert = TRUE)]
-    }
-    # transform tokens if needed --
-    if (!is.null(re_token_transf_in) && !is.na(re_token_transf_in[[1]])) {
-      tokens <- gsub(re_token_transf_in[[1]], token_transf_out[[1]],
-                     tokens, perl = perl)
-    }
-    # tokens to lower if needed --
-    if (token_to_lower) {
-      tokens <- tolower(tokens)
-    }
-    # drop length zero tokens --
-    tokens <- tokens[nchar(tokens) > 0]
-    # -- handle ngram_size --
-    if (!is.null(ngram_size) && !is.na(ngram_size[[1]])) {
-      tokens <- build_ngrams(tokens,
-                             ngram_size = ngram_size[[1]],
-                             max_skip = max_skip,
-                             sep = ngram_sep,
-                             n_open = ngram_n_open,
-                             open = ngram_open)
-    }
+    if (is.null(ngram_sep) || !is.character(ngram_sep[[1]])) {
+      stop("ngram_sep must be a length one character vector")
+    }    
+  }
+  # (further) split into lines --
+  x <- unlist(strsplit(x, split = "\n"))
+  # drop lines if needed --
+  if (!is.null(re_drop_line) && !is.na(re_drop_line[[1]])) {
+    x <- x[grep(re_drop_line[[1]], x, perl = perl, invert = TRUE)]
+  }
+  # paste lines in long line if needed --
+  if (!is.null(line_glue) && !is.na(line_glue[[1]])) {
+    x <- paste(x, collapse = line_glue[[1]])
+  }
+  # drop uninteresting regions if needed --
+  if (!is.null(re_cut_area) && !is.na(re_cut_area[[1]])) {
+    x <- gsub(re_cut_area[[1]], "", x, perl = perl)
+  }
+  # identify tokens --
+  if (!is.null(re_token_splitter) && !is.na(re_token_splitter[[1]])) {
+    tokens <- unlist(strsplit(x, re_token_splitter[[1]], perl = perl))
+  } else {
+    m <- gregexpr(re_token_extractor[[1]], x, perl = perl)
+    tokens <- unlist(regmatches(x, m))
+  }
+  # -- drop tokens if needed --
+  if (!is.null(re_drop_token) && !is.na(re_drop_token[[1]])) {
+    tokens <- tokens[grep(re_drop_token[[1]], tokens,
+                          perl = perl, invert = TRUE)]
+  }
+  # transform tokens if needed --
+  if (!is.null(re_token_transf_in) && !is.na(re_token_transf_in[[1]])) {
+    tokens <- gsub(re_token_transf_in[[1]], token_transf_out[[1]],
+                   tokens, perl = perl)
+  }
+  # tokens to lower if needed --
+  if (token_to_lower) {
+    tokens <- tolower(tokens)
+  }
+  # drop length zero tokens --
+  tokens <- tokens[nchar(tokens) > 0]
+  # -- handle ngram_size --
+  if (!is.null(ngram_size) && !is.na(ngram_size[[1]])) {
+    tokens <- build_ngrams(tokens,
+                           ngram_size = ngram_size[[1]],
+                           max_skip = max_skip,
+                           sep = ngram_sep,
+                           n_open = ngram_n_open,
+                           open = ngram_open)
   }
   
   as_tokens(tokens)
@@ -291,9 +285,6 @@ as_tokens <- function(x, ...) {
 #' @exportS3Method n_tokens tokens
 #' @export
 n_tokens.tokens <- function(x, ...) {
-  if (! "tokens" %in% class(x)) {
-    stop("argument 'x' must be of the class 'tokens'")
-  }
   length(x)
 }  
 
@@ -301,9 +292,6 @@ n_tokens.tokens <- function(x, ...) {
 #' @exportS3Method n_types tokens
 #' @export
 n_types.tokens <- function(x, ...) {
-  if (! "tokens" %in% class(x)) {
-    stop("argument 'x' must be of the class 'tokens'")
-  }
   length(table(x))
 }  
 
@@ -311,9 +299,6 @@ n_types.tokens <- function(x, ...) {
 #' @exportS3Method as_character tokens
 #' @export
 as_character.tokens <- function(x, ...) {
-  if (!"tokens" %in% class(x)) {
-    stop("x must be of the class 'tokens'")
-  }
   result <- x
   class(result) <- "character"
   result
@@ -433,10 +418,6 @@ trunc_at.tokens <- function(x, pattern,
                             last_match = FALSE, 
                             from_end = FALSE,
                             ...) {
-  # -- test and process argument 'x'
-  if (!"tokens" %in% class(x)) {
-    stop("x must be of class 'tokens'")
-  }
   # -- test and process argument 'pattern'
   if (missing(pattern) || is.null(pattern)) {
     stop("pattern must not be unspecified")
@@ -447,23 +428,21 @@ trunc_at.tokens <- function(x, pattern,
   # -- build result
   if ((length(x) == 0) || 
       (length(as_character(pattern)) == 0)) {
-    result <- x
-  } else {
-    if (from_end) { x <- rev(x) }
-    matches <- grep(as_character(pattern), 
-                    x, 
-                    perl_flavor(pattern))
-    if (length(matches) > 0) {
-      pos <- matches[1]
-      if (last_match) {pos <- matches[length(matches)]}
-      if (!keep_this) {pos <- pos - 1}
-      x <- keep_pos(x, pmin(1, pos):pos)
-    }
-    if (from_end) { x <- rev(x) }
-    result <- x
+    return(x)
   }
-  # return result
-  result
+  if (from_end) { x <- rev(x) }
+  matches <- grep(as_character(pattern), 
+                  x, 
+                  perl_flavor(pattern))
+  if (length(matches) > 0) {
+    pos <- matches[1]
+    if (last_match) {pos <- matches[length(matches)]}
+    if (!keep_this) {pos <- pos - 1}
+    x <- keep_pos(x, pmin(1, pos):pos)
+  }
+  if (from_end) { x <- rev(x) }
+  result <- x
+
 }
 
 
@@ -484,10 +463,6 @@ drop_pos.tokens <- function(x, pos, ...) {
 #' @exportS3Method keep_pos tokens
 #' @export
 keep_pos.tokens <- function(x, pos, invert = FALSE, ...) {
-  # -- test and process argument 'x'
-  if (!"tokens" %in% class(x)) {
-    stop("x must be of class 'tokens'")
-  }
   # -- test and process argument 'pos'
   if (missing(pos) || is.null(pos)) {
     pos <- vector(mode = "numeric", length = 0)
@@ -504,28 +479,25 @@ keep_pos.tokens <- function(x, pos, invert = FALSE, ...) {
   }
   # -- build result
   if (length(x) == 0) {
-    result <- x
-  } else {
-    pos <- trunc(pos)
-    any_pos <- any(pos >= 1)
-    any_neg <- any(pos <= -1)
-    if (any_pos && any_neg) {
-      stop("values in pos must be either all positive or all negative")          
-    }
-    if (any_neg) {
-      invert <- !invert
-      pos <- abs(pos)
-    }
-    mtch <- pos[pos >= 1 & pos <= length(x)]
-    mtch <- mtch[!is.na(mtch)] # remove NAs
-    if (invert) {
-      mtch <- setdiff(1:length(x), mtch)
-    }
-    # create result  
-    result <- subset_tokens(x, mtch)
+    return(x)
   }
-  # return result
-  result
+  pos <- trunc(pos)
+  any_pos <- any(pos >= 1)
+  any_neg <- any(pos <= -1)
+  if (any_pos && any_neg) {
+    stop("values in pos must be either all positive or all negative")          
+  }
+  if (any_neg) {
+    invert <- !invert
+    pos <- abs(pos)
+  }
+  mtch <- pos[pos >= 1 & pos <= length(x)]
+  mtch <- mtch[!is.na(mtch)] # remove NAs
+  if (invert) {
+    mtch <- setdiff(1:length(x), mtch)
+  }
+  # create result  
+  subset_tokens(x, mtch)
 }
 
 #' @rdname keep_types
@@ -543,10 +515,6 @@ drop_types.tokens <- function(x, types, ...) {
 #' @exportS3Method keep_types tokens
 #' @export
 keep_types.tokens <- function(x, types, invert = FALSE, ...) {
-  # -- test and process argument 'x'
-  if (!"tokens" %in% class(x)) {
-    stop("x must be of class 'tokens'")
-  }
   # -- test and process argument 'types'
   types <- as.character(types) # turns NULL into character(0)
   types <- types[!is.na(types)]
@@ -559,18 +527,15 @@ keep_types.tokens <- function(x, types, invert = FALSE, ...) {
   }  
   # build result
   if (length(x) == 0) {
-    result <- x
-  } else {  
-    # prepare creation of result
-    mtch <- !is.na(match(x, types)) # we avoid x_ranks[types] and x[types]
-    if (invert) {
-      mtch <- !mtch
-    }
-    # create result  
-    result <- subset_tokens(x, mtch)
+    return(x)
   }
-  # return result
-  result
+  # prepare creation of result
+  mtch <- !is.na(match(x, types)) # we avoid x_ranks[types] and x[types]
+  if (invert) {
+    mtch <- !mtch
+  }
+  # create result  
+  subset_tokens(x, mtch)
 }
 
 #' @rdname keep_re
@@ -588,10 +553,6 @@ drop_re.tokens <- function(x, pattern, perl = TRUE, ...) {
 #' @exportS3Method keep_re tokens
 #' @export
 keep_re.tokens <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
-  # -- test and process argument 'x'
-  if (!"tokens" %in% class(x)) {
-    stop("x must be of class 'tokens'")
-  }
   # -- test pattern for errors (and process pattern if it's an 're' object)
   if ("re" %in% class(pattern)) {
     perl <- perl_flavor(pattern)  # perl_flavor(pattern) overrules perl
@@ -631,18 +592,15 @@ keep_re.tokens <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   }
   # -- build result
   if (length(x) == 0) {
-    result <- x
-  } else {
-    sel <- grep(pattern[1], x, perl = perl[1], invert = invert[1])
-    # create result
-    if (length(sel) == 0) {
-      result <- tokenize(vector(mode = "character", length = 0))
-    } else {
-      result <- subset_tokens(x, sel)
-    }
+    return(x)
   }
-  # return result
-  result
+  sel <- grep(pattern[1], x, perl = perl[1], invert = invert[1])
+  # create result
+  if (length(sel) == 0) {
+    return(tokenize(vector(mode = "character", length = 0)))
+  } else {
+    return(subset_tokens(x, sel))
+  }
 }
 
 #' @rdname keep_bool
@@ -660,10 +618,6 @@ drop_bool.tokens <- function(x, bool, ...) {
 #' @exportS3Method keep_bool tokens
 #' @export
 keep_bool.tokens <- function(x, bool, invert = FALSE, ...) {
-  # -- test and process argument 'x'
-  if (!"tokens" %in% class(x)) {
-    stop("x must be of class 'tokens'")
-  }
   # -- test and process argument 'bool'
   if (is.null(bool)) stop("bool must not be NULL")
   if (!is.logical(bool)) stop("bool must be a logical vector")
@@ -682,53 +636,47 @@ keep_bool.tokens <- function(x, bool, invert = FALSE, ...) {
   if (invert[1]) bool <- !bool
   # create result
   if (length(x) == 0) {
-    result <- x
-  } else {  
-    result <- subset_tokens(x, bool)
+    return(x)
   }
-  # return result
-  result
+  subset_tokens(x, bool)
 }
 
 #' @rdname brackets
 #' @exportS3Method `[` tokens
 #' @export
 `[.tokens` <- function(x, i, invert = FALSE, ...) {
-  if (!"tokens" %in% class(x)) {
-    stop("subsetted object must be of class 'tokens'")
+  if (missing(i) || is.null(i)) {
+    return(x)
   }
-  result <- x
-  if (!missing(i) && !is.null(i)) {
-    if (any(is.na(i))) {
-      stop("subset criterion must not contain any NAs")
-    }    
-    if (is.numeric(i) || is.integer(i)) {
-      i <- i[!is.na(i)]
-      if (length(i) > 0) {
-        i <- trunc(i)
-        any_pos <- any(i >= 1)
-        any_neg <- any(i <= -1)
-        if (any_pos && any_neg) {
-          stop("subsetting indices must be either all positive or all negative")          
-        }
-        if (any_neg) {
-          invert <- !invert
-          i <- abs(i)
-        }
-        result <- keep_pos(x, i, invert = invert, ...)
-      } 
-    } else if ("types" %in% class(i)) {
-      result <- keep_types(x, i, invert = invert, ...)
-    } else if ("character" %in% class(i)) {
-      result <- keep_types(x, i, invert = invert, ...)
-    } else if ("re" %in% class(i)) {
-      result <- keep_re(x, i, invert = invert, ...)
-    } else if (is.logical(i)) {
-      i <- i[!is.na(i)]
-      result <- keep_bool(x, i, invert = invert, ...) 
-    } else {
-      stop("unsupported type of subset criterion")
-    }
+  if (any(is.na(i))) {
+    stop("subset criterion must not contain any NAs")
+  }    
+  if (is.numeric(i) || is.integer(i)) {
+    i <- i[!is.na(i)]
+    if (length(i) > 0) {
+      i <- trunc(i)
+      any_pos <- any(i >= 1)
+      any_neg <- any(i <= -1)
+      if (any_pos && any_neg) {
+        stop("subsetting indices must be either all positive or all negative")          
+      }
+      if (any_neg) {
+        invert <- !invert
+        i <- abs(i)
+      }
+      result <- keep_pos(x, i, invert = invert, ...)
+    } 
+  } else if ("types" %in% class(i)) {
+    result <- keep_types(x, i, invert = invert, ...)
+  } else if ("character" %in% class(i)) {
+    result <- keep_types(x, i, invert = invert, ...)
+  } else if ("re" %in% class(i)) {
+    result <- keep_re(x, i, invert = invert, ...)
+  } else if (is.logical(i)) {
+    i <- i[!is.na(i)]
+    result <- keep_bool(x, i, invert = invert, ...) 
+  } else {
+    stop("unsupported type of subset criterion")
   }
   result
 }
@@ -737,10 +685,6 @@ keep_bool.tokens <- function(x, bool, invert = FALSE, ...) {
 #' @exportS3Method `[<-` tokens
 #' @export
 `[<-.tokens` <- function(x, i, invert = FALSE, ..., value) {
-  # -- test argument 'x'
-  if (!"tokens" %in% class(x)) {
-    stop("subsetted object must be of class 'tokens'")
-  }
   # -- test and process argument 'invert'
   if (is.null(invert)) {
     stop("invert must not be NULL")    
@@ -849,9 +793,6 @@ sort.tokens <- function(x, decreasing = FALSE, ...) {
 #' @exportS3Method as.character tokens
 #' @export
 as.character.tokens <- function(x, ...) {
-  if (!"tokens" %in% class(x)) {
-    stop("x must be of the class 'tokens'")
-  }
   result <- x
   class(result) <- "character"
   result
@@ -871,10 +812,6 @@ print.tokens <- function(x,
                          n = 20, from = 1,
                          extra = NULL,
                          ...) {
-  # testing and processing argument 'x'
-  if (! "tokens" %in% class(x)) {
-    stop("argument 'x' must be of the class 'tokens'")
-  }
   n_tokens <- length(x)
   # testing and processing argument 'n'
   if (length(n) == 0) {
@@ -952,9 +889,6 @@ print.tokens <- function(x,
 #' @exportS3Method rev tokens
 #' @export
 rev.tokens <- function(x) {
-  if (! "tokens" %in% class(x)) {
-    stop("argument 'x' must be of the class 'tokens'")
-  }
   as_tokens(rev(as_character(x)))
 }
 ## Summary ---------------------------------------------------------------------
@@ -962,11 +896,7 @@ rev.tokens <- function(x) {
 #' @exportS3Method summary tokens
 #' @export
 summary.tokens <- function(object, ...) {
-  if (! "tokens" %in% class(object)) {
-    stop("argument 'object' must be of the class 'tokens'")
-  }
-  result <- list()
-  result$n_tokens <- n_tokens(object)
+  result <- list(n_tokens = n_tokens(object))
   class(result) <- "summary.tokens"
   result
 }
@@ -1091,6 +1021,8 @@ tokens_merge_all <- function(...) {
       result_car <- car
     } else if (is.list(car) && length(car) > 0) {
       result_car <- do.call("tokens_merge_all", car)
+    } else {
+      stop("The arguments must be of class 'tokens'.")
     }
   }   
   # -- processing cdr --
