@@ -240,14 +240,23 @@ show_matches <- function(x, pattern, ...) {
   unlist(Map(apply_styles, x, styles))
 }
 
-#' Remove spaces from character string
+#' Clean up the use of whitespace in a character vector
+#' 
+#' The function [cleanup_spaces()] takes a character vector and input and turns
+#' any uninterrupted stretch of whitespace characters into one single space character.
+#' Moreover, it can also *remove* leading whitespace and trailing whitespace.
 #'
-#' @param x Character string.
-#' @param remove_leading Whether to remove leading spaces.
-#' @param remove_trailing Whether to remove trailing spaces.
+#' @param x Character vector.
+#' @param remove_leading Logical. If `TRUE`, leading whitespace will be removed.
+#' @param remove_trailing Logical. If `TRUE`, trailing whitespace will be removed.
 #'
-#' @return Character string
+#' @return A character vector.
 #' @export
+#'
+#' @examples
+#' txt <- "  A \\t  small      example \\n with redundant whitespace    "
+#' cleanup_spaces(txt)
+#' cleanup_spaces(txt, remove_leading = FALSE, remove_trailing = FALSE)
 cleanup_spaces <- function(x,
                            remove_leading = TRUE,
                            remove_trailing = TRUE) {
@@ -263,13 +272,27 @@ cleanup_spaces <- function(x,
 
 #' Drop XML tags from character string
 #' 
-#' Called by print_kwic()
+#' This function takes a character vector and retuns a copy from which all
+#' XML-like tags have been removed. Moreover, if `half_tags_too = TRUE`
+#' any half tag at the beginning or end of `x` is also removed.
+#' 
+#' This function is not XML-aware. It uses a very simple definition of what
+#' counts as a tag. More specifically, any character sequence starting with
+#' `<` and ending with `>` is considered a 'tag'; inside such a tag, between
+#' `<` and `>`, `drop_tags()` accepts any sequence of zero or more characters.
+#' 
 #' @param x String with xml tag
 #' @param half_tags_too Logical. Whether tags with only opening/closing
 #'   bracket should also be removed.
 #' @return Character string
-#' @noRd
+#' @export
+#' 
+#' @examples
+#' xml_snippet <- "id='3'/><w pos='Det'>An</w> <w pos='N'>example</w> <w"
+#' drop_tags(xml_snippet)
+#' drop_tags(xml_snippet, half_tags_too = FALSE)
 drop_tags <- function(x, half_tags_too = TRUE) {
+  # Called by print_kwic()
   if (half_tags_too) {
     x <- gsub("^[^<]*>|<[^>]*>|<[^>]*$", "", x, perl = TRUE)
   } else {
