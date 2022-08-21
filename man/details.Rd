@@ -5,15 +5,20 @@
 \alias{details.slma}
 \title{Details on a specific item}
 \usage{
-details(x, y)
+details(x, y, ...)
 
-\method{details}{slma}(x, y)
+\method{details}{slma}(x, y, shorten_names = TRUE, ...)
 }
 \arguments{
 \item{x}{An object containing global statistics for a collection of linguistic units,
 such as an object of class \code{\link{slma}}.}
 
 \item{y}{A character vector of length one representing one linguistic item.}
+
+\item{...}{Additional arguments.}
+
+\item{shorten_names}{Logical. If \code{TRUE}, filenames in the rownames are
+shortened with \code{\link[=short_names]{short_names()}}.}
 }
 \value{
 An object with details. When \code{x} is of class \code{\link{slma}},

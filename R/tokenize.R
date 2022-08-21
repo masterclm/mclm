@@ -283,21 +283,18 @@ as_tokens <- function(x, ...) {
 
 #' @rdname n_tokens
 #' @exportS3Method n_tokens tokens
-#' @export
 n_tokens.tokens <- function(x, ...) {
   length(x)
 }  
 
 #' @rdname n_types
 #' @exportS3Method n_types tokens
-#' @export
 n_types.tokens <- function(x, ...) {
   length(table(x))
 }  
 
 #' @rdname as_character
 #' @exportS3Method as_character tokens
-#' @export
 as_character.tokens <- function(x, ...) {
   result <- x
   class(result) <- "character"
@@ -306,7 +303,6 @@ as_character.tokens <- function(x, ...) {
 
 #' @rdname explore
 #' @exportS3Method explore tokens
-#' @export
 explore.tokens <- function(x,
                            n = 20,
                            from = 1,
@@ -412,7 +408,6 @@ explore.tokens <- function(x,
 
 #' @rdname trunc_at
 #' @exportS3Method trunc_at tokens
-#' @export
 trunc_at.tokens <- function(x, pattern, 
                             keep_this = FALSE, 
                             last_match = FALSE, 
@@ -450,7 +445,6 @@ trunc_at.tokens <- function(x, pattern,
 
 #' @rdname keep_pos
 #' @exportS3Method drop_pos tokens
-#' @export
 drop_pos.tokens <- function(x, pos, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -461,7 +455,6 @@ drop_pos.tokens <- function(x, pos, ...) {
 
 #' @rdname keep_pos
 #' @exportS3Method keep_pos tokens
-#' @export
 keep_pos.tokens <- function(x, pos, invert = FALSE, ...) {
   # -- test and process argument 'pos'
   if (missing(pos) || is.null(pos)) {
@@ -502,7 +495,6 @@ keep_pos.tokens <- function(x, pos, invert = FALSE, ...) {
 
 #' @rdname keep_types
 #' @exportS3Method drop_types tokens
-#' @export
 drop_types.tokens <- function(x, types, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -513,7 +505,6 @@ drop_types.tokens <- function(x, types, ...) {
 
 #' @rdname keep_types
 #' @exportS3Method keep_types tokens
-#' @export
 keep_types.tokens <- function(x, types, invert = FALSE, ...) {
   # -- test and process argument 'types'
   types <- as.character(types) # turns NULL into character(0)
@@ -540,7 +531,6 @@ keep_types.tokens <- function(x, types, invert = FALSE, ...) {
 
 #' @rdname keep_re
 #' @exportS3Method drop_re tokens
-#' @export
 drop_re.tokens <- function(x, pattern, perl = TRUE, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -551,7 +541,6 @@ drop_re.tokens <- function(x, pattern, perl = TRUE, ...) {
 
 #' @rdname keep_re
 #' @exportS3Method keep_re tokens
-#' @export
 keep_re.tokens <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   # -- test pattern for errors (and process pattern if it's an 're' object)
   if ("re" %in% class(pattern)) {
@@ -605,7 +594,6 @@ keep_re.tokens <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
 
 #' @rdname keep_bool
 #' @exportS3Method drop_bool tokens
-#' @export
 drop_bool.tokens <- function(x, bool, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -616,7 +604,6 @@ drop_bool.tokens <- function(x, bool, ...) {
 
 #' @rdname keep_bool
 #' @exportS3Method keep_bool tokens
-#' @export
 keep_bool.tokens <- function(x, bool, invert = FALSE, ...) {
   # -- test and process argument 'bool'
   if (is.null(bool)) stop("bool must not be NULL")
@@ -643,7 +630,6 @@ keep_bool.tokens <- function(x, bool, invert = FALSE, ...) {
 
 #' @rdname brackets
 #' @exportS3Method `[` tokens
-#' @export
 `[.tokens` <- function(x, i, invert = FALSE, ...) {
   if (missing(i) || is.null(i)) {
     return(x)
@@ -683,7 +669,6 @@ keep_bool.tokens <- function(x, bool, invert = FALSE, ...) {
 
 #' @rdname brackets
 #' @exportS3Method `[<-` tokens
-#' @export
 `[<-.tokens` <- function(x, i, invert = FALSE, ..., value) {
   # -- test and process argument 'invert'
   if (is.null(invert)) {
@@ -769,20 +754,17 @@ keep_bool.tokens <- function(x, bool, invert = FALSE, ...) {
 
 #' @rdname as_data_frame
 #' @exportS3Method as.data.frame tokens
-#' @export
 as.data.frame.tokens <- function(x, ...) {
   class(x) <- "character"
   data.frame(token = x, ...)
 }
 
 #' @exportS3Method tibble::as_tibble tokens
-#' @export
 as_tibble.tokens <- function(x, ...) {
   tibble(token = x, ...)
 }
 
 #' @exportS3Method sort tokens
-#' @export
 sort.tokens <- function(x, decreasing = FALSE, ...) {
   as_tokens(sort(as_character(x),
                  decreasing = decreasing,
@@ -791,7 +773,6 @@ sort.tokens <- function(x, decreasing = FALSE, ...) {
 }
 
 #' @exportS3Method as.character tokens
-#' @export
 as.character.tokens <- function(x, ...) {
   result <- x
   class(result) <- "character"
@@ -799,7 +780,6 @@ as.character.tokens <- function(x, ...) {
 }
 
 #' @rdname stubs
-#' @export
 plot.tokens <- function(x, ...) {
   warning("'tokens' objects have no plotting function; doing nothing")
   invisible(NULL)
@@ -807,7 +787,6 @@ plot.tokens <- function(x, ...) {
 
 #' @rdname mclm_print
 #' @exportS3Method print tokens
-#' @export
 print.tokens <- function(x,
                          n = 20, from = 1,
                          extra = NULL,
@@ -887,14 +866,13 @@ print.tokens <- function(x,
 }
 
 #' @exportS3Method rev tokens
-#' @export
 rev.tokens <- function(x) {
   as_tokens(rev(as_character(x)))
 }
+
 ## Summary ---------------------------------------------------------------------
 
 #' @exportS3Method summary tokens
-#' @export
 summary.tokens <- function(object, ...) {
   result <- list(n_tokens = n_tokens(object))
   class(result) <- "summary.tokens"
@@ -902,7 +880,6 @@ summary.tokens <- function(object, ...) {
 }
 
 #' @exportS3Method print summary.tokens
-#' @export
 print.summary.tokens <- function(x, ...) {
   if (!"summary.tokens" %in% class(x)) {
     stop("argument 'x' must be of the class 'summary.tokens'")
@@ -915,7 +892,6 @@ print.summary.tokens <- function(x, ...) {
 }
 
 #' @rdname stubs
-#' @export
 plot.summary.tokens <- function(x, ...) {
   warning("'summary.tokens' objects have no plotting function; doing nothing")
   invisible(NULL)
@@ -967,6 +943,7 @@ read_tokens <- function(file,
 #'
 #' @return Invisibly, `x`.
 #' @family writing functions
+#' @export
 #' @seealso [read_tokens()]
 #' @inherit read_tokens examples
 write_tokens <- function(x,
@@ -993,6 +970,7 @@ write_tokens <- function(x,
 #'
 #' @return An object of class [`tokens`].
 #' @export
+#' @name merge_tokens
 #'
 #' @examples
 #' (tks1 <- tokenize(c("This is a first sentence.")))
@@ -1009,7 +987,8 @@ tokens_merge <- function(x, y) {
   tokens_merge_two(x, y)
 }  
 
-#' @rdname tokens_merge
+#' @rdname merge_tokens
+#' @export
 tokens_merge_all <- function(...) {
   arg_list <- list(...)
   result_car <- NULL  # result for car of arg_list

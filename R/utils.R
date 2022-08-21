@@ -244,10 +244,10 @@ show_matches <- function(x, pattern, ...) {
 #'
 #' @param x Character string.
 #' @param remove_leading Whether to remove leading spaces.
-#' @param remove_trailing Wheather to remove trailing spaces.
+#' @param remove_trailing Whether to remove trailing spaces.
 #'
 #' @return Character string
-#' @noRd
+#' @export
 cleanup_spaces <- function(x,
                            remove_leading = TRUE,
                            remove_trailing = TRUE) {

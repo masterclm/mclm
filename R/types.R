@@ -139,7 +139,6 @@ as_types <- function(x,
 
 #' @rdname n_types
 #' @exportS3Method n_types types
-#' @export
 n_types.types <- function(x, ...) {
   without_duplicates <- length(table(x))
   with_duplicates <- length(x)
@@ -151,7 +150,6 @@ n_types.types <- function(x, ...) {
 
 #' @rdname explore
 #' @exportS3Method explore types
-#' @export
 explore.types <- function(x,
                           n = 20,
                           from = 1,
@@ -260,7 +258,6 @@ explore.types <- function(x,
 
 #' @rdname keep_pos
 #' @exportS3Method drop_pos types
-#' @export
 drop_pos.types <- function(x, pos, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -271,7 +268,6 @@ drop_pos.types <- function(x, pos, ...) {
 
 #' @rdname keep_pos
 #' @exportS3Method keep_pos types
-#' @export
 keep_pos.types <- function(x, pos, invert = FALSE, ...) {
   # -- test and process argument 'pos'
   if (missing(pos) || is.null(pos)) {
@@ -311,7 +307,6 @@ keep_pos.types <- function(x, pos, invert = FALSE, ...) {
 
 #' @rdname keep_types
 #' @exportS3Method drop_types types
-#' @export
 drop_types.types <- function(x, types, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -322,7 +317,6 @@ drop_types.types <- function(x, types, ...) {
 
 #' @rdname keep_types
 #' @exportS3Method keep_types types
-#' @export
 keep_types.types <- function(x, types, invert = FALSE, ...) {
   # -- test and process argument 'types'
   types <- as.character(types) # turns NULL into character(0)
@@ -347,7 +341,6 @@ keep_types.types <- function(x, types, invert = FALSE, ...) {
 
 #' @rdname keep_re
 #' @exportS3Method drop_re types
-#' @export
 drop_re.types <- function(x, pattern, perl = TRUE, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -358,7 +351,6 @@ drop_re.types <- function(x, pattern, perl = TRUE, ...) {
 
 #' @rdname keep_re
 #' @exportS3Method keep_re types
-#' @export
 keep_re.types <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   # -- test pattern for errors (and process pattern if it's an 're' object)
   if ("re" %in% class(pattern)) {
@@ -411,7 +403,6 @@ keep_re.types <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
 
 #' @rdname keep_bool
 #' @exportS3Method drop_bool types
-#' @export
 drop_bool.types <- function(x, bool, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -422,7 +413,6 @@ drop_bool.types <- function(x, bool, ...) {
 
 #' @rdname keep_bool
 #' @exportS3Method keep_bool types
-#' @export
 keep_bool.types <- function(x, bool, invert = FALSE, ...) {
   # -- test and process argument 'bool'
   if (is.null(bool)) stop("bool must not be NULL")
@@ -449,7 +439,6 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
 
 #' @rdname brackets
 #' @exportS3Method `[` types
-#' @export
 `[.types` <- function(x, i, invert = FALSE, ...) {
   if (missing(i) || is.null(i)) {
     return(x)
@@ -487,7 +476,6 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
 
 #' @rdname brackets
 #' @exportS3Method `[<-` types
-#' @export
 `[<-.types` <- function(x, i, invert = FALSE, value) {
   stop("subset assignment is not supported for 'types' objects")
 }
@@ -498,20 +486,17 @@ keep_bool.types <- function(x, bool, invert = FALSE, ...) {
 
 #' @rdname as_data_frame
 #' @exportS3Method as.data.frame types
-#' @export
 as.data.frame.types <- function(x, ...) {
   class(x) <- "character"
   data.frame(type = x, ...)
 }
 
 #' @exportS3Method tibble::as_tibble types
-#' @export 
 as_tibble.types <- function(x, ...) {
   tibble(type = x, ...)
 }
 
 #' @exportS3Method sort types
-#' @export
 sort.types <- function(x, decreasing = FALSE, ...) {
   as_types(sort(as_character(x),
                decreasing = decreasing,
@@ -523,7 +508,6 @@ sort.types <- function(x, decreasing = FALSE, ...) {
 
 #' @rdname stubs
 #' @exportS3Method plot types
-#' @export
 plot.types <- function(x, ...) {
   warning("'types' objects have no plotting function; doing nothing")
   invisible(NULL)
@@ -531,7 +515,6 @@ plot.types <- function(x, ...) {
 
 #' @rdname mclm_print
 #' @exportS3Method print types
-#' @export
 print.types <- function(x,
                         n = 20, from = 1,
                         sort_order = c("none", "alpha"),
@@ -630,7 +613,6 @@ print.types <- function(x,
 ## Summary ---------------------------------------------------------------------
 
 #' @exportS3Method summary types
-#' @export
 summary.types <- function(object, ...) {
   result <- list(
     n_items = length(object),
@@ -641,7 +623,6 @@ summary.types <- function(object, ...) {
 }
 
 #' @exportS3Method print summary.types
-#' @export
 print.summary.types <- function(x, ...) {
   cat("Type collection of length ",
       x$n_items,
@@ -655,7 +636,6 @@ print.summary.types <- function(x, ...) {
 
 #' @rdname stubs
 #' @exportS3Method plot summary.types
-#' @export
 plot.summary.types <- function(x, ...) {
   warning("'summary.types' objects have no plotting function; doing nothing")
   invisible(NULL)
@@ -672,7 +652,7 @@ plot.summary.types <- function(x, ...) {
 #' @param sort Logical. Should the results be sorted.
 #'
 #' @return An object of the class [`types`].
-#' @name types_merge
+#' @name merge_types
 #'
 #' @examples
 #' (tps1 <- as_types(c("a", "simple", "simple", "example")))
@@ -684,7 +664,7 @@ plot.summary.types <- function(x, ...) {
 #' types_merge_all(list(tps1, tps2, tps3))
 NULL
 
-#' @describeIn types_merge Merge two types
+#' @describeIn merge_types Merge two types
 #' @export
 types_merge <- function(x, y, sort = FALSE) {
   if ((!"types" %in% class(x)) || (!"types" %in% class(y))) {
@@ -693,7 +673,7 @@ types_merge <- function(x, y, sort = FALSE) {
   types_merge_two(x, y, sort = sort)
 }  
 
-#' @describeIn types_merge Merge multiple types
+#' @describeIn merge_types Merge multiple types
 #' @export
 types_merge_all <- function(..., sort = FALSE) {
   arg_list <- list(...)

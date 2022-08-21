@@ -814,7 +814,6 @@ text_cooc <- function(x,
 #'  with [read_assoc()].
 #'   
 #' @name assoc_scores
-#' @export
 #' @examples 
 #' assoc_abcd(10 , 200, 100,  300, types = "four")
 #' assoc_abcd(30, 1000,  14, 5000, types = "fictitious")
@@ -1132,7 +1131,6 @@ assoc_abcd <- function(a, b, c, d,
 
 #' @rdname n_types
 #' @exportS3Method n_types assoc_scores
-#' @export
 n_types.assoc_scores <- function(x, ...) {
   if (! "assoc_scores" %in% class(x)) {
     stop("argument 'x' must be of the class 'assoc_scores'")
@@ -1142,7 +1140,6 @@ n_types.assoc_scores <- function(x, ...) {
 
 #' @rdname type_names
 #' @exportS3Method type_names assoc_scores
-#' @export
 type_names.assoc_scores <- function(x, ...) {
   if (! "assoc_scores" %in% class(x)) {
     stop("argument 'x' must be of the class 'assoc_scores'")
@@ -1152,7 +1149,6 @@ type_names.assoc_scores <- function(x, ...) {
 
 #' @rdname explore
 #' @exportS3Method explore assoc_scores
-#' @export
 explore.assoc_scores <- function(
     x,
     n = 20,
@@ -1322,7 +1318,6 @@ explore.assoc_scores <- function(
 
 #' @rdname as_data_frame
 #' @exportS3Method as.data.frame assoc_scores
-#' @export
 as.data.frame.assoc_scores <- function(x, ...) {
   class(x) <- "data.frame"
   df <- cbind(type = rownames(x), x)
@@ -1331,14 +1326,12 @@ as.data.frame.assoc_scores <- function(x, ...) {
 }
 
 #' @exportS3Method tibble::as_tibble assoc_scores
-#' @export
 as_tibble.assoc_scores <- function(x, ...) {
   as_tibble(as.data.frame(x), ...)
 }
 
 #' @rdname mclm_print
 #' @exportS3Method print assoc_scores
-#' @export
 print.assoc_scores <- function(
     x,
     n            = 20,

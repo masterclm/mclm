@@ -1,14 +1,22 @@
 test_that("get_fnames works properly", {
-  test_files <- get_fnames(test_path())
+  test_files <- get_fnames(system.file("extdata", "cleveland", package = "mclm"))
   expect_s3_class(test_files, "fnames")
-  # not testing length because there is something weird when running them
+  expect_length(test_files, 4)
+
+  expect_match(test_files[[1]], "cleveland_speeches_000")
   
-  expect_match(test_files[[1]], "helper.R")
-  expect_match(
-    get_fnames(test_path(), re_pattern = "conc")[[1]],
-    "test-conc.R"
-  )
   # pattern
+  file000 <- get_fnames(system.file("extdata", package = "mclm"),
+                        re_pattern = "000")
+  expect_length(file000, 2)
+  expect_match(file000[2], "roosevelt")
+  
+  # recursive
+  expect_length(
+    get_fnames(system.file("extdata", package = "mclm"),
+               recursive = FALSE),
+    2
+  )
   # TODO create directory for other tests and use it to test recursive
 })
 

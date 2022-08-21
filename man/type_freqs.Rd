@@ -54,3 +54,6 @@ type_freq(flist, "the")            # frequency of one item
 flist[c("the", "man")] 
 flist["the"]
 }
+\seealso{
+type_names
+}

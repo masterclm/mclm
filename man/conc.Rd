@@ -71,7 +71,7 @@ as the actual text of the corpus (with each item within \code{x} treated as
 a separate 'document in RAM').
 
 If \code{FALSE}, \code{x} is treated as a vector of filenames, interpreted
-as the namse of the corpus files with the actual corpus data.}
+as the names of the corpus files with the actual corpus data.}
 }
 \value{
 Object of class \code{conc}, a kind of data frame with as its rows

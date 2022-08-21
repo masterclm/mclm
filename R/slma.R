@@ -143,12 +143,12 @@ slma <- function(x,                                        # A corpus files
   
   # STEP 2: building per-document frequency lists --
   
-  cat_if_verbose("building separate frequency lists for each document\n")
+  cat_if_verbose("building separate frequency lists for each document\n", verbose)
   
   freqs_list <- vector(mode = "list", length = n + m) # frequencies
   tnt_list <- vector(mode = "list", length = n + m)   # tot nr of tokens
   for (i in seq_along(x)) {
-    cat_if_verbose(".",  verbose)
+    show_dot(verbose)
     txt <- read_txt(x[i], file_encoding = file_encoding)
     flist <- freqlist_char(txt,
                            ngram_size = ngram_size,
@@ -163,7 +163,7 @@ slma <- function(x,                                        # A corpus files
   }
   cat_if_verbose("\n", verbose)
   for (j in seq_along(y)) {
-    cat_if_verbose(".", verbose)
+    show_dot(verbose)
     txt <- read_txt(y[j], file_encoding = file_encoding)
     flist <- freqlist_char(txt,
                            ngram_size = ngram_size,
@@ -175,7 +175,7 @@ slma <- function(x,                                        # A corpus files
     flist <- keep_types(flist, keeplist)
     freqs_list[[n + j]] <- as.numeric(flist)
     tnt_list[[n + j]] <- tot_n_tokens(flist)
-  } 
+  }
   cat_if_verbose("\n", verbose)
   
   # STEP 3: calculating association scores --
@@ -205,7 +205,6 @@ slma <- function(x,                                        # A corpus files
     }  
   }
   cat_if_verbose("\n", verbose)  
-  
   # STEP 4: calculating stability measures --
   
   cat_if_verbose("calculating stability measures\n", verbose)
@@ -245,11 +244,7 @@ slma <- function(x,                                        # A corpus files
 # S3 methods from mclm =========================================================
 #' @rdname details
 #' @exportS3Method details slma
-#' @export
-details.slma <- function(x, y) {
-  if (!"slma" %in% class(x)) {
-    stop("x must be of class \"slma\"")
-  }
+details.slma <- function(x, y, shorten_names = TRUE, ...) {
   if (length(x$intermediate) == 0) {
     stop("x was not created with keep_intermediate = TRUE.")    
   }
@@ -258,68 +253,70 @@ details.slma <- function(x, y) {
   }
   idx_y <- match(y, rownames(x$scores))
   if (is.na(idx_y[1])) {
-    result <- NULL
-  } else {
-    result <- list(); class(result) <- "details.slma"
-    result$summary <- x$scores[idx_y, , drop = FALSE]
-    freqs <- unlist(lapply(x$intermediate$marker_freqs, "[", idx_y))
-    corp_sizes <- unlist(x$intermediate$tot_n_tokens)
-    labs <- c(x$x, x$y)
-    n <- length(x$x)
-    m <- length(x$y)
-    idx <- 0
-    res <- data.frame(comp = character(n * m),
-                      a = numeric(n * m),
-                      b = numeric(n * m),
-                      c = numeric(n * m),
-                      d = numeric(n * m),
-                      G = numeric(n * m),
-                      sig = numeric(n * m),
-                      dir = numeric(n * m),                     
-                      dir_sig = numeric(n * m),                     
-                      log_OR = numeric(n * m),
-                      log_OR_sig = numeric(n * m),                    
-                      stringsAsFactors = FALSE)
-    for (i in 1:n) {
-      for (j in (n + 1):(n + m)) {
-        idx <- idx + 1
-        res[idx, "comp"] <- paste0(labs[i], "--", labs[j])
-        res[idx, "a"]    <- freqs[i]
-        res[idx, "b"] <- corp_sizes[i] - freqs[i]
-        res[idx, "c"] <- freqs[j]
-        res[idx, "d"] <- corp_sizes[j] - freqs[j]
-        ascores <- assoc_abcd(res[idx, "a"],  res[idx, "b"],
-                              res[idx, "c"],  res[idx, "d"],
-                              small_pos = x$small_pos)
-        G <- abs(ascores[["G_signed"]])
-        res[idx, "G"] <- G
-        res[idx, "sig"] <- ifelse(G, 1, 0)
-        res[idx, "dir"] <- ascores$dir      
-        res[idx, "dir_sig"]  <-  ifelse(G > x$sig_cutoff,
-                                        ascores$dir,
-                                        NA)      
-        res[idx, "log_OR"]  <-  log(ascores$OR)
-        res[idx, "log_OR_sig"]  <-  ifelse(G > x$sig_cutoff,
-                                           log(ascores$OR),
-                                           NA)
+    return(NULL)
+  } 
+  freqs <- unlist(lapply(x$intermediate$marker_freqs, "[", idx_y))
+  corp_sizes <- unlist(x$intermediate$tot_n_tokens)
+  labs <- c(x$x, x$y)
+  n <- length(x$x)
+  m <- length(x$y)
+  idx <- 0
+  res <- data.frame(comp = character(n * m),
+                    a = numeric(n * m),
+                    b = numeric(n * m),
+                    c = numeric(n * m),
+                    d = numeric(n * m),
+                    G = numeric(n * m),
+                    sig = numeric(n * m),
+                    dir = numeric(n * m),                     
+                    dir_sig = numeric(n * m),                     
+                    log_OR = numeric(n * m),
+                    log_OR_sig = numeric(n * m),                    
+                    stringsAsFactors = FALSE)
+  for (i in 1:n) {
+    for (j in (n + 1):(n + m)) {
+      idx <- idx + 1
+      res[idx, "comp"] <- if (shorten_names) {
+        paste0(short_names(labs[i]), "--", short_names(labs[j]))
+      } else {
+        paste0(labs[i], "--", labs[j])
       }
+      res[idx, "a"]    <- freqs[i]
+      res[idx, "b"] <- corp_sizes[i] - freqs[i]
+      res[idx, "c"] <- freqs[j]
+      res[idx, "d"] <- corp_sizes[j] - freqs[j]
+      ascores <- assoc_abcd(res[idx, "a"],  res[idx, "b"],
+                            res[idx, "c"],  res[idx, "d"],
+                            small_pos = x$small_pos)
+      G <- abs(ascores[["G_signed"]])
+      res[idx, "G"] <- G
+      res[idx, "sig"] <- ifelse(G, 1, 0)
+      res[idx, "dir"] <- ascores$dir      
+      res[idx, "dir_sig"]  <-  ifelse(G > x$sig_cutoff,
+                                      ascores$dir,
+                                      NA)      
+      res[idx, "log_OR"]  <-  log(ascores$OR)
+      res[idx, "log_OR_sig"]  <-  ifelse(G > x$sig_cutoff,
+                                         log(ascores$OR),
+                                         NA)
     }
-    row.names(res) <- res$comp
-    res$comp <- NULL
-    result$scores <- res
-    result$item <- y
-    result$sig_cutoff <- x$sig_cutoff
-    result$small_pos <- x$small_pos
   }
-  result    
+  row.names(res) <- res$comp
+  res$comp <- NULL
+  
+  result <- list(
+    summary = x$scores[idx_y, , drop = FALSE],
+    scores = res,
+    item = y,
+    sig_cutoff = x$sig_cutoff,
+    small_pos = x$small_pos
+  )
+  class(result) <- "details.slma"
+  result
 }
 
 #' @exportS3Method print details.slma
-#' @export
 print.details.slma <- function(x, ...) {
-  if (!"details.slma" %in% class(x)) {
-    stop("x must be of class \"details.slma\"")
-  }  
   cat(paste0('SLMA details\n'))  
   cat(paste0('[item: "', x$item,'"]\n\n'))
   print(round(x$summary, 3))  
@@ -330,7 +327,6 @@ print.details.slma <- function(x, ...) {
 
 #' @rdname as_data_frame
 #' @exportS3Method as.data.frame details.slma
-#' @export
 as.data.frame.details.slma <- function(x, ...) {
   if (! "details.slma" %in% class(x)) {
     stop("x must be of class \"details.slma\"")
@@ -342,7 +338,6 @@ as.data.frame.details.slma <- function(x, ...) {
 
 #' @rdname as_data_frame
 #' @exportS3Method as.data.frame slma
-#' @export
 as.data.frame.slma <- function(x, ...) {
   scr <- cbind(type = rownames(x$scores), x$scores)
   #scr[scr$S_abs > 0, ]
@@ -351,9 +346,13 @@ as.data.frame.slma <- function(x, ...) {
   scr
 }
 
+#' @exportS3Method tibble::as_tibble slma
+as_tibble.slma <- function(x, ...) {
+  as_tibble(as.data.frame(x))
+}
+
 #' @rdname mclm_print
 #' @exportS3Method print slma
-#' @export
 print.slma <- function(x, n = 20, from = 1, ...) {
   scr <- as.data.frame(x)
   n <- min(n, nrow(scr))

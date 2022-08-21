@@ -15,7 +15,6 @@
 #'
 #' @return A matrix (for `row_pcoord()` and `col_pcoord()`) or a numeric vector
 #'   (for `xlim4ca()` and `ylim4ca()`).
-#' @export
 #' @name ca_help
 #'
 #' @examples
@@ -50,16 +49,19 @@
 NULL
 
 #' @describeIn ca_help Retrieve row principal coordiantes for all dimensions
+#' @export
 row_pcoord <- function(x, ...) {
   x$rowcoord %*% diag(x$sv)
 }
 
 #' @describeIn ca_help Retrieve column principal coordiantes for all dimensions
+#' @export
 col_pcoord <- function(x, ...) {
   x$colcoord %*% diag(x$sv)
 }
 
 #' @describeIn ca_help Return range of first dimension for plotting
+#' @export
 xlim4ca <- function(x, ...) {
   r_pc <- row_pcoord(x, ...)
   c_pc <- col_pcoord(x, ...)
@@ -67,6 +69,7 @@ xlim4ca <- function(x, ...) {
 }
 
 #' @describeIn ca_help Return range of second dimension for plotting
+#' @export
 ylim4ca <- function(x, ...) {
   r_pc <- row_pcoord(x, ...)
   c_pc <- col_pcoord(x, ...)

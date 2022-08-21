@@ -275,7 +275,6 @@ as_conc <- function(x,
 
 #' @rdname explore
 #' @exportS3Method explore conc
-#' @export
 explore.conc <- function(x,
                          n = 20,
                          from = 1,
@@ -354,7 +353,6 @@ explore.conc <- function(x,
 
 #' @rdname mclm_print
 #' @exportS3Method print conc
-#' @export
 print.conc <- function(x, n = 30, ...) {
   cat("Concordance-based data frame (number of observations: ",
       nrow(x),
@@ -374,7 +372,6 @@ print.conc <- function(x, n = 30, ...) {
 }
 
 #' @rdname as_data_frame
-#' @export
 #' @exportS3Method as.data.frame conc
 as.data.frame.conc <- function(x, ...) {
   d <- x
@@ -382,7 +379,6 @@ as.data.frame.conc <- function(x, ...) {
   d
 }
 
-#' @export
 #' @exportS3Method tibble::as_tibble conc
 as_tibble.conc <- function(x, ...) {
   as_tibble(as.data.frame(x))

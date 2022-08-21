@@ -87,6 +87,7 @@ explore.default <- function(x, ...) invisible(x)
 #' @return Object of the same class as `x` with the selected elements only.
 #' @family subsetters
 #' @order 1
+#' @export
 #'
 #' @examples
 #' # For a 'freqlist' object --------------------
@@ -120,15 +121,11 @@ keep_pos.default <- function(x,
 }
 
 #' @rdname keep_pos
-#' @exportMethod 
-drop_pos <- function(x,
-                     pos,
-                     ...) UseMethod("drop_pos")
+#' @export 
+drop_pos <- function(x,pos, ...) UseMethod("drop_pos")
 
 #' @noRd 
-drop_pos.default <- function(x,
-                             pos,
-                             ...) {
+drop_pos.default <- function(x, pos, ...) {
   warning("unsupported type of x; simply returning x")
   x
 }
@@ -153,7 +150,8 @@ drop_pos.default <- function(x,
 #' @return Object of the same class as `x` with the selected elements only.
 #' @family subsetters
 #' @order 1
-#'
+#' @export
+#' 
 #' @examples
 #' # For a 'freqlist' object --------------------
 #' (flist <- freqlist("The man and the mouse.", as_text = TRUE))
@@ -191,17 +189,11 @@ keep_re.default <- function(x,
 
 #' @rdname keep_re
 #' @order 2
-#' @exportMethod 
-drop_re <- function(x,
-                    pattern,
-                    perl = TRUE,
-                    ...) UseMethod("drop_re")
+#' @export
+drop_re <- function(x, pattern, perl = TRUE, ...) UseMethod("drop_re")
 
 #' @noRd 
-drop_re.default <- function(x,
-                            pattern,
-                            perl = TRUE,
-                            ...) {
+drop_re.default <- function(x, pattern, perl = TRUE, ...) {
   warning("unsupported type of x; simply returning x")
   x
 }
@@ -219,6 +211,7 @@ drop_re.default <- function(x,
 #' @return Object of the same class as `x` with the selected elements only.
 #' @family subsetters
 #' @order 1
+#' @export
 #'
 #' @examples
 #' # For a 'freqlist' object ------------------------
@@ -254,7 +247,7 @@ keep_types.default <- function(x,
 
 #' @rdname keep_types
 #' @order 2
-#' @exportMethod 
+#' @export
 drop_types <- function(x,
                        types,
                        ...) UseMethod("drop_types")
@@ -281,6 +274,7 @@ drop_types.default <- function(x,
 #' @return Object of the same class as `x` with the selected elements only.
 #' @family subsetters
 #' @order 1
+#' @export
 #'
 #' @examples
 #' # For a 'freqlist' object---------------------
@@ -322,7 +316,7 @@ keep_bool.default <- function(x,
 
 #' @rdname keep_bool
 #' @order 2
-#' @exportMethod 
+#' @export
 drop_bool <- function(x,
                       bool,
                       ...) UseMethod("drop_bool")
@@ -420,6 +414,7 @@ NULL
 #' @return A number.
 #' @export
 #' @family getters and setters
+#' @export
 #' @order 1
 #'
 #' @examples
@@ -527,6 +522,7 @@ type_names.default <- function(x, ...) {
 #' @return A number.
 #' @family getters and setters
 #' @order 1
+#' @export
 #' 
 #' @examples
 #' x <- freqlist("The man and the mouse.",
@@ -549,7 +545,7 @@ tot_n_tokens.default <- function(x) NULL
 
 #' @rdname tot_n_tokens
 #' @order 2
-#' @exportMethod 
+#' @export
 "tot_n_tokens<-" <- function(x, value) UseMethod("tot_n_tokens<-")
 
 #' @noRd
@@ -574,6 +570,7 @@ tot_n_tokens.default <- function(x) NULL
 #'   original ranks, with as its names the types to which these ranks apply.
 #' @family getters and setters
 #' @order 1
+#' @export
 #'
 #' @examples
 #' x <- freqlist("The man and the mouse.",
@@ -599,11 +596,11 @@ orig_ranks.default <- function(x, ...) NULL
 
 #' @rdname orig_ranks
 #' @order 2
-#' @exportMethod 
+#' @export
 "orig_ranks<-" <- function(x, value) UseMethod("orig_ranks<-")
 
 #' @rdname orig_ranks
-#' @exportMethod 
+#' @export
 "orig_ranks<-.default" <- function(x, value) x
 
 #' Retrieve the current ranks for frequency counts.
@@ -688,7 +685,7 @@ ranks.default <- function(x, ...) NULL
 #' @param ... Additional arguments.
 #' 
 #' @return A truncated version of `x`.
-#' @exportMethod 
+#' @export
 #' 
 #' @examples
 #' (toks <- tokenize('This is a first sentence . This is a second sentence .',
@@ -713,7 +710,7 @@ trunc_at.default <- function(x, pattern, ...) invisible(x)
 #' @param ... Additional arguments.
 #'   
 #' @return A numeric vector.
-#' @exportMethod 
+#' @export
 #' @examples 
 #' (flist <- freqlist(tokenize("The old story of the old man and the sea.")))
 #' 
@@ -726,6 +723,7 @@ trunc_at.default <- function(x, pattern, ...) invisible(x)
 as_numeric <- function(x, ...) UseMethod("as_numeric")
 
 #' @rdname as_numeric
+#' @export
 as_numeric.default <- function(x, ...) as.numeric(x, ...)
 
 #' Details on a specific item
@@ -737,6 +735,9 @@ as_numeric.default <- function(x, ...) as.numeric(x, ...)
 #' @param x An object containing global statistics for a collection of linguistic units,
 #'   such as an object of class [`slma`].
 #' @param y A character vector of length one representing one linguistic item.
+#' @param shorten_names Logical. If `TRUE`, filenames in the rownames are
+#'   shortened with [short_names()].
+#' @param ... Additional arguments.
 #'
 #' @return An object with details. When `x` is of class [`slma`],
 #'  the class of the output is `details.slma`, namely a list with the following items:
@@ -764,12 +765,10 @@ as_numeric.default <- function(x, ...) as.numeric(x, ...)
 #'      tidyr::separate(files, into = c("file_A", "file_B"), sep = "--") %>% 
 #'      dplyr::mutate(dplyr::across(dplyr::starts_with("file"), short_names))
 #' } 
-details <- function(x, y) UseMethod("details")
+details <- function(x, y, ...) UseMethod("details")
 
-#' @exportS3Method
-#' @export
 #' @noRd
-details.default <- function(x, y) NULL
+details.default <- function(x, y, ...) NULL
 
 
 # From base ====================================================================
@@ -853,6 +852,7 @@ NULL
 as_character <- function(x, ...) UseMethod("as_character")
 
 #' @rdname as_character
+#' @export
 #' @order 2 
 as_character.default <- function(x, ...) as.character(x, ...)
 
@@ -911,6 +911,7 @@ as_data_frame <- function(x, row.names = NULL,
                           optional = FALSE, ...) UseMethod("as_data_frame")
 
 #' @rdname as_data_frame
+#' @export
 #' @order 2
 as_data_frame.default <- function(x, row.names = NULL, optional = FALSE, ...) {
   as.data.frame(x, row.names = row.names, optional = optional, ...)

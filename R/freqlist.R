@@ -260,7 +260,6 @@ as_freqlist <- function(x, tot_n_tokens = NULL, sort_by_ranks = TRUE) {
 
 #' @rdname explore
 #' @exportS3Method explore freqlist
-#' @export
 explore.freqlist <- function(x,
                              n = 20,
                              from = 1,
@@ -368,28 +367,24 @@ explore.freqlist <- function(x,
 
 #' @rdname n_tokens
 #' @exportS3Method n_tokens freqlist
-#' @export
 n_tokens.freqlist <- function(x, ...) {
   sum(x)
 }  
 
 #' @rdname n_types
 #' @exportS3Method n_types freqlist
-#' @export
 n_types.freqlist <- function(x, ...) {
   length(x)
 }
 
 #' @rdname type_names
 #' @exportS3Method type_names freqlist
-#' @export
 type_names.freqlist <- function(x, ...) {
   names(x)
 }
 
 #' @rdname tot_n_tokens
 #' @exportS3Method `tot_n_tokens<-` freqlist
-#' @export
 `tot_n_tokens<-.freqlist` <- function(x, value) {
   if (is.null(value)) stop("value must not be NULL")
   if (length(value) == 0) stop("length of value must not be zero")
@@ -406,14 +401,12 @@ type_names.freqlist <- function(x, ...) {
 
 #' @rdname tot_n_tokens
 #' @exportS3Method tot_n_tokens freqlist
-#' @export
 tot_n_tokens.freqlist <- function(x) {
   attr(x, 'tot_n_tokens')
 }
 
 #' @rdname orig_ranks
 #' @exportS3Method `orig_ranks<-` freqlist
-#' @export
 `orig_ranks<-.freqlist` <- function(x, value) {
   if (!is.null(value)) stop("value must be NULL")
   attr(x, 'orig_ranks') <- value
@@ -422,7 +415,6 @@ tot_n_tokens.freqlist <- function(x) {
 
 #' @rdname orig_ranks
 #' @exportS3Method orig_ranks freqlist
-#' @export
 orig_ranks.freqlist <- function(x, with_names = FALSE, ...) {
   result <- attr(x, 'orig_ranks')
   if (!is.null(result) && with_names) {
@@ -433,7 +425,6 @@ orig_ranks.freqlist <- function(x, with_names = FALSE, ...) {
 
 #' @rdname ranks
 #' @exportS3Method ranks freqlist
-#' @export
 ranks.freqlist <- function(x, with_names = FALSE, ...) {
   # ranks are by decreasing frequency first, and by alphabetic order
   # for the frequency ties
@@ -459,7 +450,6 @@ ranks.freqlist <- function(x, with_names = FALSE, ...) {
 
 #' @rdname keep_types
 #' @exportS3Method drop_types freqlist
-#' @export
 drop_types.freqlist <- function(x, types, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -469,8 +459,7 @@ drop_types.freqlist <- function(x, types, ...) {
 }
 
 #' @rdname keep_types
-#' @exportS3Method keep_pos freqlist
-#' @export
+#' @exportS3Method keep_types freqlist
 keep_types.freqlist <- function(x, types, invert = FALSE, ...) {
   # -- test and process argument 'types'
   types <- as.character(types) # turns NULL into character(0)
@@ -515,7 +504,6 @@ keep_types.freqlist <- function(x, types, invert = FALSE, ...) {
 
 #' @rdname keep_re
 #' @exportS3Method drop_re freqlist
-#' @export
 drop_re.freqlist <- function(x, pattern, perl = TRUE, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -526,7 +514,6 @@ drop_re.freqlist <- function(x, pattern, perl = TRUE, ...) {
 
 #' @rdname keep_re
 #' @exportS3Method keep_re freqlist
-#' @export
 keep_re.freqlist <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   # -- test pattern for errors (and process pattern if it's an 're' object)
   if ("re" %in% class(pattern)) {
@@ -584,7 +571,6 @@ keep_re.freqlist <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
 
 #' @rdname keep_bool
 #' @exportS3Method drop_bool freqlist
-#' @export
 drop_bool.freqlist <- function(x, bool, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -595,7 +581,6 @@ drop_bool.freqlist <- function(x, bool, ...) {
 
 #' @rdname keep_bool
 #' @exportS3Method keep_bool freqlist
-#' @export
 keep_bool.freqlist <- function(x, bool, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"freqlist" %in% class(x)) {
@@ -632,7 +617,6 @@ keep_bool.freqlist <- function(x, bool, invert = FALSE, ...) {
 
 #' @rdname keep_pos
 #' @exportS3Method drop_pos freqlist
-#' @export
 drop_pos.freqlist <- function(x, pos, ...) {
   dot_args <- names(list(...))
   if ("invert" %in% dot_args) {
@@ -643,7 +627,6 @@ drop_pos.freqlist <- function(x, pos, ...) {
 
 #' @rdname keep_pos
 #' @exportS3Method keep_pos freqlist
-#' @export
 keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
   # -- test and process argument 'x'
   if (!"freqlist" %in% class(x)) {
@@ -690,7 +673,6 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
 
 #' @rdname brackets
 #' @exportS3Method `[` freqlist
-#' @export
 `[.freqlist` <- function(x, i, invert = FALSE, ...) {
   if (!"freqlist" %in% class(x)) {
     stop("subsetted object must be of class 'freqlist'")
@@ -733,7 +715,6 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
 
 #' @rdname stubs
 #' @exportS3Method `[<-` freqlist
-#' @export
 `[<-.freqlist` <- function(x, i, ..., value) {
   stop("subset assignment is not supported for 'freqlist' objects")
 }
@@ -792,7 +773,6 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
 #' @param ... Additional arguments.
 #'
 #' @return Object of class [`freqlist`].
-#' @export
 #' @exportS3Method sort freqlist
 #'
 #' @examples
@@ -850,7 +830,6 @@ sort.freqlist <- function(x,
 
 #' @rdname as_data_frame
 #' @exportS3Method as.data.frame freqlist
-#' @export
 as.data.frame.freqlist <- function(x,
                                    row.names = NULL,
                                    optional = FALSE,
@@ -873,7 +852,6 @@ as.data.frame.freqlist <- function(x,
 }
 
 #' @exportS3Method tibble::as_tibble freqlist
-#' @export
 as_tibble.freqlist <- function(x, ...) {
   ranks <- ranks(x)
   result <- tibble(rank = as.numeric(ranks))
@@ -895,7 +873,6 @@ as_tibble.freqlist <- function(x, ...) {
 # IDEA a rank/frequency plot could be an option, right?
 #' @rdname stubs
 #' @exportS3Method plot freqlist
-#' @export
 plot.freqlist <- function(x, ...) {
   warning("'freqlist' objects have no plotting function; doing nothing")
   invisible(NULL)
@@ -903,7 +880,6 @@ plot.freqlist <- function(x, ...) {
 
 #' @rdname mclm_print
 #' @exportS3Method print freqlist
-#' @export
 print.freqlist <- function(x,
                            n = 20, from = 1,
                            extra = NULL,
@@ -1045,7 +1021,6 @@ print.freqlist <- function(x,
 
 ## Summary ---------------------------------------------------------------------
 
-#' @export
 #' @exportS3Method summary freqlist
 summary.freqlist <- function(object, ...) {
   result <- list(
@@ -1058,7 +1033,6 @@ summary.freqlist <- function(object, ...) {
 }
 
 #' @exportS3Method print summary.freqlist
-#' @export
 print.summary.freqlist <- function(x, ...) {
   if (!"summary.freqlist" %in% class(x)) {
     stop("argument 'x' must be of the class 'summary.freqlist'")
@@ -1080,7 +1054,6 @@ print.summary.freqlist <- function(x, ...) {
 
 #' @rdname stubs
 #' @exportS3Method plot summary.freqlist
-#' @export
 plot.summary.freqlist <- function(x, ...) {
   warning("'summary.freqlist' objects have no plotting function; doing nothing")
   invisible(NULL)
@@ -1166,6 +1139,8 @@ type_freq <- function(x, types = NULL, with_names = FALSE, ...) {
 #'   objects of class [`freqlist`]. 
 #'
 #' @return An object of class [`freqlist`].
+#' @name merge_freqlist
+#' @export
 #'
 #' @examples
 #' (flist1 <- freqlist("A first toy corpus.", as_text = TRUE))
@@ -1183,7 +1158,7 @@ freqlist_merge <- function(x, y) {
   as_freqlist(freqlist_merge_two(x, y)) # as_freqlist sorts types by rank
 }  
 
-#' @rdname freqlist_merge
+#' @rdname merge_freqlist
 #' @export
 freqlist_merge_all <- function(...) {
   arg_list <- list(...)
@@ -1487,9 +1462,7 @@ freqlist_corp <- function(x,
         ngram_n_open = ngram_n_open,
         ngram_open = ngram_open)
       # ==
-      if (verbose && (((i + j) %% dot_blocksize) == 0)) { 
-        cat("."); utils::flush.console() 
-      }
+      show_dots(show_dots && (((i + j) %% dot_blocksize) == 0))
       j <- j + 1
     }
     blockfreqlist <- freqlist(tokens_merge_all(blocktokens))
@@ -1508,7 +1481,7 @@ freqlist_corp <- function(x,
     }
     i <- i + j
   }
-  if (verbose) cat("\n")
+  cat_if_verbose("\n", verbose)
   as_freqlist(globfreqlist) # sets class and attributes if needed
   # and sorts by ranks 
 }

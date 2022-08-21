@@ -327,7 +327,6 @@ re_retrieve_first <- function(x, pattern,
   result
 }
 
-
 #' @describeIn re_convenience Retrieve from each item in `x`
 #'   the last match of `pattern`.
 #' @export
@@ -648,6 +647,7 @@ scan_txt <- function() {
 }
 
 #' @rdname scan_txt
+#' @export
 scan_txt2 <- function() {
   x <- scan(what = "character", sep = "\n")
   paste(x, collapse = "\n")
@@ -675,6 +675,7 @@ scan_re <- function(perl = TRUE, ...) {
 }
 
 #' @rdname scan_re
+#' @export
 scan_re2 <- function(perl = TRUE, ...) {
   x <- scan_txt2()
   re(x, perl = perl, ...)
@@ -766,4 +767,3 @@ cat_re <- function(x,
   cat("\n\n")
   invisible(x)
 }
-
