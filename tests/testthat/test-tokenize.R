@@ -2,21 +2,6 @@
 # ngrams have their own tests
 # TODO test perl = FALSE
 
-toy_corpus <- "That ice-cream was extra-delicious, wasn't it?"
-lines_corpus <- "
---start--
-This
-corpus
-has
-one
-word
-per
-line
---end--
-"
-basic_tks <- tokenize(toy_corpus)
-words_tks <- tokenize(toy_corpus, re_token_splitter = "\\W+")
-
 test_that("tokens are properly created", {
   expect_s3_class(words_tks, "tokens")
   expect_s3_class(words_tks, "character")
@@ -30,7 +15,7 @@ test_that("tokens are properly created", {
   expect_match(lsc[1], "--start--")
   
   # re_drop_line
-  expect_length(tokenize(toy_corpus, re_drop_line = "was"), 0)
+  expect_length(tokenize(ice_corpus, re_drop_line = "was"), 0)
   expect_length(tokenize(lines_corpus, re_drop_line = "corpus"), 8)
   
   # re_cut_area
@@ -46,41 +31,41 @@ test_that("tokens are properly created", {
   
   # transformation
   expect_match(
-    tokenize(toy_corpus, re_token_transf_in = "-", token_transf_out = "~")[2],
+    tokenize(ice_corpus, re_token_transf_in = "-", token_transf_out = "~")[2],
     "ice~cream")
   expect_match(
-    tokenize(toy_corpus, re_token_transf_in = "([tc])", token_transf_out = "\\1\\1")[2],
+    tokenize(ice_corpus, re_token_transf_in = "([tc])", token_transf_out = "\\1\\1")[2],
     "icce-ccream")
   expect_match(
-    tokenize(toy_corpus, re_token_transf_in = NULL, token_transf_out = "\\1\\1")[2],
+    tokenize(ice_corpus, re_token_transf_in = NULL, token_transf_out = "\\1\\1")[2],
     "ice-cream")
   
   # to lower
   expect_match(
-    tokenize(toy_corpus, token_to_lower = FALSE)[1],
+    tokenize(ice_corpus, token_to_lower = FALSE)[1],
     "That"
   )
   
   # ngrams
   expect_match(
-    tokenize(toy_corpus, ngram_size = 2)[1],
+    tokenize(ice_corpus, ngram_size = 2)[1],
     "that_ice-cream"
   )
   expect_match(
-    tokenize(toy_corpus, re_token_splitter = "\\W+", ngram_size = 2)[1],
+    tokenize(ice_corpus, re_token_splitter = "\\W+", ngram_size = 2)[1],
     "that_ice"
   )
   expect_match(
-    tokenize(toy_corpus, re_token_transf_in = "([tc])",
+    tokenize(ice_corpus, re_token_transf_in = "([tc])",
              token_transf_out = "\\1\\1", ngram_size = 2,
              token_to_lower = FALSE)[1],
     "Thatt_icce-ccream")
   expect_match(
-    tokenize(toy_corpus, ngram_size = 3, ngram_n_open = 1)[1],
+    tokenize(ice_corpus, ngram_size = 3, ngram_n_open = 1)[1],
     "that_\\[]_was"
   )
   expect_match(
-    tokenize(toy_corpus, ngram_size = 3, ngram_n_open = 1,
+    tokenize(ice_corpus, ngram_size = 3, ngram_n_open = 1,
              re_token_splitter = "\\W+")[1],
     "that_\\[]_cream"
   )
@@ -90,8 +75,8 @@ test_that("tokens are properly created", {
   expect_length(tokenize(character()), 0)
   
   # errors
-  expect_error(tokenize(toy_corpus, ngram_size = "2"))
-  expect_error(tokenize(toy_corpus, ngram_size = 1, ngram_sep = 2))
+  expect_error(tokenize(ice_corpus, ngram_size = "2"))
+  expect_error(tokenize(ice_corpus, ngram_size = 1, ngram_sep = 2))
 })
 
 test_that("tokens are printed properly", {
@@ -321,7 +306,7 @@ test_that("merging works for tokens", {
   expect_equal(n_types(merge2), 12)
   expect_match(merge2[19], "extra-delicious")
   
-  expect_error(tokens_merge(words_tks, toy_corpus))
+  expect_error(tokens_merge(words_tks, ice_corpus))
   expect_error(tokens_merge(words_tks, basic_tks, basic_tks))
-  expect_error(tokens_merge_all(words_tks, basic_tks, toy_corpus))
+  expect_error(tokens_merge_all(words_tks, basic_tks, ice_corpus))
 })

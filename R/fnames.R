@@ -232,10 +232,6 @@ drop_pos.fnames <- function(x, pos, ...) {
 #' @exportS3Method keep_pos fnames
 #' @export
 keep_pos.fnames <- function(x, pos, invert = FALSE, ...) {
-  # -- test and process argument 'x'
-  if (!"fnames" %in% class(x)) {
-    stop("x must be of class 'fnames'")
-  }
   # -- test and process argument 'pos'
   if (missing(pos) || is.null(pos)) {
     pos <- vector(mode = "numeric", length = 0)
@@ -252,28 +248,25 @@ keep_pos.fnames <- function(x, pos, invert = FALSE, ...) {
   }
   # -- build result
   if (length(x) == 0) {
-    result <- x
-  } else {
-    pos <- trunc(pos)
-    any_pos <- any(pos >= 1)
-    any_neg <- any(pos <= -1)
-    if (any_pos && any_neg) {
-      stop("values in pos must be either all positive or all negative")          
-    }
-    if (any_neg) {
-      invert <- !invert
-      pos <- abs(pos)
-    }
-    mtch <- pos[pos >= 1 & pos <= length(x)]
-    mtch <- mtch[!is.na(mtch)] # remove NAs
-    if (invert) {
-      mtch <- setdiff(1:length(x), mtch)
-    }
-    # create result  
-    result <- subset_fnames(x, mtch)
+    return(x)
   }
-  # return result
-  result
+  pos <- trunc(pos)
+  any_pos <- any(pos >= 1)
+  any_neg <- any(pos <= -1)
+  if (any_pos && any_neg) {
+    stop("values in pos must be either all positive or all negative")          
+  }
+  if (any_neg) {
+    invert <- !invert
+    pos <- abs(pos)
+  }
+  mtch <- pos[pos >= 1 & pos <= length(x)]
+  mtch <- mtch[!is.na(mtch)] # remove NAs
+  if (invert) {
+    mtch <- setdiff(1:length(x), mtch)
+  }
+  # create result  
+  subset_fnames(x, mtch)
 }
 
 #' @rdname keep_types
@@ -291,10 +284,6 @@ drop_types.fnames <- function(x, types, ...) {
 #' @exportS3Method keep_types fnames
 #' @export
 keep_types.fnames <- function(x, types, invert = FALSE, ...) {
-  # -- test and process argument 'x'
-  if (!"fnames" %in% class(x)) {
-    stop("x must be of class 'fnames'")
-  }
   # -- test and process argument 'types'
   types <- as.character(types) # turns NULL into character(0)
   types <- types[!is.na(types)]
@@ -307,17 +296,14 @@ keep_types.fnames <- function(x, types, invert = FALSE, ...) {
   }  
   # build result
   if (length(x) == 0) {
-    result <- x
-  } else {
-    mtch <- !is.na(match(x, types)) # we avoid x_ranks[types] and x[types]
-    if (invert) {
-      mtch <- !mtch
-    }
-    
-    result <- subset_fnames(x, mtch)
+    return(x)
   }
-  # return result
-  result
+  mtch <- !is.na(match(x, types)) # we avoid x_ranks[types] and x[types]
+  if (invert) {
+    mtch <- !mtch
+  }
+  
+  subset_fnames(x, mtch)
 }
 
 #' @rdname keep_bool
@@ -335,10 +321,6 @@ drop_bool.fnames <- function(x, bool, ...) {
 #' @exportS3Method keep_bool fnames
 #' @export
 keep_bool.fnames <- function(x, bool, invert = FALSE, ...) {
-  # -- test and process argument 'x'
-  if (!"fnames" %in% class(x)) {
-    stop("x must be of class 'fnames'")
-  }
   # -- test and process argument 'bool'
   if (is.null(bool)) stop("bool must not be NULL")
   if (!is.logical(bool)) stop("bool must be a logical vector")
@@ -357,12 +339,10 @@ keep_bool.fnames <- function(x, bool, invert = FALSE, ...) {
   if (invert[1]) bool <- !bool
   # create result
   if (length(x) == 0) {
-    result <- x
-  } else {  
-    result <- subset_fnames(x, bool)
+    return(x)
   }
-  # return result
-  result
+   
+  subset_fnames(x, bool)
 }
 
 #' @rdname keep_re
@@ -380,10 +360,6 @@ drop_re.fnames <- function(x, pattern, perl = TRUE, ...) {
 #' @exportS3Method keep_re fnames
 #' @export
 keep_re.fnames <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
-  # -- test and process argument 'x'
-  if (!"fnames" %in% class(x)) {
-    stop("x must be of class 'fnames'")
-  }
   # -- test pattern for errors (and process pattern if it's an 're' object)
   if ("re" %in% class(pattern)) {
     perl <- perl_flavor(pattern)  # perl_flavor(pattern) overrules perl
@@ -423,15 +399,14 @@ keep_re.fnames <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   }
   # -- build result
   if (length(x) == 0) {
-    result <- x
+    return(x)
+  }
+  sel <- grep(pattern[1], x, perl = perl[1], invert = invert[1])
+  # create result
+  if (length(sel) == 0) {
+    result <- as_fnames(character(0))
   } else {
-    sel <- grep(pattern[1], x, perl = perl[1], invert = invert[1])
-    # create result
-    if (length(sel) == 0) {
-      result <- as_fnames(character(0))
-    } else {
-      result <- subset_fnames(x, sel)
-    }
+    result <- subset_fnames(x, sel)
   }
   # return result
   result
@@ -441,41 +416,38 @@ keep_re.fnames <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
 #' @exportS3Method `[` fnames
 #' @export
 `[.fnames` <- function(x, i, invert = FALSE, ...) {
-  if (!"fnames" %in% class(x)) {
-    stop("subsetted object must be of class 'fnames'")
+  if (missing(i) || is.null(i)) {
+    return(x)
   }
-  result <- x
-  if (!missing(i) && !is.null(i)) {
-    if (any(is.na(i))) {
-      stop("subset criterion must not contain any NAs")
-    }    
-    if (is.numeric(i) || is.integer(i)) {
-      i <- i[!is.na(i)]
-      if (length(i) > 0) {
-        i <- trunc(i)
-        any_pos <- any(i >= 1)
-        any_neg <- any(i <= -1)
-        if (any_pos && any_neg) {
-          stop("subsetting indices must be either all positive or all negative")          
-        }
-        if (any_neg) {
-          invert <- !invert
-          i <- abs(i)
-        }
-        result <- keep_pos(x, i, invert = invert, ...)
-      } 
-    } else if ("types" %in% class(i)) {
-      result <- keep_types(x, i, invert = invert, ...)
-    } else if ("character" %in% class(i)) {
-      result <- keep_types(x, i, invert = invert, ...)
-    } else if ("re" %in% class(i)) {
-      result <- keep_re(x, i, invert = invert, ...)
-    } else if (is.logical(i)) {
-      i <- i[!is.na(i)]
-      result <- keep_bool(x, i, invert = invert, ...) 
-    } else {
-      stop("unsupported type of subset criterion")
-    }
+  if (any(is.na(i))) {
+    stop("subset criterion must not contain any NAs")
+  }    
+  if (is.numeric(i) || is.integer(i)) {
+    i <- i[!is.na(i)]
+    if (length(i) > 0) {
+      i <- trunc(i)
+      any_pos <- any(i >= 1)
+      any_neg <- any(i <= -1)
+      if (any_pos && any_neg) {
+        stop("subsetting indices must be either all positive or all negative")          
+      }
+      if (any_neg) {
+        invert <- !invert
+        i <- abs(i)
+      }
+      result <- keep_pos(x, i, invert = invert, ...)
+    } 
+  } else if ("types" %in% class(i)) {
+    result <- keep_types(x, i, invert = invert, ...)
+  } else if ("character" %in% class(i)) {
+    result <- keep_types(x, i, invert = invert, ...)
+  } else if ("re" %in% class(i)) {
+    result <- keep_re(x, i, invert = invert, ...)
+  } else if (is.logical(i)) {
+    i <- i[!is.na(i)]
+    result <- keep_bool(x, i, invert = invert, ...) 
+  } else {
+    stop("unsupported type of subset criterion")
   }
   result
 }
@@ -530,10 +502,6 @@ print.fnames <- function(x,
                          sort_order = c("none", "alpha"),
                          extra = NULL,
                          ...) {
-  # testing and processing argument 'x'
-  if (!"fnames" %in% class(x)) {
-    stop("x must be of the class 'fnames'")
-  }
   n_types <- length(x)
   # testing and processing argument 'n'
   if (length(n) == 0) {
@@ -582,41 +550,42 @@ print.fnames <- function(x,
     "Filename collection of length ",
     n_types,
     "\n")))
-  if (n > 0) {
-    types <- x[ord]
-    format_idx <- format(c("", 
-                           format(idx, scientify = FALSE, 
-                                  justify = "right")), 
-                         justify = "right")    
-    # we don't use format() [problems with unicode !]
-    # nor do we use stringi::stri_pad_left [hickups with greek and Set.locale]
-    nchar_types <- nchar(types)
-    if (!is.null(extra$type_regex)) {
-      types <- show_matches(types, extra$type_regex)
-    }    
-    format_types <- mclm_pad_left(
-      c("filename", types),
-      max(nchar("filename"), nchar_types),
-      nchar_x = c(nchar("filename"), nchar_types))
-    # -- print titles
-    cat(format_idx[1], " ", sep = "")
-    cat(format_types[1], "\n", sep = "")
-    # -- print horizontal lines
-    cat(paste0(rep_len(" ", nchar(format_idx[1])), collapse = ""),
-        " ",
-        paste0(rep_len("-", nchar(format_types[1])), collapse = ""),
-        sep = "")
-    cat("\n")
-    # -- optionally print dots
-    if (from > 1) cat(mclm_style_very_dim("...\n"))
-    # -- print items  
-    for (j in seq_along(idx)) {
-      cat(mclm_style_very_dim(format_idx[j + 1]), " ", 
-          format_types[j + 1], "\n", sep = "")
+  if (n == 0) {
+    return(invisible(x))
     }
-    # -- optionally print dots
-    if ((from + n - 1) < n_types) cat(mclm_style_very_dim("...\n"))
+  types <- x[ord]
+  format_idx <- format(c("", 
+                         format(idx, scientify = FALSE, 
+                                justify = "right")), 
+                       justify = "right")    
+  # we don't use format() [problems with unicode !]
+  # nor do we use stringi::stri_pad_left [hickups with greek and Set.locale]
+  nchar_types <- nchar(types)
+  if (!is.null(extra$type_regex)) {
+    types <- show_matches(types, extra$type_regex)
+  }    
+  format_types <- mclm_pad_left(
+    c("filename", types),
+    max(nchar("filename"), nchar_types),
+    nchar_x = c(nchar("filename"), nchar_types))
+  # -- print titles
+  cat(format_idx[1], " ", sep = "")
+  cat(format_types[1], "\n", sep = "")
+  # -- print horizontal lines
+  cat(paste0(rep_len(" ", nchar(format_idx[1])), collapse = ""),
+      " ",
+      paste0(rep_len("-", nchar(format_types[1])), collapse = ""),
+      sep = "")
+  cat("\n")
+  # -- optionally print dots
+  if (from > 1) cat(mclm_style_very_dim("...\n"))
+  # -- print items  
+  for (j in seq_along(idx)) {
+    cat(mclm_style_very_dim(format_idx[j + 1]), " ", 
+        format_types[j + 1], "\n", sep = "")
   }
+  # -- optionally print dots
+  if ((from + n - 1) < n_types) cat(mclm_style_very_dim("...\n"))
   invisible(x)
 }
 ## Summary ---------------------------------------------------------------------
@@ -624,12 +593,10 @@ print.fnames <- function(x,
 #' @export
 #' @exportS3Method summary fnames
 summary.fnames <- function(object, ...) {
-  if (! "fnames" %in% class(object)) {
-    stop("argument 'object' must be of the class 'fnames'")
-  }
-  result <- list()
-  result$n_items <- length(object)
-  result$n_unique_items <- length(table(object))
+  result <- list(
+    n_items = length(object),
+    n_unique_items = length(table(object))
+  )
   class(result) <- "summary.fnames"
   result
 }
@@ -637,9 +604,6 @@ summary.fnames <- function(object, ...) {
 #' @export
 #' @exportS3Method print summary.fnames
 print.summary.fnames <- function(x, ...) {
-  if (!"summary.fnames" %in% class(x)) {
-    stop("argument 'x' must be of the class 'summary.fnames'")
-  }
   cat("Filename collection of length ",
       x$n_items,
       "\n",
@@ -760,6 +724,8 @@ fnames_merge_all <- function(..., sort = FALSE) {
       result_car <- car
     } else if (is.list(car) && length(car) > 0) {
       result_car <- do.call("fnames_merge_all", car)
+    } else {
+      stop("Items must be of class 'fnames' or list of 'fnames'.")
     }
   }   
   # -- processing cdr --
@@ -827,17 +793,14 @@ keep_fnames <- function(x, y, invert = FALSE, ...) {
   }  
   # build result
   if (length(x) == 0) {
-    result <- x
-  } else {
-    mtch <- !is.na(match(x, types)) # we avoid x_ranks[types] and x[types]
-    if (invert) {
-      mtch <- !mtch
-    }
-    
-    result <- subset_fnames(x, mtch)
+    return(x)
   }
-  # return result
-  result
+  mtch <- !is.na(match(x, types)) # we avoid x_ranks[types] and x[types]
+  if (invert) {
+    mtch <- !mtch
+  }
+  
+  subset_fnames(x, mtch)
 }
 
 #' @rdname keep_fnames

@@ -61,7 +61,7 @@
 #'   a separate 'document in RAM').
 #'   
 #'   If `FALSE`, `x` is treated as a vector of filenames, interpreted
-#'   as the namse of the corpus files with the actual corpus data.
+#'   as the names of the corpus files with the actual corpus data.
 #'
 #' @return Object of class `conc`, a kind of data frame with as its rows
 #'   the matches and with the following columns:
@@ -124,10 +124,11 @@ conc <-    function(x,
     
     # drop lines if needed
     if (!is.null(re_drop_line) && !is.na(re_drop_line[1])) {
-      text <- x[grep(re_drop_line[1], text, perl = perl, invert = TRUE)]
+      text <- text[grep(re_drop_line[1], text, perl = perl, invert = TRUE)]
     }
     
     # paste lines in long line if needed
+    # NOTE the code cannot deal with multiple not-glued lines
     if (!is.null(line_glue) && !is.na(line_glue[1])) {
       text <- paste(text, collapse = line_glue[1])
     }
@@ -140,22 +141,20 @@ conc <-    function(x,
     m <- gregexpr(pattern, text, perl = perl)[[1]]
     start <- as.numeric(m)
     stop <- start + attr(m, "match.length") - 1
-    left <- vector("character", 0)
-    hits <- vector("character", 0)
-    right <- vector("character", 0)
+    list_left[[i]] <- vector("character", 0)
+    list_hits[[i]] <- vector("character", 0)
+    list_right[[i]] <- vector("character", 0)
     if (start[1] > 0) { # if there are matches
-      left  <- substr(rep(text, length(start)), start - c_left, start - 1)
-      hits  <- substr(rep(text, length(start)), start, stop)
-      right <- substr(rep(text, length(start)), stop + 1, stop + c_right)
+      match_text <- rep(text, length(start))
+      list_left[[i]]  <- substr(match_text, start - c_left, start - 1)
+      list_hits[[i]]  <- substr(match_text, start, stop)
+      list_right[[i]] <- substr(match_text, stop + 1, stop + c_right)
     }
-    if (as_text) {
-      list_source[[i]] <- rep("-", length(left))
+    list_source[[i]] <- if (as_text) {
+      rep("-", length(list_left[[i]]))
     } else {
-      list_source[[i]] <- rep(fname, length(left))        
+      rep(fname, length(list_left[[i]]))        
     }
-    list_left[[i]] <- left
-    list_hits[[i]] <- hits
-    list_right[[i]] <- right      
   }
   src <- unlist(list_source)
   lft <- unlist(list_left)
@@ -357,9 +356,6 @@ explore.conc <- function(x,
 #' @exportS3Method print conc
 #' @export
 print.conc <- function(x, n = 30, ...) {
-  if (! "conc" %in% class(x)) {
-    stop("the argument 'x' must be an object of the class 'conc'")
-  } 
   cat("Concordance-based data frame (number of observations: ",
       nrow(x),
       ")\n",
@@ -381,9 +377,6 @@ print.conc <- function(x, n = 30, ...) {
 #' @export
 #' @exportS3Method as.data.frame conc
 as.data.frame.conc <- function(x, ...) {
-  if (!"conc" %in% class(x)) {
-    stop("x must be of class \"conc\"")
-  }    
   d <- x
   class(d) <- setdiff(class(d), "conc")
   d
@@ -392,9 +385,6 @@ as.data.frame.conc <- function(x, ...) {
 #' @export
 #' @exportS3Method tibble::as_tibble conc
 as_tibble.conc <- function(x, ...) {
-  if (!"conc" %in% class(x)) {
-    stop("x must be of class \"conc\"")
-  }    
   as_tibble(as.data.frame(x))
 }
 

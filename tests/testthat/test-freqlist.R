@@ -1,12 +1,6 @@
 # Arguments that come from tokenize are tested with that class
 # QUESTION is it possible to test an interactive function like explore()?
 # QUESTION should we try to test as_text = FALSE?
-
-toy_corpus <- "Once upon a time there was a tiny toy corpus.
-It consisted of three sentences. And it lived happily ever after."
-
-flist <- freqlist(toy_corpus, as_text = TRUE)
-subset_flist <- flist[c('once', 'lived', 'corpus')]
 # General methods ====
 
 test_that("freqlists are properly created", {

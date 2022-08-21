@@ -1,11 +1,5 @@
 # Arguments that come from tokenize/freqlist are tested with those classes
 # QUESTION is it possible to test an interactive function like explore()?
-# 
-toy_corpus <- "Once upon a time there was a tiny toy corpus.
-It consisted of three sentences. And it lived happily ever after."
-
-tps <- types(toy_corpus, as_text = TRUE)
-chr <- c('one', 'one', 'two', 'three', 'two')
 
 # General methods ====
 
