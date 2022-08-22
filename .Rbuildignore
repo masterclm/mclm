@@ -6,3 +6,6 @@
 \.o$
 \.so$
 ^README\.Rmd$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$

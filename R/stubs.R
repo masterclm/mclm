@@ -26,6 +26,7 @@
 #' @return Invisibly, \code{NULL}. The default \code{n_tokens}, \code{n_types} and
 #'   \code{type_names} methods returns \code{NA}.
 #' @name stubs
+#' @noRd
 NULL
 
 # TODO which functions should be in this doc? How necessary is it? How much should...

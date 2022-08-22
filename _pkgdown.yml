@@ -1,0 +1,96 @@
+url: ~
+template:
+  bootstrap: 5
+  bootswatch: flatly
+  bslib:
+    primary: "#1b45b2ff"
+    base_font: {google: "Poppins"}
+    heading_font: {google: "Raleway"}
+    code_font: {google: "Source Code Pro"}
+development:
+  mode: auto
+reference:
+  - title: Filenames
+    desc: |
+      Class `fnames` and its functions or methods
+    contents:
+    - matches("fnames")
+    - drop_path
+    - drop_extension
+    - -brackets
+    - -matches("(data|print|stubs|sort)")
+  - title: Frequency lists
+    desc: |
+      Class `freqlist` and its functions or methods
+    contents:
+    - matches("freqlist")
+    - matches("rank")
+    - type_freqs
+    - -brackets
+    - -matches("(data|print|stubs|sort)")
+  - title: Concordances
+    desc: |
+      Class `conc` and its functions or methods
+    contents:
+    - matches("conc")
+    - print_kwic
+    - -matches("(data|stubs|sort)")
+    - -mclm_print
+  - title: Types
+    desc: |
+      Class `types` and its functions or methods
+    contents:
+    - matches("types")
+    - -brackets
+    - -matches("(data|print|stubs|sort)")
+  - title: Association scores
+    desc: |
+      Class `assoc_scores` and its functions or methods
+    contents:
+    - matches("assoc")
+    - matches("cooc")
+    - -matches("(data|print|stubs|sort)")
+  - title: Tokens
+    desc: |
+      Class `tokens` and its functions or methods
+    contents:
+    - matches("tokens")
+    - tokenize
+    - trunc_at
+    - -brackets
+    - -matches("(data|print|stubs|sort)")
+  - title: Regular expressions
+    desc: |
+      Class `re` and its functions or methods
+    contents:
+    - re
+    - matches("re_")
+    - matches("perl")
+    - matches("_re")
+  - title: Stable lexical marker analysis
+    desc: |
+      Class `slma` and its functions or methods
+    contents:
+    - matches("slma")
+    - details
+    - -matches("(data|print|stubs|sort)")
+  - title: Utils
+    desc: |
+      Other utility functions
+    contents:
+    - ca_help
+    - matches("txt")
+    - zero_plus
+    - as_character
+    - as_character
+    - as_numeric
+    - drop_empty_rc
+    - find_xpath
+    - cleanup_spaces
+  - title: internal
+    contents:
+    - matches("\\[")
+    - matches("(frame|mclm_print|stubs|sort)")
+    - drop_tags
+    - p_to_chisq1
+    - chisq1_to_p

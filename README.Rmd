@@ -31,23 +31,34 @@ You can install the development version of mclm from [GitHub](https://github.com
 devtools::install_github("montesmariana/mclm")
 ```
 
-## Example
+## Examples
 
-This is a basic example which shows you how to solve a common problem:
+Below are some basic usages of mclm.
+
+The `freqlist()` function can generate a frequency list from either the text of a corpus or corpus files.
 
 ```{r example}
 library(mclm)
 toy_corpus <- "Once upon a time there was a tiny toy corpus.
 It consisted of three sentences. And it lived happily ever after."
- 
+
 flist <- freqlist(toy_corpus, as_text = TRUE)
 print(flist, n = 5)
 
+```
+
+The `get_fnames()` function creates a list of filenames based on the contents of a directory and can be given to different functions that process corpora. `surf_cooc()`, for example, computes the [surface co-occurrences](https://lexically.net/downloads/corpus_linguistics/Evert2008.pdf) of an item, such as the type "government", in a given corpus. These co-occurrences can be provided to `assoc_scores()` to compute the association strength of different collocates of the node (here "government") in the corpus.
+
+```{r cooc}
 corpus_files <- get_fnames(system.file("extdata", "cleveland", package = "mclm"))
 length(corpus_files)
 
 surf <- surf_cooc(corpus_files, "government", w_left = 5, w_right = 5)
 assoc_scores(surf)
+```
 
-conc(corpus_files, "government")
+The function `conc()` finds occurrences of a regular expression in a corpus and generates a concordance.
+
+```{r conc}
+conc(corpus_files, "govern")
 ```
