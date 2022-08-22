@@ -393,8 +393,6 @@ type_names.freqlist <- function(x, ...) {
   if (!is.numeric(value[1])) stop("value must be numeric")
   value <- round(value[1])
   if (value < 0) stop("value must not be negative")
-  if (value < n_tokens(x)) stop("value must be at least as high as the total number of tokens")
-  # QUESTION shouldn't there be a check that it's not lower than the current n_tokens?
   attr(x, 'tot_n_tokens') <- value
   x
 }
@@ -1434,10 +1432,10 @@ freqlist_corp <- function(x,
   }   
   globfreqlist <- NULL
   i = 1
-  while (i <= length(x)) {
+  while (i <= n_texts) {
     j = 0
-    blocktokens <- vector(mode = "list", length = 10)
-    while ((j < blocksize) && ((i + j) <= length(x))) {
+    blocktokens <- vector(mode = "list", length = min(blocksize, (n_texts-i+1)))
+    while ((j < blocksize) && ((i + j) <= n_texts)) {
       fname <- x[i + j]
       # -- read corpus file
       newlines <- readr::read_lines(
@@ -1462,7 +1460,7 @@ freqlist_corp <- function(x,
         ngram_n_open = ngram_n_open,
         ngram_open = ngram_open)
       # ==
-      show_dots(show_dots && (((i + j) %% dot_blocksize) == 0))
+      show_dot(show_dots && (((i + j) %% dot_blocksize) == 0))
       j <- j + 1
     }
     blockfreqlist <- freqlist(tokens_merge_all(blocktokens))

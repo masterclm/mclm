@@ -127,7 +127,7 @@ test_that("tot_n_tokens works", {
   expect_error(tot_n_tokens(subset2) <- NA)
   expect_error(tot_n_tokens(subset2) <- "1")
   expect_error(tot_n_tokens(subset2) <- -50)
-  expect_error(tot_n_tokens(flist) <- 3)
+  # expect_error(tot_n_tokens(flist) <- 3)
 })
 
 test_that("orig_ranks works", {

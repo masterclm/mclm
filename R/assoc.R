@@ -187,7 +187,7 @@ surf_cooc <- function(x,
   while (i <= n_texts) {
     j = 0
     blocktokens <- vector()
-    while ((j < blocksize) && ((i + j) <= length(x))) {
+    while ((j < blocksize) && ((i + j) <= n_texts)) {
       file <- x[i + j]
       # -- read file
       newlines <- read_txt(file, 
@@ -230,10 +230,7 @@ surf_cooc <- function(x,
       }
       
       blocktokens <- append(blocktokens, newtokens)
-      if (verbose && (((i + j) %% dot_blocksize) == 0)) { 
-        cat(".")
-        utils::flush.console() 
-      }
+      show_dot(verbose && (((i + j) %% dot_blocksize) == 0))
       j <- j + 1
     }
     match_pos <- grep(re_node[[1]], blocktokens, perl = perl)
@@ -380,18 +377,15 @@ text_cooc <- function(x,
       for (item in txts) {
         hits <- grep(re_node, item, perl = perl)
         if (length(hits) > 0) {
-          blocktokens1 <- c(blocktokens1, names(freqlist(item[-hits])))
+          blocktokens1 <- c(blocktokens1, names(freqlist(item[-hits], as_text = TRUE)))
           corpsize1 <-  corpsize1 + 1
         } else {
-          blocktokens2 <- c(blocktokens2, names(freqlist(item)))
+          blocktokens2 <- c(blocktokens2, names(freqlist(item, as_text = TRUE)))
           corpsize2 <-  corpsize2 + 1
         }
       }
       
-      if (verbose && (((i + j) %% dot_blocksize) == 0)) { 
-        cat(".")
-        utils::flush.console() 
-      }
+      show_dot(verbose && (((i + j) %% dot_blocksize) == 0))
       j <- j + 1
     }
     # --
@@ -1131,18 +1125,12 @@ assoc_abcd <- function(a, b, c, d,
 #' @rdname n_types
 #' @exportS3Method n_types assoc_scores
 n_types.assoc_scores <- function(x, ...) {
-  if (! "assoc_scores" %in% class(x)) {
-    stop("argument 'x' must be of the class 'assoc_scores'")
-  }
   nrow(x)
 }
 
 #' @rdname type_names
 #' @exportS3Method type_names assoc_scores
 type_names.assoc_scores <- function(x, ...) {
-  if (! "assoc_scores" %in% class(x)) {
-    stop("argument 'x' must be of the class 'assoc_scores'")
-  }
   rownames(x)
 }
 
@@ -1343,10 +1331,6 @@ print.assoc_scores <- function(
     extra        = NULL,
     ...) {
   
-  # testing and processing argument 'x'
-  if (!"assoc_scores" %in% class(x)) {
-    stop("x must be of the class 'assoc_scores'")
-  }
   n_items <- nrow(x)
   # testing argument 'extra'
   if (!is.null(extra) && !is.environment(extra)) {
