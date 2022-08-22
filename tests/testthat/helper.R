@@ -46,3 +46,5 @@ cwd_fnames <- as_fnames(c("folder/file1.txt", "folder/file2.txt", "folder/file3.
 # for slma ====
 a_corp <- get_fnames(system.file("extdata", "cleveland", package = "mclm"))
 b_corp <- get_fnames(system.file("extdata", "roosevelt", package = "mclm"))
+
+

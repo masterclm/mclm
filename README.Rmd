@@ -1,0 +1,53 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
+
+# mclm <img src="man/figures/logo.png" align="right" />
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+The goal of mclm is to gather various functions in support of quantitative corpus linguistics. It contains classes for corpus files, frequency lists, association scores dataframes and concordances and functions to create them, manipulate them and read them from and write them to files.
+
+The package is a companion to the Methods in Corpus Linguistics course at the Advanced Master in Linguistics (KU Leuven), but can be used for basic corpus linguistic analyses. In particular, it offers a number of learnr tutorials on how to perform basic tasks with mclm and filter objects with PERL-flavor regular expressions.
+
+## Installation
+
+You can install the development version of mclm from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
+devtools::install_github("montesmariana/mclm")
+```
+
+## Example
+
+This is a basic example which shows you how to solve a common problem:
+
+```{r example}
+library(mclm)
+toy_corpus <- "Once upon a time there was a tiny toy corpus.
+It consisted of three sentences. And it lived happily ever after."
+ 
+flist <- freqlist(toy_corpus, as_text = TRUE)
+print(flist, n = 5)
+
+corpus_files <- get_fnames(system.file("extdata", "cleveland", package = "mclm"))
+length(corpus_files)
+
+surf <- surf_cooc(corpus_files, "government", w_left = 5, w_right = 5)
+assoc_scores(surf)
+
+conc(corpus_files, "government")
+```

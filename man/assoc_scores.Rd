@@ -394,8 +394,8 @@ additionally, \code{with_variants} is \code{TRUE}.
 
 An object of class \code{assoc_scores} has:
 \itemize{
-\item associated \code{\link[=as_data_frame]{as_data_frame()}}, \link[=print.assoc_scores]{print()} and \code{\link[tibble:as_tibble]{tibble::as_tibble()}}
-methods,
+\item associated \code{\link[=as.data.frame]{as.data.frame()}}, \code{\link[=print.assoc_scores]{print()}},
+\code{\link[=sort.assoc_scores]{sort()}} and \code{\link[tibble:as_tibble]{tibble::as_tibble()}} methods,
 \item an interactive \code{\link[=explore]{explore()}} method and useful getters, viz. \code{\link[=n_types]{n_types()}} and
 \code{\link[=type_names]{type_names()}}.
 }
