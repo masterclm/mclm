@@ -8,6 +8,14 @@ NULL
 ## usethis namespace: end
 NULL
 
+#' Mastering Corpus Linguistic Methods
+#' 
+# Read corpus files, create frequency lists, generate concordances, compute co-occurrence
+# frequencies and perform keyword analysis, stable lexical markers analysis
+# and more. Companion to the Methods in Corpus Linguistics course at the Advanced
+# Master in Linguistics (KU Leuven).
+#' 
+#' 
 #' @importFrom ca ca
 #' @importFrom crayon bold
 #' @importFrom dplyr bind_rows mutate
@@ -22,4 +30,5 @@ NULL
 #' @importFrom utils type.convert
 #' @importFrom XML xmlValue
 #' @importFrom yaml as.yaml yaml.load
-NULL
+#' @keywords internal
+"_PACKAGE"
