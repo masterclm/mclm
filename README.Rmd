@@ -16,6 +16,7 @@ knitr::opts_chunk$set(
 # mclm <img src="man/figures/logo.png" align="right" />
 
 <!-- badges: start -->
+[![Codecov test coverage](https://codecov.io/gh/montesmariana/mclm/branch/main/graph/badge.svg)](https://app.codecov.io/gh/montesmariana/mclm?branch=main)
 <!-- badges: end -->
 
 The goal of mclm is to gather various functions in support of quantitative corpus linguistics. It contains classes for corpus files, frequency lists, association scores dataframes and concordances and functions to create them, manipulate them and read them from and write them to files.

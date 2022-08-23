@@ -4,6 +4,9 @@
 # mclm <img src="man/figures/logo.png" align="right" />
 
 <!-- badges: start -->
+
+[![Codecov test
+coverage](https://codecov.io/gh/montesmariana/mclm/branch/main/graph/badge.svg)](https://app.codecov.io/gh/montesmariana/mclm?branch=main)
 <!-- badges: end -->
 
 The goal of mclm is to gather various functions in support of

@@ -30,7 +30,8 @@ Suggests:
     MASS,
     tidyr,
     purrr,
-    testthat (>= 3.0.0)
+    testthat (>= 3.0.0),
+    covr
 License: GPL-2
 LazyData: TRUE
 RoxygenNote: 7.2.1
