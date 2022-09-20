@@ -254,4 +254,3 @@ importFrom(utils,type.convert)
 importFrom(yaml,as.yaml)
 importFrom(yaml,yaml.load)
 useDynLib(mclm, .registration = TRUE)
-

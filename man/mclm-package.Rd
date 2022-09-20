@@ -6,17 +6,25 @@
 \alias{mclm-package}
 \title{Mastering Corpus Linguistic Methods}
 \description{
-Read corpus files, create frequency lists, generate concordances, compute co-occurrence
-frequencies and perform keyword analysis, stable lexical markers analysis
-and more. Companion to the Methods in Corpus Linguistics course at the Advanced
-Master in Linguistics (KU Leuven).
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
+Various functions in support of quantitative corpus linguistics.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://montesmariana.github.io/mclm}
+  \item \url{https://github.com/montesmariana/mclm}
+  \item \url{https://montesmariana.github.io/mclm/}
+}
+
 }
 \author{
-\strong{Maintainer}: Dirk Speelman \email{dirk.speelman@kuleuven.be}
+\strong{Maintainer}: Mariana Montes \email{mariana.montes@kuleuven.be}
 
 Authors:
 \itemize{
-  \item Mariana Montes \email{mariana.montes@kuleuven.be}
+  \item Dirk Speelman \email{dirk.speelman@kuleuven.be}
 }
 
 }
