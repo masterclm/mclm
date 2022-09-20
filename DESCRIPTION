@@ -5,10 +5,10 @@ Version: 0.2.5
 Authors@R: c(
   person("Dirk", "Speelman",
         email = "dirk.speelman@kuleuven.be",
-        role = c("aut", "cre")),
+        role = c("aut")),
   person("Mariana", "Montes",
         email = "mariana.montes@kuleuven.be",
-        role = c("aut"))
+        role = c("aut", "cre"))
   )
 Description: Various functions in support of quantitative corpus linguistics.
 Encoding: UTF-8
