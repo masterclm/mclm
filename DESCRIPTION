@@ -36,4 +36,5 @@ License: GPL-2
 LazyData: TRUE
 RoxygenNote: 7.2.1
 Roxygen: list(markdown = TRUE)
+URL: https://montesmariana.github.io/mclm, https://github.com/montesmariana/mclm
 Config/testthat/edition: 3
