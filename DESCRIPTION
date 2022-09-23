@@ -32,7 +32,8 @@ Suggests:
     tidyr,
     purrr,
     testthat (>= 3.0.0),
-    covr
+    covr,
+    rsconnect
 License: GPL-2
 LazyData: TRUE
 RoxygenNote: 7.2.1
