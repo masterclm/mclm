@@ -2,7 +2,7 @@
 
 #' Build a concordance for the matches of a regex
 #' 
-#' This function builds a concordance for the matches of a regular expresion. The result is a
+#' This function builds a concordance for the matches of a regular expression. The result is a
 #' dataset that can be written to a file with the function [write_conc()].
 #' It mimics the behavior of the concordance tool in the program AntConc.
 #' 
@@ -31,9 +31,9 @@
 #'   included in the result as left co-text of the match.
 #' @param c_right Number. How many characters to the right of each match must be
 #'   included in the result as right co-text of the match.
-#' @param perl If `TRUE`, `pattern` is treated as a PCRE flavour regular
+#' @param perl If `TRUE`, `pattern` is treated as a PCRE flavor regular
 #'   expression. Otherwise, `pattern` is treated as a regular expression in R's
-#'   default flavour of regular expression.
+#'   default flavor of regular expression.
 #' @param re_drop_line Character vector or `NULL`. If `NULL`, the argument
 #'   is ignored.
 #'   Otherwise, lines in `x` containing a match for `re_drop_line` are

@@ -124,8 +124,8 @@ in the output of this function.}
 \item{ngram_n_open}{If \code{ngram_size} is \code{2} or higher, and moreover
 \code{ngram_n_open} is a number higher than \code{0}, then
 ngrams with 'open slots' in them are retrieved. These
-ngrams with 'open slots' are generalisations of fully lexically specific
-ngrams (with the generalisation being that one or more of the items
+ngrams with 'open slots' are generalizations of fully lexically specific
+ngrams (with the generalization being that one or more of the items
 in the ngram are replaced by a notation that stands for 'any arbitrary token').
 
 For instance, if \code{ngram_size} is \code{4} and \code{ngram_n_open} is
@@ -174,9 +174,9 @@ to identify them, and returns an object of the class \code{\link{tokens}}.
 }
 \details{
 If the output contains ngrams with open slots, then the order
-of the items in the output is no longermeaningful. For instance, let's imagine
+of the items in the output is no longer meaningful. For instance, let's imagine
 a case where \code{ngram_size} is \code{5} and \code{ngram_n_open} is \code{2}.
-If the input contains an 5-fgram \code{"it_is_widely_accepted_that"}, then the output
+If the input contains a 5-gram \code{"it_is_widely_accepted_that"}, then the output
 will contain \code{"it_[]_[]_accepted_that"}, \code{"it_[]_widely_[]_that"} and
 \code{"it_is_[]_[]_that"}. The relative order of these three items in the output
 must be considered arbitrary.

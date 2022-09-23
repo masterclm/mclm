@@ -2,7 +2,7 @@
 % Please edit documentation in R/fnames.R
 \name{read_fnames}
 \alias{read_fnames}
-\title{Read a colelction of filenames from a text file}
+\title{Read a collection of filenames from a text file}
 \usage{
 read_fnames(file, sep = NA, file_encoding = "UTF-8", trim_fnames = FALSE, ...)
 }

@@ -7,7 +7,7 @@
 #' 
 #' In the output of `row_pcoord()`, each row corresponds to a row from the dataframe
 #' that [ca::ca()] was applied to, and each column corresponds to a principal component.
-#' In the output of `col_pcoord()`, each row corresponds to a colum from the dataframe
+#' In the output of `col_pcoord()`, each row corresponds to a column from the dataframe
 #' that [ca::ca()] was applied to, and each column corresponds to a principal component.
 #' 
 #' @param x An object of class [`ca`][ca::ca()].
@@ -48,13 +48,13 @@
 #'        title = "authors")
 NULL
 
-#' @describeIn ca_help Retrieve row principal coordiantes for all dimensions
+#' @describeIn ca_help Retrieve row principal coordinates for all dimensions
 #' @export
 row_pcoord <- function(x, ...) {
   x$rowcoord %*% diag(x$sv)
 }
 
-#' @describeIn ca_help Retrieve column principal coordiantes for all dimensions
+#' @describeIn ca_help Retrieve column principal coordinates for all dimensions
 #' @export
 col_pcoord <- function(x, ...) {
   x$colcoord %*% diag(x$sv)

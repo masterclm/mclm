@@ -6,9 +6,9 @@
 #' to identify them, and returns an object of the class [`tokens`].
 #' 
 #' If the output contains ngrams with open slots, then the order
-#' of the items in the output is no longermeaningful. For instance, let's imagine
+#' of the items in the output is no longer meaningful. For instance, let's imagine
 #' a case where `ngram_size` is `5` and `ngram_n_open` is `2`.
-#' If the input contains an 5-fgram `"it_is_widely_accepted_that"`, then the output
+#' If the input contains a 5-gram `"it_is_widely_accepted_that"`, then the output
 #' will contain `"it_[]_[]_accepted_that"`, `"it_[]_widely_[]_that"` and
 #' `"it_is_[]_[]_that"`. The relative order of these three items in the output
 #' must be considered arbitrary.
@@ -98,8 +98,8 @@
 #' @param ngram_n_open If `ngram_size` is `2` or higher, and moreover
 #'   `ngram_n_open` is a number higher than `0`, then
 #'   ngrams with 'open slots' in them are retrieved. These
-#'   ngrams with 'open slots' are generalisations of fully lexically specific
-#'   ngrams (with the generalisation being that one or more of the items
+#'   ngrams with 'open slots' are generalizations of fully lexically specific
+#'   ngrams (with the generalization being that one or more of the items
 #'   in the ngram are replaced by a notation that stands for 'any arbitrary token').
 #'   
 #'   For instance, if `ngram_size` is `4` and `ngram_n_open` is

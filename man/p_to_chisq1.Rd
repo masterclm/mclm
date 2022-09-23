@@ -2,7 +2,7 @@
 % Please edit documentation in R/assoc.R
 \name{p_to_chisq1}
 \alias{p_to_chisq1}
-\title{P right quantile in chi-squared distribution with 1 df}
+\title{P right quantile in chi-squared distribution with 1 degree of freedom}
 \usage{
 p_to_chisq1(p)
 }

@@ -142,7 +142,7 @@ exceptionally small corpus files, it may be worthwhile to use a higher
 number, and when one works with exceptionally large corpus files, it may be
 worthwhile to use a lower number.}
 
-\item{verbose}{Logical. If \code{TRUE}, messages are pritned to the
+\item{verbose}{Logical. If \code{TRUE}, messages are printed to the
 console to indicate progress.}
 
 \item{dot_blocksize}{Logical. If \code{TRUE}, dots are printed to the

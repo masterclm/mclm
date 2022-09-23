@@ -25,7 +25,7 @@ path of the files.}
 searched?}
 
 \item{perl}{Boolean value. Whether \code{re_pattern} should be interpreted as a
-PERL flavour of regular expression.}
+PERL flavor of regular expression.}
 
 \item{invert}{Boolean value. If \code{TRUE}, filenames matching \code{re_pattern} are
 the only ones retrieved. If \code{FALSE}, filenames matching \code{re_pattern} are

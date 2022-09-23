@@ -272,7 +272,7 @@ cleanup_spaces <- function(x,
 
 #' Drop XML tags from character string
 #' 
-#' This function takes a character vector and retuns a copy from which all
+#' This function takes a character vector and returns a copy from which all
 #' XML-like tags have been removed. Moreover, if `half_tags_too = TRUE`
 #' any half tag at the beginning or end of `x` is also removed.
 #' 
@@ -281,7 +281,7 @@ cleanup_spaces <- function(x,
 #' `<` and ending with `>` is considered a 'tag'; inside such a tag, between
 #' `<` and `>`, `drop_tags()` accepts any sequence of zero or more characters.
 #' 
-#' @param x String with xml tag
+#' @param x String with XML tag
 #' @param half_tags_too Logical. Whether tags with only opening/closing
 #'   bracket should also be removed.
 #' @return Character string

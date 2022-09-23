@@ -41,7 +41,7 @@ drop_re(x, pattern, perl = TRUE, ...)
 or a character vector of length one containing a regular expression.}
 
 \item{perl}{Logical.
-Whether \code{pattern} is treated as a PCRE flavour regular expression.
+Whether \code{pattern} is treated as a PCRE flavor regular expression.
 The \code{perl} argument is only used if \code{pattern} is a regular character vector.
 If \code{pattern} is an object of the class \code{\link{re}}, then the
 \code{perl} argument is ignored, and the relevant information in the

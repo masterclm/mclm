@@ -11,7 +11,7 @@
 #' conducted. The 'stability' of a linguistic item *x*, as a marker for the
 #' collection of *A*-documents (when compared to the *B*-documents) corresponds
 #' to the frequency and consistency with which *x* is found to be a keyword for
-#' the *A*-documents across all aforementioend keyword analyses.
+#' the *A*-documents across all aforementioned keyword analyses.
 #' 
 #' In any specific keyword analysis, *x* is considered a keyword for an *A*-document
 #' if `G_signed` is positive and moreover `p_G` is less than `sig_cutoff`
@@ -61,7 +61,7 @@
 #'   
 #'   The `scores` element is a dataframe of which the rows are linguistic items
 #'   for which a stable lexical marker analysis was conducted and the columns are
-#'   different 'stability measaures' and related statistics. By default, the
+#'   different 'stability measures' and related statistics. By default, the
 #'   linguistic items are sorted by decreasing 'stability' according to the `S_lor`
 #'   measure.
 #'   

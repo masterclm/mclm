@@ -15,7 +15,7 @@ first element will be used.}
 regular expression or as an \code{"R"} string). If its length is higher than 1,
 only its first element will be used.}
 
-\item{as_single_line}{Logical. Whether \code{x} shoudl be converted to a single line
+\item{as_single_line}{Logical. Whether \code{x} should be converted to a single line
 regular expression, therefore also removing all comments, prior to printing.
 If the length of this vector is larger than 1, only its first item will be used.}
 }
@@ -40,7 +40,7 @@ there is no testing whether at the point of encountering \verb{#} we're in
 free-spacing mode. Second, there is no thorough testing whether or not
 the \verb{#} symbol is part of a character class.
 However, \verb{#} is processed correctly as long as any 'literal #' is
-immediately preceded by either a backslash or an opening square bracked,
+immediately preceded by either a backslash or an opening square bracket,
 and any `comment-introducing #' is not immediately preceded by
 a backslash or an opening square bracket.
 }

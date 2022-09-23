@@ -41,7 +41,7 @@ list (i.e. the list with the frequency of items in the target context) and
 reference context.
 
 If \code{x} is an object of class \code{\link[=create_cooc]{cooc_info}} instead, it is interpreted
-as containting target frequency information, reference frequency information
+as containing target frequency information, reference frequency information
 and corpus size information.}
 
 \item{y}{An object of class \code{\link{freqlist}} with the frequencies of the
@@ -231,7 +231,7 @@ In other words, it is the natural log of the odds ratio.
 \eqn{\min(\frac{a}{m}, \frac{a}{k})}.
 In other words, it is either \eqn{\frac{a}{m}} or \eqn{\frac{a}{k}}, whichever is lowest.
 This column is present \code{measures} is \code{NULL}.
-\item \code{Jaccard}: The Jaccard index, which iscalculated as
+\item \code{Jaccard}: The Jaccard index, which is calculated as
 \eqn{\frac{a}{a + b + c}}. It expresses \emph{a}, which is the frequency of the
 test item in the target context, relative to \emph{b + c + d}, i.e. the frequency
 of all other contexts.
@@ -304,7 +304,7 @@ for a two-by-two contingency table.
 \item \code{chi2_2T}, \code{p_chi2_2T} and \code{chi2_2T_signed}: The chi-squared test statistic
 (\eqn{\chi^2}) as used in a chi-squared goodness-of-fit test applied to the
 first column of the contingency table. The \code{"2T"} in the name stands for
-'two terms' (as opposed to \code{chi2}, which is soemtimes the 'four terms' version).
+'two terms' (as opposed to \code{chi2}, which is sometimes the 'four terms' version).
 \code{chi2_2T} is calculated as follows: \deqn{
                         \frac{(a-\mathrm{exp\_a})^2}{\mathrm{exp\_a}} +
                         \frac{(c-\mathrm{exp\_c})^2}{\mathrm{exp\_c}}
@@ -323,7 +323,7 @@ or homogeneity in a two-by-two contingency table.
 Scores are high in case of strong evidence for attraction, but also in case
 of strong evidence of repulsion.
 The \code{G_signed} column is present if \code{measures} is \code{NULL}.
-\code{G} is calcualted as follows: \deqn{
+\code{G} is calculated as follows: \deqn{
                   2 \left(
                   a \times \log(\frac{a}{\mathrm{exp\_a}}) +
                   b \times \log(\frac{b}{\mathrm{exp\_b}}) +

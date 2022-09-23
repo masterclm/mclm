@@ -139,7 +139,7 @@ cooc_info <- function(target_freqlist,
 #'   exceptionally small corpus files, it may be worthwhile to use a higher
 #'   number, and when one works with exceptionally large corpus files, it may be
 #'   worthwhile to use a lower number.
-#' @param verbose Logical. If `TRUE`, messages are pritned to the
+#' @param verbose Logical. If `TRUE`, messages are printed to the
 #'   console to indicate progress.
 #' @param dot_blocksize Logical. If `TRUE`, dots are printed to the
 #'   console to indicate progress.
@@ -483,7 +483,7 @@ text_cooc <- function(x,
 #'   reference context.
 #'   
 #'   If `x` is an object of class [`cooc_info`][create_cooc()] instead, it is interpreted
-#'   as containting target frequency information, reference frequency information
+#'   as containing target frequency information, reference frequency information
 #'   and corpus size information.
 #' @param y An object of class [`freqlist`] with the frequencies of the
 #'   reference context if `x` is also a [`freqlist`]. If `x` is an
@@ -647,7 +647,7 @@ text_cooc <- function(x,
 #'   \eqn{\min(\frac{a}{m}, \frac{a}{k})}.
 #'   In other words, it is either \eqn{\frac{a}{m}} or \eqn{\frac{a}{k}}, whichever is lowest.
 #'   This column is present `measures` is `NULL`.
-#'   - `Jaccard`: The Jaccard index, which iscalculated as
+#'   - `Jaccard`: The Jaccard index, which is calculated as
 #'   \eqn{\frac{a}{a + b + c}}. It expresses *a*, which is the frequency of the
 #'   test item in the target context, relative to *b + c + d*, i.e. the frequency
 #'   of all other contexts.
@@ -716,7 +716,7 @@ text_cooc <- function(x,
 #'   - `chi2_2T`, `p_chi2_2T` and `chi2_2T_signed`: The chi-squared test statistic
 #'   (\eqn{\chi^2}) as used in a chi-squared goodness-of-fit test applied to the
 #'   first column of the contingency table. The `"2T"` in the name stands for
-#'   'two terms' (as opposed to `chi2`, which is soemtimes the 'four terms' version).
+#'   'two terms' (as opposed to `chi2`, which is sometimes the 'four terms' version).
 #'   `chi2_2T` is calculated as follows: \deqn{
 #'                         \frac{(a-\mathrm{exp\_a})^2}{\mathrm{exp\_a}} +
 #'                         \frac{(c-\mathrm{exp\_c})^2}{\mathrm{exp\_c}}
@@ -735,7 +735,7 @@ text_cooc <- function(x,
 #'   Scores are high in case of strong evidence for attraction, but also in case
 #'   of strong evidence of repulsion.
 #'   The `G_signed` column is present if `measures` is `NULL`.
-#'   `G` is calcualted as follows: \deqn{
+#'   `G` is calculated as follows: \deqn{
 #'                   2 \left(
 #'                   a \times \log(\frac{a}{\mathrm{exp\_a}}) +
 #'                   b \times \log(\frac{b}{\mathrm{exp\_b}}) +
@@ -1581,7 +1581,7 @@ zero_plus <- function(x, small_pos = 0.00001) {
   x
 }
 
-#' P right quantile in chi-squared distribution with 1 df
+#' P right quantile in chi-squared distribution with 1 degree of freedom
 #' 
 #' P right quantile that takes as its argument a probability `p` and that returns
 #' the `p` *right quantile* in the \eqn{\chi^2} distribution with one degree of 
@@ -1599,7 +1599,8 @@ p_to_chisq1 <- function(p) {
   return(qchisq(1 - p, 1))
 }
 
-#' Proportion of chi-squared distribution with 1 df that sits to the right of x
+#' Proportion of chi-squared distribution with one degree of freedom that sits to the right of x
+#' 
 #' Helper function that takes as its argument a numerical value `x` and
 #' that returns the proportion *p* of the chi-squared
 #' distribution with one degree of freedom that sits to the right of the

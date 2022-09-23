@@ -34,14 +34,14 @@ first and second dimensions.
 \details{
 In the output of \code{row_pcoord()}, each row corresponds to a row from the dataframe
 that \code{\link[ca:ca]{ca::ca()}} was applied to, and each column corresponds to a principal component.
-In the output of \code{col_pcoord()}, each row corresponds to a colum from the dataframe
+In the output of \code{col_pcoord()}, each row corresponds to a column from the dataframe
 that \code{\link[ca:ca]{ca::ca()}} was applied to, and each column corresponds to a principal component.
 }
 \section{Functions}{
 \itemize{
-\item \code{row_pcoord()}: Retrieve row principal coordiantes for all dimensions
+\item \code{row_pcoord()}: Retrieve row principal coordinates for all dimensions
 
-\item \code{col_pcoord()}: Retrieve column principal coordiantes for all dimensions
+\item \code{col_pcoord()}: Retrieve column principal coordinates for all dimensions
 
 \item \code{xlim4ca()}: Return range of first dimension for plotting
 

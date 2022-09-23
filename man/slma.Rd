@@ -94,8 +94,8 @@ in the output of this function.}
 \item{ngram_n_open}{If \code{ngram_size} is \code{2} or higher, and moreover
 \code{ngram_n_open} is a number higher than \code{0}, then
 ngrams with 'open slots' in them are retrieved. These
-ngrams with 'open slots' are generalisations of fully lexically specific
-ngrams (with the generalisation being that one or more of the items
+ngrams with 'open slots' are generalizations of fully lexically specific
+ngrams (with the generalization being that one or more of the items
 in the ngram are replaced by a notation that stands for 'any arbitrary token').
 
 For instance, if \code{ngram_size} is \code{4} and \code{ngram_n_open} is
@@ -139,7 +139,7 @@ method simply prints the main dataframe.
 
 The \code{scores} element is a dataframe of which the rows are linguistic items
 for which a stable lexical marker analysis was conducted and the columns are
-different 'stability measaures' and related statistics. By default, the
+different 'stability measures' and related statistics. By default, the
 linguistic items are sorted by decreasing 'stability' according to the \code{S_lor}
 measure.\tabular{llll}{
    Column \tab Name \tab Computation \tab Range of values \cr
@@ -172,7 +172,7 @@ in \code{y} starts from a separate keyword analysis for all possible document co
 conducted. The 'stability' of a linguistic item \emph{x}, as a marker for the
 collection of \emph{A}-documents (when compared to the \emph{B}-documents) corresponds
 to the frequency and consistency with which \emph{x} is found to be a keyword for
-the \emph{A}-documents across all aforementioend keyword analyses.
+the \emph{A}-documents across all aforementioned keyword analyses.
 
 In any specific keyword analysis, \emph{x} is considered a keyword for an \emph{A}-document
 if \code{G_signed} is positive and moreover \code{p_G} is less than \code{sig_cutoff}

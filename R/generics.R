@@ -26,7 +26,7 @@
 #' - `f {regex}` (find...): Jump to the next item matching the regular expression `{regex}`.
 #'   
 #'     E.g. `f (?xi) astic $` will jump to the next item ending in `"astic"`.
-#'     The software starts searching from the *second item* presently visible onwards.
+#'     The software starts searching from the *second item* presently visible onward.
 #'  
 #'     `f` will jump to the next item matching the last regular expression used with
 #'     `f {regex}`.
@@ -40,7 +40,7 @@
 #' @param x An object of any of the classes for which the method is implemented.
 #' @inheritParams mclm_print
 #' @param perl Logical. Whether or not the regular expressions used in the
-#'   exploration session use the PERL flavour of regular expression.
+#'   exploration session use the PERL flavor of regular expression.
 #' @param use_clear Logical. If `TRUE`, and if the feature is supported by the R
 #'   environment, the console will be cleared in between all interactive steps
 #'   in the exploration session.
@@ -140,7 +140,7 @@ drop_pos.default <- function(x, pos, ...) {
 #' @param pattern Either an object of the class [`re`]
 #'   or a character vector of length one containing a regular expression.
 #' @param perl Logical.
-#'   Whether `pattern` is treated as a PCRE flavour regular expression.
+#'   Whether `pattern` is treated as a PCRE flavor regular expression.
 #'   The `perl` argument is only used if `pattern` is a regular character vector.
 #'   If `pattern` is an object of the class [`re`], then the
 #'   `perl` argument is ignored, and the relevant information in the

@@ -36,9 +36,9 @@ included in the result as left co-text of the match.}
 \item{c_right}{Number. How many characters to the right of each match must be
 included in the result as right co-text of the match.}
 
-\item{perl}{If \code{TRUE}, \code{pattern} is treated as a PCRE flavour regular
+\item{perl}{If \code{TRUE}, \code{pattern} is treated as a PCRE flavor regular
 expression. Otherwise, \code{pattern} is treated as a regular expression in R's
-default flavour of regular expression.}
+default flavor of regular expression.}
 
 \item{re_drop_line}{Character vector or \code{NULL}. If \code{NULL}, the argument
 is ignored.
@@ -102,7 +102,7 @@ read with \code{\link[=read_conc]{read_conc()}}. It is also possible to import c
 by means other than \code{\link[=write_conc]{write_conc()}} with \code{\link[=import_conc]{import_conc()}}.
 }
 \description{
-This function builds a concordance for the matches of a regular expresion. The result is a
+This function builds a concordance for the matches of a regular expression. The result is a
 dataset that can be written to a file with the function \code{\link[=write_conc]{write_conc()}}.
 It mimics the behavior of the concordance tool in the program AntConc.
 }

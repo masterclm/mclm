@@ -133,8 +133,8 @@ in the output of this function.}
 \item{ngram_n_open}{If \code{ngram_size} is \code{2} or higher, and moreover
 \code{ngram_n_open} is a number higher than \code{0}, then
 ngrams with 'open slots' in them are retrieved. These
-ngrams with 'open slots' are generalisations of fully lexically specific
-ngrams (with the generalisation being that one or more of the items
+ngrams with 'open slots' are generalizations of fully lexically specific
+ngrams (with the generalization being that one or more of the items
 in the ngram are replaced by a notation that stands for 'any arbitrary token').
 
 For instance, if \code{ngram_size} is \code{4} and \code{ngram_n_open} is

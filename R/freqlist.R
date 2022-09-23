@@ -57,7 +57,7 @@
 #'   
 #'   Additional manipulation functions include [type_freqs()] to extract the frequencies
 #'   of different items, [freqlist_merge()] to combine frequency lists, and
-#'   [freqlist_diff()] to substract a frequency list from another.
+#'   [freqlist_diff()] to subtract a frequency list from another.
 #'   
 #'   Objects of class `freqlist` can be saved to file with [write_freqlist()];
 #'   these files can be read with [read_freqlist()].
@@ -756,7 +756,7 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
 #'   In other words, sorting by frequencies (`"freqs"`) with `decreasing` set
 #'   to its default value `FALSE` results in the lowest frequencies
 #'   ending up at the beginning of the sorted list.
-#' @param na_last Logical defining the behaviour of `NA` elements.
+#' @param na_last Logical defining the behavior of `NA` elements.
 #'   
 #'   This argument is only relevant when `sort_crit` is `"orig_ranks"`
 #'    because currently names and frequencies are not allowed to be `NA`

@@ -150,8 +150,8 @@ in the output of this function.}
 \item{ngram_n_open}{If \code{ngram_size} is \code{2} or higher, and moreover
 \code{ngram_n_open} is a number higher than \code{0}, then
 ngrams with 'open slots' in them are retrieved. These
-ngrams with 'open slots' are generalisations of fully lexically specific
-ngrams (with the generalisation being that one or more of the items
+ngrams with 'open slots' are generalizations of fully lexically specific
+ngrams (with the generalization being that one or more of the items
 in the ngram are replaced by a notation that stands for 'any arbitrary token').
 
 For instance, if \code{ngram_size} is \code{4} and \code{ngram_n_open} is
@@ -199,7 +199,7 @@ subsetting (see \link{brackets}).
 
 Additional manipulation functions include \code{\link[=type_freqs]{type_freqs()}} to extract the frequencies
 of different items, \code{\link[=freqlist_merge]{freqlist_merge()}} to combine frequency lists, and
-\code{\link[=freqlist_diff]{freqlist_diff()}} to substract a frequency list from another.
+\code{\link[=freqlist_diff]{freqlist_diff()}} to subtract a frequency list from another.
 
 Objects of class \code{freqlist} can be saved to file with \code{\link[=write_freqlist]{write_freqlist()}};
 these files can be read with \code{\link[=read_freqlist]{read_freqlist()}}.

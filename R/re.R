@@ -102,7 +102,7 @@ as.re <- function(x, perl = TRUE, ...) {
 
 # Public functions applied to the class ========================================
 
-#' Retrieve or set the flavour of a regular expression
+#' Retrieve or set the flavor of a regular expression
 #' 
 #' These functions retrieve or set the `perl` property of an object of class [`re`].
 #' 
@@ -662,7 +662,7 @@ scan_txt2 <- function() {
 #'
 #' @param perl Logical. If `TRUE`, the regular expression being scanned is assumed
 #'   to use PCRE (Perl Compatible Regular Expressions) notation. If `FALSE`, it
-#'   is assumed to use base R's defautl regular expression notation (see [base::regex]).
+#'   is assumed to use base R's default regular expression notation (see [base::regex]).
 #'   Contrary to base R's regular expression functions, the default is `TRUE`.
 #' @param ... Additional arguments.
 #'
@@ -699,7 +699,7 @@ scan_re2 <- function(perl = TRUE, ...) {
 #' free-spacing mode. Second, there is no thorough testing whether or not
 #' the `#` symbol is part of a character class. 
 #' However, `#` is processed correctly as long as any 'literal #' is 
-#' immediately preceded by either a backslash or an opening square bracked,
+#' immediately preceded by either a backslash or an opening square bracket,
 #' and any `comment-introducing #' is not immediately preceded by
 #' a backslash or an opening square bracket.
 #' 
@@ -709,7 +709,7 @@ scan_re2 <- function(perl = TRUE, ...) {
 #' @param format Character vector describing the requested format (as a `"plain"`
 #'   regular expression or as an `"R"` string). If its length is higher than 1,
 #'   only its first element will be used.
-#' @param as_single_line Logical. Whether `x` shoudl be converted to a single line
+#' @param as_single_line Logical. Whether `x` should be converted to a single line
 #'   regular expression, therefore also removing all comments, prior to printing.
 #'   If the length of this vector is larger than 1, only its first item will be used.
 #'

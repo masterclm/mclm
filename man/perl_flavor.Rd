@@ -3,7 +3,7 @@
 \name{perl_flavor}
 \alias{perl_flavor}
 \alias{perl_flavor<-}
-\title{Retrieve or set the flavour of a regular expression}
+\title{Retrieve or set the flavor of a regular expression}
 \usage{
 perl_flavor(x)
 

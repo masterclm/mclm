@@ -2,11 +2,7 @@
 % Please edit documentation in R/assoc.R
 \name{chisq1_to_p}
 \alias{chisq1_to_p}
-\title{Proportion of chi-squared distribution with 1 df that sits to the right of x
-Helper function that takes as its argument a numerical value \code{x} and
-that returns the proportion \emph{p} of the chi-squared
-distribution with one degree of freedom that sits to the right of the
-value `x.}
+\title{Proportion of chi-squared distribution with one degree of freedom that sits to the right of x}
 \usage{
 chisq1_to_p(x)
 }
@@ -18,7 +14,6 @@ The proportion \emph{p} of the chi-squared distribution with one
 degree of freedom that sits to the right of the value \code{x}.
 }
 \description{
-Proportion of chi-squared distribution with 1 df that sits to the right of x
 Helper function that takes as its argument a numerical value \code{x} and
 that returns the proportion \emph{p} of the chi-squared
 distribution with one degree of freedom that sits to the right of the

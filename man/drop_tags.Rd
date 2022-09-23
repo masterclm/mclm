@@ -7,7 +7,7 @@
 drop_tags(x, half_tags_too = TRUE)
 }
 \arguments{
-\item{x}{String with xml tag}
+\item{x}{String with XML tag}
 
 \item{half_tags_too}{Logical. Whether tags with only opening/closing
 bracket should also be removed.}
@@ -16,7 +16,7 @@ bracket should also be removed.}
 Character string
 }
 \description{
-This function takes a character vector and retuns a copy from which all
+This function takes a character vector and returns a copy from which all
 XML-like tags have been removed. Moreover, if \code{half_tags_too = TRUE}
 any half tag at the beginning or end of \code{x} is also removed.
 }

@@ -11,7 +11,7 @@
 #' @param recursive Boolean value. Should the subdirectories of `path` also be
 #'   searched?
 #' @param perl Boolean value. Whether `re_pattern` should be interpreted as a
-#'   PERL flavour of regular expression.
+#'   PERL flavor of regular expression.
 #' @param invert Boolean value. If `TRUE`, filenames matching `re_pattern` are
 #'   the only ones retrieved. If `FALSE`, filenames matching `re_pattern` are
 #'   excluded.
@@ -798,7 +798,7 @@ drop_fnames <- function(x, y, ...) {
   keep_fnames(x, y, invert = TRUE, ...)
 }
 
-#' Read a colelction of filenames from a text file
+#' Read a collection of filenames from a text file
 #' 
 #' This function reads an object of class [`fnames`] from a text file, which is
 #' assumed to contain one filename on each line.

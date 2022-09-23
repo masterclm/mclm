@@ -12,7 +12,7 @@ scan_re2(perl = TRUE, ...)
 \arguments{
 \item{perl}{Logical. If \code{TRUE}, the regular expression being scanned is assumed
 to use PCRE (Perl Compatible Regular Expressions) notation. If \code{FALSE}, it
-is assumed to use base R's defautl regular expression notation (see \link[base:regex]{base::regex}).
+is assumed to use base R's default regular expression notation (see \link[base:regex]{base::regex}).
 Contrary to base R's regular expression functions, the default is \code{TRUE}.}
 
 \item{...}{Additional arguments.}

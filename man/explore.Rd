@@ -47,7 +47,7 @@ explore(x, ...)
 (among all selected columns, including frozen columns). If \code{from_col} points}
 
 \item{perl}{Logical. Whether or not the regular expressions used in the
-exploration session use the PERL flavour of regular expression.}
+exploration session use the PERL flavor of regular expression.}
 
 \item{sort_order}{Order in which the items are to be printed. In general, possible values
 are \code{"alpha"} (meaning that the items are to be sorted alphabetically),
@@ -87,7 +87,7 @@ E.g. \verb{g 1000} will jump to the 1000th line.
 \item \verb{f \{regex\}} (find...): Jump to the next item matching the regular expression \code{{regex}}.
 
 E.g. \verb{f (?xi) astic $} will jump to the next item ending in \code{"astic"}.
-The software starts searching from the \emph{second item} presently visible onwards.
+The software starts searching from the \emph{second item} presently visible onward.
 
 \code{f} will jump to the next item matching the last regular expression used with
 \verb{f \{regex\}}.

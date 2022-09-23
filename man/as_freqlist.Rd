@@ -36,7 +36,7 @@ subsetting (see \link{brackets}).
 
 Additional manipulation functions include \code{\link[=type_freqs]{type_freqs()}} to extract the frequencies
 of different items, \code{\link[=freqlist_merge]{freqlist_merge()}} to combine frequency lists, and
-\code{\link[=freqlist_diff]{freqlist_diff()}} to substract a frequency list from another.
+\code{\link[=freqlist_diff]{freqlist_diff()}} to subtract a frequency list from another.
 
 Objects of class \code{freqlist} can be saved to file with \code{\link[=write_freqlist]{write_freqlist()}};
 these files can be read with \code{\link[=read_freqlist]{read_freqlist()}}.
