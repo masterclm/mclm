@@ -26,14 +26,11 @@ Imports:
     yaml
 LinkingTo: Rcpp         
 Suggests: 
-    gradethis (>= 0.2.10.9000),
-    learnr (>= 0.10.7.9000),
     MASS,
     tidyr,
     purrr,
     testthat (>= 3.0.0),
-    covr,
-    rsconnect
+    covr
 License: GPL-2
 LazyData: TRUE
 RoxygenNote: 7.2.1
@@ -41,6 +38,3 @@ Roxygen: list(markdown = TRUE)
 URL: https://github.com/montesmariana/mclm,
     https://montesmariana.github.io/mclm/
 Config/testthat/edition: 3
-Remotes: 
-    rstudio/gradethis,
-    rstudio/learnr
