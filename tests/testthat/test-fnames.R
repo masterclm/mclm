@@ -15,7 +15,7 @@ test_that("get_fnames works properly", {
   expect_length(
     get_fnames(system.file("extdata", package = "mclm"),
                recursive = FALSE),
-    2
+    3
   )
   # TODO create directory for other tests and use it to test recursive
 })

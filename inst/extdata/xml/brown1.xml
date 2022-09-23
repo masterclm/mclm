@@ -1,0 +1,18 @@
+<TEI xmlns="http://www.tei-c.org/ns/1.0"><teiHeader><fileDesc><titleStmt><title>Sample A01 from  The Atlanta Constitution</title><title type="sub"> November 4, 1961, p.1 "Atlanta Primary ..." 
+ "Hartsfield Files" 
+ August 17, 1961, "Urged strongly ..." 
+ "Sam Caldwell Joins" 
+ March 6,1961, p.1 "Legislators Are Moving" by Reg Murphy
+ "Legislator to fight" by Richard Ashworth 
+ "House Due Bid..." 
+ p.18 "Harry Miller Wins..." 
+</title></titleStmt><editionStmt><edition>A part  of the XML version of the Brown Corpus</edition></editionStmt><extent>1,988 words 431 (21.7%) quotes 2 symbols</extent><publicationStmt><idno>A01</idno><availability><p>Used by permission of The Atlanta ConstitutionState News Service (H), and Reg Murphy (E).</p></availability></publicationStmt><sourceDesc><bibl> The Atlanta Constitution</bibl></sourceDesc></fileDesc><encodingDesc><p>Arbitrary Hyphen: multi-million [0520]</p></encodingDesc><revisionDesc><change when="2008-04-27">Header auto-generated for TEI version</change></revisionDesc></teiHeader>
+<text xml:id="A01" decls="A">
+<body><p><s n="1"><w type="AT">The</w> <w type="NP" subtype="TL">Fulton</w> <w type="NN" subtype="TL">County</w> <w type="JJ" subtype="TL">Grand</w> <w type="NN" subtype="TL">Jury</w> <w type="VBD">said</w> <w type="NR">Friday</w> <w type="AT">an</w> <w type="NN">investigation</w> <w type="IN">of</w> <w type="NPg">Atlanta's</w> <w type="JJ">recent</w> <w type="NN">primary</w> <w type="NN">election</w> <w type="VBD">produced</w> <c type="pct">``</c> <w type="AT">no</w> <w type="NN">evidence</w> <c type="pct">''</c> <w type="CS">that</w> <w type="DTI">any</w> <w type="NNS">irregularities</w> <w type="VBD">took</w> <w type="NN">place</w> <c type="pct">.</c> </s>
+</p>
+<p><s n="8"><w type="NN" subtype="HL">Merger</w> <w type="VBN" subtype="HL">proposed</w> </s>
+<s n="9"><w type="WRB">However</w> <c type="pct">,</c> <w type="AT">the</w> <w type="NN">jury</w> <w type="VBD">said</w> <w type="PPS">it</w> <w type="VBZ">believes</w> <c type="pct">``</c> <w type="DTS">these</w> <w type="CD">two</w> <w type="NNS">offices</w> <w type="MD">should</w> <w type="BE">be</w> <w type="VBN">combined</w> <w type="TO">to</w> <w type="VB">achieve</w> <w type="JJR">greater</w> <w type="NN">efficiency</w> <w type="CC">and</w> <w type="VB">reduce</w> <w type="AT">the</w> <w type="NN">cost</w> <w type="IN">of</w> <w type="NN">administration</w> <c type="pct">''</c> <c type="pct">.</c> </s>
+</p>
+<p><s n="75"><w type="NP">Pelham</w> <w type="VBD">pointed</w> <w type="RP">out</w> <w type="CS">that</w> <w type="NP">Georgia</w> <w type="NNS">voters</w> <w type="AP">last</w> <w type="NP">November</w> <w type="VBD">rejected</w> <w type="AT">a</w> <w type="JJ">constitutional</w> <w type="NN">amendment</w> <w type="TO">to</w> <w type="VB">allow</w> <w type="NNS">legislators</w> <w type="TO">to</w> <w type="VB">vote</w> <w type="IN">on</w> <w type="NN">pay</w> <w type="NNS">raises</w> <w type="IN">for</w> <w type="JJ">future</w> <w type="NN" subtype="TL">Legislature</w> <w type="NNS">sessions</w> <c type="pct">.</c> </s>
+</p>
+</body></text></TEI>

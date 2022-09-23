@@ -86,6 +86,7 @@ reference:
     - as_numeric
     - drop_empty_rc
     - find_xpath
+    - mclm_xml_text
     - cleanup_spaces
   - title: internal
     contents:

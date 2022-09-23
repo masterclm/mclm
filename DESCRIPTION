@@ -14,15 +14,16 @@ Description: Various functions in support of quantitative corpus linguistics.
 Encoding: UTF-8
 Depends: ca,
          tibble
-Imports: crayon,
-         dplyr,
-         Rcpp,
-         readr,
-         stringi,
-         stringr,
-         tm,
-         XML,
-         yaml
+Imports: 
+    crayon,
+    dplyr,
+    Rcpp,
+    readr,
+    stringi,
+    stringr,
+    tm,
+    xml2,
+    yaml
 LinkingTo: Rcpp         
 Suggests: 
     gradethis (>= 0.2.10.9000),
@@ -39,6 +40,6 @@ Roxygen: list(markdown = TRUE)
 URL: https://github.com/montesmariana/mclm,
     https://montesmariana.github.io/mclm/
 Config/testthat/edition: 3
-Remotes:  
+Remotes: 
     rstudio/gradethis,
     rstudio/learnr

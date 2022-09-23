@@ -28,7 +28,6 @@ NULL
 #' @importFrom tibble as_tibble tibble
 #' @importFrom tm DirSource TermDocumentMatrix VCorpus
 #' @importFrom utils type.convert
-#' @importFrom XML xmlValue
 #' @importFrom yaml as.yaml yaml.load
 #' @keywords internal
 "_PACKAGE"
