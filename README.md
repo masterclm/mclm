@@ -4,9 +4,7 @@
 # mclm <img src="man/figures/logo.png" align="right" />
 
 <!-- badges: start -->
-
-[![Codecov test
-coverage](https://codecov.io/gh/montesmariana/mclm/branch/main/graph/badge.svg)](https://app.codecov.io/gh/montesmariana/mclm?branch=main)
+<!-- [![Codecov test coverage](https://codecov.io/gh/masterclm/mclm/branch/main/graph/badge.svg)](https://app.codecov.io/gh/masterclm/mclm?branch=main) -->
 <!-- badges: end -->
 
 The goal of mclm is to gather various functions in support of
@@ -24,11 +22,10 @@ objects with PERL-flavor regular expressions.
 ## Installation
 
 You can install the development version of mclm from
-[GitHub](https://github.com/) with:
+[GitHub](https://github.com/masterclm/mclm) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("montesmariana/mclm")
+remotes::install_github("masterclm/mclm")
 ```
 
 ## Examples
