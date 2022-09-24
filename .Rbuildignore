@@ -11,3 +11,5 @@
 ^pkgdown$
 ^codecov\.yml$
 ^\.github$
+^cran-comments.md$
+^README\.Rmd$
