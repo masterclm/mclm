@@ -2,8 +2,8 @@ pandoc: 2.14.2
 pkgdown: 2.0.6
 pkgdown_sha: ~
 articles: {}
-last_built: 2022-09-23T08:20Z
+last_built: 2022-09-24T11:00Z
 urls:
-  reference: https://montesmariana.github.io/mclm/reference
-  article: https://montesmariana.github.io/mclm/articles
+  reference: https://masterclm.github.io/mclm/reference
+  article: https://masterclm.github.io/mclm/articles
 

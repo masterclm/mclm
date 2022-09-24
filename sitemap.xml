@@ -1,246 +1,246 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://montesmariana.github.io/mclm/404.html</loc>
+    <loc>https://masterclm.github.io/mclm/404.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/authors.html</loc>
+    <loc>https://masterclm.github.io/mclm/authors.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/index.html</loc>
+    <loc>https://masterclm.github.io/mclm/index.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/as_character.html</loc>
+    <loc>https://masterclm.github.io/mclm/news/index.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/as_conc.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/as_character.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/as_data_frame.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/as_conc.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/as_fnames.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/as_data_frame.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/as_freqlist.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/as_fnames.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/as_numeric.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/as_freqlist.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/as_tokens.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/as_numeric.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/as_types.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/as_tokens.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/assoc_scores.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/as_types.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/brackets.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/assoc_scores.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/ca_help.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/brackets.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/cat_re.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/ca_help.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/chisq1_to_p.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/cat_re.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/cleanup_spaces.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/chisq1_to_p.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/conc.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/cleanup_spaces.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/create_cooc.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/conc.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/details.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/create_cooc.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/drop_empty_rc.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/details.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/drop_tags.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/drop_empty_rc.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/explore.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/drop_tags.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/find_xpath.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/explore.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/fnames.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/find_xpath.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/freqlist.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/fnames.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/freqlist_diff.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/freqlist.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/import_conc.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/freqlist_diff.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/index.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/import_conc.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/keep_bool.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/keep_fnames.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/keep_bool.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/keep_pos.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/keep_fnames.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/keep_re.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/keep_pos.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/keep_types.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/keep_re.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/mclm-package.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/keep_types.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/mclm_print.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/mclm-package.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/mclm_question.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/mclm_print.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/mclm_xml_text.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/mclm_xml_text.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/merge_conc.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/merge_conc.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/merge_fnames.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/merge_fnames.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/merge_freqlist.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/merge_freqlist.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/merge_tokens.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/merge_tokens.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/merge_types.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/merge_types.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/n_fnames.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/n_fnames.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/n_tokens.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/n_tokens.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/n_types.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/n_types.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/orig_ranks.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/orig_ranks.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/p_to_chisq1.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/p_to_chisq1.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/perl_flavor.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/perl_flavor.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/print_kwic.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/print_kwic.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/ranks.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/ranks.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/re.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/re.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/re_convenience.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/re_convenience.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/read_assoc.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/read_assoc.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/read_conc.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/read_conc.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/read_fnames.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/read_fnames.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/read_freqlist.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/read_freqlist.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/read_tokens.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/read_tokens.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/read_txt.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/read_txt.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/read_types.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/read_types.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/scan_re.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/scan_re.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/scan_txt.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/scan_txt.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/short_names.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/short_names.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/slma.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/slma.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/sort.assoc_scores.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/sort.assoc_scores.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/sort.freqlist.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/sort.freqlist.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/sort.tokens.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/sort.tokens.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/tokens.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/tokens.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/tot_n_tokens.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/tot_n_tokens.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/trunc_at.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/trunc_at.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/type_freqs.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/type_freqs.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/type_names.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/type_names.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/types.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/types.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/write_assoc.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/write_assoc.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/write_conc.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/write_conc.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/write_fnames.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/write_fnames.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/write_freqlist.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/write_freqlist.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/write_tokens.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/write_tokens.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/write_txt.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/write_txt.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/write_types.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/write_types.html</loc>
   </url>
   <url>
-    <loc>https://montesmariana.github.io/mclm/reference/zero_plus.html</loc>
+    <loc>https://masterclm.github.io/mclm/reference/zero_plus.html</loc>
   </url>
 </urlset>
