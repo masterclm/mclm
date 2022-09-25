@@ -13,8 +13,8 @@ Various functions in support of quantitative corpus linguistics.
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/montesmariana/mclm}
-  \item \url{https://montesmariana.github.io/mclm/}
+  \item \url{https://github.com/masterclm/mclm}
+  \item \url{https://masterclm.github.io/mclm/}
 }
 
 }
