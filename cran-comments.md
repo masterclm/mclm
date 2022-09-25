@@ -1,4 +1,4 @@
-This is the first submission.
+This is a resubmission after fixing two URLs.
 
 ## R CMD check results
 
