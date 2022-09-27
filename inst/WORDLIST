@@ -23,7 +23,9 @@ ngrams
 nodeset
 skipgrams
 subsetters
+tokenize
 tokenized
 trigrams
+variationist
 XPath
 th
