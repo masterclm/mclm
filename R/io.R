@@ -18,7 +18,7 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \dontshow{.old_wd <- setwd(tempdir())}
 #' x <- "This is
 #' a small
 #' text."
@@ -28,7 +28,7 @@
 #' # read a text from file
 #' y <- read_txt("example-text-file.txt")
 #' y
-#' }
+#' \dontshow{setwd(.old_wd)}
 read_txt <- function(file,
                      file_encoding = "UTF-8",
                      line_glue = NA,

@@ -27,7 +27,7 @@ This function reads a text file and returns a character vector containing
 the lines in the text file.
 }
 \examples{
-\dontrun{
+\dontshow{.old_wd <- setwd(tempdir())}
 x <- "This is
 a small
 text."
@@ -37,7 +37,7 @@ write_txt(x, "example-text-file.txt")
 # read a text from file
 y <- read_txt("example-text-file.txt")
 y
-}
+\dontshow{setwd(.old_wd)}
 }
 \seealso{
 \code{\link[=write_txt]{write_txt()}}

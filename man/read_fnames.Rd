@@ -27,11 +27,11 @@ This function reads an object of class \code{\link{fnames}} from a text file, wh
 assumed to contain one filename on each line.
 }
 \examples{
-\dontrun{
-cwd_fnames <- get_fnames(recursive = FALSE)
+\dontshow{.old_wd <- setwd(tempdir())}
+cwd_fnames <- as_fnames(c("file1.txt", "file2.txt"))
 write_fnames(cwd_fnames, "file_with_filenames.txt")
 cwd_fnames_2 <- read_fnames("file_with_filenames.txt")
-}
+\dontshow{setwd(.old_wd)}
 }
 \seealso{
 \code{\link[=write_fnames]{write_fnames()}}

@@ -8,7 +8,7 @@
 \description{
 \if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
 
-Various functions in support of quantitative corpus linguistics.
+Read, inspect and process corpus files for quantitative corpus linguistics. Obtain concordances via regular expressions, tokenize texts, and compute frequencies and association measures. Useful for collocation analysis, keywords analysis and variationist studies (comparison of linguistic variants and of linguistic varieties).
 }
 \seealso{
 Useful links:

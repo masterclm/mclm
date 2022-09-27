@@ -588,11 +588,11 @@ print_kwic <- function(x,
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' (d <- conc('A very small corpus.', '\\w+', as_text = TRUE))
+#' \dontshow{.old_wd <- setwd(tempdir())}
 #' write_conc(d, "example_data.tab")
 #' (d2 <- read_conc("example_data.tab"))
-#' }
+#' \dontshow{setwd(.old_wd)}
 read_conc <- function(file,
                       sep = "\t",
                       file_encoding = "UTF-8",

@@ -1260,16 +1260,16 @@ freqlist_diff <- function(x, y) {
 #' @seealso [write_freqlist()]
 #'
 #' @examples
-#' \dontrun{
 #' toy_corpus <- "Once upon a time there was a tiny toy corpus.
 #' It consisted of three sentences. And it lived happily ever after."
 #' freqs <- freqlist(toy_corpus, as_text = TRUE)
 #' 
 #' print(freqs, n = 1000)
+#' \dontshow{.old_wd <- setwd(tempdir())}
 #' write_freqlist(freqs, "example_freqlist.csv")
 #' freqs2 <- read_freqlist("example_freqlist.csv")
 #' print(freqs2, n = 1000)
-#' }
+#' \dontshow{setwd(.old_wd)}
 read_freqlist <- function(file,
                           sep = "\t",
                           file_encoding = "UTF-8",

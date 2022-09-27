@@ -1632,7 +1632,6 @@ chisq1_to_p <- function(x) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
 #' txt1 <- "we're just two lost souls swimming in a fish bowl,
 #' year after year, running over the same old ground,
 #' what have we found? the same old fears.
@@ -1644,9 +1643,10 @@ chisq1_to_p <- function(x) {
 #' a girl with kaleidoscope eyes"
 #' flist2 <- freqlist(txt2, as_text = TRUE)
 #' (scores <- assoc_scores(flist1, flist2, min_freq = 0))
+#' \dontshow{.old_wd <- setwd(tempdir())}
 #' write_assoc(scores, "example_scores.tab")
 #' (scores2 <- read_assoc("example_scores.tab"))
-#' }
+#' \dontshow{setwd(.old_wd)}
 write_assoc <- function(x,
                         file = "",
                         sep = "\t") {

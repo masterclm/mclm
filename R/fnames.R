@@ -40,7 +40,7 @@
 #' @name fnames
 #'
 #' @examples
-#' \dontrun{
+#' \donttest{
 #' cwd_fnames <- get_fnames(recursive = FALSE)
 #' }
 #' cwd_fnames <- as_fnames(c("file1", "file2", "file3"))
@@ -817,11 +817,11 @@ drop_fnames <- function(x, y, ...) {
 #' @seealso [write_fnames()]
 #'
 #' @examples
-#' \dontrun{
-#' cwd_fnames <- get_fnames(recursive = FALSE)
+#' \dontshow{.old_wd <- setwd(tempdir())}
+#' cwd_fnames <- as_fnames(c("file1.txt", "file2.txt"))
 #' write_fnames(cwd_fnames, "file_with_filenames.txt")
 #' cwd_fnames_2 <- read_fnames("file_with_filenames.txt")
-#' }
+#' \dontshow{setwd(.old_wd)}
 read_fnames <- function(file,
                         sep = NA,
                         file_encoding = "UTF-8",

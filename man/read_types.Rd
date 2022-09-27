@@ -47,11 +47,11 @@ This function read an object of the class \code{\link{types}} from a text file. 
 the text file is assumed to contain one type on each line.
 }
 \examples{
-\dontrun{
-  types <- as_types(c("first", "second", "third"))
-  write_types(types, "file_with_types.txt")
-  types_2 <- read_types("file_with_types.txt")
-  }
+\dontshow{.old_wd <- setwd(tempdir())}
+types <- as_types(c("first", "second", "third"))
+write_types(types, "file_with_types.txt")
+types_2 <- read_types("file_with_types.txt")
+\dontshow{setwd(.old_wd)}
 }
 \seealso{
 \code{\link[=write_types]{write_types()}}

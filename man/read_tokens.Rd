@@ -22,11 +22,11 @@ stored with \code{\link[=write_tokens]{write_tokens()}}. The text file is assume
 each line and not to have a header.
 }
 \examples{
-\dontrun{
+\dontshow{.old_wd <- setwd(tempdir())}
 (tks <- tokenize("The old man and the sea."))
 write_tokens(tks, "file_with_tokens.txt")
 (tks2 <- read_tokens("file_with_tokens.txt"))
-}
+\dontshow{setwd(.old_wd)}
 }
 \seealso{
 \code{\link[=write_tokens]{write_tokens()}}

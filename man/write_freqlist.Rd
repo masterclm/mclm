@@ -35,16 +35,16 @@ is identical to \code{file}, except that it has the filename extension
 and \code{"tot_n_types"} are stored to that configuration file.
 }
 \examples{
-\dontrun{
 toy_corpus <- "Once upon a time there was a tiny toy corpus.
 It consisted of three sentences. And it lived happily ever after."
 freqs <- freqlist(toy_corpus, as_text = TRUE)
 
 print(freqs, n = 1000)
+\dontshow{.old_wd <- setwd(tempdir())}
 write_freqlist(freqs, "example_freqlist.csv")
 freqs2 <- read_freqlist("example_freqlist.csv")
 print(freqs2, n = 1000)
-}
+\dontshow{setwd(.old_wd)}
 }
 \seealso{
 \code{\link[=read_freqlist]{read_freqlist()}}

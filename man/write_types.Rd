@@ -22,11 +22,11 @@ is written to a separate line. The file encoding that is used is
 \code{"UTF-8"}.
 }
 \examples{
-\dontrun{
-  types <- as_types(c("first", "second", "third"))
-  write_types(types, "file_with_types.txt")
-  types_2 <- read_types("file_with_types.txt")
-  }
+\dontshow{.old_wd <- setwd(tempdir())}
+types <- as_types(c("first", "second", "third"))
+write_types(types, "file_with_types.txt")
+types_2 <- read_types("file_with_types.txt")
+\dontshow{setwd(.old_wd)}
 }
 \seealso{
 \code{\link[=read_types]{read_types()}}

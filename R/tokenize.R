@@ -915,11 +915,11 @@ plot.summary.tokens <- function(x, ...) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
+#' \dontshow{.old_wd <- setwd(tempdir())}
 #' (tks <- tokenize("The old man and the sea."))
 #' write_tokens(tks, "file_with_tokens.txt")
 #' (tks2 <- read_tokens("file_with_tokens.txt"))
-#' }
+#' \dontshow{setwd(.old_wd)}
 read_tokens <- function(file,
                         file_encoding = "UTF-8",
                         ...) {

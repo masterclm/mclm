@@ -39,16 +39,16 @@ then the values for \code{"tot_n_tokens"} and \code{"tot_n_types"} are
 calculated on the basis of the frequencies in the frequency list.
 }
 \examples{
-\dontrun{
 toy_corpus <- "Once upon a time there was a tiny toy corpus.
 It consisted of three sentences. And it lived happily ever after."
 freqs <- freqlist(toy_corpus, as_text = TRUE)
 
 print(freqs, n = 1000)
+\dontshow{.old_wd <- setwd(tempdir())}
 write_freqlist(freqs, "example_freqlist.csv")
 freqs2 <- read_freqlist("example_freqlist.csv")
 print(freqs2, n = 1000)
-}
+\dontshow{setwd(.old_wd)}
 }
 \seealso{
 \code{\link[=write_freqlist]{write_freqlist()}}

@@ -22,7 +22,7 @@ This function writes a character vector to a text file. By default, each
 item in the character vector becomes a line in the text file.
 }
 \examples{
-\dontrun{
+\dontshow{.old_wd <- setwd(tempdir())}
 x <- "This is
 a small
 text."
@@ -32,7 +32,7 @@ write_txt(x, "example-text-file.txt")
 # read a text from file
 y <- read_txt("example-text-file.txt")
 y
-}
+\dontshow{setwd(.old_wd)}
 }
 \seealso{
 \code{\link[=read_txt]{read_txt()}}

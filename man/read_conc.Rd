@@ -33,11 +33,11 @@ This function reads concordance-based data frames that are written to file
 with the function \code{\link[=write_conc]{write_conc()}}.
 }
 \examples{
-\dontrun{
 (d <- conc('A very small corpus.', '\\\\w+', as_text = TRUE))
+\dontshow{.old_wd <- setwd(tempdir())}
 write_conc(d, "example_data.tab")
 (d2 <- read_conc("example_data.tab"))
-}
+\dontshow{setwd(.old_wd)}
 }
 \seealso{
 \code{\link[=import_conc]{import_conc()}} for reading files not generated with \code{\link[=write_conc]{write_conc()}}.

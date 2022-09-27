@@ -20,7 +20,6 @@ Invisibly, \code{x}.
 This function writes an object of class \code{\link{assoc_scores}} to a file.
 }
 \examples{
-\dontrun{
 txt1 <- "we're just two lost souls swimming in a fish bowl,
 year after year, running over the same old ground,
 what have we found? the same old fears.
@@ -32,9 +31,10 @@ somebody calls you, you answer quite slowly
 a girl with kaleidoscope eyes"
 flist2 <- freqlist(txt2, as_text = TRUE)
 (scores <- assoc_scores(flist1, flist2, min_freq = 0))
+\dontshow{.old_wd <- setwd(tempdir())}
 write_assoc(scores, "example_scores.tab")
 (scores2 <- read_assoc("example_scores.tab"))
-}
+\dontshow{setwd(.old_wd)}
 }
 \seealso{
 \code{\link[=read_assoc]{read_assoc()}}

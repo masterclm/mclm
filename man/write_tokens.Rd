@@ -22,11 +22,11 @@ token is written to a separate line. The file encoding is always "UTF-8".
 This file can later be read with \code{\link[=read_tokens]{read_tokens()}}.
 }
 \examples{
-\dontrun{
+\dontshow{.old_wd <- setwd(tempdir())}
 (tks <- tokenize("The old man and the sea."))
 write_tokens(tks, "file_with_tokens.txt")
 (tks2 <- read_tokens("file_with_tokens.txt"))
-}
+\dontshow{setwd(.old_wd)}
 }
 \seealso{
 \code{\link[=read_tokens]{read_tokens()}}

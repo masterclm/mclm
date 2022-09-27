@@ -59,7 +59,7 @@ It is possible to coerce a character vector into an \code{fnames} object with \c
 Build an object of class \code{fnames}.
 }
 \examples{
-\dontrun{
+\donttest{
 cwd_fnames <- get_fnames(recursive = FALSE)
 }
 cwd_fnames <- as_fnames(c("file1", "file2", "file3"))

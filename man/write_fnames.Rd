@@ -22,11 +22,11 @@ is written in a separate line. The file encoding is always \code{"UTF-8"}.
 In addition, it can store metadata in an additional configuration file.
 }
 \examples{
-\dontrun{
-cwd_fnames <- get_fnames(recursive = FALSE)
+\dontshow{.old_wd <- setwd(tempdir())}
+cwd_fnames <- as_fnames(c("file1.txt", "file2.txt"))
 write_fnames(cwd_fnames, "file_with_filenames.txt")
 cwd_fnames_2 <- read_fnames("file_with_filenames.txt")
-}
+\dontshow{setwd(.old_wd)}
 }
 \seealso{
 \code{\link[=read_fnames]{read_fnames()}}

@@ -736,11 +736,11 @@ types_merge_all <- function(..., sort = FALSE) {
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#'   types <- as_types(c("first", "second", "third"))
-#'   write_types(types, "file_with_types.txt")
-#'   types_2 <- read_types("file_with_types.txt")
-#'   }
+#' \dontshow{.old_wd <- setwd(tempdir())}
+#' types <- as_types(c("first", "second", "third"))
+#' write_types(types, "file_with_types.txt")
+#' types_2 <- read_types("file_with_types.txt")
+#' \dontshow{setwd(.old_wd)}
 read_types <- function(file,
                        sep = NA,
                        file_encoding = "UTF-8",
