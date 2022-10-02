@@ -813,6 +813,8 @@ details.default <- function(x, y, ...) NULL
 #'   
 #'   Columns that are blocked from printing by these arguments are still available
 #'   to `sort_order`.
+#' @param hide_path A character string with a regular expression or `NULL`. If it is
+#'   not `NULL`, the character string will be removed from the paths when printing.
 #'
 #' @return Invisibly, `x`.
 #'   For objects of class `assoc_scores`, the output consists of two areas:

@@ -39,6 +39,7 @@ test_that("fnames are printed properly", {
   expect_output(print(flist_fnames, n = 3), "Filename collection of length 19")
   expect_output(print(flist_fnames), "filename")
   expect_output(print(flist_fnames), "after")
+  expect_output(print(flist_fnames, hide_path = "c"), "sentenes")
   
   # Errors and warnings
   expect_error(print(flist_fnames, n = numeric()))

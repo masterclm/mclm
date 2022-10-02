@@ -27,7 +27,15 @@
 
 \method{print}{conc}(x, n = 30, ...)
 
-\method{print}{fnames}(x, n = 20, from = 1, sort_order = c("none", "alpha"), extra = NULL, ...)
+\method{print}{fnames}(
+  x,
+  n = 20,
+  from = 1,
+  sort_order = c("none", "alpha"),
+  extra = NULL,
+  hide_path = NULL,
+  ...
+)
 
 \method{print}{freqlist}(x, n = 20, from = 1, extra = NULL, ...)
 
@@ -79,6 +87,9 @@ take precedence over other arguments. For instance, if \code{extra$from_col} is
 not \code{NULL}, it will overrule the \code{from_col} argument.}
 
 \item{...}{Additional printing arguments.}
+
+\item{hide_path}{A character string with a regular expression or \code{NULL}. If it is
+not \code{NULL}, the character string will be removed from the paths when printing.}
 }
 \value{
 Invisibly, \code{x}.

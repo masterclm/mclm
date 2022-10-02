@@ -484,6 +484,7 @@ print.fnames <- function(x,
                          n = 20, from = 1,
                          sort_order = c("none", "alpha"),
                          extra = NULL,
+                         hide_path = NULL,
                          ...) {
   n_types <- length(x)
   # testing and processing argument 'n'
@@ -543,10 +544,13 @@ print.fnames <- function(x,
                        justify = "right")    
   # we don't use format() [problems with unicode !]
   # nor do we use stringi::stri_pad_left [hickups with greek and Set.locale]
+  if (!is.null(hide_path) && is.character(hide_path)) {
+    types <- gsub(paste0(hide_path, "/?"), "", types)
+  }
   nchar_types <- nchar(types)
   if (!is.null(extra$type_regex)) {
     types <- show_matches(types, extra$type_regex)
-  }    
+  }
   format_types <- mclm_pad_left(
     c("filename", types),
     max(nchar("filename"), nchar_types),
