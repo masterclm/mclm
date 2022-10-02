@@ -94,11 +94,29 @@ This file can later be read with <code><a href="read_tokens.html">read_tokens()<
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">.old_wd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">tks</span> <span class="op">&lt;-</span> <span class="fu"><a href="tokens.html">tokenize</a></span><span class="op">(</span><span class="st">"The old man and the sea."</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">Token sequence of length 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> idx token</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --- -----</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">  1</span>   the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">  2</span>   old</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">  3</span>   man</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">  4</span>   and</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">  5</span>   the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">  6</span>   sea</span>
 <span class="r-in"><span><span class="fu">write_tokens</span><span class="op">(</span><span class="va">tks</span>, <span class="st">"file_with_tokens.txt"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">tks2</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_tokens.html">read_tokens</a></span><span class="op">(</span><span class="st">"file_with_tokens.txt"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">Token sequence of length 6</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> idx token</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> --- -----</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">  1</span>   the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">  2</span>   old</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">  3</span>   man</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">  4</span>   and</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">  5</span>   the</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">  6</span>   sea</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="va">.old_wd</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

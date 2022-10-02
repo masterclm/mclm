@@ -88,8 +88,7 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="va">txt1</span> <span class="op">&lt;-</span> <span class="st">"we're just two lost souls swimming in a fish bowl,</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">txt1</span> <span class="op">&lt;-</span> <span class="st">"we're just two lost souls swimming in a fish bowl,</span></span></span>
 <span class="r-in"><span><span class="st">year after year, running over the same old ground,</span></span></span>
 <span class="r-in"><span><span class="st">what have we found? the same old fears.</span></span></span>
 <span class="r-in"><span><span class="st">wish you were here."</span></span></span>
@@ -100,9 +99,60 @@
 <span class="r-in"><span><span class="st">a girl with kaleidoscope eyes"</span></span></span>
 <span class="r-in"><span><span class="va">flist2</span> <span class="op">&lt;-</span> <span class="fu"><a href="freqlist.html">freqlist</a></span><span class="op">(</span><span class="va">txt2</span>, as_text <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">scores</span> <span class="op">&lt;-</span> <span class="fu"><a href="assoc_scores.html">assoc_scores</a></span><span class="op">(</span><span class="va">flist1</span>, <span class="va">flist2</span>, min_freq <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">Association scores (types in list: 46)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        type   a    PMI G_signed<span style="color: #A8A8A8;">|</span>   b   c    d dir exp_a DP_rows RR_rows</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 1</span>      old 2.5  0.620    1.192<span style="color: #A8A8A8;">|</span>29.5 0.5 26.5   1 1.627   0.060   4.219</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 2</span>     same 2.5  0.620    1.192<span style="color: #A8A8A8;">|</span>29.5 0.5 26.5   1 1.627   0.060   4.219</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 3</span>      the 2.5  0.620    1.192<span style="color: #A8A8A8;">|</span>29.5 0.5 26.5   1 1.627   0.060   4.219</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 4</span>     year 2.5  0.620    1.192<span style="color: #A8A8A8;">|</span>29.5 0.5 26.5   1 1.627   0.060   4.219</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 5</span>        a 1.0 -1.121   -1.535<span style="color: #A8A8A8;">|</span>30.0 3.0 23.0  -1 2.175  -0.083   0.280</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 6</span>    after 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 7</span>     bowl 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 8</span>    fears 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 9</span>     fish 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">10</span>    found 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">11</span>   ground 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">12</span>     have 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">13</span>     here 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">14</span>       in 1.0 -0.121   -0.016<span style="color: #A8A8A8;">|</span>30.0 1.0 25.0  -1 1.088  -0.006   0.839</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">15</span>     just 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">16</span>     lost 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">17</span>     over 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">18</span>  running 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">19</span>    souls 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">20</span> swimming 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">...</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">&lt;number of extra columns to the right: 6&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="va">.old_wd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">write_assoc</span><span class="op">(</span><span class="va">scores</span>, <span class="st">"example_scores.tab"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">scores2</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_assoc.html">read_assoc</a></span><span class="op">(</span><span class="st">"example_scores.tab"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">Association scores (types in list: 46)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>        type   a    PMI G_signed<span style="color: #A8A8A8;">|</span>   b   c    d dir exp_a DP_rows RR_rows</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 1</span>      old 2.5  0.620    1.192<span style="color: #A8A8A8;">|</span>29.5 0.5 26.5   1 1.627   0.060   4.219</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 2</span>     same 2.5  0.620    1.192<span style="color: #A8A8A8;">|</span>29.5 0.5 26.5   1 1.627   0.060   4.219</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 3</span>      the 2.5  0.620    1.192<span style="color: #A8A8A8;">|</span>29.5 0.5 26.5   1 1.627   0.060   4.219</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 4</span>     year 2.5  0.620    1.192<span style="color: #A8A8A8;">|</span>29.5 0.5 26.5   1 1.627   0.060   4.219</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 5</span>        a 1.0 -1.121   -1.535<span style="color: #A8A8A8;">|</span>30.0 3.0 23.0  -1 2.175  -0.083   0.280</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 6</span>    after 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 7</span>     bowl 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 8</span>    fears 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;"> 9</span>     fish 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">10</span>    found 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">11</span>   ground 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">12</span>     have 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">13</span>     here 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">14</span>       in 1.0 -0.121   -0.016<span style="color: #A8A8A8;">|</span>30.0 1.0 25.0  -1 1.088  -0.006   0.839</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">15</span>     just 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">16</span>     lost 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">17</span>     over 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">18</span>  running 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">19</span>    souls 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">20</span> swimming 1.5  0.468    0.380<span style="color: #A8A8A8;">|</span>30.5 0.5 26.5   1 1.085   0.028   2.531</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #A8A8A8;">...</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">&lt;number of extra columns to the right: 6&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="va">.old_wd</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -88,11 +88,41 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="op">(</span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="conc.html">conc</a></span><span class="op">(</span><span class="st">'A very small corpus.'</span>, <span class="st">'\\w+'</span>, as_text <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="op">(</span><span class="va">d</span> <span class="op">&lt;-</span> <span class="fu"><a href="conc.html">conc</a></span><span class="op">(</span><span class="st">'A very small corpus.'</span>, <span class="st">'\\w+'</span>, as_text <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Concordance-based data frame (number of observations: 4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> idx                                           left<span style="color: #C6C6C6;">|</span>match <span style="color: #C6C6C6;">|</span>right             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #C6C6C6;">  1</span>                                               <span style="color: #C6C6C6;">|</span><span style="color: #0000BB;">  A   </span><span style="color: #C6C6C6;">|</span>very small corpus.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #C6C6C6;">  2</span>                                              A<span style="color: #C6C6C6;">|</span><span style="color: #0000BB;"> very </span><span style="color: #C6C6C6;">|</span>small corpus.     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #C6C6C6;">  3</span>                                         A very<span style="color: #C6C6C6;">|</span><span style="color: #0000BB;">small </span><span style="color: #C6C6C6;">|</span>corpus.           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #C6C6C6;">  4</span>                                   A very small<span style="color: #C6C6C6;">|</span><span style="color: #0000BB;">corpus</span><span style="color: #C6C6C6;">|</span>.                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> This data frame has 6 columns:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    column</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 glob_id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  source</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    left</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   match</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   right</span>
+<span class="r-in"><span><span class="va">.old_wd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu">write_conc</span><span class="op">(</span><span class="va">d</span>, <span class="st">"example_data.tab"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">(</span><span class="va">d2</span> <span class="op">&lt;-</span> <span class="fu"><a href="read_conc.html">read_conc</a></span><span class="op">(</span><span class="st">"example_data.tab"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Concordance-based data frame (number of observations: 4)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> idx                                           left<span style="color: #C6C6C6;">|</span>match <span style="color: #C6C6C6;">|</span>right             </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #C6C6C6;">  1</span>                                               <span style="color: #C6C6C6;">|</span><span style="color: #0000BB;">  A   </span><span style="color: #C6C6C6;">|</span>very small corpus.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #C6C6C6;">  2</span>                                              A<span style="color: #C6C6C6;">|</span><span style="color: #0000BB;"> very </span><span style="color: #C6C6C6;">|</span>small corpus.     </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #C6C6C6;">  3</span>                                         A very<span style="color: #C6C6C6;">|</span><span style="color: #0000BB;">small </span><span style="color: #C6C6C6;">|</span>corpus.           </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #C6C6C6;">  4</span>                                   A very small<span style="color: #C6C6C6;">|</span><span style="color: #0000BB;">corpus</span><span style="color: #C6C6C6;">|</span>.                 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> This data frame has 6 columns:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    column</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 1 glob_id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 2      id</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 3  source</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 4    left</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 5   match</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 6   right</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="va">.old_wd</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

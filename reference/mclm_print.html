@@ -72,7 +72,15 @@ implementations are described.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, n <span class="op">=</span> <span class="fl">30</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for fnames</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, n <span class="op">=</span> <span class="fl">20</span>, from <span class="op">=</span> <span class="fl">1</span>, sort_order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"alpha"</span><span class="op">)</span>, extra <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  n <span class="op">=</span> <span class="fl">20</span>,</span>
+<span>  from <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  sort_order <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"alpha"</span><span class="op">)</span>,</span>
+<span>  extra <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  hide_path <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for freqlist</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">x</span>, n <span class="op">=</span> <span class="fl">20</span>, from <span class="op">=</span> <span class="fl">1</span>, extra <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -144,6 +152,11 @@ not <code>NULL</code>, it will overrule the <code>from_col</code> argument.</p><
 
 <dt>...</dt>
 <dd><p>Additional printing arguments.</p></dd>
+
+
+<dt>hide_path</dt>
+<dd><p>A character string with a regular expression or <code>NULL</code>. If it is
+not <code>NULL</code>, the character string will be removed from the paths when printing.</p></dd>
 
 </dl></div>
     <div class="section level2">

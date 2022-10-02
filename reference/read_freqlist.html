@@ -114,16 +114,60 @@ calculated on the basis of the frequencies in the frequency list.</p>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="va">toy_corpus</span> <span class="op">&lt;-</span> <span class="st">"Once upon a time there was a tiny toy corpus.</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">toy_corpus</span> <span class="op">&lt;-</span> <span class="st">"Once upon a time there was a tiny toy corpus.</span></span></span>
 <span class="r-in"><span><span class="st">It consisted of three sentences. And it lived happily ever after."</span></span></span>
 <span class="r-in"><span><span class="va">freqs</span> <span class="op">&lt;-</span> <span class="fu"><a href="freqlist.html">freqlist</a></span><span class="op">(</span><span class="va">toy_corpus</span>, as_text <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">freqs</span>, n <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">Frequency list (types in list: 19, tokens in list: 21)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rank      type abs_freq nrm_freq</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---- --------- -------- --------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    1         a        2  952.381</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2        it        2  952.381</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    3     after        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    4       and        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    5 consisted        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    6    corpus        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    7      ever        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    8   happily        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    9     lived        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   10        of        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   11      once        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   12 sentences        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   13     there        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   14     three        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   15      time        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   16      tiny        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   17       toy        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   18      upon        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   19       was        1  476.190</span>
+<span class="r-in"><span><span class="va">.old_wd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="write_freqlist.html">write_freqlist</a></span><span class="op">(</span><span class="va">freqs</span>, <span class="st">"example_freqlist.csv"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">freqs2</span> <span class="op">&lt;-</span> <span class="fu">read_freqlist</span><span class="op">(</span><span class="st">"example_freqlist.csv"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="va">freqs2</span>, n <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span></span></span>
-<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #555555;">Frequency list (types in list: 19, tokens in list: 21)</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> rank      type abs_freq nrm_freq</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ---- --------- -------- --------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    1         a        2  952.381</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    2        it        2  952.381</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    3     after        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    4       and        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    5 consisted        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    6    corpus        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    7      ever        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    8   happily        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    9     lived        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   10        of        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   11      once        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   12 sentences        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   13     there        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   14     three        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   15      time        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   16      tiny        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   17       toy        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   18      upon        1  476.190</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   19       was        1  476.190</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">setwd</a></span><span class="op">(</span><span class="va">.old_wd</span><span class="op">)</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
