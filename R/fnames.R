@@ -411,22 +411,22 @@ keep_re.fnames <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   }
   if (any(is.na(i))) {
     stop("subset criterion must not contain any NAs")
-  }    
+  }
+  if (length(i) == 0) {
+    return(as_fnames(character()))
+  }
   if (is.numeric(i) || is.integer(i)) {
-    i <- i[!is.na(i)]
-    if (length(i) > 0) {
-      i <- trunc(i)
-      any_pos <- any(i >= 1)
-      any_neg <- any(i <= -1)
-      if (any_pos && any_neg) {
-        stop("subsetting indices must be either all positive or all negative")          
-      }
-      if (any_neg) {
-        invert <- !invert
-        i <- abs(i)
-      }
-      result <- keep_pos(x, i, invert = invert, ...)
-    } 
+    i <- trunc(i)
+    any_pos <- any(i >= 1)
+    any_neg <- any(i <= -1)
+    if (any_pos && any_neg) {
+      stop("subsetting indices must be either all positive or all negative")          
+    }
+    if (any_neg) {
+      invert <- !invert
+      i <- abs(i)
+    }
+    result <- keep_pos(x, i, invert = invert, ...)
   } else if ("types" %in% class(i)) {
     result <- keep_types(x, i, invert = invert, ...)
   } else if ("character" %in% class(i)) {
@@ -434,7 +434,6 @@ keep_re.fnames <- function(x, pattern, perl = TRUE, invert = FALSE, ...) {
   } else if ("re" %in% class(i)) {
     result <- keep_re(x, i, invert = invert, ...)
   } else if (is.logical(i)) {
-    i <- i[!is.na(i)]
     result <- keep_bool(x, i, invert = invert, ...) 
   } else {
     stop("unsupported type of subset criterion")

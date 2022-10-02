@@ -675,38 +675,35 @@ keep_pos.freqlist <- function(x, pos, invert = FALSE, ...) {
   if (!"freqlist" %in% class(x)) {
     stop("subsetted object must be of class 'freqlist'")
   }
-  result <- x
-  if (!is.null(x) && !missing(i) && !is.null(i)) {
-    if (any(is.na(i))) {
-      stop("subset criterion must not contain any NAs")
-    }    
-    if (is.numeric(i) || is.integer(i)) {
-      i <- i[!is.na(i)]
-      if (length(i) > 0) {
-        i <- trunc(i)
-        any_pos <- any(i >= 1)
-        any_neg <- any(i <= -1)
-        if (any_pos && any_neg) {
-          stop("subsetting indices must be either all positive or all negative")          
-        }
-        if (any_neg) {
-          invert <- !invert
-          i <- abs(i)
-        }
-        result <- keep_pos(x, i, invert = invert, ...)
-      } 
-    } else if ("types" %in% class(i)) {
-      result <- keep_types(x, i, invert = invert, ...)
-    } else if ("character" %in% class(i)) {
-      result <- keep_types(x, i, invert = invert, ...)
-    } else if ("re" %in% class(i)) {
-      result <- keep_re(x, i, invert = invert, ...)
-    } else if (is.logical(i)) {
-      i <- i[!is.na(i)]
-      result <- keep_bool(x, i, invert = invert, ...) 
-    } else {
-      stop("unsupported type of subset criterion")
+  if (is.null(x) || missing(i) || is.null(i) || length(i) == 0) {
+    return(x)
+    # NOTE nlike other subsetting methods, if i is empty it returns x
+  }
+  if (any(is.na(i))) {
+    stop("subset criterion must not contain any NAs")
+  }
+  if (is.numeric(i) || is.integer(i)) {
+    i <- trunc(i)
+    any_pos <- any(i >= 1)
+    any_neg <- any(i <= -1)
+    if (any_pos && any_neg) {
+      stop("subsetting indices must be either all positive or all negative")          
     }
+    if (any_neg) {
+      invert <- !invert
+      i <- abs(i)
+    }
+    result <- keep_pos(x, i, invert = invert, ...)
+  } else if ("types" %in% class(i)) {
+    result <- keep_types(x, i, invert = invert, ...)
+  } else if ("character" %in% class(i)) {
+    result <- keep_types(x, i, invert = invert, ...)
+  } else if ("re" %in% class(i)) {
+    result <- keep_re(x, i, invert = invert, ...)
+  } else if (is.logical(i)) {
+    result <- keep_bool(x, i, invert = invert, ...) 
+  } else {
+    stop("unsupported type of subset criterion")
   }
   result
 }
