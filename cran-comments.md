@@ -1,4 +1,6 @@
-This is a resubmission after fixing two URLs.
+This is a resubmission after fixing two URLs, the Description and the use of \dontrun{}.
+Instead, examples where files are saved and read follow the {readr} examples,
+changing working directory to `tempdir()` inside a \dontshow{} and then changing it back.
 
 ## R CMD check results
 
@@ -9,10 +11,15 @@ There were no ERRORs, WARNINGs or NOTEs.
 ### R-hub checks
 
 There were no ERRORs or WARNINGs.
-There was one NOTEs in all distributions:
+There were two NOTEs in all distributions except Debian:
 
 - Maintainer: 'Mariana Montes <mariana.montes@kuleuven.be>'
 New submission
+
+Possibly misspelled words in DESCRIPTION:
+  tokenize (14:48)
+  variationist (16:25)
+These words are technicisms and they are correctly spelled.
 
 Additionally, one NOTE for the Windows build:
 
