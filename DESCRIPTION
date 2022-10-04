@@ -1,7 +1,7 @@
 Package: mclm
 Type: Package
 Title: Mastering Corpus Linguistics Methods
-Version: 0.2.7
+Version: 0.2.7.9000
 Authors@R: c(
   person("Dirk", "Speelman",
         email = "dirk.speelman@kuleuven.be",
